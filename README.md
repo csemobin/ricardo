@@ -69,7 +69,7 @@ The platform integrates real-time communication, live location tracking, and sec
 ## 📦 Installation
 
 ```bash
-git clone https://github.com/your-username/ricardo.git
+git clone https://github.com/csemobin/ricardo.git
 cd ricardo
 flutter pub get
 flutter run
