@@ -2,7 +2,15 @@ import 'dart:ui';
 
 class AppColors {
   static const Color primaryColor = Color(0xff007635);
+  static const Color primaryTextColor = Color(0Xff4E4E4E);
   static const Color secondaryTextColor = Color(0Xff5E5E5E);
+  static const Color primaryHeadingTextColor = Color(0xff171717);
+  static const Color secondaryHeadingTextColor = Color(0xff007635);
+  static const Color richTextColor = Color(0Xff787878);
+
+  static const Color greyColor = Color(0XffC1C2C2);
+  static const Color greenColor = Color(0xff007635);
+  static const Color whiteColor = Color(0xffFFFFFF);
 
 
   static const Color bgColor = Color(0xffF3EFEF);
@@ -19,9 +27,5 @@ class AppColors {
   static const Color successColor = Color(0xff00A213);
   static const Color errorColor = Color(0xffF40000);
   static const Color termsPrivacyColor = Color(0xff0D0D0D);
-  static List<Color> splashLinearColors = [
-    Color(0xffFFFFFF),
-    Color(0xffEAC75C).withOpacity(0.20),
 
-  ];
 }

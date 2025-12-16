@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
 import 'package:ricardo/app/helpers/helper_data.dart';
 import 'package:ricardo/app/utils/app_colors.dart';
 import 'package:ricardo/gen/assets.gen.dart';
+import 'package:ricardo/routes/app_routes.dart';
 import 'package:ricardo/widgets/custom_button.dart';
 import 'package:ricardo/widgets/custom_container.dart';
 import 'package:ricardo/widgets/custom_scaffold.dart';
@@ -42,27 +44,6 @@ class _OnBoardScreenState extends State<OnBoardScreen> {
           ),
           child: Stack(
             children: [
-              Positioned(
-                top: 0.h,
-                left: 24.w,
-                right: 24.w,
-                child: SafeArea(
-                  top: true,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      SvgPicture.asset(Assets.icons.logo),
-                      GestureDetector(
-                        child: Text('Skip'),
-                        onTap: () {
-                          print('Skippppp');
-                        },
-                      )
-                    ],
-                  ),
-                ),
-              ),
               PageView.builder(
                 physics: const ClampingScrollPhysics(),
                 controller: _pageController,
@@ -109,6 +90,39 @@ class _OnBoardScreenState extends State<OnBoardScreen> {
                 },
               ),
               Positioned(
+                top: 0.h,
+                left: 24.w,
+                right: 24.w,
+                child: SafeArea(
+                  top: true,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Image.asset(
+                        Assets.images.applogo.path,
+                        width: 100.w,
+                        height: 100.h,
+                      ),
+
+                      GestureDetector(
+                        onTap: () {
+                          _pageController.animateToPage(
+                            HelperData.onboardingData.length - 1,
+                            duration: const Duration(milliseconds: 100),
+                            curve: Curves.easeInOut,
+                          );
+                        },
+                        child: Text(
+                          'Skip',
+                          style: TextStyle(fontSize: 16.sp, color: Colors.black),
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              ),
+              Positioned(
                 bottom: 10.h,
                 left: 24.w,
                 right: 24.w,
@@ -149,9 +163,7 @@ class _OnBoardScreenState extends State<OnBoardScreen> {
                               width: 160.w,
                               height: 60.h,
                               radius: 100.r,
-                              onPressed: () {
-                                print('Maruf');
-                              },
+                              onPressed: ()=> Get.offAllNamed(AppRoutes.authInitialScreen),
                               child: Ink(
                                 decoration: BoxDecoration(
                                   color: Colors.red,
@@ -191,30 +203,6 @@ class _OnBoardScreenState extends State<OnBoardScreen> {
                                 ),
                               ),
                             )
-
-                          // CustomButton(
-                          //
-                          //   width: 160.w,
-                          //   height: 60.h,
-                          //   radius: 100.r,
-                          //   onPressed: () {},
-                          //   label: '   Get Started',
-                          //   suffixIcon: CustomContainer(
-                          //     color: Colors.white,
-                          //     paddingAll: 10.r,
-                          //     shape: BoxShape.circle,
-                          //     child: InkWell(
-                          //       child: Icon(
-                          //         Icons.arrow_right_alt,
-                          //         color: Color(0Xff007635),
-                          //         fontWeight: FontWeight.w700,
-                          //         size: 28,
-                          //       ),
-                          //
-                          //     ),
-                          //
-                          //   ),
-                          // )
                         ],
                       ),
                     )),

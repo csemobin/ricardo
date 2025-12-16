@@ -44,8 +44,14 @@ class $AssetsImagesGen {
   /// File path: assets/images/amico.png
   AssetGenImage get amico => const AssetGenImage('assets/images/amico.png');
 
+  /// File path: assets/images/applogo.png
+  AssetGenImage get applogo => const AssetGenImage('assets/images/applogo.png');
+
   /// File path: assets/images/cuate.png
   AssetGenImage get cuate => const AssetGenImage('assets/images/cuate.png');
+
+  /// File path: assets/images/driver.png
+  AssetGenImage get driver => const AssetGenImage('assets/images/driver.png');
 
   /// File path: assets/images/firstonbaordimage.png
   AssetGenImage get firstonbaordimage =>
@@ -62,6 +68,10 @@ class $AssetsImagesGen {
   /// File path: assets/images/onboardtwo.jpg
   AssetGenImage get onboardtwo =>
       const AssetGenImage('assets/images/onboardtwo.jpg');
+
+  /// File path: assets/images/passenger.png
+  AssetGenImage get passenger =>
+      const AssetGenImage('assets/images/passenger.png');
 
   /// File path: assets/images/rafiki.png
   AssetGenImage get rafiki => const AssetGenImage('assets/images/rafiki.png');
@@ -85,11 +95,14 @@ class $AssetsImagesGen {
   /// List of all assets
   List<AssetGenImage> get values => [
         amico,
+        applogo,
         cuate,
+        driver,
         firstonbaordimage,
         onboardingthree,
         onboardone,
         onboardtwo,
+        passenger,
         rafiki,
         secondonbaordimagePng,
         splashBackground,

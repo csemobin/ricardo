@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:ricardo/feature/view/splash_screen/on_board_screen.dart';
 import 'package:ricardo/gen/assets.gen.dart';
+import 'package:ricardo/widgets/logo_widget.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -72,12 +71,9 @@ class _SplashScreenState extends State<SplashScreen>
               height: double.infinity,
             ),
           ),
-          Center(
-            child: SvgPicture.asset(
-              Assets.icons.logo,
-              width: 285.w,
-              height: 285.h,
-            ),
+          LogoWidget(
+            width: 285,
+            height: 285,
           )
         ],
       ),

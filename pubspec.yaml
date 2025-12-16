@@ -42,8 +42,12 @@ dependencies:
 #  shared_preferences: ^2.5.4
   timeago: ^3.7.1
   image_picker: ^1.2.1
-  smooth_page_indicator: ^2.0.1
-  lottie: ^3.3.2
+  smooth_page_indicator: ^1.2.0+3
+  dots_indicator: ^3.0.0
+#  lottie: ^3.3.2
+
+dependency_overrides:
+  vector_math: 2.1.0
 
 dev_dependencies:
   flutter_test:
@@ -92,7 +96,7 @@ flutter:
   fonts:
      - family: Intel
        fonts:
-         - asset: fonts/inter_regular.ttf
+         - asset: assets/fonts/inter_regular.ttf
 #         - asset: fonts/Schyler-Italic.ttf
 #           style: italic
 #     - family: Trajan Pro
