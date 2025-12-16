@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:ricardo/feature/view/splash_screen/on_board_screen.dart';
 import 'package:ricardo/gen/assets.gen.dart';
@@ -60,13 +62,24 @@ class _SplashScreenState extends State<SplashScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white.withAlpha(128),
-      body: FadeTransition(
-        opacity: _fadeAnimation,
-        child: Assets.images.splashScreenBackground.image(
-          fit: BoxFit.cover,
-          width: double.infinity,
-          height: double.infinity,
-        ),
+      body: Stack(
+        children: [
+          FadeTransition(
+            opacity: _fadeAnimation,
+            child: Assets.images.splashBackground.image(
+              fit: BoxFit.cover,
+              width: double.infinity,
+              height: double.infinity,
+            ),
+          ),
+          Center(
+            child: SvgPicture.asset(
+              Assets.icons.logo,
+              width: 285.w,
+              height: 285.h,
+            ),
+          )
+        ],
       ),
     );
   }

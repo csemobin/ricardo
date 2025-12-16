@@ -6,19 +6,19 @@ class HelperData {
 
   static final List<Map<String, dynamic>> onboardingData = [
     {
-      "image": Assets.images.firstonbaordimage.path,
-      "title": "Communication Made Simple",
-      "subtitle": "Whether you're a tutor or a parent, stay connected with real-time messaging. Discuss progress, share updates, and ensure smooth communication without any hassle."
+      "image": Assets.images.secondonbaordimagePng.path,
+      "title": "Welcome to the GO GO DRIVER.",
+      "subtitle": "Seamless, affordable, and reliable ride-sharing at your fingertips."
     },
     {
-      "image": Assets.images.secondonbaordimagePng.path,
-      "title": "Stay Organized and In Control",
-      "subtitle": "Access your schedules, messages, and resources easily. Keep everything you need in one place, and stay on top of tasks with just a few taps."
+      "image": Assets.images.onboardone.path,
+      "title": "Safe and Secure Journeys.",
+      "subtitle": "Your safety is our top priority. Every ride is monitored for your peace of mind."
     },
     {
       "image": Assets.images.thirdonbaordimagePng.path,
-      "title": "Share and Access Resources",
-      "subtitle": "Easily share important documents, educational materials, and updates. Both tutors and parents can access and manage resources quickly, keeping the learning process seamless."
+      "title": "Easy and Convenient Booking.",
+      "subtitle": "Book your ride in just a few taps. Quick, easy, and hassle-free."
     },
   ];
 

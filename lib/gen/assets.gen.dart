@@ -11,6 +11,16 @@
 
 import 'package:flutter/widgets.dart';
 
+class $AssetsFontsGen {
+  const $AssetsFontsGen();
+
+  /// File path: assets/fonts/inter_regular.ttf
+  String get interRegular => 'assets/fonts/inter_regular.ttf';
+
+  /// List of all assets
+  List<String> get values => [interRegular];
+}
+
 class $AssetsIconsGen {
   const $AssetsIconsGen();
 
@@ -20,8 +30,12 @@ class $AssetsIconsGen {
   /// File path: assets/icons/logo.svg
   String get logo => 'assets/icons/logo.svg';
 
+  /// File path: assets/icons/sortLogo.png
+  AssetGenImage get sortLogo =>
+      const AssetGenImage('assets/icons/sortLogo.png');
+
   /// List of all assets
-  List<String> get values => [button, logo];
+  List<dynamic> get values => [button, logo, sortLogo];
 }
 
 class $AssetsImagesGen {
@@ -56,6 +70,10 @@ class $AssetsImagesGen {
   AssetGenImage get secondonbaordimagePng =>
       const AssetGenImage('assets/images/secondonbaordimage.png.png');
 
+  /// File path: assets/images/splash_background.jpg
+  AssetGenImage get splashBackground =>
+      const AssetGenImage('assets/images/splash_background.jpg');
+
   /// File path: assets/images/splash_screen_background.jpg
   AssetGenImage get splashScreenBackground =>
       const AssetGenImage('assets/images/splash_screen_background.jpg');
@@ -74,6 +92,7 @@ class $AssetsImagesGen {
         onboardtwo,
         rafiki,
         secondonbaordimagePng,
+        splashBackground,
         splashScreenBackground,
         thirdonbaordimagePng
       ];
@@ -82,6 +101,7 @@ class $AssetsImagesGen {
 class Assets {
   const Assets._();
 
+  static const $AssetsFontsGen fonts = $AssetsFontsGen();
   static const $AssetsIconsGen icons = $AssetsIconsGen();
   static const $AssetsImagesGen images = $AssetsImagesGen();
 }
