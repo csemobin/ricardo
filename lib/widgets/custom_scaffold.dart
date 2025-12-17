@@ -23,7 +23,7 @@ class CustomScaffold extends StatelessWidget {
       appBar: appBar,
       body: SafeArea(
           child: Padding(
-        padding: EdgeInsets.only(left: paddingSide ?? 16.w,right: paddingSide ?? 16.w),
+        padding: EdgeInsets.only(left: paddingSide ?? 25.w,right: paddingSide ?? 25.w),
         child: body,
       )),
       floatingActionButton: floatingActionButton,

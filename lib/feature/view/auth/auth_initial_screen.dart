@@ -16,11 +16,7 @@ class AuthInitialScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CustomScaffold(
-        body: Padding(
-      padding: EdgeInsets.symmetric(
-        horizontal: 25.r,
-      ),
-      child: Column(
+      body: Column(
         children: [
           Center(
             child: LogoWidget(),
@@ -34,9 +30,12 @@ class AuthInitialScreen extends StatelessWidget {
           SizedBox(
             height: 8.h,
           ),
-          CustomSecondaryText(
-              text:
-                  'Seamless, affordable, and reliable ride-sharing at your fingertips.'),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 25.r),
+            child: CustomSecondaryText(
+                text:
+                    'Seamless, affordable, and reliable ride-sharing at your fingertips.'),
+          ),
           Spacer(),
           CustomPrimaryButton(title: 'Sign In'),
           SizedBox(
@@ -68,6 +67,6 @@ class AuthInitialScreen extends StatelessWidget {
           Spacer(),
         ],
       ),
-    ));
+     );
   }
 }

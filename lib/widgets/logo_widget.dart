@@ -13,6 +13,7 @@ class LogoWidget extends StatelessWidget {
         Assets.images.applogo.path,
         height: height!.h,
         width: width!.w,
+        fit: BoxFit.cover,
       )
     );
   }

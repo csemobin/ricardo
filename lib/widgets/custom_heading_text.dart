@@ -42,7 +42,7 @@ class CustomHeadingText extends StatelessWidget {
             ],
           )
         : Row(
-            mainAxisAlignment: MainAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
                 firstText,
