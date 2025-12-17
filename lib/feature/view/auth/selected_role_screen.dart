@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 import 'package:ricardo/app/utils/app_colors.dart';
 import 'package:ricardo/gen/assets.gen.dart';
 import 'package:ricardo/routes/app_routes.dart';
-import 'package:ricardo/widgets/CustomPrimaryButton.dart';
+import 'package:ricardo/widgets/custom_primary_button.dart';
 import 'package:ricardo/widgets/custom_heading_text.dart';
 import 'package:ricardo/widgets/custom_scaffold.dart';
 import 'package:ricardo/widgets/logo_widget.dart';
@@ -151,7 +151,7 @@ class _SelectedRoleScreenState extends State<SelectedRoleScreen> {
           Spacer(),
           Spacer(),
           Spacer(),
-          CustomPrimaryButton(title: 'Next'),
+          CustomPrimaryButton(title: 'Next',onHandler: (){},),
           SizedBox(
             height: 20.h,
           ),

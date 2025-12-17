@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 import 'package:ricardo/app/utils/app_colors.dart';
 import 'package:ricardo/gen/assets.gen.dart';
 import 'package:ricardo/routes/app_routes.dart';
-import 'package:ricardo/widgets/CustomPrimaryButton.dart';
+import 'package:ricardo/widgets/custom_primary_button.dart';
 import 'package:ricardo/widgets/custom_heading_text.dart';
 import 'package:ricardo/widgets/custom_scaffold.dart';
 import 'package:ricardo/widgets/custom_secondary_text.dart';
@@ -37,7 +37,7 @@ class AuthInitialScreen extends StatelessWidget {
                     'Seamless, affordable, and reliable ride-sharing at your fingertips.'),
           ),
           Spacer(),
-          CustomPrimaryButton(title: 'Sign In'),
+          CustomPrimaryButton(title: 'Sign In',onHandler: (){},),
           SizedBox(
             height: 20.h,
           ),

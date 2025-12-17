@@ -3,13 +3,14 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class CustomPrimaryButton extends StatelessWidget {
   final String title;
-
+  final VoidCallback onHandler;
   @override
-  const CustomPrimaryButton({super.key, required this.title});
+  const CustomPrimaryButton({super.key, required this.title, required this.onHandler});
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
+      onTap: onHandler,
       child: Container(
         alignment: Alignment.center,
         width: double.maxFinite,
@@ -38,7 +39,6 @@ class CustomPrimaryButton extends StatelessWidget {
           ),
         ),
       ),
-      onTap: () {},
     );
   }
 }

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:ricardo/app/utils/app_colors.dart';
-import 'package:ricardo/widgets/CustomPrimaryButton.dart';
+import 'package:ricardo/routes/app_routes.dart';
+import 'package:ricardo/widgets/custom_primary_button.dart';
 import 'package:ricardo/widgets/custom_heading_text.dart';
 import 'package:ricardo/widgets/custom_scaffold.dart';
 import 'package:ricardo/widgets/custom_secondary_text.dart';
@@ -107,7 +109,9 @@ class SignUpScreen extends StatelessWidget {
           SizedBox(
             height: 33.h,
           ),
-          CustomPrimaryButton(title: 'Next'),
+          CustomPrimaryButton(title: 'Next',onHandler: (){
+            Get.toNamed(AppRoutes.otpVarifyScreen);
+          },),
           SizedBox(
             height: 20.h,
           ),
@@ -129,7 +133,9 @@ class SignUpScreen extends StatelessWidget {
                     fontSize: 15,
                   ),
                 ),
-                onTap: () {},
+                onTap: (){
+
+                },
               ),
             ],
           ),
