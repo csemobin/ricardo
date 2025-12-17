@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:ricardo/app/utils/app_colors.dart';
+import 'package:ricardo/routes/app_routes.dart';
 import 'package:ricardo/widgets/custom_heading_text.dart';
 import 'package:ricardo/widgets/custom_pin_code_text_field.dart';
 import 'package:ricardo/widgets/custom_primary_button.dart';
@@ -45,7 +47,9 @@ class OtpVarify extends StatelessWidget {
               children: [
                 CustomSecondaryText(text: 'Didn’t get the code?'),
                 TextButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Get.toNamed(AppRoutes.resetPasswordScreen);
+                  },
                   child: Text(
                     'Resend',
                     style: TextStyle(
@@ -58,7 +62,9 @@ class OtpVarify extends StatelessWidget {
             SizedBox(
               height: 22.h,
             ),
-            CustomPrimaryButton(title: 'Verify', onHandler: () {}),
+            CustomPrimaryButton(title: 'Verify', onHandler: () {
+              Get.toNamed(AppRoutes.signInScreen);
+            }),
             SizedBox(
               height: 12.h,
             ),

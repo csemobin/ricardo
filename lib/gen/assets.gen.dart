@@ -57,6 +57,10 @@ class $AssetsImagesGen {
   AssetGenImage get firstonbaordimage =>
       const AssetGenImage('assets/images/firstonbaordimage.png');
 
+  /// File path: assets/images/glassmorphism_logo.png
+  AssetGenImage get glassmorphismLogo =>
+      const AssetGenImage('assets/images/glassmorphism_logo.png');
+
   /// File path: assets/images/onboardingthree.jpg
   AssetGenImage get onboardingthree =>
       const AssetGenImage('assets/images/onboardingthree.jpg');
@@ -72,6 +76,10 @@ class $AssetsImagesGen {
   /// File path: assets/images/passenger.png
   AssetGenImage get passenger =>
       const AssetGenImage('assets/images/passenger.png');
+
+  /// File path: assets/images/popup_icon.png
+  AssetGenImage get popupIcon =>
+      const AssetGenImage('assets/images/popup_icon.png');
 
   /// File path: assets/images/rafiki.png
   AssetGenImage get rafiki => const AssetGenImage('assets/images/rafiki.png');
@@ -99,10 +107,12 @@ class $AssetsImagesGen {
         cuate,
         driver,
         firstonbaordimage,
+        glassmorphismLogo,
         onboardingthree,
         onboardone,
         onboardtwo,
         passenger,
+        popupIcon,
         rafiki,
         secondonbaordimagePng,
         splashBackground,
