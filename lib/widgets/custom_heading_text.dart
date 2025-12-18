@@ -5,7 +5,7 @@ import 'package:ricardo/app/utils/app_colors.dart';
 class CustomHeadingText extends StatelessWidget {
   final String firstText, secondText;
   final double? letterSpacing;
-  final bool? isColumn;
+  final bool? isColumn, isSwipedColor;
 
   const CustomHeadingText({
     super.key,
@@ -13,20 +13,23 @@ class CustomHeadingText extends StatelessWidget {
     required this.secondText,
     this.letterSpacing,
     this.isColumn,
+    this.isSwipedColor,
   });
 
   @override
   Widget build(BuildContext context) {
     return isColumn == true
         ? Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text(
                 firstText,
                 style: TextStyle(
                   fontWeight: FontWeight.w600,
                   fontSize: 24.sp,
-                  color: AppColors.secondaryHeadingTextColor,
+                  color: isSwipedColor == true
+                      ? AppColors.primaryHeadingTextColor
+                      : AppColors.secondaryHeadingTextColor,
                   letterSpacing: letterSpacing,
                 ),
               ),
@@ -35,7 +38,9 @@ class CustomHeadingText extends StatelessWidget {
                 style: TextStyle(
                   fontWeight: FontWeight.w600,
                   fontSize: 24.sp,
-                  color: AppColors.primaryHeadingTextColor,
+                  color: isSwipedColor == true
+                      ? AppColors.secondaryHeadingTextColor
+                      : AppColors.primaryHeadingTextColor,
                   letterSpacing: letterSpacing,
                 ),
               ),
@@ -49,7 +54,9 @@ class CustomHeadingText extends StatelessWidget {
                 style: TextStyle(
                   fontWeight: FontWeight.w600,
                   fontSize: 24.sp,
-                  color: AppColors.primaryHeadingTextColor,
+                  color: isSwipedColor == true
+                      ? AppColors.primaryHeadingTextColor
+                      : AppColors.secondaryHeadingTextColor,
                   letterSpacing: letterSpacing,
                 ),
               ),
@@ -59,7 +66,9 @@ class CustomHeadingText extends StatelessWidget {
                 style: TextStyle(
                   fontWeight: FontWeight.w600,
                   fontSize: 24.sp,
-                  color: AppColors.secondaryHeadingTextColor,
+                  color: isSwipedColor == true
+                      ? AppColors.secondaryHeadingTextColor
+                      : AppColors.primaryHeadingTextColor,
                   letterSpacing: letterSpacing,
                 ),
               ),

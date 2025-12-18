@@ -69,7 +69,7 @@ class CustomText extends StatelessWidget {
             fontSize: fontSize ?? 14.sp,
             height: textHeight,
             letterSpacing: letterSpacing,
-            fontFamily: fontName ?? FontFamily.intel,
+            fontFamily: fontName ?? FontFamily.poppins,
             fontWeight: fontWeight,
             color: color ?? AppColors.darkColor,
             decoration: decoration,

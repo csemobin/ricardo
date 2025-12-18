@@ -41,7 +41,7 @@ class _SelectedRoleScreenState extends State<SelectedRoleScreen> {
                   GestureDetector(
                     child: Container(
                       padding: EdgeInsets.all(20.r),
-                      width: 300.w,
+                      width: double.maxFinite,
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10.r),
                           color: AppColors.whiteColor,
@@ -94,7 +94,7 @@ class _SelectedRoleScreenState extends State<SelectedRoleScreen> {
                   ),
                   Container(
                     padding: EdgeInsets.all(20.r),
-                    width: 300.w,
+                    width: double.maxFinite,
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10.r),
                         color: AppColors.whiteColor,

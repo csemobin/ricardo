@@ -1,23 +1,25 @@
 import 'dart:ui';
 
 class AppColors {
+  static const Color bgColor = Color(0XffF5F6FA);
   static const Color primaryColor = Color(0xff007635);
   static const Color primaryTextColor = Color(0Xff4E4E4E);
   static const Color secondaryTextColor = Color(0Xff5E5E5E);
   static const Color primaryHeadingTextColor = Color(0xff171717);
   static const Color secondaryHeadingTextColor = Color(0xff007635);
   static const Color richTextColor = Color(0Xff787878);
+  static const Color labelTextColor = Color(0Xff5E5E5E);
 
   static const Color greyColor = Color(0XffC1C2C2);
   static const Color greenColor = Color(0xff007635);
   static const Color whiteColor = Color(0xffFFFFFF);
+  static const Color appGreyColor = Color(0Xff929292);
+  static const Color dottedBorderColor = Color(0Xff1BB600);
 
 
-  static const Color bgColor = Color(0xffF3EFEF);
   static const Color secondaryColor = Color(0xff305CDE);
   static const Color blue1 = Color(0xff59B5F7);
   static const Color grayShade100 = Color(0xffC0C0C0);
-  static const Color appGreyColor = Color(0xff848484);
   static const Color appBarTitleColor = Color(0xff333333);
   static const Color borderColor = Color(0xffDAE9F3);
   static const Color goldColor = Color(0xff856A00);

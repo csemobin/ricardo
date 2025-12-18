@@ -11,6 +11,6 @@
 class FontFamily {
   FontFamily._();
 
-  /// Font family: Intel
-  static const String intel = 'Intel';
+  /// Font family: Poppins
+  static const String poppins = 'Poppins';
 }

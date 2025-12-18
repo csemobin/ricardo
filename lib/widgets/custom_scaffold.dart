@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:ricardo/app/utils/app_colors.dart';
 class CustomScaffold extends StatelessWidget {
   const CustomScaffold(
       {super.key,
@@ -19,7 +20,7 @@ class CustomScaffold extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Color(0XffF5F6FA),
+        backgroundColor:AppColors.bgColor,
       appBar: appBar,
       body: SafeArea(
           child: Padding(

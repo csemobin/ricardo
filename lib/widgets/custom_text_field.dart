@@ -1,11 +1,10 @@
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:ricardo/gen/fonts.gen.dart';
 import '../app/utils/app_colors.dart';
 import '../app/utils/app_constants.dart';
-// import '../custom_assets/fonts.gen.dart';
 import '../widgets/widgets.dart';
 
 
@@ -100,10 +99,10 @@ class _CustomTextFieldState extends State<CustomTextField> {
         if (widget.labelText != null)
           CustomText(
             text: widget.labelText ?? '',
-            // fontName: FontFamily.inter,
-            color: AppColors.darkColor,
+            fontName: FontFamily.poppins,
             bottom: 4.h,
-            fontSize: 14.sp,
+            color: AppColors.labelTextColor,
+            fontSize: 12.h,
             fontWeight: FontWeight.w500,
           ),
         SizedBox(
@@ -122,7 +121,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
             }
           },
           readOnly: widget.readOnly!,
-          controller: widget.controller ?? TextEditingController(),
+          controller: widget.controller,
           keyboardType: widget.keyboardType,
           inputFormatters: widget.inputFormatter,
           textInputAction: widget.textInputAction,
@@ -160,12 +159,13 @@ class _CustomTextFieldState extends State<CustomTextField> {
           style: TextStyle(
               color: widget.hintextColor ?? AppColors.appGreyColor,
               fontSize: widget.hintextSize ?? 12.h,
+              fontWeight: FontWeight.w400,
               fontFamily: widget.fontFamily),
           decoration: InputDecoration(
               contentPadding: EdgeInsets.symmetric(
                   horizontal: widget.contentPaddingHorizontal ?? 20.w,
                   vertical: widget.contentPaddingVertical ?? 12.h),
-              fillColor: widget.filColor ?? Colors.transparent,
+              fillColor: widget.filColor ?? AppColors.whiteColor,
               filled: true,
               prefixIcon: widget.prefixIcon != null ? Padding(
                 padding:  EdgeInsets.symmetric(horizontal: 16.w),
@@ -185,7 +185,8 @@ class _CustomTextFieldState extends State<CustomTextField> {
               hintStyle: TextStyle(
                   color: widget.hintextColor ?? AppColors.appGreyColor,
                   fontSize: widget.hintextSize ?? 12.h,
-                  fontWeight: FontWeight.w400),
+                  fontWeight: FontWeight.w400
+              ),
               focusedBorder: focusedBorder(),
               enabledBorder: enabledBorder(),
               errorBorder: errorBorder(),
