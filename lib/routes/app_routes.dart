@@ -8,6 +8,7 @@ import 'package:ricardo/feature/view/auth/selected_role_screen.dart';
 import 'package:ricardo/feature/view/auth/sign_up_screen.dart';
 import 'package:ricardo/feature/view/profile/car_registration_screen.dart';
 import 'package:ricardo/feature/view/profile/driver_profile_create.dart';
+import 'package:ricardo/feature/view/profile/profile_complete_popup_model_screen.dart';
 import 'package:ricardo/feature/view/profile/upload_driving_license_screen.dart';
 import 'package:ricardo/feature/view/profile/upload_requirement_screen.dart';
 import 'package:ricardo/feature/view/splash_screen/on_board_screen.dart';
@@ -18,8 +19,8 @@ abstract class AppRoutes {
   static const String initialRoute = splashScreen;
 
   ///  ============= > routes name < ==============
-  // static const String splashScreen = '/';
-  static const String splashScreen = '/driver_profile_create';
+  static const String splashScreen = '/';
+  // static const String splashScreen = '/driver_profile_create';
   static const String onBoardingScreen = '/on_board_screen';
   static const String authInitialScreen = '/auth_initial_screen';
   static const String selectedRoleScreen = '/selected_role_screen';
@@ -32,7 +33,7 @@ abstract class AppRoutes {
   static const String uploadRequirementScreen = '/upload_required_screen';
   static const String uploadDrivingLicenseScreen = '/upload_driving_license_screen';
   static const String carRegistrationScreen = '/car_registration_screen';
-
+  static const String profileCompletePopupModelScreen = '/profile_complete_popup_modal_screen';
   ///  ============= > routes < ==============
   static final routes = <String, WidgetBuilder>{
     splashScreen : (context) => SplashScreen(),
@@ -48,6 +49,7 @@ abstract class AppRoutes {
     uploadRequirementScreen: (context) => UploadRequirementScreen(),
     uploadDrivingLicenseScreen: (context) => UploadDrivingLicenseScreen(),
     carRegistrationScreen: (context) => CarRegistrationScreen(),
+    profileCompletePopupModelScreen: (context) => ProfileCompletePopupModalScreen(),
   };
 
 }

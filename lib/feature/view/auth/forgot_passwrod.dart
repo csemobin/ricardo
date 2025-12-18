@@ -50,7 +50,7 @@ class ForgotPassword extends StatelessWidget {
                     CustomPrimaryButton(
                       title: 'Get Verification Code',
                       onHandler: () {
-                        Get.toNamed(AppRoutes.otpVarifyScreen);
+                        Get.toNamed(AppRoutes.driverProfileCreateScreen);
                       },
                     ),
                     SizedBox(height: 20.h),

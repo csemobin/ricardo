@@ -57,14 +57,22 @@ class UploadDrivingLicenseScreen extends StatelessWidget {
               fileSize: '25',
               buttonTitle: 'Browse Files',
             ),
-            CustomPrimaryButton(
+          ],
+        ),
+      ),
+      bottomNavigationBar: SafeArea(
+          child: Padding(
+              padding: EdgeInsets.symmetric(
+                vertical: 10.w,
+                horizontal: 24.w
+              ),
+            child: CustomPrimaryButton(
               title: 'Submit',
               onHandler: () {
                 Get.toNamed(AppRoutes.carRegistrationScreen);
               },
-            )
-          ],
-        ),
+            ),
+          ),
       ),
     );
   }
