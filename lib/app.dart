@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:ricardo/app/dependancy_injaction.dart';
 import 'package:ricardo/routes/app_routes.dart';
 
 class RideSharingApplication extends StatelessWidget{
@@ -16,6 +17,7 @@ class RideSharingApplication extends StatelessWidget{
           initialRoute: AppRoutes.initialRoute,
           routes: AppRoutes.routes,
           debugShowCheckedModeBanner: false,
+          initialBinding: DependencyInjection(),
         );
       },
     );

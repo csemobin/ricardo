@@ -120,6 +120,25 @@ class $AssetsImagesGen {
   /// File path: assets/images/Vector.png
   AssetGenImage get vector => const AssetGenImage('assets/images/Vector.png');
 
+  /// File path: assets/images/Visa.png
+  AssetGenImage get visa => const AssetGenImage('assets/images/Visa.png');
+
+  /// File path: assets/images/active-history.png
+  AssetGenImage get activeHistory =>
+      const AssetGenImage('assets/images/active-history.png');
+
+  /// File path: assets/images/active-home.png
+  AssetGenImage get activeHome =>
+      const AssetGenImage('assets/images/active-home.png');
+
+  /// File path: assets/images/active-profile.png
+  AssetGenImage get activeProfile =>
+      const AssetGenImage('assets/images/active-profile.png');
+
+  /// File path: assets/images/active-wallet.png
+  AssetGenImage get activeWallet =>
+      const AssetGenImage('assets/images/active-wallet.png');
+
   /// File path: assets/images/amico.png
   AssetGenImage get amico => const AssetGenImage('assets/images/amico.png');
 
@@ -152,6 +171,14 @@ class $AssetsImagesGen {
   AssetGenImage get glassmorphismLogo =>
       const AssetGenImage('assets/images/glassmorphism_logo.png');
 
+  /// File path: assets/images/history-icon.png
+  AssetGenImage get historyIcon =>
+      const AssetGenImage('assets/images/history-icon.png');
+
+  /// File path: assets/images/home-icon.png
+  AssetGenImage get homeIcon =>
+      const AssetGenImage('assets/images/home-icon.png');
+
   /// File path: assets/images/onboardingthree.jpg
   AssetGenImage get onboardingthree =>
       const AssetGenImage('assets/images/onboardingthree.jpg');
@@ -168,12 +195,28 @@ class $AssetsImagesGen {
   AssetGenImage get passenger =>
       const AssetGenImage('assets/images/passenger.png');
 
+  /// File path: assets/images/payment_icon.png
+  AssetGenImage get paymentIcon =>
+      const AssetGenImage('assets/images/payment_icon.png');
+
+  /// File path: assets/images/payment_method_icon.png
+  AssetGenImage get paymentMethodIcon =>
+      const AssetGenImage('assets/images/payment_method_icon.png');
+
   /// File path: assets/images/popup_icon.png
   AssetGenImage get popupIcon =>
       const AssetGenImage('assets/images/popup_icon.png');
 
+  /// File path: assets/images/proflie-icon.png
+  AssetGenImage get proflieIcon =>
+      const AssetGenImage('assets/images/proflie-icon.png');
+
   /// File path: assets/images/rafiki.png
   AssetGenImage get rafiki => const AssetGenImage('assets/images/rafiki.png');
+
+  /// File path: assets/images/remove_busket.png
+  AssetGenImage get removeBusket =>
+      const AssetGenImage('assets/images/remove_busket.png');
 
   /// File path: assets/images/secondonbaordimage.png.png
   AssetGenImage get secondonbaordimagePng =>
@@ -199,9 +242,30 @@ class $AssetsImagesGen {
   AssetGenImage get varifyIcon =>
       const AssetGenImage('assets/images/varify_icon.png');
 
+  /// File path: assets/images/wallet-icon.png
+  AssetGenImage get walletIcon =>
+      const AssetGenImage('assets/images/wallet-icon.png');
+
+  /// File path: assets/images/wallet_coin_background.png
+  AssetGenImage get walletCoinBackground =>
+      const AssetGenImage('assets/images/wallet_coin_background.png');
+
+  /// File path: assets/images/wallet_narrow_background.png
+  AssetGenImage get walletNarrowBackground =>
+      const AssetGenImage('assets/images/wallet_narrow_background.png');
+
+  /// File path: assets/images/widraw_icon.png
+  AssetGenImage get widrawIcon =>
+      const AssetGenImage('assets/images/widraw_icon.png');
+
   /// List of all assets
   List<AssetGenImage> get values => [
         vector,
+        visa,
+        activeHistory,
+        activeHome,
+        activeProfile,
+        activeWallet,
         amico,
         applogo,
         carIcon,
@@ -211,18 +275,28 @@ class $AssetsImagesGen {
         editPencil,
         firstonbaordimage,
         glassmorphismLogo,
+        historyIcon,
+        homeIcon,
         onboardingthree,
         onboardone,
         onboardtwo,
         passenger,
+        paymentIcon,
+        paymentMethodIcon,
         popupIcon,
+        proflieIcon,
         rafiki,
+        removeBusket,
         secondonbaordimagePng,
         splashBackground,
         splashScreenBackground,
         thirdonbaordimagePng,
         uploadIcon,
-        varifyIcon
+        varifyIcon,
+        walletIcon,
+        walletCoinBackground,
+        walletNarrowBackground,
+        widrawIcon
       ];
 }
 

@@ -6,13 +6,16 @@ import 'package:ricardo/feature/view/auth/forgot_passwrod.dart';
 import 'package:ricardo/feature/view/auth/otp_varify.dart';
 import 'package:ricardo/feature/view/auth/selected_role_screen.dart';
 import 'package:ricardo/feature/view/auth/sign_up_screen.dart';
-import 'package:ricardo/feature/view/profile/car_registration_screen.dart';
-import 'package:ricardo/feature/view/profile/driver_profile_create.dart';
-import 'package:ricardo/feature/view/profile/profile_complete_popup_model_screen.dart';
-import 'package:ricardo/feature/view/profile/upload_driving_license_screen.dart';
-import 'package:ricardo/feature/view/profile/upload_requirement_screen.dart';
+import 'package:ricardo/feature/view/button_nav_bar/custom_button_nav_bar.dart';
+import 'package:ricardo/feature/view/home/home_screen.dart';
+import 'package:ricardo/feature/view/complete_profile/car_registration_screen.dart';
+import 'package:ricardo/feature/view/complete_profile/driver_profile_create.dart';
+import 'package:ricardo/feature/view/complete_profile/profile_complete_popup_model_screen.dart';
+import 'package:ricardo/feature/view/complete_profile/upload_driving_license_screen.dart';
+import 'package:ricardo/feature/view/complete_profile/upload_requirement_screen.dart';
 import 'package:ricardo/feature/view/splash_screen/on_board_screen.dart';
 import 'package:ricardo/feature/view/splash_screen/splash_screen.dart';
+import 'package:ricardo/feature/view/wallet/payment_methods_selection_screen.dart';
 abstract class AppRoutes {
 
   ///  ============= > initialRoute < ==============
@@ -34,6 +37,10 @@ abstract class AppRoutes {
   static const String uploadDrivingLicenseScreen = '/upload_driving_license_screen';
   static const String carRegistrationScreen = '/car_registration_screen';
   static const String profileCompletePopupModelScreen = '/profile_complete_popup_modal_screen';
+  static const String homeScreen = '/home_screen';
+  static const String customBottomNavBar = '/custom_bottom_nav_bar';
+  static const String paymentMethodsSelectionScreen = '/payment_mathods_selection_screen';
+
   ///  ============= > routes < ==============
   static final routes = <String, WidgetBuilder>{
     splashScreen : (context) => SplashScreen(),
@@ -50,6 +57,9 @@ abstract class AppRoutes {
     uploadDrivingLicenseScreen: (context) => UploadDrivingLicenseScreen(),
     carRegistrationScreen: (context) => CarRegistrationScreen(),
     profileCompletePopupModelScreen: (context) => ProfileCompletePopupModalScreen(),
+    homeScreen: (context) => HomeScreen(),
+    customBottomNavBar: (context) => CustomButtonNavBar(),
+    paymentMethodsSelectionScreen: (context) => PaymentMethodsSelectionScreen(),
   };
 
 }

@@ -307,7 +307,7 @@
 //       child: Column(
 //         crossAxisAlignment: CrossAxisAlignment.start,
 //         children: [
-//           // Header section with profile image and name
+//           // Header section with complete_profile image and name
 //           Container(
 //             alignment: Alignment.bottomCenter,
 //             height: 150.h,
@@ -394,7 +394,7 @@
 //     );
 //   }
 //
-//   // Helper method for profile detail items
+//   // Helper method for complete_profile detail items
 //   static Widget _profileDetailItemShimmer() {
 //     return Padding(
 //       padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),

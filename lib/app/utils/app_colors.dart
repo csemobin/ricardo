@@ -9,6 +9,15 @@ class AppColors {
   static const Color secondaryHeadingTextColor = Color(0xff007635);
   static const Color richTextColor = Color(0Xff787878);
   static const Color labelTextColor = Color(0Xff5E5E5E);
+  static const Color navBarBackgroundColor = Color(0xffEBEBEB);
+  static const Color activeIconBackgroundColor = Color(0xffEBEBEB);
+  static const Color  activeIconColor = Color(0xff007635);
+  static const Color  deActiveIconColor = Color(0Xff787878);
+  static const Color dividerLineColor = Color(0xffC1C1C1);
+  static const Color recentHistoryListTileSubtitleColor = Color(0xff808085);
+  static const Color blackButton = Color(0Xff363636);
+  static const Color cardTitle = Color(0xff171717);
+  static const Color cardSubTitle = Color(0xffA3A3A3);
 
   static const Color greyColor = Color(0XffC1C2C2);
   static const Color greenColor = Color(0xff007635);
