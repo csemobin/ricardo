@@ -120,9 +120,6 @@ class $AssetsImagesGen {
   /// File path: assets/images/Vector.png
   AssetGenImage get vector => const AssetGenImage('assets/images/Vector.png');
 
-  /// File path: assets/images/Visa.png
-  AssetGenImage get visa => const AssetGenImage('assets/images/Visa.png');
-
   /// File path: assets/images/active-history.png
   AssetGenImage get activeHistory =>
       const AssetGenImage('assets/images/active-history.png');
@@ -148,6 +145,10 @@ class $AssetsImagesGen {
   /// File path: assets/images/car_icon.png
   AssetGenImage get carIcon =>
       const AssetGenImage('assets/images/car_icon.png');
+
+  /// File path: assets/images/cross-icon.png
+  AssetGenImage get crossIcon =>
+      const AssetGenImage('assets/images/cross-icon.png');
 
   /// File path: assets/images/cuate.png
   AssetGenImage get cuate => const AssetGenImage('assets/images/cuate.png');
@@ -178,6 +179,10 @@ class $AssetsImagesGen {
   /// File path: assets/images/home-icon.png
   AssetGenImage get homeIcon =>
       const AssetGenImage('assets/images/home-icon.png');
+
+  /// File path: assets/images/master-card-icon.png
+  AssetGenImage get masterCardIcon =>
+      const AssetGenImage('assets/images/master-card-icon.png');
 
   /// File path: assets/images/onboardingthree.jpg
   AssetGenImage get onboardingthree =>
@@ -242,6 +247,13 @@ class $AssetsImagesGen {
   AssetGenImage get varifyIcon =>
       const AssetGenImage('assets/images/varify_icon.png');
 
+  /// File path: assets/images/visa-payment.png
+  AssetGenImage get visaPayment =>
+      const AssetGenImage('assets/images/visa-payment.png');
+
+  /// File path: assets/images/visa.png
+  AssetGenImage get visa => const AssetGenImage('assets/images/visa.png');
+
   /// File path: assets/images/wallet-icon.png
   AssetGenImage get walletIcon =>
       const AssetGenImage('assets/images/wallet-icon.png');
@@ -261,7 +273,6 @@ class $AssetsImagesGen {
   /// List of all assets
   List<AssetGenImage> get values => [
         vector,
-        visa,
         activeHistory,
         activeHome,
         activeProfile,
@@ -269,6 +280,7 @@ class $AssetsImagesGen {
         amico,
         applogo,
         carIcon,
+        crossIcon,
         cuate,
         documentIcon,
         driver,
@@ -277,6 +289,7 @@ class $AssetsImagesGen {
         glassmorphismLogo,
         historyIcon,
         homeIcon,
+        masterCardIcon,
         onboardingthree,
         onboardone,
         onboardtwo,
@@ -293,6 +306,8 @@ class $AssetsImagesGen {
         thirdonbaordimagePng,
         uploadIcon,
         varifyIcon,
+        visaPayment,
+        visa,
         walletIcon,
         walletCoinBackground,
         walletNarrowBackground,

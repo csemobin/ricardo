@@ -4,7 +4,6 @@ import 'package:ricardo/app/utils/app_colors.dart';
 
 class AppCustomDesign {
   AppCustomDesign._();
-
   static TextStyle get headingTextStyle => TextStyle(
         color: AppColors.darkColor,
         fontSize: 24.sp,

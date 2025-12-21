@@ -1,4 +1,3 @@
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:ricardo/gen/assets.gen.dart';
 
 class HelperData {

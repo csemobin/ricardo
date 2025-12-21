@@ -19,6 +19,7 @@ class _WalletScreenState extends State<WalletScreen> {
   Widget build(BuildContext context) {
     return CustomScaffold(
       appBar: AppBar(
+        forceMaterialTransparency: true,
         centerTitle: true,
         backgroundColor: AppColors.bgColor,
         title: Text(
@@ -140,9 +141,7 @@ class _WalletScreenState extends State<WalletScreen> {
           iconPath: Assets.images.widrawIcon.path,
           label: 'Withdraw',
           isFilledButton: true,
-          onTap: () {
-            print('mobin');
-          },
+          onTap: () => Get.toNamed(AppRoutes.withdrawRequestScreen),
         ),
       ],
     );

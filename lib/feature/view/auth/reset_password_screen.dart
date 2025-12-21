@@ -1,11 +1,6 @@
-import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get.dart';
-import 'package:ricardo/app/utils/app_colors.dart';
-import 'package:ricardo/gen/assets.gen.dart';
-import 'package:ricardo/routes/app_routes.dart';
 import 'package:ricardo/widgets/custom_heading_text.dart';
 import 'package:ricardo/widgets/custom_primary_button.dart';
 import 'package:ricardo/widgets/custom_scaffold.dart';

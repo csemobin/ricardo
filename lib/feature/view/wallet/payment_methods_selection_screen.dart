@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:ricardo/app/utils/app_colors.dart';
 import 'package:ricardo/app/utils/app_custom_design.dart';
 import 'package:ricardo/gen/assets.gen.dart';
+import 'package:ricardo/routes/app_routes.dart';
 import 'package:ricardo/widgets/custom_scaffold.dart';
 
 class PaymentMethodsSelectionScreen extends StatelessWidget {
@@ -23,27 +25,32 @@ class PaymentMethodsSelectionScreen extends StatelessWidget {
           ),
 
           // Button Related Work are here
-          Container(
-            decoration: BoxDecoration(
-              color: AppColors.blackButton,
-              borderRadius: BorderRadius.circular(50.r),
-            ),
-            padding: EdgeInsets.symmetric(vertical: 16.r),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Image.asset(Assets.images.paymentMethodIcon.path),
-                SizedBox(
-                  width: 20.w,
-                ),
-                Text(
-                  'Add Payment Info',
-                  style: TextStyle(
-                    color: AppColors.whiteColor,
-                    fontSize: 16.sp,
+          GestureDetector(
+            onTap: () {
+              Get.toNamed(AppRoutes.addCardScreen);
+            },
+            child: Container(
+              decoration: BoxDecoration(
+                color: AppColors.blackButton,
+                borderRadius: BorderRadius.circular(50.r),
+              ),
+              padding: EdgeInsets.symmetric(vertical: 16.r),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.asset(Assets.images.paymentMethodIcon.path),
+                  SizedBox(
+                    width: 20.w,
                   ),
-                ),
-              ],
+                  Text(
+                    'Add Payment Info',
+                    style: TextStyle(
+                      color: AppColors.whiteColor,
+                      fontSize: 16.sp,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
           SizedBox(
@@ -75,7 +82,7 @@ class PaymentMethodsSelectionScreen extends StatelessWidget {
                             borderRadius: BorderRadius.circular(4.r)),
                         child: Row(
                           children: [
-                            Image.asset(Assets.images.visa.path),
+                            Image.asset(Assets.images.visa.path,fit: BoxFit.contain,),
                             SizedBox(
                               width: 13.w,
                             ),

@@ -1,13 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:ricardo/widgets/animated_toggle_switch.dart';
 
 class MapScreen extends StatelessWidget {
   const MapScreen({super.key});
-
-  static const LatLng _center = LatLng(23.8103, 90.4125); // Dhaka 🇧🇩
 
   @override
   Widget build(BuildContext context) {
@@ -15,13 +11,17 @@ class MapScreen extends StatelessWidget {
       body: Stack(
         children: [
           GoogleMap(
-            initialCameraPosition: const CameraPosition(
-              target: _center,
-              zoom: 14,
-            ),
-            mapType: MapType.hybrid,
-            myLocationEnabled: true,
+            mapType: MapType.normal,
+            zoomGesturesEnabled: true,
             zoomControlsEnabled: true,
+            //initialCameraPosition: _mapCtrl.kGooglePlex,
+            initialCameraPosition: CameraPosition(
+              target: LatLng(23.78651945317755, 90.42650798667924),
+              zoom: 14.4746,
+            ),
+
+            // markers: _mapCtrl.markerList.toSet(),
+
           ),
           SafeArea(
             child: Row(

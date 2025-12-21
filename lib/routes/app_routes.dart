@@ -15,7 +15,9 @@ import 'package:ricardo/feature/view/complete_profile/upload_driving_license_scr
 import 'package:ricardo/feature/view/complete_profile/upload_requirement_screen.dart';
 import 'package:ricardo/feature/view/splash_screen/on_board_screen.dart';
 import 'package:ricardo/feature/view/splash_screen/splash_screen.dart';
+import 'package:ricardo/feature/view/wallet/add_card_screen.dart';
 import 'package:ricardo/feature/view/wallet/payment_methods_selection_screen.dart';
+import 'package:ricardo/feature/view/wallet/withdraw_request_screen.dart';
 abstract class AppRoutes {
 
   ///  ============= > initialRoute < ==============
@@ -40,6 +42,8 @@ abstract class AppRoutes {
   static const String homeScreen = '/home_screen';
   static const String customBottomNavBar = '/custom_bottom_nav_bar';
   static const String paymentMethodsSelectionScreen = '/payment_mathods_selection_screen';
+  static const String withdrawRequestScreen = '/withdraw_request_screen';
+  static const String addCardScreen = '/add_card_screen';
 
   ///  ============= > routes < ==============
   static final routes = <String, WidgetBuilder>{
@@ -60,6 +64,8 @@ abstract class AppRoutes {
     homeScreen: (context) => HomeScreen(),
     customBottomNavBar: (context) => CustomButtonNavBar(),
     paymentMethodsSelectionScreen: (context) => PaymentMethodsSelectionScreen(),
+    withdrawRequestScreen: (context) => WithdrawRequestScreen(),
+    addCardScreen: (context) => AddCardScreen(),
   };
 
 }
