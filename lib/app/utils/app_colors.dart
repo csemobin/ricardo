@@ -16,8 +16,13 @@ class AppColors {
   static const Color dividerLineColor = Color(0xffC1C1C1);
   static const Color recentHistoryListTileSubtitleColor = Color(0xff808085);
   static const Color blackButton = Color(0Xff363636);
+  static const Color blackBText = Color(0Xff363636);
   static const Color cardTitle = Color(0xff171717);
   static const Color cardSubTitle = Color(0xffA3A3A3);
+  static const Color separaterBgColor = Color(0xffD9D9D9);
+  static const Color reviewMinColor = Color(0xffC4C4C7);
+  static const Color favoriteRitesCarText = Color(0xff262626);
+
 
   static const Color greyColor = Color(0XffC1C2C2);
   static const Color greenColor = Color(0xff007635);

@@ -29,7 +29,7 @@ class CustomScaffold extends StatelessWidget {
       )),
       floatingActionButton: floatingActionButton,
       bottomNavigationBar: bottomNavigationBar,
-        resizeToAvoidBottomInset: resizeToAvoidBottomInset
+        resizeToAvoidBottomInset: resizeToAvoidBottomInset,
     );
   }
 }

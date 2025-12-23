@@ -1,10 +1,10 @@
 import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:ricardo/app/utils/app_colors.dart';
 import 'package:ricardo/app/utils/app_custom_design.dart';
+import 'package:ricardo/feature/controllers/custom_bottom_nav_bar_controller.dart';
 import 'package:ricardo/gen/assets.gen.dart';
 import 'package:ricardo/routes/app_routes.dart';
 import 'package:ricardo/widgets/custom_primary_button.dart';
@@ -163,8 +163,10 @@ class WithdrawRequestScreen extends StatelessWidget {
         ));
   }
 
+  // Confirm Withdraw Request Pop up Model are here
   void confirmRequestPopupModal(BuildContext context) {
     showDialog(
+        barrierDismissible: false,
         context: context,
         builder: (BuildContext context) {
           return Dialog(
@@ -289,32 +291,40 @@ class WithdrawRequestScreen extends StatelessWidget {
                       Row(
                         children: [
                           Expanded(
-                            child: Container(
-                              decoration: BoxDecoration(
-                                color: AppColors.blackButton,
-                                borderRadius: BorderRadius.circular(50.r),
-                              ),
-                              padding: EdgeInsets.symmetric(vertical: 16.r),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    'Cancel',
-                                    style: TextStyle(
-                                      color: AppColors.whiteColor,
-                                      fontSize: 16.sp,
+                            child: GestureDetector(
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: AppColors.blackButton,
+                                  borderRadius: BorderRadius.circular(50.r),
+                                ),
+                                padding: EdgeInsets.symmetric(vertical: 16.r),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      'Cancel',
+                                      style: TextStyle(
+                                        color: AppColors.whiteColor,
+                                        fontSize: 16.sp,
+                                      ),
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
+                              onTap: () {
+                                Navigator.pop(context);
+                              },
                             ),
                           ),
-                          SizedBox(width: 10.w,),
+                          SizedBox(
+                            width: 10.w,
+                          ),
                           Expanded(
                             child: CustomPrimaryButton(
                               title: 'Yes, Send',
                               onHandler: () {
-                                // Get.toNamed(AppRoutes.signInScreen);
+                                Navigator.pop(context);
+                                confirmationPopupModal(context);
                               },
                             ),
                           )
@@ -327,6 +337,74 @@ class WithdrawRequestScreen extends StatelessWidget {
             ),
           );
         });
+  }
+  // Confirmation Pop Up Model are here
+  void confirmationPopupModal( BuildContext context ){
+    showDialog(
+      barrierDismissible: true,
+        context: context,
+        builder: (BuildContext context ){
+            return Dialog(
+              backgroundColor: Colors.transparent,
+              insetPadding: EdgeInsets.symmetric(horizontal: 24.w),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(20.r),
+                child: BackdropFilter(
+                  filter: ImageFilter.blur(
+                    sigmaX: 15,
+                    sigmaY: 15,
+                  ),
+                  child: Container(
+                    padding: EdgeInsets.all(20.r),
+                    decoration: BoxDecoration(
+                        color: AppColors.whiteColor.withOpacity(0.15),
+                        border: Border.all(color: Colors.white.withOpacity(0.8))),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Padding(padding: EdgeInsets.only(top: 32.h)),
+                        Image.asset(Assets.images.glassmorphismLogo.path),
+                        SizedBox(
+                          height: 30.h,
+                        ),
+                        Text(
+                          'Successfully Submitted',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.w600,
+                            color: AppColors.greenColor,
+                          ),
+                        ),
+                        SizedBox(
+                          height: 30.h,
+                        ),
+                        Text(
+                          textAlign: TextAlign.center,
+                          'Your withdraw request send successfully',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 12.sp,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                        SizedBox(
+                          height: 30.h,
+                        ),
+                        CustomPrimaryButton(
+                          title: 'Back to Home',
+                          onHandler: () {
+                            Get.offAllNamed(AppRoutes.customBottomNavBar);
+                            Get.find<CustomBottomNavBarController>().onChange(0);
+                          },
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            );
+        }
+    );
   }
 
   TextStyle testStyle({

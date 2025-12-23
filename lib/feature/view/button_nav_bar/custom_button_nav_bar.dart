@@ -12,10 +12,10 @@ import 'package:ricardo/gen/assets.gen.dart';
 class CustomButtonNavBar extends GetView<CustomBottomNavBarController> {
   CustomButtonNavBar({super.key});
 
-  final List<Widget> _screenList = const [
-    HomeScreen(),
-    WalletScreen(),
-    HistoryScreen(),
+  final List<Widget> _screenList = [
+    const HomeScreen(),
+    const WalletScreen(),
+    const HistoryScreen(),
     ProfileScreen(),
   ];
 

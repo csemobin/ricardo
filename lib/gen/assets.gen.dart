@@ -142,6 +142,10 @@ class $AssetsImagesGen {
   /// File path: assets/images/applogo.png
   AssetGenImage get applogo => const AssetGenImage('assets/images/applogo.png');
 
+  /// File path: assets/images/arrow_drop_down.png
+  AssetGenImage get arrowDropDown =>
+      const AssetGenImage('assets/images/arrow_drop_down.png');
+
   /// File path: assets/images/car_icon.png
   AssetGenImage get carIcon =>
       const AssetGenImage('assets/images/car_icon.png');
@@ -153,6 +157,10 @@ class $AssetsImagesGen {
   /// File path: assets/images/cuate.png
   AssetGenImage get cuate => const AssetGenImage('assets/images/cuate.png');
 
+  /// File path: assets/images/direct-right.png
+  AssetGenImage get directRight =>
+      const AssetGenImage('assets/images/direct-right.png');
+
   /// File path: assets/images/document_icon.png
   AssetGenImage get documentIcon =>
       const AssetGenImage('assets/images/document_icon.png');
@@ -160,9 +168,29 @@ class $AssetsImagesGen {
   /// File path: assets/images/driver.png
   AssetGenImage get driver => const AssetGenImage('assets/images/driver.png');
 
+  /// File path: assets/images/edit-profile-profile-screen.png
+  AssetGenImage get editProfileProfileScreen =>
+      const AssetGenImage('assets/images/edit-profile-profile-screen.png');
+
   /// File path: assets/images/edit_pencil.png
   AssetGenImage get editPencil =>
       const AssetGenImage('assets/images/edit_pencil.png');
+
+  /// File path: assets/images/favorite-rides-book-car.jpg
+  AssetGenImage get favoriteRidesBookCar =>
+      const AssetGenImage('assets/images/favorite-rides-book-car.jpg');
+
+  /// File path: assets/images/favorite-rides-car.jpg
+  AssetGenImage get favoriteRidesCar =>
+      const AssetGenImage('assets/images/favorite-rides-car.jpg');
+
+  /// File path: assets/images/favorite_dusbin.png
+  AssetGenImage get favoriteDusbin =>
+      const AssetGenImage('assets/images/favorite_dusbin.png');
+
+  /// File path: assets/images/favorites_profile_image.jpg
+  AssetGenImage get favoritesProfileImage =>
+      const AssetGenImage('assets/images/favorites_profile_image.jpg');
 
   /// File path: assets/images/firstonbaordimage.png
   AssetGenImage get firstonbaordimage =>
@@ -179,6 +207,14 @@ class $AssetsImagesGen {
   /// File path: assets/images/home-icon.png
   AssetGenImage get homeIcon =>
       const AssetGenImage('assets/images/home-icon.png');
+
+  /// File path: assets/images/location.png
+  AssetGenImage get location =>
+      const AssetGenImage('assets/images/location.png');
+
+  /// File path: assets/images/logout-profile-screen.png
+  AssetGenImage get logoutProfileScreen =>
+      const AssetGenImage('assets/images/logout-profile-screen.png');
 
   /// File path: assets/images/master-card-icon.png
   AssetGenImage get masterCardIcon =>
@@ -212,6 +248,10 @@ class $AssetsImagesGen {
   AssetGenImage get popupIcon =>
       const AssetGenImage('assets/images/popup_icon.png');
 
+  /// File path: assets/images/profile-image.jpg
+  AssetGenImage get profileImage =>
+      const AssetGenImage('assets/images/profile-image.jpg');
+
   /// File path: assets/images/proflie-icon.png
   AssetGenImage get proflieIcon =>
       const AssetGenImage('assets/images/proflie-icon.png');
@@ -219,13 +259,45 @@ class $AssetsImagesGen {
   /// File path: assets/images/rafiki.png
   AssetGenImage get rafiki => const AssetGenImage('assets/images/rafiki.png');
 
+  /// File path: assets/images/ratting-star.png
+  AssetGenImage get rattingStar =>
+      const AssetGenImage('assets/images/ratting-star.png');
+
   /// File path: assets/images/remove_busket.png
   AssetGenImage get removeBusket =>
       const AssetGenImage('assets/images/remove_busket.png');
 
+  /// File path: assets/images/review-image.png
+  AssetGenImage get reviewImage =>
+      const AssetGenImage('assets/images/review-image.png');
+
   /// File path: assets/images/secondonbaordimage.png.png
   AssetGenImage get secondonbaordimagePng =>
       const AssetGenImage('assets/images/secondonbaordimage.png.png');
+
+  /// File path: assets/images/setting-about-icon.png
+  AssetGenImage get settingAboutIcon =>
+      const AssetGenImage('assets/images/setting-about-icon.png');
+
+  /// File path: assets/images/setting-delete-icon.png
+  AssetGenImage get settingDeleteIcon =>
+      const AssetGenImage('assets/images/setting-delete-icon.png');
+
+  /// File path: assets/images/setting-lock-icon.png
+  AssetGenImage get settingLockIcon =>
+      const AssetGenImage('assets/images/setting-lock-icon.png');
+
+  /// File path: assets/images/setting-privacy-policy-icon.png
+  AssetGenImage get settingPrivacyPolicyIcon =>
+      const AssetGenImage('assets/images/setting-privacy-policy-icon.png');
+
+  /// File path: assets/images/setting-terms-and-condition-icon.png
+  AssetGenImage get settingTermsAndConditionIcon =>
+      const AssetGenImage('assets/images/setting-terms-and-condition-icon.png');
+
+  /// File path: assets/images/settings-profile-screen.png
+  AssetGenImage get settingsProfileScreen =>
+      const AssetGenImage('assets/images/settings-profile-screen.png');
 
   /// File path: assets/images/splash_background.jpg
   AssetGenImage get splashBackground =>
@@ -234,6 +306,22 @@ class $AssetsImagesGen {
   /// File path: assets/images/splash_screen_background.jpg
   AssetGenImage get splashScreenBackground =>
       const AssetGenImage('assets/images/splash_screen_background.jpg');
+
+  /// File path: assets/images/support-car-image.png
+  AssetGenImage get supportCarImage =>
+      const AssetGenImage('assets/images/support-car-image.png');
+
+  /// File path: assets/images/support-email-image.png
+  AssetGenImage get supportEmailImage =>
+      const AssetGenImage('assets/images/support-email-image.png');
+
+  /// File path: assets/images/support-phone-image.png
+  AssetGenImage get supportPhoneImage =>
+      const AssetGenImage('assets/images/support-phone-image.png');
+
+  /// File path: assets/images/support-profile-screen.png
+  AssetGenImage get supportProfileScreen =>
+      const AssetGenImage('assets/images/support-profile-screen.png');
 
   /// File path: assets/images/thirdonbaordimage.png.png
   AssetGenImage get thirdonbaordimagePng =>
@@ -246,6 +334,10 @@ class $AssetsImagesGen {
   /// File path: assets/images/varify_icon.png
   AssetGenImage get varifyIcon =>
       const AssetGenImage('assets/images/varify_icon.png');
+
+  /// File path: assets/images/view-reviews-profile-screen.png
+  AssetGenImage get viewReviewsProfileScreen =>
+      const AssetGenImage('assets/images/view-reviews-profile-screen.png');
 
   /// File path: assets/images/visa-payment.png
   AssetGenImage get visaPayment =>
@@ -279,16 +371,25 @@ class $AssetsImagesGen {
         activeWallet,
         amico,
         applogo,
+        arrowDropDown,
         carIcon,
         crossIcon,
         cuate,
+        directRight,
         documentIcon,
         driver,
+        editProfileProfileScreen,
         editPencil,
+        favoriteRidesBookCar,
+        favoriteRidesCar,
+        favoriteDusbin,
+        favoritesProfileImage,
         firstonbaordimage,
         glassmorphismLogo,
         historyIcon,
         homeIcon,
+        location,
+        logoutProfileScreen,
         masterCardIcon,
         onboardingthree,
         onboardone,
@@ -297,15 +398,29 @@ class $AssetsImagesGen {
         paymentIcon,
         paymentMethodIcon,
         popupIcon,
+        profileImage,
         proflieIcon,
         rafiki,
+        rattingStar,
         removeBusket,
+        reviewImage,
         secondonbaordimagePng,
+        settingAboutIcon,
+        settingDeleteIcon,
+        settingLockIcon,
+        settingPrivacyPolicyIcon,
+        settingTermsAndConditionIcon,
+        settingsProfileScreen,
         splashBackground,
         splashScreenBackground,
+        supportCarImage,
+        supportEmailImage,
+        supportPhoneImage,
+        supportProfileScreen,
         thirdonbaordimagePng,
         uploadIcon,
         varifyIcon,
+        viewReviewsProfileScreen,
         visaPayment,
         visa,
         walletIcon,
