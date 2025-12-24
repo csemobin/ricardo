@@ -37,7 +37,9 @@ class AuthInitialScreen extends StatelessWidget {
                     'Seamless, affordable, and reliable ride-sharing at your fingertips.'),
           ),
           Spacer(),
-          CustomPrimaryButton(title: 'Sign In',onHandler: (){},),
+          CustomPrimaryButton(title: 'Sign In',onHandler: (){
+            Get.toNamed(AppRoutes.signInScreen);
+          },),
           SizedBox(
             height: 20.h,
           ),
@@ -62,7 +64,7 @@ class AuthInitialScreen extends StatelessWidget {
                 ),
               ),
             ),
-            onTap: () => Get.offAllNamed(AppRoutes.selectedRoleScreen),
+            onTap: () => Get.toNamed(AppRoutes.signUpScreen),
           ),
           Spacer(),
         ],

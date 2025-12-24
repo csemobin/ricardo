@@ -9,6 +9,8 @@ import 'package:ricardo/feature/view/profile/profile_screen.dart';
 import 'package:ricardo/feature/view/wallet/wallet_screen.dart';
 import 'package:ricardo/gen/assets.gen.dart';
 
+
+
 class CustomButtonNavBar extends GetView<CustomBottomNavBarController> {
   CustomButtonNavBar({super.key});
 
@@ -30,11 +32,18 @@ class CustomButtonNavBar extends GetView<CustomBottomNavBarController> {
   Widget build(BuildContext context) {
     return Obx(
       () => Scaffold(
+        extendBodyBehindAppBar: true,
         extendBody: true,
         backgroundColor: Colors.transparent,
         body: _screenList[controller.selectedIndex.value],
-        bottomNavigationBar: Container(
-          margin: EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+        floatingActionButtonAnimator: FloatingActionButtonAnimator.noAnimation,
+        floatingActionButton: Container(
+
+          margin: EdgeInsets.only(
+              left: 20.w,
+            right: 20.w
+          ),
           height: 65.h,
           decoration: BoxDecoration(
             border: Border.all(color: Color(0x99FFFFFF), width: 2),
@@ -45,7 +54,8 @@ class CustomButtonNavBar extends GetView<CustomBottomNavBarController> {
                   color: Color(0x1A000000),
                   blurRadius: 10,
                   offset: const Offset(0, 5),
-                  blurStyle: BlurStyle.normal),
+                  blurStyle: BlurStyle.normal,
+              ),
             ],
           ),
           child: Row(
@@ -59,7 +69,8 @@ class CustomButtonNavBar extends GetView<CustomBottomNavBarController> {
                 onTap: () => controller.onChange(index),
                 behavior: HitTestBehavior.opaque,
                 child: AnimatedContainer(
-                  duration: const Duration(milliseconds: 0),
+                  duration: const Duration(milliseconds: 400),
+                  curve: Curves.easeIn,
                   padding:
                       EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
                   decoration: BoxDecoration(

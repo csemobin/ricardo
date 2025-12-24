@@ -87,7 +87,7 @@ class SignInScreen extends StatelessWidget {
                     CustomPrimaryButton(
                       title: 'Sign In',
                       onHandler: () {
-                        Get.toNamed(AppRoutes.otpVarifyScreen);
+                        Get.toNamed(AppRoutes.driverProfileCreateScreen);
                       },
                     ),
 
@@ -104,7 +104,9 @@ class SignInScreen extends StatelessWidget {
                           ),
                         ),
                         GestureDetector(
-                          onTap: () {},
+                          onTap: () {
+                            Get.toNamed(AppRoutes.signUpScreen);
+                          },
                           child: Text(
                             'Sign Up',
                             style: TextStyle(

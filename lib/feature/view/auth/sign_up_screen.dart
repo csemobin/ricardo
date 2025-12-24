@@ -87,7 +87,9 @@ class SignUpScreen extends StatelessWidget {
                 style: TextStyle(fontSize: 12.sp),
               ),
               GestureDetector(
-                onTap: () {},
+                onTap: () {
+                  Get.toNamed(AppRoutes.termsAndConditionScreen);
+                },
                 child: Text(
                   'Terms of Use ',
                   style: TextStyle(fontSize: 12.sp, color: AppColors.greenColor),
@@ -102,14 +104,16 @@ class SignUpScreen extends StatelessWidget {
                   'Privacy Policy.',
                   style: TextStyle(fontSize: 12.sp, color: AppColors.greenColor),
                 ),
-                onTap: () {},
+                onTap: () {
+                  Get.toNamed(AppRoutes.privacyPolicyScreen);
+                },
               )
             ],
           ),
           SizedBox(
             height: 33.h,
           ),
-          CustomPrimaryButton(title: 'Next',onHandler: (){
+          CustomPrimaryButton(title: 'Sign Up',onHandler: (){
             Get.toNamed(AppRoutes.otpVarifyScreen);
           },),
           SizedBox(
@@ -134,7 +138,7 @@ class SignUpScreen extends StatelessWidget {
                   ),
                 ),
                 onTap: (){
-
+                  Get.toNamed(AppRoutes.signInScreen);
                 },
               ),
             ],

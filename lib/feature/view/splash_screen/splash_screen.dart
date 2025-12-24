@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:ricardo/feature/view/button_nav_bar/custom_button_nav_bar.dart';
+import 'package:ricardo/feature/view/splash_screen/on_board_screen.dart';
 import 'package:ricardo/gen/assets.gen.dart';
 import 'package:ricardo/widgets/logo_widget.dart';
 
@@ -47,8 +47,8 @@ class _SplashScreenState extends State<SplashScreen>
       if (!mounted) return;
 
       await Get.offAll(
-        // () => const OnBoardScreen(),
-        () =>  CustomButtonNavBar(),
+        () => const OnBoardScreen(),
+        // () =>  CustomButtonNavBar(),
         transition: Transition.fade,
         duration: _transitionDuration,
         curve: Curves.easeInOut,

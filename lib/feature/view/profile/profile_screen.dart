@@ -52,6 +52,7 @@ class ProfileScreen extends StatelessWidget {
     return CustomScaffold(
       appBar: AppBar(
         backgroundColor: AppColors.bgColor,
+        forceMaterialTransparency: true,
         centerTitle: true,
         title: Text(
           'Profile',
@@ -61,104 +62,106 @@ class ProfileScreen extends StatelessWidget {
           ),
         ),
       ),
-      body: Column(
-        children: [
-          Container(
-            padding: EdgeInsets.symmetric(horizontal: 12.h, vertical: 16.h),
-            decoration: BoxDecoration(
-              color: AppColors.whiteColor,
-              borderRadius: BorderRadius.circular(8.r),
-            ),
-            child: Row(
-              children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(12),
-                  child: Image.asset(
-                    Assets.images.profileImage.path,
-                    height: 85.h,
-                    width: 85.w,
-                    fit: BoxFit.cover,
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 12.h, vertical: 16.h),
+              decoration: BoxDecoration(
+                color: AppColors.whiteColor,
+                borderRadius: BorderRadius.circular(8.r),
+              ),
+              child: Row(
+                children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(12),
+                    child: Image.asset(
+                      Assets.images.profileImage.path,
+                      height: 85.h,
+                      width: 85.w,
+                      fit: BoxFit.cover,
+                    ),
                   ),
-                ),
-                SizedBox(
-                  width: 12.w,
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Rakibul Hasan K',
-                      style: TextStyle(
-                          fontFamily: FontFamily.poppins,
-                          fontSize: 20.sp,
-                          fontWeight: FontWeight.w700,
-                          color: AppColors.successColor),
-                    ),
-                    Row(
-                      children: [
-                        Icon(
-                          Icons.star,
-                          color: Colors.yellow,
-                          weight: 12,
-                        ),
-                        SizedBox(
-                          width: 4,
-                        ),
-                        Text(
-                          '4.5 (40)',
-                          style: TextStyle(
-                              fontFamily: FontFamily.poppins,
-                              fontSize: 12.sp,
-                              fontWeight: FontWeight.w500,
-                              color: AppColors.blackBText),
-                        ),
-                      ],
-                    ),
-                    Row(
-                      children: [
-                        Icon(Icons.call, color: AppColors.greenColor),
-                        SizedBox(
-                          width: 4,
-                        ),
-                        Text(
-                          '+123 456 789',
-                          style: TextStyle(
-                              fontFamily: FontFamily.poppins,
-                              fontSize: 12.sp,
-                              fontWeight: FontWeight.w500,
-                              color: AppColors.labelTextColor),
-                        ),
-                      ],
-                    ),
-                    Row(
-                      children: [
-                        Icon(
-                          Icons.email,
-                          color: AppColors.greenColor,
-                        ),
-                        SizedBox(
-                          width: 4,
-                        ),
-                        Text(
-                          '4.5 (40)',
-                          style: TextStyle(
-                              fontFamily: FontFamily.poppins,
-                              fontSize: 12.sp,
-                              fontWeight: FontWeight.w500,
-                              color: AppColors.labelTextColor),
-                        ),
-                      ],
-                    ),
-                  ],
-                )
-              ],
+                  SizedBox(
+                    width: 12.w,
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Rakibul Hasan K',
+                        style: TextStyle(
+                            fontFamily: FontFamily.poppins,
+                            fontSize: 20.sp,
+                            fontWeight: FontWeight.w700,
+                            color: AppColors.successColor),
+                      ),
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.star,
+                            color: Colors.yellow,
+                            weight: 12,
+                          ),
+                          SizedBox(
+                            width: 4,
+                          ),
+                          Text(
+                            '4.5 (40)',
+                            style: TextStyle(
+                                fontFamily: FontFamily.poppins,
+                                fontSize: 12.sp,
+                                fontWeight: FontWeight.w500,
+                                color: AppColors.blackBText),
+                          ),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          Icon(Icons.call, color: AppColors.greenColor),
+                          SizedBox(
+                            width: 4,
+                          ),
+                          Text(
+                            '+123 456 789',
+                            style: TextStyle(
+                                fontFamily: FontFamily.poppins,
+                                fontSize: 12.sp,
+                                fontWeight: FontWeight.w500,
+                                color: AppColors.labelTextColor),
+                          ),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.email,
+                            color: AppColors.greenColor,
+                          ),
+                          SizedBox(
+                            width: 4,
+                          ),
+                          Text(
+                            '4.5 (40)',
+                            style: TextStyle(
+                                fontFamily: FontFamily.poppins,
+                                fontSize: 12.sp,
+                                fontWeight: FontWeight.w500,
+                                color: AppColors.labelTextColor),
+                          ),
+                        ],
+                      ),
+                    ],
+                  )
+                ],
+              ),
             ),
-          ),
-          SizedBox(
-            height: 28.h,
-          ),
-          Expanded(
-            child: ListView.separated(
+            SizedBox(
+              height: 28.h,
+            ),
+            ListView.separated(
+              shrinkWrap: true,
+              physics: NeverScrollableScrollPhysics(),
               itemBuilder: (context, index) {
                 return GestureDetector(
                   onTap: (){
@@ -199,10 +202,13 @@ class ProfileScreen extends StatelessWidget {
                 height: 16.h,
               ),
               itemCount: screen.length,
+              padding: EdgeInsets.only(
+                bottom: 90.h
+              ),
             ),
-          ),
-        ],
-      ),
+          ],
+        ),
+      )
     );
   }
 }

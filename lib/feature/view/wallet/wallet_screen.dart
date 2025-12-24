@@ -196,7 +196,10 @@ class _WalletScreenState extends State<WalletScreen> {
         color: AppColors.dividerLineColor,
         height: 1.h,
       ),
-      itemCount: 10,
+      itemCount: 18,
+      padding: EdgeInsets.only(
+        bottom: 80
+      ),
     );
   }
 

@@ -36,7 +36,7 @@ class ProfileCompletePopupModalScreen extends StatelessWidget {
                   'Thank you for applying to become a driver on SleeKnit. Our admin team will review your application and contact you via email within 1-2 business days.'),
           Spacer(),
           CustomPrimaryButton(title: 'OK', onHandler: (){
-            Get.toNamed(AppRoutes.customBottomNavBar);
+            Get.offAllNamed(AppRoutes.customBottomNavBar);
           }),
           SizedBox(height: 10.h,)
         ],

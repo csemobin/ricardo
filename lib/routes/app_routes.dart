@@ -13,6 +13,8 @@ import 'package:ricardo/feature/view/complete_profile/driver_profile_create.dart
 import 'package:ricardo/feature/view/complete_profile/profile_complete_popup_model_screen.dart';
 import 'package:ricardo/feature/view/complete_profile/upload_driving_license_screen.dart';
 import 'package:ricardo/feature/view/complete_profile/upload_requirement_screen.dart';
+import 'package:ricardo/feature/view/profile/screens/settings/privacy_policy_screen.dart';
+import 'package:ricardo/feature/view/profile/screens/settings/terms_condition_screen.dart';
 import 'package:ricardo/feature/view/splash_screen/on_board_screen.dart';
 import 'package:ricardo/feature/view/splash_screen/splash_screen.dart';
 import 'package:ricardo/feature/view/wallet/add_card_screen.dart';
@@ -44,6 +46,8 @@ abstract class AppRoutes {
   static const String paymentMethodsSelectionScreen = '/payment_mathods_selection_screen';
   static const String withdrawRequestScreen = '/withdraw_request_screen';
   static const String addCardScreen = '/add_card_screen';
+  static const String termsAndConditionScreen = '/terms_condition_screen';
+  static const String privacyPolicyScreen = '/privacy_policy_screen';
 
   ///  ============= > routes < ==============
   static final routes = <String, WidgetBuilder>{
@@ -66,6 +70,8 @@ abstract class AppRoutes {
     paymentMethodsSelectionScreen: (context) => PaymentMethodsSelectionScreen(),
     withdrawRequestScreen: (context) => WithdrawRequestScreen(),
     addCardScreen: (context) => AddCardScreen(),
+    termsAndConditionScreen: (context) => TermsConditionScreen(),
+    privacyPolicyScreen: (context) => PrivacyPolicyScreen(),
   };
 
 }
