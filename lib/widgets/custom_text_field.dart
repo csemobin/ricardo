@@ -160,11 +160,14 @@ class _CustomTextFieldState extends State<CustomTextField> {
               color: widget.hintextColor ?? AppColors.appGreyColor,
               fontSize: widget.hintextSize ?? 12.h,
               fontWeight: FontWeight.w400,
-              fontFamily: widget.fontFamily),
+              fontFamily: widget.fontFamily,
+          ),
           decoration: InputDecoration(
+
               contentPadding: EdgeInsets.symmetric(
                   horizontal: widget.contentPaddingHorizontal ?? 20.w,
-                  vertical: widget.contentPaddingVertical ?? 12.h),
+                  vertical: widget.contentPaddingVertical ?? 12.h,
+              ),
               fillColor: widget.filColor ?? AppColors.whiteColor,
               filled: true,
               prefixIcon: widget.prefixIcon != null ? Padding(
@@ -176,14 +179,15 @@ class _CustomTextFieldState extends State<CustomTextField> {
                       onTap: toggle,
                       child: _suffixIcon(obscureText
                           ? Icons.visibility_off_outlined
-                          : Icons.visibility_outlined),
+                          : Icons.visibility_outlined,
+                      ),
                     )
                   : widget.suffixIcon,
               prefixIconConstraints:
                   BoxConstraints(minHeight: 24.w, minWidth: 24.w),
               hintText: widget.hintText,
               hintStyle: TextStyle(
-                  color: widget.hintextColor ?? AppColors.appGreyColor,
+                  color: widget.hintextColor ?? AppColors.grayShade100,
                   fontSize: widget.hintextSize ?? 12.h,
                   fontWeight: FontWeight.w400
               ),

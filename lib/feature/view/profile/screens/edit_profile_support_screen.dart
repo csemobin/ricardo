@@ -74,7 +74,7 @@ class EditProfileSupportScreen extends StatelessWidget {
                         height: 8.h,
                       ),
                       Text(
-                        'info@carerfinderau.com',
+                        'info@ricardo.com',
                         style: TextStyle(
                           fontSize: 16.sp,
                           fontWeight: FontWeight.w600,
