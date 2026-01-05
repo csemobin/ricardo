@@ -5,17 +5,18 @@ class HelperData {
 
   static final List<Map<String, dynamic>> onboardingData = [
     {
-      "image": Assets.images.secondonbaordimagePng.path,
+      // "image": Assets.images.secondonbaordimagePng.path,
+      "image": Assets.images.onboardOne.path,
       "title": "Welcome to the GO GO DRIVER.",
       "subtitle": "Seamless, affordable, and reliable ride-sharing at your fingertips."
     },
     {
-      "image": Assets.images.onboardone.path,
+      "image": Assets.images.onboardTwo.path,
       "title": "Safe and Secure Journeys.",
       "subtitle": "Your safety is our top priority. Every ride is monitored for your peace of mind."
     },
     {
-      "image": Assets.images.thirdonbaordimagePng.path,
+      "image": Assets.images.onboardThree.path,
       "title": "Easy and Convenient Booking.",
       "subtitle": "Book your ride in just a few taps. Quick, easy, and hassle-free."
     },

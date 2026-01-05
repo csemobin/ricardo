@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:lottie/lottie.dart';
 import 'package:ricardo/app/utils/app_colors.dart';
 import 'package:ricardo/gen/assets.gen.dart';
 import 'package:ricardo/routes/app_routes.dart';
@@ -16,12 +17,14 @@ class AuthInitialScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CustomScaffold(
+      paddingSide: 0,
       body: Column(
         children: [
           Center(
             child: LogoWidget(),
           ),
-          Image.asset(Assets.images.secondonbaordimagePng.path),
+          Lottie.asset(Assets.lotties.carpool, fit: BoxFit.cover),
+          // Image.asset(Assets.images.secondonbaordimagePng.path),
           CustomHeadingText(
             firstText: 'WELCOME TO ',
             secondText: 'THIS APP',
@@ -37,38 +40,53 @@ class AuthInitialScreen extends StatelessWidget {
                     'Seamless, affordable, and reliable ride-sharing at your fingertips.'),
           ),
           Spacer(),
-          CustomPrimaryButton(title: 'Sign In',onHandler: (){
-            Get.toNamed(AppRoutes.signInScreen);
-          },),
+          Padding(
+            padding: EdgeInsets.only(
+              left: 25.w,
+              right: 25.w,
+            ),
+            child: CustomPrimaryButton(
+              title: 'Sign In',
+              onHandler: () {
+                Get.toNamed(AppRoutes.signInScreen);
+              },
+            ),
+          ),
           SizedBox(
             height: 20.h,
           ),
-          GestureDetector(
-            child: Container(
-              alignment: Alignment.center,
-              width: double.maxFinite,
-              height: 56.h,
-              decoration: BoxDecoration(
-                  border: Border.all(
+          Padding(
+              padding: EdgeInsets.only(
+                right: 25.w,
+                left: 25.w
+              ),
+            child: GestureDetector(
+              child: Container(
+                alignment: Alignment.center,
+                width: double.maxFinite,
+                height: 56.h,
+                decoration: BoxDecoration(
+                    border: Border.all(
+                      color: AppColors.greenColor,
+                      width: 1.w,
+                    ),
+                    borderRadius: BorderRadius.circular(50.r)),
+                child: Text(
+                  'Sign Up',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
                     color: AppColors.greenColor,
-                    width: 1.w,
+                    fontSize: 16.sp,
+                    fontWeight: FontWeight.w400,
                   ),
-                  borderRadius: BorderRadius.circular(50.r)),
-              child: Text(
-                'Sign Up',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: AppColors.greenColor,
-                  fontSize: 16.sp,
-                  fontWeight: FontWeight.w400,
                 ),
               ),
+              onTap: () => Get.toNamed(AppRoutes.signUpScreen),
             ),
-            onTap: () => Get.toNamed(AppRoutes.signUpScreen),
           ),
           Spacer(),
         ],
       ),
-     );
+    );
   }
 }

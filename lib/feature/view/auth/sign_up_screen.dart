@@ -14,6 +14,7 @@ class SignUpScreen extends StatelessWidget {
   SignUpScreen({super.key});
 
   final TextEditingController nameTEController = TextEditingController();
+  bool isSelected = false;
 
   @override
   Widget build(BuildContext context) {
@@ -78,8 +79,15 @@ class SignUpScreen extends StatelessWidget {
                 value: true,
                 checkColor: AppColors.whiteColor,
                 activeColor: AppColors.greenColor,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(3.r)),
+                side: MaterialStateBorderSide.resolveWith((state) {
+                  if (state.contains(MaterialState.selected)) {
+                    return BorderSide(
+                      color: AppColors.greenColor,
+                      width: 2,
+                    );
+                  }
+                  return BorderSide(color: AppColors.greenColor, width: 2);
+                }),
                 onChanged: (val) {},
               ),
               Text(
@@ -92,7 +100,8 @@ class SignUpScreen extends StatelessWidget {
                 },
                 child: Text(
                   'Terms of Use ',
-                  style: TextStyle(fontSize: 12.sp, color: AppColors.greenColor),
+                  style:
+                      TextStyle(fontSize: 12.sp, color: AppColors.greenColor),
                 ),
               ),
               Text(
@@ -102,7 +111,8 @@ class SignUpScreen extends StatelessWidget {
               GestureDetector(
                 child: Text(
                   'Privacy Policy.',
-                  style: TextStyle(fontSize: 12.sp, color: AppColors.greenColor),
+                  style:
+                      TextStyle(fontSize: 12.sp, color: AppColors.greenColor),
                 ),
                 onTap: () {
                   Get.toNamed(AppRoutes.privacyPolicyScreen);
@@ -113,9 +123,12 @@ class SignUpScreen extends StatelessWidget {
           SizedBox(
             height: 33.h,
           ),
-          CustomPrimaryButton(title: 'Sign Up',onHandler: (){
-            Get.toNamed(AppRoutes.otpVarifyScreen);
-          },),
+          CustomPrimaryButton(
+            title: 'Sign Up',
+            onHandler: () {
+              Get.toNamed(AppRoutes.otpVarifyScreen);
+            },
+          ),
           SizedBox(
             height: 20.h,
           ),
@@ -137,7 +150,7 @@ class SignUpScreen extends StatelessWidget {
                     fontSize: 15,
                   ),
                 ),
-                onTap: (){
+                onTap: () {
                   Get.toNamed(AppRoutes.signInScreen);
                 },
               ),

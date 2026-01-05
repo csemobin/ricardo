@@ -1,5 +1,3 @@
-// dart format width=80
-
 /// GENERATED CODE - DO NOT MODIFY BY HAND
 /// *****************************************************
 ///  FlutterGen
@@ -7,7 +5,7 @@
 
 // coverage:ignore-file
 // ignore_for_file: type=lint
-// ignore_for_file: deprecated_member_use,directives_ordering,implicit_dynamic_list_literal,unnecessary_import
+// ignore_for_file: directives_ordering,unnecessary_import,implicit_dynamic_list_literal,deprecated_member_use
 
 import 'package:flutter/widgets.dart';
 
@@ -75,26 +73,26 @@ class $AssetsFontsGen {
 
   /// List of all assets
   List<String> get values => [
-        poppinsBlack,
-        poppinsBlackItalic,
-        poppinsBold,
-        poppinsBoldItalic,
-        poppinsExtraBold,
-        poppinsExtraBoldItalic,
-        poppinsExtraLight,
-        poppinsExtraLightItalic,
-        poppinsItalic,
-        poppinsLight,
-        poppinsLightItalic,
-        poppinsMedium,
-        poppinsMediumItalic,
-        poppinsRegular,
-        poppinsSemiBold,
-        poppinsSemiBoldItalic,
-        poppinsThin,
-        poppinsThinItalic,
-        interRegular
-      ];
+    poppinsBlack,
+    poppinsBlackItalic,
+    poppinsBold,
+    poppinsBoldItalic,
+    poppinsExtraBold,
+    poppinsExtraBoldItalic,
+    poppinsExtraLight,
+    poppinsExtraLightItalic,
+    poppinsItalic,
+    poppinsLight,
+    poppinsLightItalic,
+    poppinsMedium,
+    poppinsMediumItalic,
+    poppinsRegular,
+    poppinsSemiBold,
+    poppinsSemiBoldItalic,
+    poppinsThin,
+    poppinsThinItalic,
+    interRegular,
+  ];
 }
 
 class $AssetsIconsGen {
@@ -192,10 +190,6 @@ class $AssetsImagesGen {
   AssetGenImage get favoritesProfileImage =>
       const AssetGenImage('assets/images/favorites_profile_image.jpg');
 
-  /// File path: assets/images/firstonbaordimage.png
-  AssetGenImage get firstonbaordimage =>
-      const AssetGenImage('assets/images/firstonbaordimage.png');
-
   /// File path: assets/images/glassmorphism_logo.png
   AssetGenImage get glassmorphismLogo =>
       const AssetGenImage('assets/images/glassmorphism_logo.png');
@@ -220,17 +214,17 @@ class $AssetsImagesGen {
   AssetGenImage get masterCardIcon =>
       const AssetGenImage('assets/images/master-card-icon.png');
 
-  /// File path: assets/images/onboardingthree.jpg
-  AssetGenImage get onboardingthree =>
-      const AssetGenImage('assets/images/onboardingthree.jpg');
+  /// File path: assets/images/onboard_one.png
+  AssetGenImage get onboardOne =>
+      const AssetGenImage('assets/images/onboard_one.png');
 
-  /// File path: assets/images/onboardone.jpg
-  AssetGenImage get onboardone =>
-      const AssetGenImage('assets/images/onboardone.jpg');
+  /// File path: assets/images/onboard_three.png
+  AssetGenImage get onboardThree =>
+      const AssetGenImage('assets/images/onboard_three.png');
 
-  /// File path: assets/images/onboardtwo.jpg
-  AssetGenImage get onboardtwo =>
-      const AssetGenImage('assets/images/onboardtwo.jpg');
+  /// File path: assets/images/onboard_two.png
+  AssetGenImage get onboardTwo =>
+      const AssetGenImage('assets/images/onboard_two.png');
 
   /// File path: assets/images/passenger.png
   AssetGenImage get passenger =>
@@ -270,10 +264,6 @@ class $AssetsImagesGen {
   /// File path: assets/images/review-image.png
   AssetGenImage get reviewImage =>
       const AssetGenImage('assets/images/review-image.png');
-
-  /// File path: assets/images/secondonbaordimage.png.png
-  AssetGenImage get secondonbaordimagePng =>
-      const AssetGenImage('assets/images/secondonbaordimage.png.png');
 
   /// File path: assets/images/setting-about-icon.png
   AssetGenImage get settingAboutIcon =>
@@ -323,10 +313,6 @@ class $AssetsImagesGen {
   AssetGenImage get supportProfileScreen =>
       const AssetGenImage('assets/images/support-profile-screen.png');
 
-  /// File path: assets/images/thirdonbaordimage.png.png
-  AssetGenImage get thirdonbaordimagePng =>
-      const AssetGenImage('assets/images/thirdonbaordimage.png.png');
-
   /// File path: assets/images/upload_icon.png
   AssetGenImage get uploadIcon =>
       const AssetGenImage('assets/images/upload_icon.png');
@@ -364,70 +350,80 @@ class $AssetsImagesGen {
 
   /// List of all assets
   List<AssetGenImage> get values => [
-        vector,
-        activeHistory,
-        activeHome,
-        activeProfile,
-        activeWallet,
-        amico,
-        applogo,
-        arrowDropDown,
-        carIcon,
-        crossIcon,
-        cuate,
-        directRight,
-        documentIcon,
-        driver,
-        editProfileProfileScreen,
-        editPencil,
-        favoriteRidesBookCar,
-        favoriteRidesCar,
-        favoriteDusbin,
-        favoritesProfileImage,
-        firstonbaordimage,
-        glassmorphismLogo,
-        historyIcon,
-        homeIcon,
-        location,
-        logoutProfileScreen,
-        masterCardIcon,
-        onboardingthree,
-        onboardone,
-        onboardtwo,
-        passenger,
-        paymentIcon,
-        paymentMethodIcon,
-        popupIcon,
-        profileImage,
-        proflieIcon,
-        rafiki,
-        rattingStar,
-        removeBusket,
-        reviewImage,
-        secondonbaordimagePng,
-        settingAboutIcon,
-        settingDeleteIcon,
-        settingLockIcon,
-        settingPrivacyPolicyIcon,
-        settingTermsAndConditionIcon,
-        settingsProfileScreen,
-        splashBackground,
-        splashScreenBackground,
-        supportCarImage,
-        supportEmailImage,
-        supportPhoneImage,
-        supportProfileScreen,
-        thirdonbaordimagePng,
-        uploadIcon,
-        varifyIcon,
-        viewReviewsProfileScreen,
-        visaPayment,
-        visa,
-        walletIcon,
-        walletCoinBackground,
-        walletNarrowBackground,
-        widrawIcon
-      ];
+    vector,
+    activeHistory,
+    activeHome,
+    activeProfile,
+    activeWallet,
+    amico,
+    applogo,
+    arrowDropDown,
+    carIcon,
+    crossIcon,
+    cuate,
+    directRight,
+    documentIcon,
+    driver,
+    editProfileProfileScreen,
+    editPencil,
+    favoriteRidesBookCar,
+    favoriteRidesCar,
+    favoriteDusbin,
+    favoritesProfileImage,
+    glassmorphismLogo,
+    historyIcon,
+    homeIcon,
+    location,
+    logoutProfileScreen,
+    masterCardIcon,
+    onboardOne,
+    onboardThree,
+    onboardTwo,
+    passenger,
+    paymentIcon,
+    paymentMethodIcon,
+    popupIcon,
+    profileImage,
+    proflieIcon,
+    rafiki,
+    rattingStar,
+    removeBusket,
+    reviewImage,
+    settingAboutIcon,
+    settingDeleteIcon,
+    settingLockIcon,
+    settingPrivacyPolicyIcon,
+    settingTermsAndConditionIcon,
+    settingsProfileScreen,
+    splashBackground,
+    splashScreenBackground,
+    supportCarImage,
+    supportEmailImage,
+    supportPhoneImage,
+    supportProfileScreen,
+    uploadIcon,
+    varifyIcon,
+    viewReviewsProfileScreen,
+    visaPayment,
+    visa,
+    walletIcon,
+    walletCoinBackground,
+    walletNarrowBackground,
+    widrawIcon,
+  ];
+}
+
+class $AssetsLottiesGen {
+  const $AssetsLottiesGen();
+
+  /// File path: assets/lotties/carpool.json
+  String get carpool => 'assets/lotties/carpool.json';
+
+  /// File path: assets/lotties/crypto_phone.json
+  String get cryptoPhone => 'assets/lotties/crypto_phone.json';
+
+  /// List of all assets
+  List<String> get values => [carpool, cryptoPhone];
 }
 
 class Assets {
@@ -436,21 +432,16 @@ class Assets {
   static const $AssetsFontsGen fonts = $AssetsFontsGen();
   static const $AssetsIconsGen icons = $AssetsIconsGen();
   static const $AssetsImagesGen images = $AssetsImagesGen();
+  static const $AssetsLottiesGen lotties = $AssetsLottiesGen();
 }
 
 class AssetGenImage {
-  const AssetGenImage(
-    this._assetName, {
-    this.size,
-    this.flavors = const {},
-    this.animation,
-  });
+  const AssetGenImage(this._assetName, {this.size, this.flavors = const {}});
 
   final String _assetName;
 
   final Size? size;
   final Set<String> flavors;
-  final AssetGenImageAnimation? animation;
 
   Image image({
     Key? key,
@@ -505,30 +496,11 @@ class AssetGenImage {
     );
   }
 
-  ImageProvider provider({
-    AssetBundle? bundle,
-    String? package,
-  }) {
-    return AssetImage(
-      _assetName,
-      bundle: bundle,
-      package: package,
-    );
+  ImageProvider provider({AssetBundle? bundle, String? package}) {
+    return AssetImage(_assetName, bundle: bundle, package: package);
   }
 
   String get path => _assetName;
 
   String get keyName => _assetName;
-}
-
-class AssetGenImageAnimation {
-  const AssetGenImageAnimation({
-    required this.isAnimation,
-    required this.duration,
-    required this.frames,
-  });
-
-  final bool isAnimation;
-  final Duration duration;
-  final int frames;
 }

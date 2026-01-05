@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 
 class DriverProfileController extends GetxController {
   RxInt wordCount = 0.obs;
   final int maxWords = 200;
+  XFile? selectedImage;
 
   final TextEditingController textController = TextEditingController(text: ' ');
 
