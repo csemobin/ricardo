@@ -31,6 +31,7 @@ class DriverProfileCreate extends GetView<DriverProfileController> {
           ),
           child: IntrinsicHeight(
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Center(
                   child: CustomHeadingText(
@@ -49,56 +50,57 @@ class DriverProfileCreate extends GetView<DriverProfileController> {
                 SizedBox(
                   height: 16.h,
                 ),
-                Stack(
-                  children: [
-                    GetBuilder<DriverProfileController>(builder: (cnt) {
-                      return cnt.selectedImage != null
-                          ? ClipRRect(
-                              borderRadius: BorderRadius.circular(100),
-                              child: Image.file(
-                                File(cnt.selectedImage!.path),
-                                height: 122,
-                                width: 122,
-                                fit: BoxFit.cover,
-                              ),
-                            )
-                          : Image.asset(
-                              Assets.images.vector.path,
-                              height: 122,
-                              width: 122,
+                Center(
+                  child: Stack(
+                    children: [
+                      GetBuilder<DriverProfileController>(builder: (cnt) {
+                        return cnt.selectedImage != null
+                            ? ClipRRect(
+                                borderRadius: BorderRadius.circular(100),
+                                child: Image.file(
+                                  File(cnt.selectedImage!.path),
+                                  height: 122.h,
+                                  width: 122.w,
+                                  fit: BoxFit.cover,
+                                ),
+                              )
+                            : Image.asset(
+                                Assets.images.vector.path,
+                                height: 122.h,
+                                width: 122.w,
+                              );
+                      }),
+                      Positioned(
+                        bottom: 10.h,
+                        right: 15.h,
+                        child: Container(
+                          width: 35.w,
+                          height: 35.h,
+                          decoration: BoxDecoration(
+                            color: Color(0XffEDEDED),
+                            borderRadius: BorderRadius.circular(50),
+                          ),
+                          child: GetBuilder<DriverProfileController>(
+                              builder: (cnt) {
+                            return GestureDetector(
+                              child: Image.asset(Assets.images.editPencil.path),
+                              onTap: () {
+                                ImageHandler.bottomImageSelector(context,
+                                    onImageSelected: (file) {
+                                  cnt.selectedImage = file;
+                                  cnt.update();
+                                });
+                              },
                             );
-                    }),
-                    Positioned(
-                      bottom: 10.h,
-                      right: 15.h,
-                      child: Container(
-                        width: 35,
-                        height: 35,
-                        decoration: BoxDecoration(
-                          color: Color(0XffEDEDED),
-                          borderRadius: BorderRadius.circular(50),
+                          }),
                         ),
-                        child:
-                            GetBuilder<DriverProfileController>(builder: (cnt) {
-                          return GestureDetector(
-                            child: Image.asset(Assets.images.editPencil.path),
-                            onTap: () {
-                              ImageHandler.bottomImageSelector(context,
-                                  onImageSelected: (file) {
-                                cnt.selectedImage = file;
-                                cnt.update();
-                              });
-                            },
-                          );
-                        }),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
                 SizedBox(
                   height: 15.h,
                 ),
-
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -115,14 +117,29 @@ class DriverProfileCreate extends GetView<DriverProfileController> {
                       height: 4.h,
                     ),
                     IntlPhoneField(
+                      dropdownTextStyle: TextStyle(
+                        color: AppColors.greyColor500, // country code color
+                        fontSize: 14.sp, // country code size
+                        fontWeight: FontWeight.w500,
+                      ),
+                      dropdownIcon: Icon(
+                        Icons.keyboard_arrow_down, // arrow icon
+                        color: AppColors.greyColor500, // arrow color
+                        size: 14.h, // arrow size
+                      ),
+                      style: TextStyle(
+                        color: AppColors.greyColor500,
+                        fontSize: 14.sp,
+                      ),
+                      keyboardType: TextInputType.number,
                       cursorColor: AppColors.greyColor,
                       flagsButtonMargin: EdgeInsets.only(left: 10),
                       dropdownIconPosition: IconPosition.trailing,
-                      decoration: const InputDecoration(
+                      decoration: InputDecoration(
                         hintText: 'Phone number',
                         hintStyle: TextStyle(
                           color: AppColors.greyColor,
-                          fontSize: 12,
+                          fontSize: 12.sp,
                           fontWeight: FontWeight.w400,
                         ),
                         contentPadding: EdgeInsets.all(6),
@@ -133,28 +150,28 @@ class DriverProfileCreate extends GetView<DriverProfileController> {
                         fillColor: AppColors.whiteColor,
                         border: OutlineInputBorder(
                           borderSide: BorderSide(
-                            width: 0.8,
+                            width: 0.8.w,
                             color: AppColors.grayShade100,
                           ),
                           borderRadius: BorderRadius.all(Radius.circular(8)),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderSide: BorderSide(
-                            width: 0.8,
+                            width: 0.8.w,
                             color: AppColors.grayShade100,
                           ),
                           borderRadius: BorderRadius.all(Radius.circular(8)),
                         ),
                         disabledBorder: OutlineInputBorder(
                           borderSide: BorderSide(
-                            width: 0.8,
+                            width: 0.8.w,
                             color: AppColors.grayShade100,
                           ),
                           borderRadius: BorderRadius.all(Radius.circular(8)),
                         ),
-                        enabledBorder:  OutlineInputBorder(
+                        enabledBorder: OutlineInputBorder(
                           borderSide: BorderSide(
-                            width: 0.8,
+                            width: 0.8.w,
                             color: AppColors.grayShade100,
                           ),
                           borderRadius: BorderRadius.all(Radius.circular(8)),
@@ -164,25 +181,161 @@ class DriverProfileCreate extends GetView<DriverProfileController> {
                     ),
                   ],
                 ),
-                CustomTextField(
-                  controller: phoneController,
-                  hintText: 'Enter Your Number',
-                  labelText: 'Phone No.',
-                  prefixIcon: Icon(Icons.flag),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Date of Birth',
+                      style: TextStyle(
+                        fontFamily: FontFamily.poppins,
+                        color: AppColors.labelTextColor,
+                        fontSize: 14.sp,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    SizedBox(
+                      height: 4.h,
+                    ),
+                    TextField(
+                      style: TextStyle(
+                        color: AppColors.greyColor500,
+                        fontSize: 12.sp,
+                      ),
+                      cursorColor: AppColors.appGreyColor,
+                      controller: controller.textController,
+                      decoration: InputDecoration(
+                        fillColor: AppColors.whiteColor,
+                        filled: true,
+                        hintText: 'DD-MM-YYYY',
+                        hintStyle: TextStyle(color: Colors.red),
+                        suffixIcon: IconButton(
+                          icon: Icon(Icons.calendar_today),
+                          onPressed: () async {
+                            DateTime? pickedDate = await showDatePicker(
+                              context: context,
+                              firstDate: DateTime(1950),
+                              lastDate: DateTime.now(),
+                              initialDate: DateTime.now(),
+                            );
+                            if (pickedDate != null) {
+                              String formattedData =
+                                  "${pickedDate.day.toString().padLeft(2, '0')}-${pickedDate.month.toString().padLeft(2, '0')}-${pickedDate.year}";
+                              controller.textController.text = formattedData;
+                            }
+                          },
+                        ),
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            width: 0.8.w,
+                            color: AppColors.grayShade100,
+                          ),
+                          borderRadius: BorderRadius.all(Radius.circular(8)),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            width: 0.8.w,
+                            color: AppColors.grayShade100,
+                          ),
+                          borderRadius: BorderRadius.all(Radius.circular(8)),
+                        ),
+                        disabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            width: 0.8.w,
+                            color: AppColors.grayShade100,
+                          ),
+                          borderRadius: BorderRadius.all(Radius.circular(8)),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            width: 0.8.w,
+                            color: AppColors.grayShade100,
+                          ),
+                          borderRadius: BorderRadius.all(Radius.circular(8)),
+                        ),
+                      ),
+                      keyboardType: TextInputType.datetime,
+                    ),
+                  ],
                 ),
+                SizedBox(
+                  height: 4.h,
+                ),
+                GetBuilder<DriverProfileController>(builder: (cnt) {
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Gender',
+                        style: TextStyle(
+                          fontFamily: FontFamily.poppins,
+                          color: AppColors.labelTextColor,
+                          fontSize: 12.h,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      SizedBox(
+                        height: 4.h,
+                      ),
+                      GestureDetector(
+                          onTapDown: (TapDownDetails details) async {
+                            final RenderBox overlay = Overlay.of(context)
+                                .context
+                                .findRenderObject() as RenderBox;
+                            final String? selected = await showMenu<String>(
+                              context: context,
+                              color: Colors.white,
+                              constraints: BoxConstraints(
+                                maxHeight: 200.h,
+                                minWidth: 120.w,
+                                maxWidth: 180.w,
+                              ),
+                              position: RelativeRect.fromRect(
+                                Rect.fromPoints(
+                                  details.globalPosition,
+                                  details.globalPosition,
+                                ),
+                                Offset.zero & overlay.size,
+                              ),
+                              items: cnt.myList
+                                  .map(
+                                    (e) => PopupMenuItem<String>(
+                                      value: e,
+                                      child: Text(e),
+                                    ),
+                                  )
+                                  .toList(),
+                            );
 
-                CustomTextField(
-                  controller: phoneController,
-                  hintText: 'DD-MM-YY',
-                  labelText: 'Date of Birth',
-                  isDatePicker: true,
-                  suffixIcon: Icon(Icons.date_range),
-                ),
-                CustomTextField(
-                  controller: phoneController,
-                  hintText: 'Male',
-                  labelText: 'Gender',
-                  suffixIcon: Icon(Icons.keyboard_arrow_down),
+                            if (selected != null) {
+                              cnt.setGender(selected);
+                            }
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                                color: AppColors.whiteColor,
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(8.r),
+                                ),
+                                border:
+                                    Border.all(color: AppColors.greyColor300)),
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 10.w, vertical: 12.h),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(cnt.selectedGender, style: TextStyle(
+                                  color: AppColors.greyColor500,
+                                  fontSize: 14.sp,
+                                ),),
+                                Icon(Icons.keyboard_arrow_down ,  color: AppColors.greyColor500,),
+                              ],
+                            ),
+                          )),
+                    ],
+                  );
+                }),
+                SizedBox(
+                  height: 4.h,
                 ),
                 Stack(
                   children: [
@@ -205,8 +358,8 @@ class DriverProfileCreate extends GetView<DriverProfileController> {
                       ),
                     ),
                     Positioned(
-                      bottom: 10,
-                      right: 10,
+                      bottom: 10.r,
+                      right: 10.r,
 
                       // padding: EdgeInsets.only(top: 100, right: 8),
                       child: Obx(
@@ -216,18 +369,16 @@ class DriverProfileCreate extends GetView<DriverProfileController> {
                             color: controller.wordCount.value > 200
                                 ? Colors.red
                                 : Colors.grey,
-                            fontSize: 12,
+                            fontSize: 12.sp,
                           ),
                         ),
                       ),
                     ),
                   ],
                 ),
-
                 SizedBox(
                   height: 100.h,
                 ),
-                // CustomPrimaryButton(title: 'Continue', onHandler: ()=> Get.toNamed(AppRoutes.uploadRequirementScreen)),
                 CustomPrimaryButton(
                   title: 'Continue',
                   onHandler: () {

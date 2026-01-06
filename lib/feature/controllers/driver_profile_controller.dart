@@ -6,6 +6,23 @@ class DriverProfileController extends GetxController {
   RxInt wordCount = 0.obs;
   final int maxWords = 200;
   XFile? selectedImage;
+  final myList = [
+    'maruf',
+    'muhammad',
+    'ali',
+    'salman',
+  ];
+
+  String selectedGender = 'maruf';
+
+  void setGender(String value) {
+    selectedGender = value;
+    update();
+  }
+
+  final TextEditingController dateTime = TextEditingController(
+      text : 'DD-MM-YYYY',
+  );
 
   final TextEditingController textController = TextEditingController(text: ' ');
 
