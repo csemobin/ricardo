@@ -1,9 +1,12 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter_intl_phone_field/flutter_intl_phone_field.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:ricardo/app/utils/app_colors.dart';
 import 'package:ricardo/feature/controllers/driver_profile_controller.dart';
 import 'package:ricardo/gen/assets.gen.dart';
+import 'package:ricardo/gen/fonts.gen.dart';
 import 'package:ricardo/routes/app_routes.dart';
 import 'package:ricardo/widgets/custom_heading_text.dart';
 import 'package:ricardo/widgets/custom_primary_button.dart';
@@ -96,6 +99,71 @@ class DriverProfileCreate extends GetView<DriverProfileController> {
                   height: 15.h,
                 ),
 
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Phone Number',
+                      style: TextStyle(
+                        fontFamily: FontFamily.poppins,
+                        color: AppColors.labelTextColor,
+                        fontSize: 12.h,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    SizedBox(
+                      height: 4.h,
+                    ),
+                    IntlPhoneField(
+                      cursorColor: AppColors.greyColor,
+                      flagsButtonMargin: EdgeInsets.only(left: 10),
+                      dropdownIconPosition: IconPosition.trailing,
+                      decoration: const InputDecoration(
+                        hintText: 'Phone number',
+                        hintStyle: TextStyle(
+                          color: AppColors.greyColor,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w400,
+                        ),
+                        contentPadding: EdgeInsets.all(6),
+                        filled: true,
+                        counterStyle: TextStyle(color: AppColors.greyColor
+                            //10/10
+                            ),
+                        fillColor: AppColors.whiteColor,
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            width: 0.8,
+                            color: AppColors.grayShade100,
+                          ),
+                          borderRadius: BorderRadius.all(Radius.circular(8)),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            width: 0.8,
+                            color: AppColors.grayShade100,
+                          ),
+                          borderRadius: BorderRadius.all(Radius.circular(8)),
+                        ),
+                        disabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            width: 0.8,
+                            color: AppColors.grayShade100,
+                          ),
+                          borderRadius: BorderRadius.all(Radius.circular(8)),
+                        ),
+                        enabledBorder:  OutlineInputBorder(
+                          borderSide: BorderSide(
+                            width: 0.8,
+                            color: AppColors.grayShade100,
+                          ),
+                          borderRadius: BorderRadius.all(Radius.circular(8)),
+                        ),
+                      ),
+                      languageCode: "en",
+                    ),
+                  ],
+                ),
                 CustomTextField(
                   controller: phoneController,
                   hintText: 'Enter Your Number',

@@ -58,7 +58,9 @@ class ImageHandler {
         double? spaceBetweenIconAndText,
         required Function(XFile file) onImageSelected,
       }) {
-    showBottomSheet(
+    showModalBottomSheet(
+      isDismissible: true,
+      enableDrag: true,
       backgroundColor: backgroundColor ?? Colors.white,
       context: context,
       shape: RoundedRectangleBorder(
