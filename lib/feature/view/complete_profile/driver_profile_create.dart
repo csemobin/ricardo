@@ -323,11 +323,17 @@ class DriverProfileCreate extends GetView<DriverProfileController> {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text(cnt.selectedGender, style: TextStyle(
+                                Text(
+                                  cnt.selectedGender,
+                                  style: TextStyle(
+                                    color: AppColors.greyColor500,
+                                    fontSize: 14.sp,
+                                  ),
+                                ),
+                                Icon(
+                                  Icons.keyboard_arrow_down,
                                   color: AppColors.greyColor500,
-                                  fontSize: 14.sp,
-                                ),),
-                                Icon(Icons.keyboard_arrow_down ,  color: AppColors.greyColor500,),
+                                ),
                               ],
                             ),
                           )),

@@ -61,18 +61,15 @@ class UploadDrivingLicenseScreen extends StatelessWidget {
         ),
       ),
       bottomNavigationBar: SafeArea(
-          child: Padding(
-              padding: EdgeInsets.symmetric(
-                vertical: 10.w,
-                horizontal: 24.w
-              ),
-            child: CustomPrimaryButton(
-              title: 'Submit',
-              onHandler: () {
-                Get.toNamed(AppRoutes.carRegistrationScreen);
-              },
-            ),
+        child: Padding(
+          padding: EdgeInsets.symmetric(vertical: 10.w, horizontal: 24.w),
+          child: CustomPrimaryButton(
+            title: 'Submit',
+            onHandler: () {
+              Get.toNamed(AppRoutes.carRegistrationScreen);
+            },
           ),
+        ),
       ),
     );
   }
