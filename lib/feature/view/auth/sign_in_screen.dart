@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:ricardo/app/utils/app_colors.dart';
+import 'package:ricardo/feature/controllers/auth/sign_in_controller.dart';
 import 'package:ricardo/routes/app_routes.dart';
 import 'package:ricardo/widgets/custom_heading_text.dart';
+import 'package:ricardo/widgets/custom_loader.dart';
 import 'package:ricardo/widgets/custom_primary_button.dart';
 import 'package:ricardo/widgets/custom_scaffold.dart';
 import 'package:ricardo/widgets/custom_secondary_text.dart';
@@ -13,8 +15,8 @@ import 'package:ricardo/widgets/logo_widget.dart';
 class SignInScreen extends StatelessWidget {
   SignInScreen({super.key});
 
-  final TextEditingController emailTEController = TextEditingController();
-  final TextEditingController passwordTEController = TextEditingController();
+  final controller = Get.find<SignInController>();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
@@ -49,17 +51,25 @@ class SignInScreen extends StatelessWidget {
 
                     SizedBox(height: 32.h),
 
-                    CustomTextField(
-                      controller: emailTEController,
-                      labelText: 'Email',
-                      hintText: 'Enter Your email',
-                    ),
-
-                    CustomTextField(
-                      controller: passwordTEController,
-                      labelText: 'Password',
-                      hintText: 'Enter Your Password',
-                      isPassword: true,
+                    Form(
+                      key: _formKey,
+                      child: Column(
+                        children: [
+                          CustomTextField(
+                            controller: controller.emailTextEditingController,
+                            labelText: 'Email',
+                            hintText: 'Enter Your email',
+                            isEmail: true,
+                          ),
+                          CustomTextField(
+                            controller:
+                                controller.passwordTextEditingController,
+                            labelText: 'Password',
+                            hintText: 'Enter Your Password',
+                            isPassword: true,
+                          ),
+                        ],
+                      ),
                     ),
 
                     SizedBox(height: 15.h),
@@ -82,12 +92,29 @@ class SignInScreen extends StatelessWidget {
                       ],
                     ),
 
-                    const Spacer(),
+                    // const Spacer(),
+                    SizedBox(
+                      height: 50.h,
+                    ),
+                    Obx(
+                      () {
+                        if (controller.isLoginStatus.value) {
+                          return CustomLoader();
+                        }
 
-                    CustomPrimaryButton(
-                      title: 'Sign In',
-                      onHandler: () {
-                        Get.toNamed(AppRoutes.driverProfileCreateScreen);
+                        return Opacity(
+                          opacity: controller.canSubmit.value ? 1 : 0.6,
+                          child: CustomPrimaryButton(
+                            title: 'Sign In',
+                            onHandler: controller.canSubmit.value
+                              ? () => _signIn(controller)
+                            : null,
+                            // onHandler: () {
+                            //
+                            //   // Get.toNamed(AppRoutes.driverProfileCreateScreen);
+                            // },
+                          ),
+                        );
                       },
                     ),
 
@@ -105,7 +132,7 @@ class SignInScreen extends StatelessWidget {
                         ),
                         GestureDetector(
                           onTap: () {
-                            Get.toNamed(AppRoutes.signUpScreen);
+                            Get.toNamed(AppRoutes.selectedRoleScreen);
                           },
                           child: Text(
                             'Sign Up',
@@ -117,8 +144,6 @@ class SignInScreen extends StatelessWidget {
                         ),
                       ],
                     ),
-
-                    SizedBox(height: 20.h),
                   ],
                 ),
               ),
@@ -127,5 +152,10 @@ class SignInScreen extends StatelessWidget {
         },
       ),
     );
+  }
+
+  void _signIn(SignInController controller) {
+    if (!_formKey.currentState!.validate()) return;
+    controller.logInUser();
   }
 }

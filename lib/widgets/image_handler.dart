@@ -35,23 +35,20 @@ class ImageHandler {
         double? spacing,
         EdgeInsets? padding,
         MainAxisAlignment? alignment,
-        // Camera option
         bool showCamera = true,
         String? cameraLabel,
         IconData? cameraIcon,
-        String? cameraImagePath, // For custom image instead of icon
+        String? cameraImagePath,
         double? cameraIconSize,
         Color? cameraIconColor,
         TextStyle? cameraTextStyle,
-        // Gallery option
         bool showGallery = true,
         String? galleryLabel,
         IconData? galleryIcon,
-        String? galleryImagePath, // For custom image instead of icon
+        String? galleryImagePath,
         double? galleryIconSize,
         Color? galleryIconColor,
         TextStyle? galleryTextStyle,
-        // General styling
         double? iconSize,
         Color? iconColor,
         TextStyle? textStyle,

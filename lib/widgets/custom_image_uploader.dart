@@ -1,6 +1,7 @@
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:ricardo/app/utils/app_colors.dart';
 import 'package:ricardo/gen/assets.gen.dart';
 import 'package:ricardo/widgets/image_handler.dart';
@@ -8,12 +9,17 @@ import 'package:ricardo/widgets/image_handler.dart';
 class CustomImageUploader extends StatelessWidget {
   final String? label, uploadedTitle, fileSize, buttonTitle;
 
-  const CustomImageUploader(
-      {super.key,
-      this.label,
-      this.uploadedTitle,
-      this.fileSize,
-      this.buttonTitle});
+  // Add callback parameter in constructor
+  final Function(XFile)? onImageSelected;
+
+  const CustomImageUploader({
+    super.key,
+    this.label,
+    this.uploadedTitle,
+    this.fileSize,
+    this.buttonTitle,
+    this.onImageSelected,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -73,7 +79,9 @@ class CustomImageUploader extends StatelessWidget {
                           color: AppColors.secondaryTextColor,
                           fontWeight: FontWeight.w400),
                     ),
-                    SizedBox(height: 4.h,),
+                    SizedBox(
+                      height: 4.h,
+                    ),
                     Container(
                       padding: EdgeInsets.symmetric(
                         vertical: 6.r,
@@ -97,9 +105,9 @@ class CustomImageUploader extends StatelessWidget {
           ),
         ],
       ),
-      onTap: (){
+      onTap: () {
         ImageHandler.bottomImageSelector(context, onImageSelected: (file) {
-
+          onImageSelected?.call(file);
         });
       },
     );

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:ricardo/feature/controllers/auth/forget_password_controller.dart';
 import 'package:ricardo/routes/app_routes.dart';
 import 'package:ricardo/widgets/custom_heading_text.dart';
+import 'package:ricardo/widgets/custom_loader.dart';
 import 'package:ricardo/widgets/custom_primary_button.dart';
 import 'package:ricardo/widgets/custom_scaffold.dart';
 import 'package:ricardo/widgets/custom_secondary_text.dart';
@@ -11,11 +13,11 @@ import 'package:ricardo/widgets/custom_text_field.dart';
 class ForgotPassword extends StatelessWidget {
   ForgotPassword({super.key});
 
-  final TextEditingController emailTEController = TextEditingController();
-  final TextEditingController passwordTEController = TextEditingController();
-
+  final controller = Get.find<ForgetPasswordController>();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
+
     return CustomScaffold(
       body: LayoutBuilder(
         builder: (context, constraints) {
@@ -41,18 +43,27 @@ class ForgotPassword extends StatelessWidget {
                       ),
                     ),
                     SizedBox(height: 57.h),
-                    CustomTextField(
-                      controller: emailTEController,
-                      labelText: 'Email',
-                      hintText: 'Enter Your email',
+                    Form(
+                      key: _formKey,
+                      child: CustomTextField(
+                        controller: controller.forgetPasswordTEController,
+                        labelText: 'Email',
+                        hintText: 'Enter Your email',
+                        isEmail: true,
+                      ),
                     ),
                     const Spacer(),
-                    CustomPrimaryButton(
-                      title: 'Get Verification Code',
-                      onHandler: () {
-                        Get.toNamed(AppRoutes.resetPasswordScreen);
-                      },
-                    ),
+                    Obx((){
+                      return controller.isForgetPasswordStatus.value == true ? CustomLoader() : CustomPrimaryButton(
+                        title: 'Get Verification Code',
+                        onHandler: _varifyButtonHandler,
+                        // onHandler: () {
+                        //   // Get.toNamed(AppRoutes.resetPasswordScreen);
+                        //
+                        // },
+                      );
+                    }),
+
                     SizedBox(height: 20.h),
                   ],
                 ),
@@ -62,5 +73,9 @@ class ForgotPassword extends StatelessWidget {
         },
       ),
     );
+  }
+  void _varifyButtonHandler(){
+    if( !_formKey.currentState!.validate()) return;
+    controller.forgetPassword();
   }
 }

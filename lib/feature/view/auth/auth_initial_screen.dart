@@ -24,7 +24,6 @@ class AuthInitialScreen extends StatelessWidget {
             child: LogoWidget(),
           ),
           Lottie.asset(Assets.lotties.carpool, fit: BoxFit.cover),
-          // Image.asset(Assets.images.secondonbaordimagePng.path),
           CustomHeadingText(
             firstText: 'WELCOME TO ',
             secondText: 'THIS APP',
@@ -81,7 +80,7 @@ class AuthInitialScreen extends StatelessWidget {
                   ),
                 ),
               ),
-              onTap: () => Get.toNamed(AppRoutes.signUpScreen),
+              onTap: () => Get.toNamed(AppRoutes.selectedRoleScreen),
             ),
           ),
           Spacer(),

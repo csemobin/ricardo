@@ -40,7 +40,6 @@ class DriverProfileController extends GetxController {
       wordCount.value = text.split(RegExp(r'\s+')).length;
     }
   }
-
   @override
   void onClose() {
     textController.dispose();
