@@ -9,11 +9,11 @@ class ApiUrls{
   static const String otpSendVerification = '/otp/send/verification';
   static const String otpVerifyVerification = '/otp/verify/verification';
 
-
-
-
+  //Forget Password Related work
   static const String otpSendForgotPassword = '/otp/send/forgot-password';
   static const String otpVerifyForgotPassword = '/otp/verify/forgot-password';
+  static const String resetPassword = '/auth/reset-password';
+
   static const String authLogin = '/auth/login';
   static const String forgetPassword = '/otp/send/forgot-password';
 }

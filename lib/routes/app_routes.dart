@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:ricardo/feature/controllers/auth/forget_password_otp_verify_controller.dart';
+import 'package:ricardo/feature/view/auth/forget_password_otp_screen.dart';
 import 'package:ricardo/feature/view/auth/reset_password_screen.dart';
 import 'package:ricardo/feature/view/auth/sign_in_screen.dart';
 import 'package:ricardo/feature/view/auth/auth_initial_screen.dart';
@@ -33,6 +35,7 @@ abstract class AppRoutes {
   static const String selectedRoleScreen = '/selected_role_screen';
   static const String signUpScreen = '/sign_up_screen';
   static const String otpVarifyScreen = 'otp_varify_screen';
+  static const String forgetPasswordOtpVerifyScreen = '/forget_password_otp_screen';
   static const String signInScreen = 'sign_in_screen';
   static const String forgotPasswordScreen = '/forgot_password';
   static const String resetPasswordScreen = 'reset_password_screen';
@@ -72,6 +75,7 @@ abstract class AppRoutes {
     addCardScreen: (context) => AddCardScreen(),
     termsAndConditionScreen: (context) => TermsConditionScreen(),
     privacyPolicyScreen: (context) => PrivacyPolicyScreen(),
+    forgetPasswordOtpVerifyScreen: (context) => ForgetPasswordOtpScreen(),
   };
 
 }

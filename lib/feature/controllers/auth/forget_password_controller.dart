@@ -13,12 +13,15 @@ class ForgetPasswordController extends GetxController{
     final data = {
       "email": forgetPasswordTEController.text.trim()
     };
-    final response = await ApiClient.postData(ApiUrls.forgetPassword, data);
+    final response = await ApiClient.postData(ApiUrls.otpSendForgotPassword, data);
+
     if( response.statusCode == 200 || response.statusCode == 201 ){
-      Get.toNamed(AppRoutes.otpVarifyScreen, arguments: {'route': 'forget_pass'});
+      Get.toNamed(AppRoutes.forgetPasswordOtpVerifyScreen, arguments: {'email': forgetPasswordTEController.text.trim(),'route': 'forget_pass'});
+      forgetPasswordTEController.clear();
     }else{
       Get.snackbar('Error', response.body['message']);
     }
+
     isForgetPasswordStatus.value = false;
   }
   @override

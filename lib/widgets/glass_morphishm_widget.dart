@@ -58,12 +58,12 @@ class GlassmorphismWidget extends StatelessWidget {
                 SizedBox(
                   height: 30.h,
                 ),
-                CustomPrimaryButton(
-                  title: 'Back to Home',
-                  onHandler: () {
-                    Get.toNamed(AppRoutes.signInScreen);
-                  },
-                )
+                // CustomPrimaryButton(
+                //   title: 'Back to Home',
+                //   onHandler: () {
+                //     Get.toNamed(AppRoutes.signInScreen);
+                //   },
+                // )
               ],
             ),
           ),

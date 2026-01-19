@@ -1,7 +1,13 @@
+import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
+import 'package:ricardo/feature/controllers/auth/forget_password_otp_verify_controller.dart';
+import 'package:ricardo/feature/controllers/auth/reset_password_controller.dart';
+import 'package:ricardo/routes/app_routes.dart';
 import 'package:ricardo/widgets/custom_heading_text.dart';
+import 'package:ricardo/widgets/custom_loader.dart';
 import 'package:ricardo/widgets/custom_primary_button.dart';
 import 'package:ricardo/widgets/custom_scaffold.dart';
 import 'package:ricardo/widgets/custom_secondary_text.dart';
@@ -16,9 +22,10 @@ class ResetPasswordScreen extends StatefulWidget {
 }
 
 class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
-  final TextEditingController emailTEController = TextEditingController();
-  final TextEditingController passwordTEController = TextEditingController();
+  final controller = Get.find<ResetPasswordController>();
+  final email = Get.arguments['email'];
 
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
     return CustomScaffold(
@@ -37,7 +44,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                     ),
                     CustomHeadingText(
                       firstText: "Reset Your ",
-                      secondText: ' Password',
+                      secondText: 'Password',
                     ),
                     SizedBox(height: 10.h),
                     Padding(
@@ -47,27 +54,68 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                       ),
                     ),
                     SizedBox(height: 57.h),
-                    CustomTextField(
-                      controller: emailTEController,
-                      labelText: 'New Password',
-                      hintText: 'Enter Your Password',
-                    ),
-                    CustomTextField(
-                      controller: emailTEController,
-                      labelText: 'Confirm Password',
-                      hintText: 'Re-enter your password',
+                    Form(
+                      key: _formKey,
+                      child: Column(
+                        children: [
+                          CustomTextField(
+                            controller: controller.resetNewPasswordTEController,
+                            labelText: 'New Password',
+                            hintText: 'Enter Your Password',
+                            isPassword: true,
+                          ),
+                          CustomTextField(
+                            controller:
+                                controller.confirmNewPasswordTEController,
+                            labelText: 'Confirm Password',
+                            hintText: 'Re-enter your password',
+                            isPassword: true,
+                            validator: (val) {
+                              if (controller
+                                      .resetNewPasswordTEController.text !=
+                                  val) {
+                                return "Password does not match";
+                              }
+                              return null;
+                            },
+                          ),
+                        ],
+                      ),
                     ),
                     const Spacer(),
-                    CustomPrimaryButton(
-                      title: 'Reset Password',
-                      onHandler: (){
-                        showDialog(
-                            context: context,
-                            barrierColor: Colors.black.withOpacity(0.2),
-                            builder: (_)=> const GlassmorphismWidget()
-                        );
-                      },
-                    ),
+                    Obx(() {
+                      if (controller.isResetPasswordStatus.value) {
+                        return CustomLoader();
+                      }
+
+                      return CustomPrimaryButton(
+                        title: 'Reset Password',
+                        onHandler: () async{
+
+                          if( !_formKey.currentState!.validate()) {
+                            return;
+                          }
+
+                          final success = await controller.resetPasswordHandler(email);
+
+                          if (success && mounted) {
+                            showDialog(
+                              context: context,
+                              barrierColor: Colors.black.withOpacity(0.2),
+                              builder: (_) {
+                                return GlassmorphismWidget();
+                              },
+                            );
+                            Future.delayed(const Duration(seconds: 3),(){
+                              if(mounted){
+                                Navigator.of(context).pop();
+                                Get.toNamed(AppRoutes.signInScreen);
+                              }
+                            });
+                          }
+                        },
+                      );
+                    }),
                     SizedBox(height: 20.h),
                   ],
                 ),
