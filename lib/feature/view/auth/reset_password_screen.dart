@@ -1,9 +1,7 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:ricardo/feature/controllers/auth/forget_password_otp_verify_controller.dart';
 import 'package:ricardo/feature/controllers/auth/reset_password_controller.dart';
 import 'package:ricardo/routes/app_routes.dart';
 import 'package:ricardo/widgets/custom_heading_text.dart';
@@ -26,6 +24,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
   final email = Get.arguments['email'];
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
     return CustomScaffold(
@@ -90,13 +89,13 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
 
                       return CustomPrimaryButton(
                         title: 'Reset Password',
-                        onHandler: () async{
-
-                          if( !_formKey.currentState!.validate()) {
+                        onHandler: () async {
+                          if (!_formKey.currentState!.validate()) {
                             return;
                           }
 
-                          final success = await controller.resetPasswordHandler(email);
+                          final success =
+                              await controller.resetPasswordHandler(email);
 
                           if (success && mounted) {
                             showDialog(
@@ -106,8 +105,8 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                                 return GlassmorphismWidget();
                               },
                             );
-                            Future.delayed(const Duration(seconds: 3),(){
-                              if(mounted){
+                            Future.delayed(const Duration(seconds: 3), () {
+                              if (mounted) {
                                 Navigator.of(context).pop();
                                 Get.toNamed(AppRoutes.signInScreen);
                               }

@@ -81,7 +81,6 @@ class SignInScreen extends StatelessWidget {
                         GestureDetector(
                           onTap: () {
                             Get.toNamed(AppRoutes.forgotPasswordScreen);
-                            // Get.to(()=>ForgotPassword(fromWhere: 'SignIn',));
                           },
                           child: Text(
                             'Forgot Password ?',

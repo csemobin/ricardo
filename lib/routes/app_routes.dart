@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:ricardo/feature/controllers/auth/forget_password_otp_verify_controller.dart';
 import 'package:ricardo/feature/view/auth/forget_password_otp_screen.dart';
 import 'package:ricardo/feature/view/auth/reset_password_screen.dart';
 import 'package:ricardo/feature/view/auth/sign_in_screen.dart';

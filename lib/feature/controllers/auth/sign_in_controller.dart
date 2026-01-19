@@ -34,9 +34,6 @@ class SignInController extends GetxController {
       "email": emailTextEditingController.text.trim(),
       "password": passwordTextEditingController.text,
     };
-
-    print(data);
-
     final response = await ApiClient.postData(ApiUrls.authLogin, data);
     if (response.statusCode == 200 || response.statusCode == 201) {
       final user = response.body['data'];
@@ -44,7 +41,9 @@ class SignInController extends GetxController {
       PrefsHelper.setString(
           'accessToken', response.body['data']['accessToken']
       );
+
       print('R E S P O N S E==================>>>>> $response');
+
       if (user['isActive'] == 'active' &&
           user['isVerified'] == true &&
           user['role'] == 'driver') {

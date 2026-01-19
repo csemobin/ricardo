@@ -13,7 +13,8 @@ class ForgetPasswordOtpScreen extends StatefulWidget {
   const ForgetPasswordOtpScreen({super.key});
 
   @override
-  State<ForgetPasswordOtpScreen> createState() => _ForgetPasswordOtpScreenState();
+  State<ForgetPasswordOtpScreen> createState() =>
+      _ForgetPasswordOtpScreenState();
 }
 
 class _ForgetPasswordOtpScreenState extends State<ForgetPasswordOtpScreen> {
@@ -48,9 +49,11 @@ class _ForgetPasswordOtpScreenState extends State<ForgetPasswordOtpScreen> {
                   SizedBox(height: 10.h),
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 10.w),
-                    child: Obx((){
+                    child: Obx(() {
                       return CustomSecondaryText(
-                        text: controller.isTimerActive.value == true ? "We've sent $email an mail with an activation Opt Code" : "We've sent an mail with an activation code to your Email",
+                        text: controller.isTimerActive.value == true
+                            ? "We've sent $email an mail with an activation Opt Code"
+                            : "We've sent an mail with an activation code to your Email",
                       );
                     }),
                   ),
@@ -64,34 +67,34 @@ class _ForgetPasswordOtpScreenState extends State<ForgetPasswordOtpScreen> {
                   Obx(() {
                     return controller.isTimerActive.value
                         ? Text(
-                      controller.formattedTime,
-                      style: TextStyle(
-                        fontSize: 16.sp,
-                        fontWeight: FontWeight.w600,
-                        color: controller.secondsRemaining.value < 60
-                            ? AppColors.errorColor
-                            : AppColors.blackBText,
-                      ),
-                    )
-                        : Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        CustomSecondaryText(text: "Didn't get the code?"),
-                        TextButton(
-                          onPressed: () {
-                            controller.otpEmail.value = email;
-                            controller.resendOtp(email);
-                          },
-                          child: Text(
-                            'Resend',
+                            controller.formattedTime,
                             style: TextStyle(
-                              color: AppColors.greenColor,
-                              fontWeight: FontWeight.w700,
+                              fontSize: 16.sp,
+                              fontWeight: FontWeight.w600,
+                              color: controller.secondsRemaining.value < 60
+                                  ? AppColors.errorColor
+                                  : AppColors.blackBText,
                             ),
-                          ),
-                        ),
-                      ],
-                    );
+                          )
+                        : Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              CustomSecondaryText(text: "Didn't get the code?"),
+                              TextButton(
+                                onPressed: () {
+                                  controller.otpEmail.value = email;
+                                  controller.resendOtp(email);
+                                },
+                                child: Text(
+                                  'Resend',
+                                  style: TextStyle(
+                                    color: AppColors.greenColor,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          );
                   }),
                 ],
               ),
@@ -112,8 +115,8 @@ class _ForgetPasswordOtpScreenState extends State<ForgetPasswordOtpScreen> {
                     title: 'Verify',
                     onHandler: isButtonEnabled
                         ? () {
-                      controller.varifyOtp(route, email);
-                    }
+                            controller.varifyOtp(route, email);
+                          }
                         : null,
                   ),
                 );
@@ -133,8 +136,10 @@ class _ForgetPasswordOtpScreenState extends State<ForgetPasswordOtpScreen> {
                         style: TextStyle(color: Colors.red, fontSize: 12.h),
                       ),
                       TextSpan(
-                        text: 'If you have not received the email in your inbox, please check your spam or junk folder.',
-                        style: TextStyle(color: Color(0Xff808085), fontSize: 12.h),
+                        text:
+                            'If you have not received the email in your inbox, please check your spam or junk folder.',
+                        style:
+                            TextStyle(color: Color(0Xff808085), fontSize: 12.h),
                       )
                     ],
                   ),
