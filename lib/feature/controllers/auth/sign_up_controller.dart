@@ -37,14 +37,6 @@ class SignUpController extends GetxController {
         isSelected.value;
   }
 
-  void inputFiledHandlerClear() {
-    nameTEController.clear();
-    emailTEController.clear();
-    passwordTEController.clear();
-    confirmPasswordTEController.clear();
-    isSelected.value = false;
-    updateFormValidity();
-  }
 
   Future<void> userRegistration() async {
     isRegistrationStatus.value = true;
@@ -60,20 +52,35 @@ class SignUpController extends GetxController {
       final response = await ApiClient.postData(ApiUrls.registration, data);
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        inputFiledHandlerClear();
-        Get.toNamed(AppRoutes.otpVarifyScreen,arguments: {'email': response.body['data']['user']['email']});
+        final registerEmail = response.body['data']['user']['email'];
+        final email ={
+            "email" : registerEmail
+        };
+         final verifyResponse = await ApiClient.postData(ApiUrls.otpSendVerification, email);
+         if( verifyResponse.statusCode == 200 ){
+           Get.toNamed(AppRoutes.otpVarifyScreen,arguments: {'email': response.body['data']['user']['email'], 'route' : 'sing_up'});
+           inputFiledHandlerClear();
+         }
       } else {
         Get.snackbar('Error Massage', response.body['message']);
       }
     } catch (e) {
       Get.snackbar('Error Massage', e.toString());
-      // showToast('Error: ${e.toString()}');
     } finally {
       isRegistrationStatus.value = false;
     }
 
   }
 
+
+  void inputFiledHandlerClear() {
+    nameTEController.clear();
+    emailTEController.clear();
+    passwordTEController.clear();
+    confirmPasswordTEController.clear();
+    isSelected.value = false;
+    updateFormValidity();
+  }
   @override
   void onClose() {
     nameTEController.dispose();

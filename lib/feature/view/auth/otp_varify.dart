@@ -45,9 +45,11 @@ class _OtpVarifyState extends State<OtpVarify> {
                   SizedBox(height: 10.h),
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 10.w),
-                    child: CustomSecondaryText(
-                      text: "We've sent an mail with an activation code to your Email",
-                    ),
+                    child: Obx((){
+                      return CustomSecondaryText(
+                        text: controller.isTimerActive.value == true ? "We've sent $email an mail with an activation Opt Code" : "We've sent an mail with an activation code to your Email",
+                      );
+                    }),
                   ),
                   SizedBox(height: 53.h),
                   CustomPinCodeTextField(
@@ -75,7 +77,7 @@ class _OtpVarifyState extends State<OtpVarify> {
                         TextButton(
                           onPressed: () {
                             controller.otpEmail.value = email;
-                            controller.resendOtp();
+                            controller.resendOtp(email);
                           },
                           child: Text(
                             'Resend',
@@ -109,7 +111,7 @@ class _OtpVarifyState extends State<OtpVarify> {
                     title: 'Verify',
                     onHandler: isButtonEnabled
                         ? () {
-                      controller.varifyOtp(route);
+                      controller.varifyOtp(route, email);
                     }
                         : null,
                   ),

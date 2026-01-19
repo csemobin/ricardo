@@ -4,8 +4,16 @@ class ApiUrls{
   static const String imageBaseUrl = "https://zsv1pz87-5000.inc1.devtunnels.ms";
   static const String socketUrl = "https://zsv1pz87-5000.inc1.devtunnels.ms";
 
+  // User Registration Related work
   static const String registration = '/user/register';
+  static const String otpSendVerification = '/otp/send/verification';
   static const String otpVerifyVerification = '/otp/verify/verification';
+
+
+
+
+  static const String otpSendForgotPassword = '/otp/send/forgot-password';
+  static const String otpVerifyForgotPassword = '/otp/verify/forgot-password';
   static const String authLogin = '/auth/login';
   static const String forgetPassword = '/otp/send/forgot-password';
 }

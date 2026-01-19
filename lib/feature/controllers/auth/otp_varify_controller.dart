@@ -11,21 +11,19 @@ class OtpVerifyController extends GetxController {
   final RxBool _isTimerActive = false.obs;
 
   RxInt get secondsRemaining => _secondsRemaining;
+
   RxBool get isTimerActive => _isTimerActive;
 
-  // OTP Verify Related work
   RxBool isVarifyEmail = false.obs;
   RxString otpEmail = ''.obs;
   final TextEditingController pinTEController = TextEditingController();
 
-  // THIS IS THE KEY FIX: Create an observable string for the OTP text
   RxString otpText = ''.obs;
 
   @override
   void onInit() {
     super.onInit();
 
-    // Listen to text changes and update the observable
     pinTEController.addListener(() {
       otpText.value = pinTEController.text;
     });
@@ -56,7 +54,7 @@ class OtpVerifyController extends GetxController {
     _isTimerActive.value = false;
   }
 
-  Future<void> varifyOtp( String route ) async {
+  Future<void> varifyOtp(String route, String reqEmail) async {
     if (pinTEController.text.length != 6) {
       Get.snackbar('Error', 'Please enter 6 digit OTP');
       return;
@@ -64,20 +62,14 @@ class OtpVerifyController extends GetxController {
 
     isVarifyEmail.value = true;
 
-    final data = {
-      "email": otpEmail.value,
-      "otp": pinTEController.text.trim()
-    };
-    try {
-      final response = await ApiClient.postData(ApiUrls.otpVerifyVerification, data);
-      stopTimer();
-      if(response.statusCode == 200 || response.statusCode == 201 ){
-        Get.snackbar('Success', 'Email verified successfully!');
-        if(route == 'sign_in'){
+    final data = {"email": reqEmail, "otp": pinTEController.text.trim()};
 
-        }else if( route == 'forget_pass'){
-          Get.toNamed(AppRoutes.resetPasswordScreen);
-        }
+    try {
+      final response =
+          await ApiClient.postData(ApiUrls.otpVerifyVerification, data);
+      stopTimer();
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
         Get.toNamed(AppRoutes.signInScreen);
       }
     } catch (e) {
@@ -87,16 +79,21 @@ class OtpVerifyController extends GetxController {
     }
   }
 
-  Future<void> resendOtp() async {
+  Future<void> resendOtp(String email) async {
     try {
       stopTimer();
       pinTEController.clear();
 
-      // final response = await ApiClient.postData(ApiUrls.resendOtp, {"email": otpEmail.value});
+      final reqEmail = {"email": email};
+      final response = await ApiClient.postData(
+          ApiUrls.otpSendVerification, {"email": reqEmail});
 
-      Get.snackbar('Success', 'OTP sent successfully!');
+      if (response.statusCode == 200) {
+        Get.snackbar('Success', 'OTP sent successfully!');
+      } else {
+        Get.snackbar('Error', response.body['data']['message']);
+      }
       startTimer();
-
     } catch (e) {
       Get.snackbar('Error', 'Failed to resend OTP');
     }
