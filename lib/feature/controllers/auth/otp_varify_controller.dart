@@ -23,12 +23,13 @@ class OtpVerifyController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-
     pinTEController.addListener(() {
       otpText.value = pinTEController.text;
     });
   }
-
+  void startTimerSafely() {
+    Future.microtask(() => startTimer());
+  }
   void startTimer() {
     _isTimerActive.value = true;
     _secondsRemaining.value = 180;
@@ -70,6 +71,7 @@ class OtpVerifyController extends GetxController {
       stopTimer();
 
       if (response.statusCode == 200 || response.statusCode == 201) {
+        pinTEController.clear();
         Get.toNamed(AppRoutes.signInScreen);
       }
     } catch (e) {
