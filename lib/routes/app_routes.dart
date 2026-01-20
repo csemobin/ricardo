@@ -10,7 +10,7 @@ import 'package:ricardo/feature/view/auth/sign_up_screen.dart';
 import 'package:ricardo/feature/view/button_nav_bar/custom_button_nav_bar.dart';
 import 'package:ricardo/feature/view/home/home_screen.dart';
 import 'package:ricardo/feature/view/complete_profile/car_registration_screen.dart';
-import 'package:ricardo/feature/view/complete_profile/driver_profile_create.dart';
+import 'package:ricardo/feature/view/complete_profile/driver_profile_create_screen.dart';
 import 'package:ricardo/feature/view/complete_profile/profile_complete_popup_model_screen.dart';
 import 'package:ricardo/feature/view/complete_profile/upload_driving_license_screen.dart';
 import 'package:ricardo/feature/view/complete_profile/upload_requirement_screen.dart';
@@ -62,7 +62,7 @@ abstract class AppRoutes {
     signInScreen: (context) => SignInScreen(),
     forgotPasswordScreen: (context) => ForgotPassword(),
     resetPasswordScreen : (context) => ResetPasswordScreen(),
-    driverProfileCreateScreen: (context) => DriverProfileCreate(),
+    driverProfileCreateScreen: (context) => DriverProfileCreateScreen(),
     uploadRequirementScreen: (context) => UploadRequirementScreen(),
     uploadDrivingLicenseScreen: (context) => UploadDrivingLicenseScreen(),
     carRegistrationScreen: (context) => CarRegistrationScreen(),

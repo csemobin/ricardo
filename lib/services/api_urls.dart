@@ -16,6 +16,7 @@ class ApiUrls{
   // log in related work are here
   static const String authLogin = '/auth/login';
   static const String getMe = '/user/me';
+  static const String createUserProfile = '/user/update-user';
 
 
   static const String forgetPassword = '/otp/send/forgot-password';
