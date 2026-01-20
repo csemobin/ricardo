@@ -21,7 +21,6 @@ class OnBoardScreen extends StatefulWidget {
 
 class _OnBoardScreenState extends State<OnBoardScreen> {
   final PageController _pageController = PageController();
-
   int currentIndex = 0;
 
   @override

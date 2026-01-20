@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:ricardo/app/helpers/prefs_helper.dart';
+import 'package:ricardo/app/utils/app_constants.dart';
+import 'package:ricardo/feature/controllers/user_controller.dart';
+import 'package:ricardo/feature/models/user_model.dart';
 import 'package:ricardo/feature/view/splash_screen/on_board_screen.dart';
 import 'package:ricardo/gen/assets.gen.dart';
+import 'package:ricardo/routes/app_routes.dart';
 import 'package:ricardo/widgets/logo_widget.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -46,13 +51,41 @@ class _SplashScreenState extends State<SplashScreen>
 
       if (!mounted) return;
 
-      await Get.offAll(
-        () => const OnBoardScreen(),
-        // () =>  CustomButtonNavBar(),
-        transition: Transition.fade,
-        duration: _transitionDuration,
-        curve: Curves.easeInOut,
-      );
+      final accessToken = await PrefsHelper.getString(AppConstants.bearerToken);
+      if( accessToken.isEmpty ){
+        await Get.offAll(
+              () => const OnBoardScreen(),
+          // () =>  CustomButtonNavBar(),
+          transition: Transition.fade,
+          duration: _transitionDuration,
+          curve: Curves.easeInOut,
+        );
+      }
+      if( accessToken.isNotEmpty ){
+        final UserController userController = Get.find<UserController>();
+        await userController.fetchUser();
+        final UserModel? user = userController.userModel;
+
+        if( user == null ){
+          Get.offAllNamed(AppRoutes.signInScreen);
+          return;
+        }
+
+        if( user.userProfile?.isProfileCompleted == false){
+          Get.offAllNamed(AppRoutes.driverProfileCreateScreen);
+          return;
+        }
+
+        if( user.userProfile?.role == 'driver' ){
+          if( user.driverProfile?.licenseUploaded == false || user.driverProfile?.vehicleDataUploaded == false ){
+            Get.offAllNamed(AppRoutes.uploadRequirementScreen);
+            return;
+          }
+          return;
+        }
+        Get.offAllNamed(AppRoutes.customBottomNavBar);
+      }
+
     } catch (e) {
       debugPrint('Splash navigation error: $e');
     }

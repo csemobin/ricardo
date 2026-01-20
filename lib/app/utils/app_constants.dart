@@ -1,5 +1,5 @@
 class AppConstants{
-  static const String bearerToken = "bearerToken";
+  static const String bearerToken = "accessToken";
   static const String isEmailVerified = "isEmailVerified";
   static const String profilePicture = "profilePicture";
   static const String completed = "completed";

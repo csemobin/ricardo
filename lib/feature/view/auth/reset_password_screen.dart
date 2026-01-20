@@ -98,19 +98,16 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                               await controller.resetPasswordHandler(email);
 
                           if (success && mounted) {
-                            showDialog(
+                            await showDialog(
                               context: context,
                               barrierColor: Colors.black.withOpacity(0.2),
-                              builder: (_) {
-                                return GlassmorphismWidget();
-                              },
+                              builder: (_) => GlassmorphismWidget(),
                             );
-                            Future.delayed(const Duration(seconds: 3), () {
-                              if (mounted) {
-                                Navigator.of(context).pop();
-                                Get.toNamed(AppRoutes.signInScreen);
-                              }
-                            });
+                            await Future.delayed(const Duration(seconds: 3));
+                            if (mounted) {
+                              Navigator.of(context).pop();
+                              Get.toNamed(AppRoutes.signInScreen);
+                            }
                           }
                         },
                       );
