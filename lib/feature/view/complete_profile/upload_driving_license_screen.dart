@@ -1,4 +1,5 @@
 import 'dart:io';
+
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -8,7 +9,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:ricardo/app/utils/app_colors.dart';
 import 'package:ricardo/app/utils/app_custom_design.dart';
 import 'package:ricardo/feature/controllers/driving_license_controller.dart';
-import 'package:ricardo/routes/app_routes.dart';
 import 'package:ricardo/widgets/custom_image_uploader.dart';
 import 'package:ricardo/widgets/custom_primary_button.dart';
 import 'package:ricardo/widgets/custom_scaffold.dart';
@@ -17,153 +17,165 @@ import 'package:ricardo/widgets/custom_text_field.dart';
 class UploadDrivingLicenseScreen extends StatelessWidget {
   UploadDrivingLicenseScreen({super.key});
 
-  final TextEditingController nameController = TextEditingController();
+  final controller = Get.find<DrivingLicenseController>();
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.find<DrivingLicenseController>();
     return CustomScaffold(
       appBar: AppBar(
         backgroundColor: AppColors.bgColor,
         forceMaterialTransparency: true,
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Center(
-              child: Text(
-                'Driving License',
-                style: AppCustomDesign.headingTextStyle,
-              ),
-            ),
-            SizedBox(height: 77.h),
-
-            CustomTextField(
-              controller: nameController,
-              labelText: 'Driving License No',
-              hintText: 'Enter your NID no.',
-              keyboardType: TextInputType.number,
-              inputFormatter: <TextInputFormatter>[
-                FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
-                FilteringTextInputFormatter.digitsOnly
-              ],
-            ),
-
-            SizedBox(height: 10.h),
-
-            // FRONT SIDE
-            Obx(() {
-              return controller.selectedDrivingLicenseFront.value != null
-                  ? _buildImagePreview(
-                      controller.selectedDrivingLicenseFront.value!,
-                      () => controller.removeImage(
-                            'front',
-                          ),
-                      'Upload Your Driving License picture (Front)')
-                  : CustomImageUploader(
-                      label: 'Upload Your Driving License picture (Front)',
-                      uploadedTitle: 'Upload files',
-                      fileSize: '25',
-                      buttonTitle: 'Browse Files',
-                      onImageSelected: (file) =>
-                          controller.selectLicense(file, 'front'),
-                    );
-            }),
-
-            SizedBox(height: 20.h),
-
-            // BACK SIDE
-            Obx(() {
-              return controller.selectedDrivingLicenseBack.value != null
-                  ? _buildImagePreview(
-                      controller.selectedDrivingLicenseBack.value!,
-                      () => controller.removeImage('back'),
-                      'Upload Your Driving License picture (Back)',
-                    )
-                  : CustomImageUploader(
-                      label: 'Upload Your Driving License picture (Back)',
-                      uploadedTitle: 'Upload files',
-                      fileSize: '25',
-                      buttonTitle: 'Browse Files',
-                      onImageSelected: (file) =>
-                          controller.selectLicense(file, 'back'),
-                    );
-            }),
-          ],
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => Get.back(),
         ),
       ),
-      bottomNavigationBar: SafeArea(
-        child: Padding(
-          padding: EdgeInsets.symmetric(vertical: 10.w, horizontal: 24.w),
-          child: CustomPrimaryButton(
-            title: 'Submit',
-            onHandler: () {
-              Get.toNamed(AppRoutes.carRegistrationScreen);
-            },
+      body: SingleChildScrollView(
+        child: Form(
+          key: controller.formKey,
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 0.w),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(height: 20.h),
+                Center(
+                  child: Text(
+                    'Driving License',
+                    style: AppCustomDesign.headingTextStyle,
+                  ),
+                ),
+                SizedBox(height: 40.h),
+
+                // License Number Field
+                CustomTextField(
+                  controller: controller.licenseNoTEController,
+                  labelText: 'Driving License No',
+                  hintText: 'Enter your driving license number',
+                  keyboardType: TextInputType.number,
+                  inputFormatter: <TextInputFormatter>[
+                    FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+                    FilteringTextInputFormatter.digitsOnly,
+                    LengthLimitingTextInputFormatter(16),
+                  ],
+                  validator: (val) {
+                    if (val == null || val.isEmpty) {
+                      return "Please enter driving license number";
+                    }
+                    if (val.length != 16) {
+                      return "Driving License No must be exactly 16 digits";
+                    }
+                    return null;
+                  },
+                ),
+
+                SizedBox(height: 30.h),
+
+                // FRONT SIDE
+                _buildImageSection(
+                  'Upload Your Driving License (Front Side)',
+                  controller.selectedDrivingLicenseFront,
+                  'front',
+                ),
+
+                SizedBox(height: 30.h),
+
+                // BACK SIDE
+                _buildImageSection(
+                  'Upload Your Driving License (Back Side)',
+                  controller.selectedDrivingLicenseBack,
+                  'back',
+                ),
+
+                SizedBox(height: 50.h),
+              ],
+            ),
           ),
         ),
       ),
+      bottomNavigationBar: _buildSubmitButton(),
     );
   }
 
-  // Helper method to avoid code duplication
+  // Build image section
+  Widget _buildImageSection(String label, Rx<XFile?> imageFile, String side) {
+    return Obx(() {
+      if (imageFile.value != null) {
+        return _buildImagePreview(
+          imageFile.value!,
+              () => controller.removeImage(side),
+          label,
+        );
+      } else {
+        return CustomImageUploader(
+          label: label,
+          uploadedTitle: 'Upload files',
+          fileSize: '25',
+          buttonTitle: 'Browse Files',
+          onImageSelected: (file) => controller.selectLicense(file, side),
+        );
+      }
+    });
+  }
+
+  // Build image preview
   Widget _buildImagePreview(XFile file, VoidCallback onDelete, String label) {
     return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          textAlign: TextAlign.start,
-          label.toString(),
+          label,
           style: TextStyle(
             color: AppColors.labelTextColor,
-            fontSize: 12.h,
+            fontSize: 14.sp,
             fontWeight: FontWeight.w500,
           ),
         ),
-        SizedBox(
-          height: 10.h,
-        ),
+        SizedBox(height: 12.h),
         DottedBorder(
+          padding: EdgeInsets.all(8.r),
           borderType: BorderType.RRect,
-          radius: Radius.circular(15),
-          dashPattern: [8, 10],
+          radius: Radius.circular(15.r),
+          dashPattern: const [8, 10],
           color: AppColors.dottedBorderColor,
           strokeWidth: 1,
           child: Container(
-            height: 110.h,
+            height: 140.h,
             width: double.maxFinite,
             decoration: BoxDecoration(
               color: AppColors.whiteColor,
-              borderRadius: BorderRadius.circular(15),
+              borderRadius: BorderRadius.circular(15.r),
             ),
             child: Stack(
               children: [
-                Container(
-                  height: 110.h,
-                  width: double.maxFinite,
-                  decoration: BoxDecoration(
-                    color: AppColors.whiteColor,
-                    borderRadius: BorderRadius.circular(15),
-                  ),
-                  child: Padding(
-                    padding: EdgeInsets.all(8.r),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.all(Radius.circular(8)),
-                      child: Image.file(
-                        File(file.path),
-                        fit: BoxFit.cover,
-                      ),
-                    ),
+                // Image
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(15.r),
+                  child: Image.file(
+                    File(file.path),
+                    fit: BoxFit.cover,
+                    width: double.maxFinite,
+                    height: double.maxFinite,
                   ),
                 ),
+
+                // Delete button
                 Positioned(
-                  right: 5,
-                  top: 5,
-                  child: IconButton(
-                    onPressed: onDelete,
-                    icon: Icon(Icons.delete, color: AppColors.errorColor),
+                  right: 10.w,
+                  top: 10.h,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: AppColors.errorColor.withOpacity(0.8),
+                      shape: BoxShape.circle,
+                    ),
+                    child: IconButton(
+                      onPressed: onDelete,
+                      icon: Icon(
+                        Icons.delete,
+                        color: AppColors.whiteColor,
+                        size: 20.sp,
+                      ),
+                    ),
                   ),
                 ),
               ],
@@ -172,5 +184,29 @@ class UploadDrivingLicenseScreen extends StatelessWidget {
         ),
       ],
     );
+  }
+
+  // Build submit button
+  Widget _buildSubmitButton() {
+    return SafeArea(
+      child: Padding(
+        padding: EdgeInsets.symmetric(vertical: 20.h, horizontal: 24.w),
+        child: Obx(() {
+          final bool isLoading = controller.isUploadDrivingLicenseController.value;
+          final bool isValid = controller.isFormValid.value;
+
+          return CustomPrimaryButton(
+            title: isLoading ? 'Uploading...' : 'Submit',
+            onHandler: isValid && !isLoading ? _onSubmit : null,
+          );
+        }),
+      ),
+    );
+  }
+
+  // Submit handler
+  void _onSubmit() {
+    if (!controller.formKey.currentState!.validate()) return;
+    controller.addedDrivingLicense();
   }
 }

@@ -16,7 +16,7 @@ class CustomPrimaryButton extends StatelessWidget {
     final bool isEnabled = onHandler != null;
 
     return GestureDetector(
-      onTap: isEnabled ? onHandler : null,
+      onTap: onHandler ,
       child: AnimatedContainer(
         duration: Duration(milliseconds: 200),
         alignment: Alignment.center,

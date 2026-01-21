@@ -17,7 +17,7 @@ import 'package:ricardo/widgets/custom_text_field.dart';
 import 'package:ricardo/widgets/image_handler.dart';
 
 class DriverProfileCreateScreen extends GetView<DriverProfileController> {
-  DriverProfileCreateScreen({super.key});
+  const DriverProfileCreateScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -131,11 +131,12 @@ class DriverProfileCreateScreen extends GetView<DriverProfileController> {
                             controller: controller.phoneController,
                             initialCountryCode: 'BD',
                             // Optional: Set default country
-
                             // ✅ CORRECT WAY - Store in separate RxString variable
                             onChanged: (phone) {
+                              phone.isValidNumber();
                               controller.completePhoneNumber.value =
                                   phone.completeNumber;
+
                               controller
                                   .checkFormValidity(); // ✅ Trigger validation
 
@@ -472,6 +473,7 @@ class DriverProfileCreateScreen extends GetView<DriverProfileController> {
   void _createUserProfile() {
     if (!controller.formKey.currentState!.validate()) return;
     controller.checkFormValidity();
-    controller.createUserProfile();
+    print('yess');
+    // controller.createUserProfile();
   }
 }

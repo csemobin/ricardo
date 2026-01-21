@@ -89,7 +89,6 @@ class DriverProfileController extends GetxController {
           MultipartBody('file', File(selectedImage!.path)),
         ];
       }
-      // print('=====================>>>>>>>>>>>>>>>>> $jsonData');
 
       final response = await ApiClient.patchMultipartData(
         ApiUrls.createUserProfile,
@@ -117,6 +116,7 @@ class DriverProfileController extends GetxController {
     } catch (e) {
       debugPrint(e.toString());
     } finally {
+      clearFieldHandler();
       isCreateUserProfileStatus.value = false;
     }
   }

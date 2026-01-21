@@ -1,7 +1,10 @@
 class ApiUrls{
   // Base, Image, Socket
-  static const String baseUrl = "https://zsv1pz87-5000.inc1.devtunnels.ms/api/v1";
+  // static const String baseUrl = "https://zsv1pz87-5000.inc1.devtunnels.ms/api/v1";
+  static const String baseUrl = "https://desert-attacks-midlands-hawaiian.trycloudflare.com/api/v1";
+
   static const String imageBaseUrl = "https://zsv1pz87-5000.inc1.devtunnels.ms";
+
   static const String socketUrl = "https://zsv1pz87-5000.inc1.devtunnels.ms";
 
   // User Registration Related work
@@ -17,6 +20,9 @@ class ApiUrls{
   static const String authLogin = '/auth/login';
   static const String getMe = '/user/me';
   static const String createUserProfile = '/user/update-user';
+  //License Related work are here
+  static const String registrationLicense = '/registration/license';
+
 
 
   static const String forgetPassword = '/otp/send/forgot-password';
