@@ -77,9 +77,10 @@ class DrivingLicenseController extends GetxController {
           {
             "data": data,
           },
-          multipartBody: multipartBody);
+          multipartBody: multipartBody
+      );
       if (response.statusCode == 200 || response.statusCode == 201) {
-        UserController().fetchUser();
+        await UserController().fetchUser();
         Get.back();
       } else {
         Get.snackbar('Error', response.body['data']['message']);
@@ -111,5 +112,10 @@ class DrivingLicenseController extends GetxController {
     isFormValid.value = licenseNoTEController.text.length == 16 &&
         selectedDrivingLicenseFront.value != null &&
         selectedDrivingLicenseBack.value != null;
+  }
+  @override
+  void onClose() {
+    super.onClose();
+    licenseNoTEController.dispose();
   }
 }

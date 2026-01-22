@@ -473,7 +473,5 @@ class DriverProfileCreateScreen extends GetView<DriverProfileController> {
   void _createUserProfile() {
     if (!controller.formKey.currentState!.validate()) return;
     controller.checkFormValidity();
-    print('yess');
-    // controller.createUserProfile();
   }
 }

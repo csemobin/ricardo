@@ -76,11 +76,8 @@ class _SplashScreenState extends State<SplashScreen>
           return;
         }
 
-        if( user.userProfile?.role == 'driver' ){
-          if( user.driverProfile?.licenseUploaded == false || user.driverProfile?.vehicleDataUploaded == false ){
-            Get.offAllNamed(AppRoutes.uploadRequirementScreen);
-            return;
-          }
+        if( user.userProfile?.role == 'driver' && ( user.driverProfile?.licenseUploaded == false || user.driverProfile?.vehicleDataUploaded == false ) ){
+          Get.offAllNamed(AppRoutes.uploadRequirementScreen);
           return;
         }
         Get.offAllNamed(AppRoutes.customBottomNavBar);

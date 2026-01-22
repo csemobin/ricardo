@@ -65,6 +65,8 @@ class SignInController extends GetxController {
     isLoginStatus.value = false;
   }
 
+
+
   @override
   void onClose(){
     emailTextEditingController.dispose();
