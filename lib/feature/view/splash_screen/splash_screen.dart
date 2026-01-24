@@ -64,7 +64,7 @@ class _SplashScreenState extends State<SplashScreen>
       if( accessToken.isNotEmpty ){
         final UserController userController = Get.find<UserController>();
         await userController.fetchUser();
-        final UserModel? user = userController.userModel;
+        final UserModel? user = userController.userModel.value;
 
         if( user == null ){
           Get.offAllNamed(AppRoutes.signInScreen);

@@ -2,7 +2,7 @@ class ApiUrls{
   // Base, Image, Socket
   // static const String baseUrl = "https://zsv1pz87-5000.inc1.devtunnels.ms/api/v1";
   static const String baseUrl = "https://desert-attacks-midlands-hawaiian.trycloudflare.com/api/v1";
-  static const String imageBaseUrl = "https://zsv1pz87-5000.inc1.devtunnels.ms";
+  static const String imageBaseUrl = "https://desert-attacks-midlands-hawaiian.trycloudflare.com/images/";
   static const String socketUrl = "https://zsv1pz87-5000.inc1.devtunnels.ms";
 
   // User Registration Related work

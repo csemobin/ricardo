@@ -62,7 +62,7 @@ class _UploadRequirementScreenState extends State<UploadRequirementScreen> {
                 // Driving License Card
                 GetBuilder<UserController>(
                   builder: (controller) {
-                    final driverProfile = controller.userModel?.driverProfile;
+                    final driverProfile = controller.userModel?.value?.driverProfile;
                     final isLicenseUploaded = driverProfile?.licenseUploaded ?? false;
 
                     return _buildDocumentCard(
@@ -83,7 +83,7 @@ class _UploadRequirementScreenState extends State<UploadRequirementScreen> {
                 // Car Registration Card
                 GetBuilder<UserController>(
                   builder: (controller) {
-                    final driverProfile = controller.userModel?.driverProfile;
+                    final driverProfile = controller.userModel?.value?.driverProfile;
                     final isVehicleUploaded = driverProfile?.vehicleDataUploaded ?? false;
 
                     return _buildDocumentCard(
@@ -105,7 +105,7 @@ class _UploadRequirementScreenState extends State<UploadRequirementScreen> {
                 Spacer(),
                 GetBuilder<UserController>(
                     builder: (controller){
-                      final driverProfile = controller.userModel?.driverProfile;
+                      final driverProfile = controller.userModel?.value?.driverProfile;
                       final isVehicleUploaded = driverProfile?.vehicleDataUploaded ?? false;
                       final isLicenceUploaded = driverProfile?.licenseUploaded ?? false;
                       return CustomPrimaryButton(

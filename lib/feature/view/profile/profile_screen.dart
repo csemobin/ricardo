@@ -13,7 +13,7 @@ import 'package:ricardo/feature/view/profile/screens/edit_profile_support_screen
 import 'package:ricardo/feature/view/profile/screens/favourites_ride_screen.dart';
 import 'package:ricardo/gen/assets.gen.dart';
 import 'package:ricardo/gen/fonts.gen.dart';
-import 'package:ricardo/routes/app_routes.dart';
+import 'package:ricardo/services/api_urls.dart';
 import 'package:ricardo/widgets/custom_primary_button.dart';
 import 'package:ricardo/widgets/custom_scaffold.dart';
 
@@ -25,6 +25,8 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
+  final UserController controller = Get.find<UserController>();
+
   final List<Map<String, dynamic>> screen = [
     {
       "icon": Assets.images.editProfileProfileScreen.path,
@@ -178,6 +180,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    if (mounted) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (controller.userModel.value == null) {
+          controller.fetchUser();
+        }
+      });
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return CustomScaffold(
         appBar: AppBar(
@@ -192,8 +206,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
           ),
         ),
-        body: SingleChildScrollView(
-          child: Column(
+        body: SingleChildScrollView(child: Obx(() {
+          final userData = controller.userModel.value?.userProfile;
+          return Column(
             children: [
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 12.h, vertical: 16.h),
@@ -205,8 +220,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   children: [
                     ClipRRect(
                       borderRadius: BorderRadius.circular(12),
-                      child: Image.asset(
-                        Assets.images.profileImage.path,
+                      child: Image.network(
+                        controller.userModel.value?.userProfile?.image
+                                    ?.filename !=
+                                null
+                            ? '${ApiUrls.imageBaseUrl}${userData?.image?.filename ?? ''}'
+                            : Assets.images.profileImage.path,
+                        // userData?.image?.filename != null ? Assets.images.profileImage.path : Assets.images.profileImage.path ,
                         height: 85.h,
                         width: 85.w,
                         fit: BoxFit.cover,
@@ -219,33 +239,35 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Rakibul Hasan K',
+                          userData?.name ?? '',
                           style: TextStyle(
                               fontFamily: FontFamily.poppins,
                               fontSize: 20.sp,
                               fontWeight: FontWeight.w700,
                               color: AppColors.successColor),
                         ),
-                        Row(
-                          children: [
-                            Icon(
-                              Icons.star,
-                              color: Colors.yellow,
-                              weight: 12,
-                            ),
-                            SizedBox(
-                              width: 4,
-                            ),
-                            Text(
-                              '4.5 (40)',
-                              style: TextStyle(
-                                  fontFamily: FontFamily.poppins,
-                                  fontSize: 12.sp,
-                                  fontWeight: FontWeight.w500,
-                                  color: AppColors.blackBText),
-                            ),
-                          ],
-                        ),
+                        if( userData?.role == 'driver')
+                          Row(
+                            children: [
+                              Icon(
+                                Icons.star,
+                                color: Colors.yellow,
+                                weight: 12,
+                              ),
+                              SizedBox(
+                                width: 4,
+                              ),
+                              Text(
+                                '${controller.userModel.value?.driverProfile?.ratingAverage.toString()} - ${controller.userModel.value?.driverProfile?.totalRatings.toString()}',
+                                // '4.5 (40)',
+                                style: TextStyle(
+                                    fontFamily: FontFamily.poppins,
+                                    fontSize: 12.sp,
+                                    fontWeight: FontWeight.w500,
+                                    color: AppColors.blackBText),
+                              ),
+                            ],
+                          ),
                         Row(
                           children: [
                             Icon(Icons.call, color: AppColors.greenColor),
@@ -253,7 +275,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               width: 4,
                             ),
                             Text(
-                              '+123 456 789',
+                              userData?.phone.toString() ?? '',
                               style: TextStyle(
                                   fontFamily: FontFamily.poppins,
                                   fontSize: 12.sp,
@@ -272,7 +294,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               width: 4,
                             ),
                             Text(
-                              '4.5 (40)',
+                              userData?.email.toString() ?? '',
                               style: TextStyle(
                                   fontFamily: FontFamily.poppins,
                                   fontSize: 12.sp,
@@ -339,7 +361,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 padding: EdgeInsets.only(bottom: 90.h),
               ),
             ],
-          ),
-        ));
+          );
+        })));
   }
 }

@@ -46,7 +46,7 @@ class SignInController extends GetxController {
       if( response.body['data']!['accessToken'].toString().isNotEmpty){
           final userController = Get.find<UserController>();
           await userController.fetchUser();
-          final user = userController.userModel;
+          final user = userController.userModel.value;
 
           // final userResponse = await ApiClient.getData(ApiUrls.getMe);
           if(  user?.userProfile?.isProfileCompleted == true  && user?.userProfile?.role == 'driver' || user?.userProfile?.isProfileCompleted == true  && user?.userProfile?.role == 'passenger' )

@@ -4,7 +4,9 @@ import 'package:ricardo/services/api_client.dart';
 import 'package:ricardo/services/api_urls.dart';
 
 class UserController extends GetxController {
-  UserModel? userModel;
+
+  Rx<UserModel?> userModel = Rx<UserModel?>(null);
+
   RxBool isUserDataLoadingStatus = false.obs;
 
   Future<void> fetchUser() async {
@@ -13,7 +15,7 @@ class UserController extends GetxController {
     final response = await ApiClient.getData(ApiUrls.getMe);
     if (response.statusCode == 200 || response.statusCode == 201) {
       final data = response.body['data'];
-      userModel = UserModel.fromJson(data);
+      userModel.value = UserModel.fromJson(data);
       update();
     }
     isUserDataLoadingStatus.value = false;

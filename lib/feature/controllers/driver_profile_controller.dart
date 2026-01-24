@@ -197,7 +197,7 @@ class DriverProfileController extends GetxController {
     await userController.fetchUser();
 
     // Navigate based on user role
-    if (userController.userModel?.userProfile?.role == 'driver') {
+    if (userController.userModel?.value?.userProfile?.role == 'driver') {
       Get.offAllNamed(AppRoutes.uploadRequirementScreen);
     } else {
       Get.offAllNamed(AppRoutes.customBottomNavBar);
