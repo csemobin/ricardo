@@ -72,7 +72,7 @@ class ForgetPasswordOtpVerifyController extends GetxController {
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         pinTEController.clear();
-        Get.toNamed(AppRoutes.resetPasswordScreen, arguments: {'email': reqEmail});
+        Get.offAllNamed(AppRoutes.resetPasswordScreen, arguments: {'email': reqEmail});
 
       }
     } catch (e) {

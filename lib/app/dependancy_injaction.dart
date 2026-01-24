@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:ricardo/feature/controllers/auth/car_registration_controller.dart';
+import 'package:ricardo/feature/controllers/auth/change_password_controller.dart';
 import 'package:ricardo/feature/controllers/auth/forget_password_controller.dart';
 import 'package:ricardo/feature/controllers/auth/forget_password_otp_verify_controller.dart';
 import 'package:ricardo/feature/controllers/auth/otp_varify_controller.dart';
@@ -25,5 +26,6 @@ class DependencyInjection implements Bindings{
     Get.put(UserController());
     Get.put(CarRegistrationController());
     Get.lazyPut(() => DriverProfileController());
+    Get.lazyPut(()=> ChangePasswordController());
   }
 }

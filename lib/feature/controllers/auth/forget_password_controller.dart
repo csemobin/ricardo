@@ -16,7 +16,7 @@ class ForgetPasswordController extends GetxController{
     final response = await ApiClient.postData(ApiUrls.otpSendForgotPassword, data);
 
     if( response.statusCode == 200 || response.statusCode == 201 ){
-      Get.toNamed(AppRoutes.forgetPasswordOtpVerifyScreen, arguments: {'email': forgetPasswordTEController.text.trim(),'route': 'forget_pass'});
+      Get.offAllNamed(AppRoutes.forgetPasswordOtpVerifyScreen, arguments: {'email': forgetPasswordTEController.text.trim(),'route': 'forget_pass'});
       forgetPasswordTEController.clear();
     }else{
       Get.snackbar('Error', response.body['message']);

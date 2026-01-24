@@ -27,7 +27,8 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   final UserController controller = Get.find<UserController>();
 
-  final List<Map<String, dynamic>> screen = [
+  // Driver screens
+  final List<Map<String, dynamic>> driverScreens = [
     {
       "icon": Assets.images.editProfileProfileScreen.path,
       "screenName": "Edit Profile",
@@ -49,9 +50,33 @@ class _ProfileScreenState extends State<ProfileScreen> {
       "route": EditProfileSettingScreen(),
     },
     {
+      "icon": Assets.images.logoutProfileScreen.path,
+      "screenName": "LogOut",
+      "route": 'logout',
+    },
+  ];
+
+  // Passenger screens
+  final List<Map<String, dynamic>> passengerScreens = [
+    {
       "icon": Assets.images.editProfileProfileScreen.path,
+      "screenName": "Edit Profile",
+      "route": EditProfileScreen(),
+    },
+    {
+      "icon": Assets.images.editProfileProfileScreen.path, // You might want to change this icon for favorites
       "screenName": "Favorites rides",
       "route": FavouritesRideScreen(),
+    },
+    {
+      "icon": Assets.images.supportProfileScreen.path,
+      "screenName": "Support",
+      "route": EditProfileSupportScreen(),
+    },
+    {
+      "icon": Assets.images.settingsProfileScreen.path,
+      "screenName": "Settings",
+      "route": EditProfileSettingScreen(),
     },
     {
       "icon": Assets.images.logoutProfileScreen.path,
@@ -118,42 +143,42 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       children: [
                         Expanded(
                             child: GestureDetector(
-                          onTap: () {
-                            Navigator.pop(context);
-                          },
-                          child: AnimatedContainer(
-                            duration: Duration(milliseconds: 200),
-                            alignment: Alignment.center,
-                            width: double.maxFinite,
-                            height: 56.h,
-                            decoration: BoxDecoration(
-                              color: AppColors.greyColor500,
-                              borderRadius: BorderRadius.circular(50.r),
-                              border: Border.all(
-                                color: AppColors.greyColor500,
-                                width: 1,
+                              onTap: () {
+                                Navigator.pop(context);
+                              },
+                              child: AnimatedContainer(
+                                duration: Duration(milliseconds: 200),
+                                alignment: Alignment.center,
+                                width: double.maxFinite,
+                                height: 56.h,
+                                decoration: BoxDecoration(
+                                  color: AppColors.greyColor500,
+                                  borderRadius: BorderRadius.circular(50.r),
+                                  border: Border.all(
+                                    color: AppColors.greyColor500,
+                                    width: 1,
+                                  ),
+                                ),
+                                child: Text(
+                                  'Cancel',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    color: AppColors.whiteColor,
+                                    fontSize: 16.sp,
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                ),
                               ),
-                            ),
-                            child: Text(
-                              'Cancel',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                color: AppColors.whiteColor,
-                                fontSize: 16.sp,
-                                fontWeight: FontWeight.w400,
-                              ),
-                            ),
-                          ),
-                        )
-                            // child: CustomPrimaryButton(
-                            //   title: 'Cancel',
-                            //   onHandler: () {
-                            //     Navigator.pop(context);
-                            //     // Get.offAllNamed(AppRoutes.customBottomNavBar);
-                            //     // Get.find<CustomBottomNavBarController>().onChange(0);
-                            //   },
-                            // ),
-                            ),
+                            )
+                          // child: CustomPrimaryButton(
+                          //   title: 'Cancel',
+                          //   onHandler: () {
+                          //     Navigator.pop(context);
+                          //     // Get.offAllNamed(AppRoutes.customBottomNavBar);
+                          //     // Get.find<CustomBottomNavBarController>().onChange(0);
+                          //   },
+                          // ),
+                        ),
                         SizedBox(
                           width: 5.w,
                         ),
@@ -208,6 +233,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ),
         body: SingleChildScrollView(child: Obx(() {
           final userData = controller.userModel.value?.userProfile;
+          final driverData = controller.userModel.value?.driverProfile;
+
+          // Get the appropriate screen list based on role
+          final screenList = userData?.role == 'driver' ? driverScreens : passengerScreens;
+
           return Column(
             children: [
               Container(
@@ -222,11 +252,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       borderRadius: BorderRadius.circular(12),
                       child: Image.network(
                         controller.userModel.value?.userProfile?.image
-                                    ?.filename !=
-                                null
+                            ?.filename !=
+                            null
                             ? '${ApiUrls.imageBaseUrl}${userData?.image?.filename ?? ''}'
                             : Assets.images.profileImage.path,
-                        // userData?.image?.filename != null ? Assets.images.profileImage.path : Assets.images.profileImage.path ,
                         height: 85.h,
                         width: 85.w,
                         fit: BoxFit.cover,
@@ -246,7 +275,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               fontWeight: FontWeight.w700,
                               color: AppColors.successColor),
                         ),
-                        if( userData?.role == 'driver')
+                        if (userData?.role == 'driver')
                           Row(
                             children: [
                               Icon(
@@ -258,8 +287,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 width: 4,
                               ),
                               Text(
-                                '${controller.userModel.value?.driverProfile?.ratingAverage.toString()} - ${controller.userModel.value?.driverProfile?.totalRatings.toString()}',
-                                // '4.5 (40)',
+                                '${driverData?.ratingAverage.toString()} ( ${driverData?.totalRatings.toString() })',
                                 style: TextStyle(
                                     fontFamily: FontFamily.poppins,
                                     fontSize: 12.sp,
@@ -317,10 +345,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 itemBuilder: (context, index) {
                   return GestureDetector(
                     onTap: () {
-                      if (screen[index]['route'] == 'logout') {
+                      if (screenList[index]['route'] == 'logout') {
                         confirmationPopupModal(context);
                       } else {
-                        Get.to(screen[index]['route']);
+                        Get.to(screenList[index]['route']);
                       }
                     },
                     child: Container(
@@ -335,10 +363,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         children: [
                           Row(
                             children: [
-                              Image.asset(screen[index]['icon']),
+                              Image.asset(screenList[index]['icon']),
                               SizedBox(width: 16.w),
                               Text(
-                                screen[index]['screenName'],
+                                screenList[index]['screenName'],
                                 style: TextStyle(
                                   fontFamily: FontFamily.poppins,
                                   fontSize: 14.sp,
@@ -357,7 +385,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 separatorBuilder: (context, index) => SizedBox(
                   height: 16.h,
                 ),
-                itemCount: screen.length,
+                itemCount: screenList.length,
                 padding: EdgeInsets.only(bottom: 90.h),
               ),
             ],

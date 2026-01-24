@@ -18,16 +18,15 @@ class SignInController extends GetxController {
   RxBool isLoginStatus = false.obs;
 
   @override
-  void onInit(){
+  void onInit() {
     super.onInit();
     emailTextEditingController.addListener(_checkSubmit);
     passwordTextEditingController.addListener(_checkSubmit);
   }
 
   void _checkSubmit() {
-    canSubmit.value =
-        emailTextEditingController.text.isNotEmpty &&
-            passwordTextEditingController.text.isNotEmpty;
+    canSubmit.value = emailTextEditingController.text.isNotEmpty &&
+        passwordTextEditingController.text.isNotEmpty;
   }
 
   Future<void> logInUser() async {
@@ -43,53 +42,56 @@ class SignInController extends GetxController {
       final accessToken = response.body['data']['accessToken'];
       await PrefsHelper.setString(AppConstants.bearerToken, accessToken);
 
-      if( response.body['data']!['accessToken'].toString().isNotEmpty){
-          final userController = Get.find<UserController>();
-          await userController.fetchUser();
-          final user = userController.userModel.value;
+      if (response.body['data']!['accessToken'].toString().isNotEmpty) {
+        final userController = Get.find<UserController>();
+        await userController.fetchUser();
+        final user = userController.userModel.value;
 
-          // final userResponse = await ApiClient.getData(ApiUrls.getMe);
-          if(  user?.userProfile?.isProfileCompleted == true  && user?.userProfile?.role == 'driver' || user?.userProfile?.isProfileCompleted == true  && user?.userProfile?.role == 'passenger' )
-          {
-            CustomBottomNavBarController().selectedIndex.value = 0;
-            update();
-            Get.offAllNamed(AppRoutes.customBottomNavBar);
-          }
-          else if( user?.userProfile?.isProfileCompleted == false )
-          {
-            Get.offAllNamed(AppRoutes.driverProfileCreateScreen);
-          }
+        if (user?.userProfile?.isProfileCompleted == true &&
+            user?.userProfile?.role == 'driver' ||
+            user?.userProfile?.isProfileCompleted == true &&
+                user?.userProfile?.role == 'passenger') {
+          CustomBottomNavBarController().selectedIndex.value = 0;
+          update();
+          Get.offAllNamed(AppRoutes.customBottomNavBar);
+        } else if (user?.userProfile?.isProfileCompleted == false) {
+          Get.offAllNamed(AppRoutes.driverProfileCreateScreen);
+        }
       }
       clearField();
-      isLoginStatus.value = false;
-    }else if(response.statusCode == 401 && response.body['data']['isVerified'] == false ){
-        final email = response.body['data']['email'];
-        final verifyResponse = await ApiClient.postData(ApiUrls.otpSendVerification,
-            {"email" : email});
-        if( verifyResponse.statusCode == 200 ){
-          Get.offAllNamed(AppRoutes.otpVarifyScreen,arguments: {'email': email, 'route' : 'sing_up'});
-        }
-    } else {
-      Get.snackbar('Error', response.body['message']);
+    } else if (response.body['data'] != null &&
+        response.body['data']['isVerified'] == false) {
+      final email = response.body['data']['email'];
+      final verifyResponse = await ApiClient.postData(
+          ApiUrls.otpSendVerification, {"email": email});
+      if (verifyResponse.statusCode == 200) {
+        Get.offAllNamed(AppRoutes.otpVarifyScreen,
+            arguments: {'email': email, 'route': 'sing_up'});
+      }
+    }  else {
+      Get.snackbar('Error', response.body['message'] ?? 'An error occurred');
     }
+
     isLoginStatus.value = false;
   }
 
-  Future<void>logOut()async{
+  Future<void> logOut() async {
     final response = await ApiClient.postData(ApiUrls.authLogOut, {});
-    if( response.statusCode == 200 || response.statusCode == 201 ){
-        await PrefsHelper.remove(AppConstants.bearerToken);
-        Get.offAllNamed(AppRoutes.signInScreen);
-    }else{
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      await PrefsHelper.remove(AppConstants.bearerToken);
+      Get.offAllNamed(AppRoutes.signInScreen);
+    } else {
       Get.snackbar('Error', response.body['data']['message']);
     }
   }
-  void clearField(){
+
+  void clearField() {
     emailTextEditingController.clear();
     passwordTextEditingController.clear();
   }
+
   @override
-  void onClose(){
+  void onClose() {
     emailTextEditingController.dispose();
     passwordTextEditingController.dispose();
   }
