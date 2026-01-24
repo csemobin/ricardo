@@ -2,8 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:ricardo/app/helpers/prefs_helper.dart';
 import 'package:ricardo/app/utils/app_constants.dart';
+import 'package:ricardo/feature/controllers/custom_bottom_nav_bar_controller.dart';
 import 'package:ricardo/feature/controllers/user_controller.dart';
-import 'package:ricardo/feature/models/user_model.dart';
 import 'package:ricardo/routes/app_routes.dart';
 import 'package:ricardo/services/api_client.dart';
 import 'package:ricardo/services/api_urls.dart';
@@ -49,24 +49,45 @@ class SignInController extends GetxController {
           final user = userController.userModel;
 
           // final userResponse = await ApiClient.getData(ApiUrls.getMe);
-          if(  user?.userProfile?.isProfileCompleted == true  && user?.userProfile?.role == 'driver' || user?.userProfile?.role == 'passenger' )
+          if(  user?.userProfile?.isProfileCompleted == true  && user?.userProfile?.role == 'driver' || user?.userProfile?.isProfileCompleted == true  && user?.userProfile?.role == 'passenger' )
           {
-            Get.offAllNamed(AppRoutes.homeScreen);
+            CustomBottomNavBarController().selectedIndex.value = 0;
+            update();
+            Get.offAllNamed(AppRoutes.customBottomNavBar);
           }
           else if( user?.userProfile?.isProfileCompleted == false )
           {
             Get.offAllNamed(AppRoutes.driverProfileCreateScreen);
           }
       }
+      clearField();
       isLoginStatus.value = false;
+    }else if(response.statusCode == 401 && response.body['data']['isVerified'] == false ){
+        final email = response.body['data']['email'];
+        final verifyResponse = await ApiClient.postData(ApiUrls.otpSendVerification,
+            {"email" : email});
+        if( verifyResponse.statusCode == 200 ){
+          Get.offAllNamed(AppRoutes.otpVarifyScreen,arguments: {'email': email, 'route' : 'sing_up'});
+        }
     } else {
       Get.snackbar('Error', response.body['message']);
     }
     isLoginStatus.value = false;
   }
 
-
-
+  Future<void>logOut()async{
+    final response = await ApiClient.postData(ApiUrls.authLogOut, {});
+    if( response.statusCode == 200 || response.statusCode == 201 ){
+        await PrefsHelper.remove(AppConstants.bearerToken);
+        Get.offAllNamed(AppRoutes.signInScreen);
+    }else{
+      Get.snackbar('Error', response.body['data']['message']);
+    }
+  }
+  void clearField(){
+    emailTextEditingController.clear();
+    passwordTextEditingController.clear();
+  }
   @override
   void onClose(){
     emailTextEditingController.dispose();

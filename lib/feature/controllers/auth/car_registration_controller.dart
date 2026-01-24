@@ -44,7 +44,7 @@ class CarRegistrationController extends GetxController {
   void onInit() {
     super.onInit();
     _setupListeners();
-    _performInitialValidation();
+    // _performInitialValidation();
   }
 
   @override

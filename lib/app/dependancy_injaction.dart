@@ -7,6 +7,7 @@ import 'package:ricardo/feature/controllers/auth/reset_password_controller.dart'
 import 'package:ricardo/feature/controllers/auth/sign_in_controller.dart';
 import 'package:ricardo/feature/controllers/auth/sign_up_controller.dart';
 import 'package:ricardo/feature/controllers/custom_bottom_nav_bar_controller.dart';
+import 'package:ricardo/feature/controllers/driver_profile_controller.dart';
 import 'package:ricardo/feature/controllers/driving_license_controller.dart';
 import 'package:ricardo/feature/controllers/user_controller.dart';
 
@@ -23,5 +24,6 @@ class DependencyInjection implements Bindings{
     Get.put(ResetPasswordController());
     Get.put(UserController());
     Get.put(CarRegistrationController());
+    Get.lazyPut(() => DriverProfileController());
   }
 }

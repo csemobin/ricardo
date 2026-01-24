@@ -210,6 +210,9 @@ class $AssetsImagesGen {
   AssetGenImage get logoutProfileScreen =>
       const AssetGenImage('assets/images/logout-profile-screen.png');
 
+  /// File path: assets/images/logout.png
+  AssetGenImage get logout => const AssetGenImage('assets/images/logout.png');
+
   /// File path: assets/images/master-card-icon.png
   AssetGenImage get masterCardIcon =>
       const AssetGenImage('assets/images/master-card-icon.png');
@@ -375,6 +378,7 @@ class $AssetsImagesGen {
     homeIcon,
     location,
     logoutProfileScreen,
+    logout,
     masterCardIcon,
     onboardOne,
     onboardThree,

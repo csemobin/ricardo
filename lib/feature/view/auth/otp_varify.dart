@@ -29,7 +29,7 @@ class _OtpVarifyState extends State<OtpVarify> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       controller.startTimer();
     });
-    controller.startTimerSafely();
+    // controller.startTimerSafely();
   }
 
   @override

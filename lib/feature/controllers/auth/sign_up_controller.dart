@@ -58,7 +58,7 @@ class SignUpController extends GetxController {
         };
          final verifyResponse = await ApiClient.postData(ApiUrls.otpSendVerification, email);
          if( verifyResponse.statusCode == 200 ){
-           Get.toNamed(AppRoutes.otpVarifyScreen,arguments: {'email': response.body['data']['user']['email'], 'route' : 'sing_up'});
+           Get.offAllNamed(AppRoutes.otpVarifyScreen,arguments: {'email': response.body['data']['user']['email'], 'route' : 'sing_up'});
            inputFiledHandlerClear();
          }
       } else {

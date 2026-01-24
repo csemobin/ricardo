@@ -27,16 +27,16 @@ class OtpVerifyController extends GetxController {
       otpText.value = pinTEController.text;
     });
   }
-  void startTimerSafely() {
-    Future.microtask(() => startTimer());
-  }
+  // void startTimerSafely() {
+  //   Future.microtask(() => startTimer());
+  // }
   void startTimer() {
     _isTimerActive.value = true;
     _secondsRemaining.value = 180;
 
     _timer = Timer.periodic(Duration(seconds: 1), (timer) {
       if (_secondsRemaining.value > 0) {
-        _secondsRemaining.value--;
+        _secondsRemaining.value -= 1;
       } else {
         _timer?.cancel();
         _isTimerActive.value = false;
@@ -72,7 +72,9 @@ class OtpVerifyController extends GetxController {
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         pinTEController.clear();
-        Get.toNamed(AppRoutes.signInScreen);
+        Get.offAllNamed(AppRoutes.signInScreen);
+      }else{
+        Get.snackbar('Error', response.body['data']['message']);
       }
     } catch (e) {
       Get.snackbar('Error', 'Verification failed: ${e.toString()}');
@@ -86,9 +88,9 @@ class OtpVerifyController extends GetxController {
       stopTimer();
       pinTEController.clear();
 
-      final reqEmail = {"email": email};
+      // final reqEmail = {"email": email};
       final response = await ApiClient.postData(
-          ApiUrls.otpSendVerification, {"email": reqEmail});
+          ApiUrls.otpSendVerification, {"email": email});
 
       if (response.statusCode == 200) {
         Get.snackbar('Success', 'OTP sent successfully!');
