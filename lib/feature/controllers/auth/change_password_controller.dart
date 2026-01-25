@@ -141,8 +141,8 @@ class ChangePasswordController extends GetxController {
           'Success',
           'Password changed successfully',
           snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.green,
-          colorText: Colors.white,
+          // backgroundColor: Colors.green,
+          // colorText: Colors.white,
         );
 
         // Logout and redirect to sign in
@@ -150,18 +150,19 @@ class ChangePasswordController extends GetxController {
         Get.offAllNamed(AppRoutes.signInScreen);
 
       } else {
-        String errorMsg = 'Failed to change password';
-        if (response.body != null && response.body['data'] != null) {
-          errorMsg = response.body['data']['message'] ?? errorMsg;
-        }
-        errorMessage.value = errorMsg;
-        Get.snackbar(
-          'Error',
-          errorMsg,
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.red,
-          colorText: Colors.white,
-        );
+        Get.snackbar('Error', response.body['message'],snackPosition:SnackPosition.BOTTOM);
+        // String errorMsg = 'Failed to change password';
+        // if (response.body != null && response.body['data'] != null) {
+        //   errorMsg = response.body['data']['message'] ?? errorMsg;
+        // }
+        // errorMessage.value = errorMsg;
+        // Get.snackbar(
+        //   'Error',
+        //   errorMsg,
+        //   snackPosition: SnackPosition.BOTTOM,
+        //   backgroundColor: Colors.red,
+        //   colorText: Colors.white,
+        // );
       }
     } catch (e) {
       debugPrint('Change password error: $e');

@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:ricardo/app/utils/app_colors.dart';
 import 'package:ricardo/feature/view/profile/screens/settings/about_us_screen.dart';
 import 'package:ricardo/feature/view/profile/screens/settings/change_password_screen.dart';
+import 'package:ricardo/feature/view/profile/screens/settings/legal_policy_screen.dart';
 import 'package:ricardo/feature/view/profile/screens/settings/privacy_policy_screen.dart';
 import 'package:ricardo/feature/view/profile/screens/settings/terms_condition_screen.dart';
 import 'package:ricardo/gen/assets.gen.dart';
@@ -22,17 +23,17 @@ class EditProfileSettingScreen extends StatelessWidget{
     {
       "icon": Assets.images.settingAboutIcon.path,
       "screenName": "About Us",
-      "route" : AboutUsScreen(),
+      "route" : LegalPolicyScreen(),
     },
     {
       "icon": Assets.images.settingTermsAndConditionIcon.path,
       "screenName": "Terms & Conditions",
-      "route" : TermsConditionScreen(),
+      "route" : LegalPolicyScreen(),
     },
     {
       "icon": Assets.images.settingPrivacyPolicyIcon.path,
       "screenName": "Privacy Policy",
-      "route" : PrivacyPolicyScreen(),
+      "route" : LegalPolicyScreen(),
     },
     {
       "icon": Assets.images.settingDeleteIcon.path,
@@ -66,8 +67,18 @@ class EditProfileSettingScreen extends StatelessWidget{
               itemBuilder: (context, index) {
                 return GestureDetector(
                   onTap: (){
-
-                    Get.to(screen[index]['route']);
+                    final route = screen[index]['screenName'];
+                    if(route == "About Us" || route == "Terms & Conditions" || route == "Privacy Policy"){
+                      if( route == "About Us" ){
+                        Get.to(screen[index]['route'], arguments: {'title': route, 'route' : 'about'});
+                      }else if(route == "Terms & Conditions"){
+                        Get.to(screen[index]['route'], arguments: {'title': route, 'route' : 'terms'});
+                      }else{
+                        Get.to(screen[index]['route'], arguments: {'title': route, 'route' : 'privacy'});
+                      }
+                    } else {
+                      Get.to(screen[index]['route']);
+                    }
                   },
                   child: Container(
                     padding:

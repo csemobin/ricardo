@@ -24,7 +24,8 @@ class ApiUrls{
   //License Related work are here
   static const String registrationLicense = '/registration/license';
   static const String registrationVehicle = '/registration/vehicle';
-
+  // Privacy Policy - Terms & Condition - About us
+  static String legalContent(String url) => '/$url';
 
 
 

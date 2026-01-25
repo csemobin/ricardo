@@ -108,7 +108,7 @@ class SignInScreen extends StatelessWidget {
                           child: CustomPrimaryButton(
                             title: 'Sign In',
                             onHandler: controller.canSubmit.value
-                              ? () => _signIn(controller)
+                              ? () => _signIn(controller, context )
                             : null,
                             // onHandler: () {
                             //
@@ -155,8 +155,9 @@ class SignInScreen extends StatelessWidget {
     );
   }
 
-  void _signIn(SignInController controller) {
+  void _signIn(SignInController controller, BuildContext context) {
     if (!_formKey.currentState!.validate()) return;
+    FocusScope.of(context).unfocus();
     controller.logInUser();
   }
 }

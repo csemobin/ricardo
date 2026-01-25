@@ -4,17 +4,20 @@ import 'package:ricardo/feature/controllers/auth/change_password_controller.dart
 import 'package:ricardo/feature/controllers/auth/forget_password_controller.dart';
 import 'package:ricardo/feature/controllers/auth/forget_password_otp_verify_controller.dart';
 import 'package:ricardo/feature/controllers/auth/otp_varify_controller.dart';
+import 'package:ricardo/feature/controllers/auth/profile_update_controller.dart';
 import 'package:ricardo/feature/controllers/auth/reset_password_controller.dart';
 import 'package:ricardo/feature/controllers/auth/sign_in_controller.dart';
 import 'package:ricardo/feature/controllers/auth/sign_up_controller.dart';
 import 'package:ricardo/feature/controllers/custom_bottom_nav_bar_controller.dart';
 import 'package:ricardo/feature/controllers/driver_profile_controller.dart';
 import 'package:ricardo/feature/controllers/driving_license_controller.dart';
+import 'package:ricardo/feature/controllers/legal_controller.dart';
 import 'package:ricardo/feature/controllers/user_controller.dart';
 
 class DependencyInjection implements Bindings{
   @override
   void dependencies(){
+    Get.put(LegalController());
     Get.put(CustomBottomNavBarController());
     Get.put(DrivingLicenseController());
     Get.put(SignUpController());
@@ -27,5 +30,6 @@ class DependencyInjection implements Bindings{
     Get.put(CarRegistrationController());
     Get.lazyPut(() => DriverProfileController());
     Get.lazyPut(()=> ChangePasswordController());
+    Get.lazyPut(()=>ProfileUpdateController());
   }
 }

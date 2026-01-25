@@ -64,7 +64,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
       "route": EditProfileScreen(),
     },
     {
-      "icon": Assets.images.editProfileProfileScreen.path, // You might want to change this icon for favorites
+      "icon": Assets.images.editProfileProfileScreen.path,
+      // You might want to change this icon for favorites
       "screenName": "Favorites rides",
       "route": FavouritesRideScreen(),
     },
@@ -143,42 +144,42 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       children: [
                         Expanded(
                             child: GestureDetector(
-                              onTap: () {
-                                Navigator.pop(context);
-                              },
-                              child: AnimatedContainer(
-                                duration: Duration(milliseconds: 200),
-                                alignment: Alignment.center,
-                                width: double.maxFinite,
-                                height: 56.h,
-                                decoration: BoxDecoration(
-                                  color: AppColors.greyColor500,
-                                  borderRadius: BorderRadius.circular(50.r),
-                                  border: Border.all(
-                                    color: AppColors.greyColor500,
-                                    width: 1,
-                                  ),
-                                ),
-                                child: Text(
-                                  'Cancel',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    color: AppColors.whiteColor,
-                                    fontSize: 16.sp,
-                                    fontWeight: FontWeight.w400,
-                                  ),
-                                ),
+                          onTap: () {
+                            Navigator.pop(context);
+                          },
+                          child: AnimatedContainer(
+                            duration: Duration(milliseconds: 200),
+                            alignment: Alignment.center,
+                            width: double.maxFinite,
+                            height: 56.h,
+                            decoration: BoxDecoration(
+                              color: AppColors.greyColor500,
+                              borderRadius: BorderRadius.circular(50.r),
+                              border: Border.all(
+                                color: AppColors.greyColor500,
+                                width: 1,
                               ),
-                            )
-                          // child: CustomPrimaryButton(
-                          //   title: 'Cancel',
-                          //   onHandler: () {
-                          //     Navigator.pop(context);
-                          //     // Get.offAllNamed(AppRoutes.customBottomNavBar);
-                          //     // Get.find<CustomBottomNavBarController>().onChange(0);
-                          //   },
-                          // ),
-                        ),
+                            ),
+                            child: Text(
+                              'Cancel',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color: AppColors.whiteColor,
+                                fontSize: 16.sp,
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                          ),
+                        )
+                            // child: CustomPrimaryButton(
+                            //   title: 'Cancel',
+                            //   onHandler: () {
+                            //     Navigator.pop(context);
+                            //     // Get.offAllNamed(AppRoutes.customBottomNavBar);
+                            //     // Get.find<CustomBottomNavBarController>().onChange(0);
+                            //   },
+                            // ),
+                            ),
                         SizedBox(
                           width: 5.w,
                         ),
@@ -219,177 +220,184 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return CustomScaffold(
-        appBar: AppBar(
-          backgroundColor: AppColors.bgColor,
-          forceMaterialTransparency: true,
-          centerTitle: true,
-          title: Text(
-            'Profile',
-            style: TextStyle(
-              color: AppColors.primaryColor,
-              fontWeight: FontWeight.w700,
-            ),
+      appBar: AppBar(
+        backgroundColor: AppColors.bgColor,
+        forceMaterialTransparency: true,
+        centerTitle: true,
+        title: Text(
+          'Profile',
+          style: TextStyle(
+            color: AppColors.primaryColor,
+            fontWeight: FontWeight.w700,
           ),
         ),
-        body: SingleChildScrollView(child: Obx(() {
-          final userData = controller.userModel.value?.userProfile;
-          final driverData = controller.userModel.value?.driverProfile;
+      ),
+      body: SingleChildScrollView(
+        child: Obx(
+          () {
+            final userData = controller.userModel.value?.userProfile;
+            final driverData = controller.userModel.value?.driverProfile;
 
-          // Get the appropriate screen list based on role
-          final screenList = userData?.role == 'driver' ? driverScreens : passengerScreens;
+            // Get the appropriate screen list based on role
+            final screenList =
+                userData?.role == 'driver' ? driverScreens : passengerScreens;
 
-          return Column(
-            children: [
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 12.h, vertical: 16.h),
-                decoration: BoxDecoration(
-                  color: AppColors.whiteColor,
-                  borderRadius: BorderRadius.circular(8.r),
-                ),
-                child: Row(
-                  children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(12),
-                      child: Image.network(
-                        controller.userModel.value?.userProfile?.image
-                            ?.filename !=
-                            null
-                            ? '${ApiUrls.imageBaseUrl}${userData?.image?.filename ?? ''}'
-                            : Assets.images.profileImage.path,
-                        height: 85.h,
-                        width: 85.w,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                    SizedBox(
-                      width: 12.w,
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          userData?.name ?? '',
-                          style: TextStyle(
-                              fontFamily: FontFamily.poppins,
-                              fontSize: 20.sp,
-                              fontWeight: FontWeight.w700,
-                              color: AppColors.successColor),
+            return Column(
+              children: [
+                Container(
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 12.h, vertical: 16.h),
+                  decoration: BoxDecoration(
+                    color: AppColors.whiteColor,
+                    borderRadius: BorderRadius.circular(8.r),
+                  ),
+                  child: Row(
+                    children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(12),
+                        child: Image.network(
+                          controller.userModel.value?.userProfile?.image
+                                      ?.filename !=
+                                  null
+                              ? '${ApiUrls.imageBaseUrl}${userData?.image?.filename ?? ''}'
+                              : Assets.images.profileImage.path,
+                          height: 85.h,
+                          width: 85.w,
+                          fit: BoxFit.cover,
                         ),
-                        if (userData?.role == 'driver')
+                      ),
+                      SizedBox(
+                        width: 12.w,
+                      ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            userData?.name ?? '',
+                            style: TextStyle(
+                                fontFamily: FontFamily.poppins,
+                                fontSize: 20.sp,
+                                fontWeight: FontWeight.w700,
+                                color: AppColors.successColor),
+                          ),
+                          if (userData?.role == 'driver')
+                            Row(
+                              children: [
+                                Icon(
+                                  Icons.star,
+                                  color: Colors.yellow,
+                                  weight: 12,
+                                ),
+                                SizedBox(
+                                  width: 4,
+                                ),
+                                Text(
+                                  '${driverData?.ratingAverage.toString()} ( ${driverData?.totalRatings.toString()})',
+                                  style: TextStyle(
+                                      fontFamily: FontFamily.poppins,
+                                      fontSize: 12.sp,
+                                      fontWeight: FontWeight.w500,
+                                      color: AppColors.blackBText),
+                                ),
+                              ],
+                            ),
+                          Row(
+                            children: [
+                              Icon(Icons.call, color: AppColors.greenColor),
+                              SizedBox(
+                                width: 4,
+                              ),
+                              Text(
+                                userData?.phone.toString() ?? '',
+                                style: TextStyle(
+                                    fontFamily: FontFamily.poppins,
+                                    fontSize: 12.sp,
+                                    fontWeight: FontWeight.w500,
+                                    color: AppColors.labelTextColor),
+                              ),
+                            ],
+                          ),
                           Row(
                             children: [
                               Icon(
-                                Icons.star,
-                                color: Colors.yellow,
-                                weight: 12,
+                                Icons.email,
+                                color: AppColors.greenColor,
                               ),
                               SizedBox(
                                 width: 4,
                               ),
                               Text(
-                                '${driverData?.ratingAverage.toString()} ( ${driverData?.totalRatings.toString() })',
+                                userData?.email.toString() ?? '',
                                 style: TextStyle(
                                     fontFamily: FontFamily.poppins,
                                     fontSize: 12.sp,
                                     fontWeight: FontWeight.w500,
-                                    color: AppColors.blackBText),
+                                    color: AppColors.labelTextColor),
                               ),
                             ],
                           ),
-                        Row(
-                          children: [
-                            Icon(Icons.call, color: AppColors.greenColor),
-                            SizedBox(
-                              width: 4,
-                            ),
-                            Text(
-                              userData?.phone.toString() ?? '',
-                              style: TextStyle(
-                                  fontFamily: FontFamily.poppins,
-                                  fontSize: 12.sp,
-                                  fontWeight: FontWeight.w500,
-                                  color: AppColors.labelTextColor),
-                            ),
-                          ],
-                        ),
-                        Row(
-                          children: [
-                            Icon(
-                              Icons.email,
-                              color: AppColors.greenColor,
-                            ),
-                            SizedBox(
-                              width: 4,
-                            ),
-                            Text(
-                              userData?.email.toString() ?? '',
-                              style: TextStyle(
-                                  fontFamily: FontFamily.poppins,
-                                  fontSize: 12.sp,
-                                  fontWeight: FontWeight.w500,
-                                  color: AppColors.labelTextColor),
-                            ),
-                          ],
-                        ),
-                      ],
-                    )
-                  ],
-                ),
-              ),
-              SizedBox(
-                height: 28.h,
-              ),
-              ListView.separated(
-                shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
-                itemBuilder: (context, index) {
-                  return GestureDetector(
-                    onTap: () {
-                      if (screenList[index]['route'] == 'logout') {
-                        confirmationPopupModal(context);
-                      } else {
-                        Get.to(screenList[index]['route']);
-                      }
-                    },
-                    child: Container(
-                      padding: EdgeInsets.symmetric(
-                          vertical: 20.h, horizontal: 20.w),
-                      decoration: BoxDecoration(
-                        color: AppColors.whiteColor,
-                        borderRadius: BorderRadius.circular(8.r),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            children: [
-                              Image.asset(screenList[index]['icon']),
-                              SizedBox(width: 16.w),
-                              Text(
-                                screenList[index]['screenName'],
-                                style: TextStyle(
-                                  fontFamily: FontFamily.poppins,
-                                  fontSize: 14.sp,
-                                  fontWeight: FontWeight.w500,
-                                  color: AppColors.blackButton,
-                                ),
-                              ),
-                            ],
-                          ),
-                          Image.asset(Assets.images.arrowDropDown.path),
                         ],
-                      ),
-                    ),
-                  );
-                },
-                separatorBuilder: (context, index) => SizedBox(
-                  height: 16.h,
+                      )
+                    ],
+                  ),
                 ),
-                itemCount: screenList.length,
-                padding: EdgeInsets.only(bottom: 90.h),
-              ),
-            ],
-          );
-        })));
+                SizedBox(
+                  height: 28.h,
+                ),
+                ListView.separated(
+                  shrinkWrap: true,
+                  physics: NeverScrollableScrollPhysics(),
+                  itemBuilder: (context, index) {
+                    return GestureDetector(
+                      onTap: () {
+                        if (screenList[index]['route'] == 'logout') {
+                          confirmationPopupModal(context);
+                        } else {
+                          Get.to(screenList[index]['route']);
+                        }
+                      },
+                      child: Container(
+                        padding: EdgeInsets.symmetric(
+                            vertical: 20.h, horizontal: 20.w),
+                        decoration: BoxDecoration(
+                          color: AppColors.whiteColor,
+                          borderRadius: BorderRadius.circular(8.r),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              children: [
+                                Image.asset(screenList[index]['icon']),
+                                SizedBox(width: 16.w),
+                                Text(
+                                  screenList[index]['screenName'],
+                                  style: TextStyle(
+                                    fontFamily: FontFamily.poppins,
+                                    fontSize: 14.sp,
+                                    fontWeight: FontWeight.w500,
+                                    color: AppColors.blackButton,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Image.asset(Assets.images.arrowDropDown.path),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                  separatorBuilder: (context, index) => SizedBox(
+                    height: 16.h,
+                  ),
+                  itemCount: screenList.length,
+                  padding: EdgeInsets.only(bottom: 90.h),
+                ),
+              ],
+            );
+          },
+        ),
+      ),
+    );
   }
 }

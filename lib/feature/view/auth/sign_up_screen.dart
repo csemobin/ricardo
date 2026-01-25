@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:ricardo/app/utils/app_colors.dart';
 import 'package:ricardo/feature/controllers/auth/sign_up_controller.dart';
+import 'package:ricardo/feature/view/profile/screens/settings/legal_policy_screen.dart';
 import 'package:ricardo/routes/app_routes.dart';
 import 'package:ricardo/widgets/custom_loader.dart';
 import 'package:ricardo/widgets/custom_primary_button.dart';
@@ -113,7 +114,8 @@ class SignUpScreen extends StatelessWidget {
                         ),
                         GestureDetector(
                           onTap: () {
-                            Get.toNamed(AppRoutes.termsAndConditionScreen);
+                            // Get.toNamed(AppRoutes.termsAndConditionScreen);
+                            Get.toNamed( AppRoutes.legalPolicyScreen, arguments: {'title': 'Terms & Conditions', 'route' : 'terms'});
                           },
                           child: Text(
                             'Terms of Use ',
@@ -132,7 +134,8 @@ class SignUpScreen extends StatelessWidget {
                                 fontSize: 12.sp, color: AppColors.greenColor),
                           ),
                           onTap: () {
-                            Get.toNamed(AppRoutes.privacyPolicyScreen);
+                            // Get.toNamed(AppRoutes.privacyPolicyScreen);
+                            Get.toNamed( AppRoutes.legalPolicyScreen, arguments: {'title': 'Privacy Policy', 'route' : 'privacy'});
                           },
                         ),
                       ],
