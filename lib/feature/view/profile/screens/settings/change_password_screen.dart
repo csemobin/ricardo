@@ -15,7 +15,7 @@ class ChangePasswordScreen extends StatefulWidget {
 }
 
 class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
-  final controller = Get.find<ChangePasswordController>();
+  final controller = Get.put(ChangePasswordController());
 
   @override
   Widget build(BuildContext context) {

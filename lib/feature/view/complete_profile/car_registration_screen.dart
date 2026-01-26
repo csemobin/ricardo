@@ -15,7 +15,7 @@ import 'package:ricardo/widgets/custom_text_field.dart';
 class CarRegistrationScreen extends StatelessWidget {
   CarRegistrationScreen({super.key});
 
-  final CarRegistrationController controller = Get.find<CarRegistrationController>();
+  final CarRegistrationController controller = Get.put(CarRegistrationController());
 
   @override
   Widget build(BuildContext context) {

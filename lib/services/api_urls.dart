@@ -21,6 +21,8 @@ class ApiUrls{
   static const String getMe = '/user/me';
   static const String createUserProfile = '/user/update-user';
   static const String changePassword = '/auth/change-password';
+  static const String updateProfile = '/user/update-user';
+
   //License Related work are here
   static const String registrationLicense = '/registration/license';
   static const String registrationVehicle = '/registration/vehicle';

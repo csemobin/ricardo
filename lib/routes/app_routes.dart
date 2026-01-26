@@ -16,7 +16,6 @@ import 'package:ricardo/feature/view/complete_profile/upload_driving_license_scr
 import 'package:ricardo/feature/view/complete_profile/upload_requirement_screen.dart';
 import 'package:ricardo/feature/view/profile/screens/settings/legal_policy_screen.dart';
 import 'package:ricardo/feature/view/profile/screens/settings/privacy_policy_screen.dart';
-import 'package:ricardo/feature/view/profile/screens/settings/terms_condition_screen.dart';
 import 'package:ricardo/feature/view/splash_screen/on_board_screen.dart';
 import 'package:ricardo/feature/view/splash_screen/splash_screen.dart';
 import 'package:ricardo/feature/view/wallet/add_card_screen.dart';
@@ -74,7 +73,6 @@ abstract class AppRoutes {
     paymentMethodsSelectionScreen: (context) => PaymentMethodsSelectionScreen(),
     withdrawRequestScreen: (context) => WithdrawRequestScreen(),
     addCardScreen: (context) => AddCardScreen(),
-    termsAndConditionScreen: (context) => TermsConditionScreen(),
     privacyPolicyScreen: (context) => PrivacyPolicyScreen(),
     forgetPasswordOtpVerifyScreen: (context) => ForgetPasswordOtpScreen(),
     legalPolicyScreen : (context) => LegalPolicyScreen(),

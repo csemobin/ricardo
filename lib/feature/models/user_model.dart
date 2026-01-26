@@ -40,6 +40,8 @@ class UserProfile {
   bool? isVerified;
   String? createdAt;
   String? updatedAt;
+  String? aboutMe;
+  String? dob;
 
   UserProfile({
     this.location,
@@ -59,6 +61,8 @@ class UserProfile {
     this.isVerified,
     this.createdAt,
     this.updatedAt,
+    this.aboutMe,
+    this.dob
   });
 
   UserProfile.fromJson(Map<String, dynamic> json) {
@@ -81,6 +85,8 @@ class UserProfile {
     isVerified = json['isVerified'];
     createdAt = json['createdAt'];
     updatedAt = json['updatedAt'];
+    aboutMe = json['aboutMe'];
+    dob = json['dob'];
   }
 
   // ✅ Added toJson
@@ -103,6 +109,8 @@ class UserProfile {
       'isVerified': isVerified,
       'createdAt': createdAt,
       'updatedAt': updatedAt,
+      'aboutMe': aboutMe,
+      'dob': dob,
     };
   }
 }
