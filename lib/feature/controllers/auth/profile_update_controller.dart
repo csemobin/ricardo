@@ -149,7 +149,8 @@ class ProfileUpdateController extends GetxController {
         {"data": jsonEncode(data)},
         multipartBody: image,
       );
-
+print('==================================');
+ print(response.body.toString());
       if (response.statusCode == 200 || response.statusCode == 201 ) {
         await userController.fetchUser();
         Get.back();
@@ -158,7 +159,7 @@ class ProfileUpdateController extends GetxController {
         Get.snackbar('Error', response.body['data']['message']);
       }
     } catch (e) {
-      Get.snackbar('Error', 'Something went wrong');
+      debugPrint(e.toString());
     } finally {
       isLoading.value = false;
     }

@@ -79,7 +79,7 @@ class AddCardScreen extends StatelessWidget {
             ),
           ),
           Spacer(),
-          CustomPrimaryButton(title: 'Add Button', onHandler: (){
+          CustomPrimaryButton(title: 'Add Card', onHandler: (){
 
           }),
           Spacer(),

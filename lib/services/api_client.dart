@@ -4,12 +4,15 @@ import 'package:get/get.dart';
 import 'package:get/get_connect/http/src/request/request.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
+import 'package:mime_type/mime_type.dart';
+import 'package:ricardo/routes/app_routes.dart';
+
 import '../app/helpers/prefs_helper.dart';
 import '../app/utils/app_constants.dart';
-import 'package:mime_type/mime_type.dart';
 import 'api_urls.dart';
 import 'error_response.dart';
 import 'logger.dart';
+
 
 final log = logger(ApiClient);
 
@@ -20,8 +23,7 @@ class ApiClient extends GetxService {
   static String bearerToken = "";
 
   // <==========================================> Get Data <======================================>
-  static Future<Response> getData(String uri,
-      {Map<String, String>? headers}) async {
+  static Future<Response> getData(String uri, {Map<String, String>? headers}) async {
     bearerToken = await PrefsHelper.getString(AppConstants.bearerToken);
 
     var mainHeaders = {
@@ -33,12 +35,10 @@ class ApiClient extends GetxService {
           '|📍📍📍|-----------------[[ GET ]] method details start -----------------|📍📍📍|');
       log.i('URL: $uri \n Headers: ${headers ?? mainHeaders}');
 
-      http.Response response = await client
-          .get(
-            Uri.parse(ApiUrls.baseUrl + uri),
-            headers: headers ?? mainHeaders,
-          )
-          .timeout(const Duration(seconds: timeoutInSeconds));
+      http.Response response = await client.get(
+        Uri.parse(ApiUrls.baseUrl + uri),
+        headers: headers ?? mainHeaders,
+      ).timeout(const Duration(seconds: timeoutInSeconds));
 
       return handleResponse(response, uri);
     } catch (e, s) {
@@ -49,8 +49,7 @@ class ApiClient extends GetxService {
   }
 
   //==========================================> Post Data <======================================
-  static Future<Response> postData(String uri, dynamic body,
-      {Map<String, String>? headers}) async {
+  static Future<Response> postData(String uri, dynamic body, {Map<String, String>? headers}) async {
     String bearerToken = await PrefsHelper.getString(AppConstants.bearerToken);
 
     var mainHeaders = {
@@ -63,13 +62,11 @@ class ApiClient extends GetxService {
           '|📍📍📍|-----------------[[ POST ]] method details start -----------------|📍📍📍|');
       log.i('URL: $uri \n ${headers ?? mainHeaders} \n $body');
 
-      http.Response response = await client
-          .post(
-            Uri.parse(ApiUrls.baseUrl + uri),
-            body: jsonEncode(body),
-            headers: headers ?? mainHeaders,
-          )
-          .timeout(const Duration(seconds: timeoutInSeconds));
+      http.Response response = await client.post(
+        Uri.parse(ApiUrls.baseUrl + uri),
+        body: jsonEncode(body),
+        headers: headers ?? mainHeaders,
+      ).timeout(const Duration(seconds: timeoutInSeconds));
 
       log.i("==========> Response Post Method: ${response.statusCode}");
       return handleResponse(response, uri);
@@ -80,28 +77,33 @@ class ApiClient extends GetxService {
     }
   }
 
+
   //==========================================> Patch Data <======================================
-  static Future<Response> patch(String uri, var body,
+  static Future<Response> patch(String uri, dynamic body,
       {Map<String, String>? headers}) async {
     bearerToken = await PrefsHelper.getString(AppConstants.bearerToken);
 
     var mainHeaders = {
-      //'Content-Type': 'application/json',
+      'Content-Type': 'application/json',
       'Authorization': 'Bearer $bearerToken'
     };
+
+    if (headers != null) {
+      mainHeaders.addAll(headers);
+    }
+
     try {
-      log.i(
-          '|📍📍📍|-----------------[[ PATCH ]] method details start -----------------|📍📍📍|');
+      log.i('|📍📍📍|-----------------[[ PATCH ]] method details start -----------------|📍📍📍|');
       log.i('URL: $uri');
-      log.i('Headers: ${headers ?? mainHeaders}');
+      log.i('Headers: $mainHeaders');
       log.i('API Body: $body');
 
       http.Response response = await client
           .patch(
-            Uri.parse(ApiUrls.baseUrl + uri),
-            body: body,
-            headers: headers ?? mainHeaders,
-          )
+        Uri.parse(ApiUrls.baseUrl + uri),
+        body: body is String ? body : jsonEncode(body),
+        headers: mainHeaders,
+      )
           .timeout(const Duration(seconds: timeoutInSeconds));
 
       log.i("==========> Response Patch Method: ${response.statusCode}");
@@ -112,9 +114,9 @@ class ApiClient extends GetxService {
     }
   }
 
+
   //==========================================> put Data <======================================
-  static Future<Response> put(String uri, var body,
-      {Map<String, String>? headers}) async {
+  static Future<Response> put(String uri, var body, {Map<String, String>? headers}) async {
     bearerToken = await PrefsHelper.getString(AppConstants.bearerToken);
 
     var mainHeaders = {
@@ -130,13 +132,14 @@ class ApiClient extends GetxService {
 
       http.Response response = await client
           .put(
-            Uri.parse(ApiUrls.baseUrl + uri),
-            body: body,
-            headers: headers ?? mainHeaders,
-          )
+        Uri.parse(ApiUrls.baseUrl + uri),
+        body: body,
+        headers: headers ?? mainHeaders,
+      )
           .timeout(const Duration(seconds: timeoutInSeconds));
 
-      log.i("==========> Response Patch Method: ${response.statusCode}");
+      log.i(
+          "==========> Response Patch Method: ${response.statusCode}");
       return handleResponse(response, uri);
     } catch (e) {
       log.e("🐞🐞🐞 Error in patch: ${e.toString()}");
@@ -145,10 +148,7 @@ class ApiClient extends GetxService {
   }
 
   //==========================================> Post Multipart Data <======================================
-  static Future<Response> postMultipartData(
-      String uri, Map<dynamic, dynamic> body,
-      {List<MultipartBody>? multipartBody,
-      Map<String, String>? headers}) async {
+  static Future<Response> postMultipartData(String uri, Map<dynamic, dynamic> body, {List<MultipartBody>? multipartBody, Map<String, String>? headers}) async {
     try {
       // Fetch Bearer Token
       bearerToken = await PrefsHelper.getString(AppConstants.bearerToken);
@@ -166,8 +166,7 @@ class ApiClient extends GetxService {
       log.i('API Body: $body with ${multipartBody?.length ?? 0} files');
 
       // Create Multipart Request
-      var request =
-          http.MultipartRequest('POST', Uri.parse(ApiUrls.baseUrl + uri));
+      var request = http.MultipartRequest('POST', Uri.parse(ApiUrls.baseUrl + uri));
 
       // Add headers
       request.headers.addAll(headers ?? mainHeaders);
@@ -209,8 +208,7 @@ class ApiClient extends GetxService {
   }
 
   //==========================================> Put Data <======================================
-  Future<Response> putData(String uri, dynamic body,
-      {Map<String, String>? headers}) async {
+  Future<Response> putData(String uri, dynamic body, {Map<String, String>? headers}) async {
     bearerToken = await PrefsHelper.getString(AppConstants.bearerToken);
 
     var mainHeaders = {
@@ -226,10 +224,10 @@ class ApiClient extends GetxService {
 
       http.Response response = await http
           .put(
-            Uri.parse(ApiUrls.baseUrl + uri),
-            body: jsonEncode(body),
-            headers: headers ?? mainHeaders,
-          )
+        Uri.parse(ApiUrls.baseUrl + uri),
+        body: jsonEncode(body),
+        headers: headers ?? mainHeaders,
+      )
           .timeout(const Duration(seconds: timeoutInSeconds));
       return handleResponse(response, uri);
     } catch (e) {
@@ -239,13 +237,7 @@ class ApiClient extends GetxService {
   }
 
   //==========================================> Put Multipart Data <======================================
-  static Future<Response> putMultipartData(
-    String uri,
-    Map<String, String> body, {
-    List<MultipartBody>? multipartBody,
-    List<MultipartListBody>? multipartListBody,
-    Map<String, String>? headers,
-  }) async {
+  static Future<Response> putMultipartData(String uri, Map<String, String> body, {List<MultipartBody>? multipartBody, List<MultipartListBody>? multipartListBody, Map<String, String>? headers,}) async {
     try {
       // Fetch bearer token from preferences
       bearerToken = await PrefsHelper.getString(AppConstants.bearerToken);
@@ -264,8 +256,7 @@ class ApiClient extends GetxService {
       log.i('API Body: $body with ${multipartBody?.length ?? 0} file(s)');
 
       // Create a MultipartRequest for PUT
-      var request =
-          http.MultipartRequest('PUT', Uri.parse(ApiUrls.baseUrl + uri));
+      var request = http.MultipartRequest('PUT', Uri.parse(ApiUrls.baseUrl + uri));
       request.fields.addAll(body); // Add fields to request
 
       // Check if multipartBody exists and is not empty
@@ -301,8 +292,7 @@ class ApiClient extends GetxService {
         body: json.decode(content),
       );
     } catch (e, s) {
-      log.e(
-          "==================================== Error in putMultipartData: ${e.toString()}");
+      log.e("==================================== Error in putMultipartData: ${e.toString()}");
       log.e("Stacktrace: ${s.toString()}");
       return const Response(statusCode: 1, statusText: noInternetMessage);
     }
@@ -312,8 +302,8 @@ class ApiClient extends GetxService {
   static Future<Response> patchMultipartData(
       String uri, Map<String, String> body,
       {List<MultipartBody>? multipartBody,
-      List<MultipartListBody>? multipartListBody,
-      Map<String, String>? headers}) async {
+        List<MultipartListBody>? multipartListBody,
+        Map<String, String>? headers}) async {
     try {
       bearerToken = await PrefsHelper.getString(AppConstants.bearerToken);
 
@@ -329,7 +319,7 @@ class ApiClient extends GetxService {
       log.i('API Body: $body with ${multipartBody?.length ?? 0} file(s)');
 
       var request =
-          http.MultipartRequest('PATCH', Uri.parse(ApiUrls.baseUrl + uri));
+      http.MultipartRequest('PATCH', Uri.parse(ApiUrls.baseUrl + uri));
       request.fields.addAll(body);
 
       if (multipartBody != null && multipartBody.isNotEmpty) {
@@ -356,15 +346,13 @@ class ApiClient extends GetxService {
           statusText: noInternetMessage,
           body: json.decode(content));
     } catch (e) {
-      log.e(
-          "==================================== Error in patchMultipartData: ${e.toString()}");
+      log.e("==================================== Error in patchMultipartData: ${e.toString()}");
       return const Response(statusCode: 1, statusText: noInternetMessage);
     }
   }
 
   //==========================================> Delete Data <======================================
-  static Future<Response> deleteData(String uri,
-      {Map<String, String>? headers, dynamic body}) async {
+  static Future<Response> deleteData(String uri, {Map<String, String>? headers, dynamic body}) async {
     bearerToken = await PrefsHelper.getString(AppConstants.bearerToken);
 
     var mainHeaders = {
@@ -380,7 +368,7 @@ class ApiClient extends GetxService {
 
       http.Response response = await http
           .delete(Uri.parse(ApiUrls.baseUrl + uri),
-              headers: headers ?? mainHeaders, body: body)
+          headers: headers ?? mainHeaders, body: body)
           .timeout(const Duration(seconds: timeoutInSeconds));
       return handleResponse(response, uri);
     } catch (e) {
@@ -408,6 +396,13 @@ class ApiClient extends GetxService {
       statusCode: response.statusCode,
       statusText: response.reasonPhrase,
     );
+
+    if (response0.statusCode != null &&
+        response0.statusCode! >= 500 &&
+        response0.statusCode! < 600) {
+      Get.offAndToNamed(AppRoutes.fiveZeroScreen);
+    }
+
     if (response0.statusCode != 200 &&
         response0.body != null &&
         response0.body is! String) {
@@ -436,6 +431,5 @@ class MultipartBody {
 class MultipartListBody {
   String key;
   String value;
-
   MultipartListBody(this.key, this.value);
 }

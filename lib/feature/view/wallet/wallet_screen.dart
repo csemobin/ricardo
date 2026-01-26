@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:ricardo/app/utils/app_colors.dart';
 import 'package:ricardo/app/utils/app_custom_design.dart';
+import 'package:ricardo/feature/controllers/user_controller.dart';
 import 'package:ricardo/gen/assets.gen.dart';
 import 'package:ricardo/routes/app_routes.dart';
 import 'package:ricardo/widgets/custom_scaffold.dart';
@@ -15,6 +16,12 @@ class WalletScreen extends StatefulWidget {
 }
 
 class _WalletScreenState extends State<WalletScreen> {
+  final controller = UserController();
+  @override
+  void initState() {
+    super.initState();
+    controller.fetchUser();
+  }
   @override
   Widget build(BuildContext context) {
     return CustomScaffold(
@@ -34,6 +41,7 @@ class _WalletScreenState extends State<WalletScreen> {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          if( controller.userModel.value?.userProfile?.role == 'driver')
           _buildTodayEarningsContainer(),
           SizedBox(height: 10.h),
           _buildBalanceContainer(),
@@ -113,7 +121,7 @@ class _WalletScreenState extends State<WalletScreen> {
             ),
             SizedBox(height: 4.h),
             Text(
-              '\$12,670.90',
+              '\$ ${controller.userModel.value?.userProfile?.wallet ?? '0.00'}',
               style: TextStyle(
                 fontSize: 24.sp,
                 fontWeight: FontWeight.w500,

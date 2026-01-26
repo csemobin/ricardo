@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ricardo/feature/five_zero_screen.dart';
 import 'package:ricardo/feature/view/auth/forget_password_otp_screen.dart';
 import 'package:ricardo/feature/view/auth/reset_password_screen.dart';
 import 'package:ricardo/feature/view/auth/sign_in_screen.dart';
@@ -51,7 +52,7 @@ abstract class AppRoutes {
   static const String termsAndConditionScreen = '/terms_condition_screen';
   static const String privacyPolicyScreen = '/privacy_policy_screen';
   static const String legalPolicyScreen = '/legal_policy_screen';
-
+  static const String fiveZeroScreen = '/five_zero_screen';
   ///  ============= > routes < ==============
   static final routes = <String, WidgetBuilder>{
     splashScreen : (context) => SplashScreen(),
@@ -76,6 +77,7 @@ abstract class AppRoutes {
     privacyPolicyScreen: (context) => PrivacyPolicyScreen(),
     forgetPasswordOtpVerifyScreen: (context) => ForgetPasswordOtpScreen(),
     legalPolicyScreen : (context) => LegalPolicyScreen(),
+    fiveZeroScreen: (context) => FiveZeroScreen(),
   };
 
 }

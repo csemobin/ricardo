@@ -26,10 +26,14 @@ class ApiUrls{
   //License Related work are here
   static const String registrationLicense = '/registration/license';
   static const String registrationVehicle = '/registration/vehicle';
+
   // Privacy Policy - Terms & Condition - About us
   static String legalContent(String url) => '/$url';
+  static const String support = '/setting/support';
+  // Favourite Rides
+  static const String favouriteRides = '/favorite-rider';
 
-
-
-  // static const String forgetPassword = '/otp/send/forgot-password';
+  // Wallet Related work are here
+  static const String paymentCardInfo = '/payment-card/get-all-card-info';
+  static String paymentCardDelete(String cardId) => '/payment-card/delete-card-info?cardId=$cardId';
 }
