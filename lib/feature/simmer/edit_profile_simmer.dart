@@ -54,7 +54,7 @@ class _ShimmerContainerState extends State<ShimmerContainer>
                     width: 24.w,
                     height: 24.h,
                     decoration: BoxDecoration(
-                      color: AppColors.whiteColor.withOpacity(_animation.value * 0.3),
+                      color: Color(0xff94949e).withOpacity(0.6),
                       borderRadius: BorderRadius.circular(4.r),
                     ),
                   ),
@@ -63,7 +63,7 @@ class _ShimmerContainerState extends State<ShimmerContainer>
                     width: 60.w,
                     height: 14.h,
                     decoration: BoxDecoration(
-                      color: AppColors.whiteColor.withOpacity(_animation.value * 0.3),
+                      color: Color(0xff94949e).withOpacity(0.6),
                       borderRadius: BorderRadius.circular(4.r),
                     ),
                   ),
@@ -74,7 +74,7 @@ class _ShimmerContainerState extends State<ShimmerContainer>
                 width: 180.w,
                 height: 16.h,
                 decoration: BoxDecoration(
-                  color: AppColors.whiteColor.withOpacity(_animation.value * 0.3),
+                  color: Color(0xff94949e).withOpacity(0.6),
                   borderRadius: BorderRadius.circular(4.r),
                 ),
               ),

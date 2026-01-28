@@ -7,7 +7,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:ricardo/app/utils/app_colors.dart';
-import 'package:ricardo/feature/controllers/driver_profile_controller.dart';
+import 'package:ricardo/feature/controllers/auth/driver_profile_controller.dart';
 import 'package:ricardo/gen/assets.gen.dart';
 import 'package:ricardo/gen/fonts.gen.dart';
 import 'package:ricardo/widgets/custom_heading_text.dart';

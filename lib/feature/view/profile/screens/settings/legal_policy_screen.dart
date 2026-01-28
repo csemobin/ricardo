@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:ricardo/app/utils/app_colors.dart';
-import 'package:ricardo/feature/controllers/legal_controller.dart';
+import 'package:ricardo/feature/controllers/profile/legal_controller.dart';
 import 'package:ricardo/feature/simmer/legal_content_simmer.dart';
 import 'package:ricardo/widgets/custom_scaffold.dart';
 

@@ -1,20 +1,21 @@
 import 'package:get/get.dart';
 import 'package:ricardo/feature/controllers/auth/car_registration_controller.dart';
-import 'package:ricardo/feature/controllers/auth/change_password_controller.dart';
+import 'package:ricardo/feature/controllers/profile/change_password_controller.dart';
 import 'package:ricardo/feature/controllers/auth/forget_password_controller.dart';
 import 'package:ricardo/feature/controllers/auth/forget_password_otp_verify_controller.dart';
 import 'package:ricardo/feature/controllers/auth/otp_varify_controller.dart';
-import 'package:ricardo/feature/controllers/auth/profile_update_controller.dart';
+import 'package:ricardo/feature/controllers/profile/profile_update_controller.dart';
 import 'package:ricardo/feature/controllers/auth/reset_password_controller.dart';
 import 'package:ricardo/feature/controllers/auth/sign_in_controller.dart';
 import 'package:ricardo/feature/controllers/auth/sign_up_controller.dart';
-import 'package:ricardo/feature/controllers/auth/support_controller.dart';
+import 'package:ricardo/feature/controllers/profile/reviews_ratings.dart';
+import 'package:ricardo/feature/controllers/profile/support_controller.dart';
 import 'package:ricardo/feature/controllers/custom_bottom_nav_bar_controller.dart';
-import 'package:ricardo/feature/controllers/driver_profile_controller.dart';
-import 'package:ricardo/feature/controllers/driving_license_controller.dart';
-import 'package:ricardo/feature/controllers/favourite_rides_controller.dart';
-import 'package:ricardo/feature/controllers/history_controller.dart';
-import 'package:ricardo/feature/controllers/legal_controller.dart';
+import 'package:ricardo/feature/controllers/auth/driver_profile_controller.dart';
+import 'package:ricardo/feature/controllers/auth/driving_license_controller.dart';
+import 'package:ricardo/feature/controllers/profile/favourite_rides_controller.dart';
+import 'package:ricardo/feature/controllers/history/history_controller.dart';
+import 'package:ricardo/feature/controllers/profile/legal_controller.dart';
 import 'package:ricardo/feature/controllers/user_controller.dart';
 import 'package:ricardo/feature/controllers/wallet/add_money_controller.dart';
 import 'package:ricardo/feature/controllers/wallet/payment_method_controller.dart';
@@ -43,5 +44,6 @@ class DependencyInjection implements Bindings{
     Get.lazyPut(()=> AddMoneyController());
     Get.lazyPut(()=> WithdrawRequestController());
     Get.lazyPut(()=> HistoryController());
+    Get.lazyPut(()=> ReviewsRatingsController());
   }
 }

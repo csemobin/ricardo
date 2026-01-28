@@ -30,6 +30,7 @@ class ApiUrls{
   // Privacy Policy - Terms & Condition - About us
   static String legalContent(String url) => '/$url';
   static const String support = '/setting/support';
+
   // Favourite Rides
   static const String favouriteRides = '/favorite-rider';
   static String favouriteRiderDelete( String rideId ) => '/favorite-rider/$rideId';
@@ -44,4 +45,7 @@ class ApiUrls{
 
   // Ride History
   static const String rideHistory = '/ride/get-complete-ride-history';
+
+  //Driver Rating
+  static const String driverGetRating = '/driver/get-ratings';
 }

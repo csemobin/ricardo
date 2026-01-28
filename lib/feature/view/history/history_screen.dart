@@ -3,7 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:ricardo/app/utils/app_colors.dart';
-import 'package:ricardo/feature/controllers/history_controller.dart';
+import 'package:ricardo/feature/controllers/history/history_controller.dart';
 import 'package:ricardo/feature/models/history/complete_ride_history.dart';
 import 'package:ricardo/gen/assets.gen.dart';
 import 'package:ricardo/gen/fonts.gen.dart';
@@ -178,7 +178,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
         case 7:
           return '1 week ago';
         default:
-          if (difference <= 14) {
+          if (difference <= 7) {
             return '$difference days ago';
           } else if (difference <= 30) {
             final weeks = (difference / 7).floor();

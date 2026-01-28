@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:ricardo/app/utils/app_colors.dart';
-import 'package:ricardo/feature/controllers/auth/support_controller.dart';
+import 'package:ricardo/feature/controllers/profile/support_controller.dart';
 import 'package:ricardo/feature/simmer/edit_profile_simmer.dart';
 import 'package:ricardo/gen/assets.gen.dart';
 import 'package:ricardo/gen/fonts.gen.dart';
