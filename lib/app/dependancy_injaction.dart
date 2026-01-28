@@ -13,9 +13,12 @@ import 'package:ricardo/feature/controllers/custom_bottom_nav_bar_controller.dar
 import 'package:ricardo/feature/controllers/driver_profile_controller.dart';
 import 'package:ricardo/feature/controllers/driving_license_controller.dart';
 import 'package:ricardo/feature/controllers/favourite_rides_controller.dart';
+import 'package:ricardo/feature/controllers/history_controller.dart';
 import 'package:ricardo/feature/controllers/legal_controller.dart';
 import 'package:ricardo/feature/controllers/user_controller.dart';
+import 'package:ricardo/feature/controllers/wallet/add_money_controller.dart';
 import 'package:ricardo/feature/controllers/wallet/payment_method_controller.dart';
+import 'package:ricardo/feature/controllers/wallet/withdraw_request_controller.dart';
 
 class DependencyInjection implements Bindings{
   @override
@@ -37,5 +40,8 @@ class DependencyInjection implements Bindings{
     Get.lazyPut(()=> SupportController());
     Get.lazyPut(()=> FavouriteRidesController());
     Get.lazyPut(()=> PaymentMethodController());
+    Get.lazyPut(()=> AddMoneyController());
+    Get.lazyPut(()=> WithdrawRequestController());
+    Get.lazyPut(()=> HistoryController());
   }
 }

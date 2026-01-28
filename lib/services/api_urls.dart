@@ -32,8 +32,16 @@ class ApiUrls{
   static const String support = '/setting/support';
   // Favourite Rides
   static const String favouriteRides = '/favorite-rider';
+  static String favouriteRiderDelete( String rideId ) => '/favorite-rider/$rideId';
 
   // Wallet Related work are here
   static const String paymentCardInfo = '/payment-card/get-all-card-info';
   static String paymentCardDelete(String cardId) => '/payment-card/delete-card-info?cardId=$cardId';
+
+  // Payment Related work are here
+  static const String addBalance = '/payment/add-balance';
+  static const String withdrawRequest = '/payment/withdraw-request';
+
+  // Ride History
+  static const String rideHistory = '/ride/get-complete-ride-history';
 }

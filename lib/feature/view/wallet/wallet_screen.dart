@@ -37,21 +37,52 @@ class _WalletScreenState extends State<WalletScreen> {
           ),
         ),
       ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          if( controller.userModel.value?.userProfile?.role == 'driver')
-          _buildTodayEarningsContainer(),
-          SizedBox(height: 10.h),
-          _buildBalanceContainer(),
-          SizedBox(height: 20.h),
-          _buildActionButtons(),
-          SizedBox(height: 20.h),
-          Text('Recent History', style: AppCustomDesign.walletScreenTextStyle),
-          Expanded(child: _buildHistoryList()),
-        ],
-      ),
+      body: Obx((){
+        return Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if( controller.userModel.value?.userProfile?.role == 'driver')
+              _buildTodayEarningsContainer(),
+            SizedBox(height: 10.h),
+            _buildBalanceContainer(),
+            SizedBox(height: 20.h),
+            if( controller.userModel.value?.userProfile?.role == 'driver')
+            _buildActionButtons(),
+
+            if( controller.userModel.value?.userProfile?.role == 'passenger')
+              GestureDetector(
+                onTap: (){
+                    Get.toNamed(AppRoutes.addAmountScreen);
+                },
+                child: Container(
+                  width: double.maxFinite,
+                  height: 44.h,
+                  alignment: Alignment.center,
+                  decoration: AppCustomDesign.linearButtonBoxDecorationDesign,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Image.asset(Assets.images.widrawIcon.path),
+                      SizedBox(width: 6.w),
+                      Text(
+                        'Add Money',
+                        style: TextStyle(
+                          color: true ? Colors.white : AppColors.greenColor,
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            SizedBox(height: 20.h),
+            Text('Recent History', style: AppCustomDesign.walletScreenTextStyle),
+            Expanded(child: _buildHistoryList()),
+          ],
+        );
+      }),
     );
   }
 

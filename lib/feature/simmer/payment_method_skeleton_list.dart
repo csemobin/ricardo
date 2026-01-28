@@ -9,6 +9,8 @@ class PaymentMethodSkeletonList extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListView.separated(
       itemCount: 3,
+      shrinkWrap: true,
+      physics: AlwaysScrollableScrollPhysics(),
       separatorBuilder: (_, __) => SizedBox(height: 8.h),
       itemBuilder: (_, __) {
         return Row(

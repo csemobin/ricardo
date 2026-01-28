@@ -85,7 +85,7 @@ class EditProfileScreen extends StatelessWidget {
               /// PHONE
               IntlPhoneField(
                 controller: controller.phoneController,
-                initialCountryCode: 'BD',
+                initialCountryCode: controller.phoneController.text.substring(0,),
                 keyboardType: TextInputType.number,
                 inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                 validator: (phone) =>

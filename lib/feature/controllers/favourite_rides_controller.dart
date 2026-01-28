@@ -25,5 +25,24 @@ class FavouriteRidesController extends GetxController{
       isLoadingStatus.value = false;
     }
   }
+  
+  RxBool deleteFavouriteRideStatus = false.obs;
+  Future<void>deleteFavouriteRide( String riderId )async{
+    try{
+      deleteFavouriteRideStatus.value = true;
+      final response = await ApiClient.deleteData(ApiUrls.favouriteRiderDelete(riderId));
+      if( response.statusCode == 200 || response.statusCode == 201 ){
+        favouriteRiderModel.removeWhere((rider) => rider.driverId.toString() == riderId);
+        Get.snackbar('Success', 'Ride removed from favourites.',snackPosition: SnackPosition.BOTTOM);
+      }else{
+        Get.snackbar('Error', response.body['message'],snackPosition: SnackPosition.BOTTOM);
+      }
+
+    }catch(e){
+      debugPrint(e.toString());
+    }finally{
+      deleteFavouriteRideStatus.value = false;
+    }
+  }
 
 }

@@ -1,150 +1,214 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:ricardo/app/utils/app_colors.dart';
 import 'package:ricardo/app/utils/app_custom_design.dart';
 import 'package:ricardo/feature/controllers/custom_bottom_nav_bar_controller.dart';
+import 'package:ricardo/feature/controllers/wallet/payment_method_controller.dart';
+import 'package:ricardo/feature/controllers/wallet/withdraw_request_controller.dart';
+import 'package:ricardo/feature/simmer/payment_method_skeleton_list.dart';
 import 'package:ricardo/gen/assets.gen.dart';
 import 'package:ricardo/routes/app_routes.dart';
 import 'package:ricardo/widgets/custom_primary_button.dart';
 import 'package:ricardo/widgets/custom_scaffold.dart';
 import 'package:ricardo/widgets/custom_text_field.dart';
 
-class WithdrawRequestScreen extends StatelessWidget {
-  WithdrawRequestScreen({super.key});
+class WithdrawRequestScreen extends StatefulWidget {
+  const WithdrawRequestScreen({super.key});
 
-  final TextEditingController emailTEController = TextEditingController();
+  @override
+  State<WithdrawRequestScreen> createState() => _WithdrawRequestScreenState();
+}
+
+class _WithdrawRequestScreenState extends State<WithdrawRequestScreen> {
+  final paymentController = Get.put(PaymentMethodController());
+  final withdrawController = Get.put(WithdrawRequestController());
+
+  @override
+  void initState() {
+    super.initState();
+    if (mounted) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        paymentController.fetchPaymentCardInfo();
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return CustomScaffold(
-        appBar: AppBar(
-          backgroundColor: AppColors.bgColor,
-          forceMaterialTransparency: true,
-          centerTitle: true,
-          title: Text('Withdraw Request'),
+      appBar: AppBar(
+        backgroundColor: AppColors.bgColor,
+        forceMaterialTransparency: true,
+        centerTitle: true,
+        title: Text('Withdraw Request'),
+      ),
+      body: ScrollConfiguration(
+        behavior: ScrollBehavior().copyWith(
+          overscroll: false,
         ),
-        body: SingleChildScrollView(
+        child: SingleChildScrollView(
+          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+          physics: ClampingScrollPhysics(),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              CustomTextField(
-                controller: emailTEController,
-                hintText: 'Enter Amount',
-                labelText: 'Enter Amount',
+              Form(
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                child: CustomTextField(
+                  controller: withdrawController.amountTEController,
+                  hintText: 'Enter Amount',
+                  labelText: 'Enter Amount',
+                  inputFormatter: [
+                    FilteringTextInputFormatter.digitsOnly,
+                    FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+                  ],
+                ),
               ),
-              SizedBox(
-                height: 18.h,
-              ),
-              // Select Card Section work are here
+              SizedBox(height: 18.h),
+
+              // Select Card Section
               Text(
                 'Select Card',
                 style: AppCustomDesign.walletScreenTextStyle,
               ),
-              SizedBox(
-                height: 15.h,
-              ),
-              ListView.separated(
-                shrinkWrap: true,
-                itemCount: 5,
-                itemBuilder: (context, index) {
-                  return Row(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Expanded(
+              SizedBox(height: 15.h),
+
+              // Card List
+              Obx(() {
+                if (paymentController.paymentCardInfoStatus.value == true) {
+                  return PaymentMethodSkeletonList();
+                }
+                if (paymentController.paymentCardInfo.isEmpty) {
+                  return Center(
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(vertical: 50.h),
+                      child: Text('No Card Added Yet'),
+                    ),
+                  );
+                }
+                return ListView.separated(
+                  itemCount: paymentController.paymentCardInfo.length,
+                  shrinkWrap: true,
+                  physics: NeverScrollableScrollPhysics(),
+                  itemBuilder: (context, index) {
+                    final bankInfo = paymentController.paymentCardInfo[index];
+                    return Obx(() {
+                      final isSelected =
+                          withdrawController.selectedCard.value?.sId ==
+                              bankInfo?.sId;
+
+                      return GestureDetector(
+                        onTap: () {
+                          withdrawController.selectCard(bankInfo!);
+                        },
                         child: Container(
-                          padding: EdgeInsets.symmetric(
-                              vertical: 18.r, horizontal: 12.r),
+                          padding: EdgeInsets.symmetric(vertical: 18.r, horizontal: 12.r),
                           decoration: BoxDecoration(
-                              color: AppColors.whiteColor,
-                              borderRadius: BorderRadius.circular(4.r)),
+                            color: isSelected
+                                ? AppColors.primaryColor.withOpacity(0.1)
+                                : AppColors.whiteColor,
+                            borderRadius: BorderRadius.circular(6.r),
+                            border: Border.all(
+                              color: isSelected
+                                  ? AppColors.primaryColor
+                                  : Colors.transparent,
+                              width: 1.5,
+                            ),
+                          ),
                           child: Row(
                             children: [
                               Image.asset(Assets.images.visa.path),
-                              SizedBox(
-                                width: 13.w,
-                              ),
+                              SizedBox(width: 13.w),
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    '**** **** **** 8970',
-                                    style: testStyle(
-                                      color: AppColors.cardTitle,
+                                    '**** **** **** ${bankInfo!.accountNumber!.substring(bankInfo.accountNumber!.length - 4)}',
+                                    style: TextStyle(
                                       fontSize: 14.sp,
-                                      fontWeight: FontWeight.w400,
+                                      fontWeight: FontWeight.w500,
                                     ),
                                   ),
                                   Text(
-                                    'Bank: Meghna LTD.',
-                                    style: TextStyle(
-                                      color: AppColors.cardSubTitle,
-                                      fontSize: 10.sp,
-                                      fontWeight: FontWeight.w400,
-                                    ),
-                                    textAlign: TextAlign.start,
+                                    'Bank: ${bankInfo.bankName}',
+                                    style: TextStyle(fontSize: 10.sp),
                                   ),
                                 ],
-                              )
+                              ),
                             ],
                           ),
                         ),
-                      ),
-                    ],
-                  );
-                },
-                separatorBuilder: (context, index) {
-                  return SizedBox(
-                    height: 8.h,
-                  );
-                },
-              ),
+                      );
+                    });
+                  },
+                  separatorBuilder: (context, index) => SizedBox(height: 8.h),
+                );
+              }),
+
               SizedBox(height: 25.h),
-              // Button Related Work are here
-              GestureDetector(
-                onTap: () {
-                  Get.toNamed(AppRoutes.addCardScreen);
-                },
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: AppColors.blackButton,
-                    borderRadius: BorderRadius.circular(50.r),
-                  ),
-                  padding: EdgeInsets.symmetric(vertical: 16.r),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Image.asset(Assets.images.paymentMethodIcon.path),
-                      SizedBox(
-                        width: 20.w,
-                      ),
-                      Text(
-                        'Add Payment Info',
-                        style: TextStyle(
-                          color: AppColors.whiteColor,
-                          fontSize: 16.sp,
+
+              // Add Payment Button
+              Obx(() {
+                return GestureDetector(
+                  onTap: () {
+                    if (paymentController.paymentCardInfo.length < 3) {
+                      Get.toNamed(AppRoutes.addCardScreen);
+                    } else {
+                      Get.snackbar(
+                        'Limit Reached',
+                        'You can only add up to 3 cards',
+                        snackPosition: SnackPosition.BOTTOM,
+                      );
+                    }
+                  },
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: paymentController.paymentCardInfo.length >= 3
+                          ? AppColors.blackButton.withOpacity(0.5)
+                          : AppColors.blackButton,
+                      borderRadius: BorderRadius.circular(50.r),
+                    ),
+                    padding: EdgeInsets.symmetric(vertical: 16.r),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Image.asset(Assets.images.paymentMethodIcon.path),
+                        SizedBox(width: 20.w),
+                        Text(
+                          'Add Payment Info',
+                          style: TextStyle(
+                            color: AppColors.whiteColor,
+                            fontSize: 16.sp,
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-              ),
-              SizedBox(
-                height: 14.h,
-              ),
-              CustomPrimaryButton(
+                );
+              }),
+
+              SizedBox(height: 14.h),
+
+
+                CustomPrimaryButton(
                   title: 'Withdraw',
-                  onHandler: () => confirmRequestPopupModal(context)),
-              SizedBox(
-                height: 40.h,
-              ),
+                  // isDisable: !withdrawController.isFormValid.value,
+                  onHandler: () {
+                    confirmRequestPopupModal(context);
+                  },
+                ),
+
+            SizedBox(height: 40.h),
+
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 12.h, vertical: 18.w),
                 decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(15.r),
-                    color: Color(0x0D01AF44)),
+                  borderRadius: BorderRadius.circular(15.r),
+                  color: Color(0x0D01AF44),
+                ),
                 child: Text(
                   'Our payment cycle runs every Friday. If you need your payment earlier, our support team is here to help—just reach out!',
                   style: TextStyle(
@@ -155,12 +219,12 @@ class WithdrawRequestScreen extends StatelessWidget {
                   textAlign: TextAlign.center,
                 ),
               ),
-              SizedBox(
-                height: 10.h,
-              ),
+              SizedBox(height: 10.h),
             ],
           ),
-        ));
+        ),
+      ),
+    );
   }
 
   // Confirm Withdraw Request Pop up Model are here
@@ -320,13 +384,16 @@ class WithdrawRequestScreen extends StatelessWidget {
                             width: 10.w,
                           ),
                           Expanded(
-                            child: CustomPrimaryButton(
-                              title: 'Yes, Send',
-                              onHandler: () {
-                                Navigator.pop(context);
-                                confirmationPopupModal(context);
-                              },
-                            ),
+                            child: Obx((){
+                              return CustomPrimaryButton(
+                                title: withdrawController.isWithdrawRequestStatus.value == true ? 'Confirming...' : 'Yes, Send',
+                                onHandler: () async {
+                                  await withdrawController.withdrawRequestHandler();
+                                  Navigator.pop(context);
+                                  // confirmationPopupModal(context);
+                                },
+                              );
+                            })
                           )
                         ],
                       )
@@ -338,73 +405,73 @@ class WithdrawRequestScreen extends StatelessWidget {
           );
         });
   }
+
   // Confirmation Pop Up Model are here
-  void confirmationPopupModal( BuildContext context ){
+  void confirmationPopupModal(BuildContext context) {
     showDialog(
-      barrierDismissible: true,
+        barrierDismissible: true,
         context: context,
-        builder: (BuildContext context ){
-            return Dialog(
-              backgroundColor: Colors.transparent,
-              insetPadding: EdgeInsets.symmetric(horizontal: 24.w),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(20.r),
-                child: BackdropFilter(
-                  filter: ImageFilter.blur(
-                    sigmaX: 15,
-                    sigmaY: 15,
-                  ),
-                  child: Container(
-                    padding: EdgeInsets.all(20.r),
-                    decoration: BoxDecoration(
-                        color: AppColors.whiteColor.withOpacity(0.15),
-                        border: Border.all(color: Colors.white.withOpacity(0.8))),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Padding(padding: EdgeInsets.only(top: 32.h)),
-                        Image.asset(Assets.images.glassmorphismLogo.path),
-                        SizedBox(
-                          height: 30.h,
+        builder: (BuildContext context) {
+          return Dialog(
+            backgroundColor: Colors.transparent,
+            insetPadding: EdgeInsets.symmetric(horizontal: 24.w),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(20.r),
+              child: BackdropFilter(
+                filter: ImageFilter.blur(
+                  sigmaX: 15,
+                  sigmaY: 15,
+                ),
+                child: Container(
+                  padding: EdgeInsets.all(20.r),
+                  decoration: BoxDecoration(
+                      color: AppColors.whiteColor.withOpacity(0.15),
+                      border: Border.all(color: Colors.white.withOpacity(0.8))),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Padding(padding: EdgeInsets.only(top: 32.h)),
+                      Image.asset(Assets.images.glassmorphismLogo.path),
+                      SizedBox(
+                        height: 30.h,
+                      ),
+                      Text(
+                        'Successfully Submitted',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.greenColor,
                         ),
-                        Text(
-                          'Successfully Submitted',
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.w600,
-                            color: AppColors.greenColor,
-                          ),
+                      ),
+                      SizedBox(
+                        height: 30.h,
+                      ),
+                      Text(
+                        textAlign: TextAlign.center,
+                        'Your withdraw request send successfully',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 12.sp,
+                          fontWeight: FontWeight.w400,
                         ),
-                        SizedBox(
-                          height: 30.h,
-                        ),
-                        Text(
-                          textAlign: TextAlign.center,
-                          'Your withdraw request send successfully',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 12.sp,
-                            fontWeight: FontWeight.w400,
-                          ),
-                        ),
-                        SizedBox(
-                          height: 30.h,
-                        ),
-                        CustomPrimaryButton(
-                          title: 'Back to Home',
-                          onHandler: () {
-                            Get.offAllNamed(AppRoutes.customBottomNavBar);
-                            Get.find<CustomBottomNavBarController>().onChange(0);
-                          },
-                        )
-                      ],
-                    ),
+                      ),
+                      SizedBox(
+                        height: 30.h,
+                      ),
+                      CustomPrimaryButton(
+                        title: 'Back to Home',
+                        onHandler: () {
+                          Get.offAllNamed(AppRoutes.customBottomNavBar);
+                          Get.find<CustomBottomNavBarController>().onChange(0);
+                        },
+                      )
+                    ],
                   ),
                 ),
               ),
-            );
-        }
-    );
+            ),
+          );
+        });
   }
 
   TextStyle testStyle({

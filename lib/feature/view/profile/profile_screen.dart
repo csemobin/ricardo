@@ -66,7 +66,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     {
       "icon": Assets.images.editProfileProfileScreen.path,
       // You might want to change this icon for favorites
-      "screenName": "Favorites rides",
+      "screenName": "Favorites Riders",
       "route": FavouritesRideScreen(),
     },
     {
