@@ -33,6 +33,7 @@ dependencies:
   shared_preferences:
   intl: ^0.20.2
   socket_io_client: ^3.1.4
+  webview_flutter: ^4.13.1
 
 dev_dependencies:
   flutter_test:

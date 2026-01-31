@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
-import 'package:ricardo/feature/controllers/user_controller.dart';
+import 'package:ricardo/feature/view/wallet/payment_web_view_screen.dart';
 import 'package:ricardo/services/api_client.dart';
 import 'package:ricardo/services/api_urls.dart';
 
@@ -47,8 +47,10 @@ class AddMoneyController extends GetxController{
       final response = await ApiClient.postData(ApiUrls.addBalance, amount);
 
       if( response.statusCode == 200 || response.statusCode == 201 ){
-        print(response.body);
         cleanField();
+        final paymentUrl = response.body['data']['paymentUrl'];
+        await Get.to(()=> PaymentWebViewScreen(paymentUrl: paymentUrl));
+
       }else{
         Get.snackbar('Error', response.body['message'],snackPosition: SnackPosition.BOTTOM);
       }

@@ -23,191 +23,216 @@ class _SelectedRoleScreenState extends State<SelectedRoleScreen> {
   @override
   Widget build(BuildContext context) {
     return CustomScaffold(
-      body: SingleChildScrollView(
-        child: ConstrainedBox(
-          constraints: BoxConstraints(
-            minHeight: MediaQuery.of(context).size.height,
-          ),
-          child: IntrinsicHeight(
-            child: Column(
-              children: [
-                SizedBox(height: 20.h),
-                Center(
-                  child: LogoWidget(),
+      body: SafeArea(
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            return SingleChildScrollView(
+              child: ConstrainedBox(
+                constraints: BoxConstraints(
+                  minHeight: constraints.maxHeight,
                 ),
-                CustomHeadingText(
-                  firstText: 'Welcome!',
-                  secondText: 'Are you a...',
-                  isColumn: true,
-                ),
-                SizedBox(height: 50.h),
+                child: IntrinsicHeight(
+                  child: Column(
+                    children: [
+                      SizedBox(height: 20.h),
+                      Center(
+                        child: LogoWidget(),
+                      ),
+                      CustomHeadingText(
+                        firstText: 'Welcome!',
+                        secondText: 'Are you a...',
+                        isColumn: true,
+                      ),
+                      SizedBox(height: 30.h),
 
-                // Driver Option
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 20.w),
-                  child: Obx(() {
-                    return GestureDetector(
-                      onTap: () {
-                        controller.selectedRoleHandler('driver');
-                      },
-                      child: Container(
-                        padding: EdgeInsets.all(20.r),
-                        width: double.maxFinite,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10.r),
-                          color: AppColors.whiteColor,
-                          border: Border.all(
-                            color: controller.selectedRole.value == 'driver'
-                                ? AppColors.primaryColor
-                                : Color(0Xff0F0F0D).withAlpha(9),
-                            width: 2,
-                          ),
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Row(
-                              children: [
-                                Image.asset(Assets.images.driver.path),
-                                SizedBox(width: 8.w),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      'Driver',
-                                      style: TextStyle(
-                                        color: AppColors.greenColor,
-                                        fontSize: 20.sp,
-                                        fontWeight: FontWeight.w600,
-                                      ),
+                      // Driver Option
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 20.w),
+                        child: Obx(() {
+                          return GestureDetector(
+                            onTap: () {
+                              controller.selectedRoleHandler('driver');
+                            },
+                            child: Container(
+                              padding: EdgeInsets.all(20.r),
+                              width: double.maxFinite,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10.r),
+                                color: AppColors.whiteColor,
+                                border: Border.all(
+                                  color: controller.selectedRole.value == 'driver'
+                                      ? AppColors.primaryColor
+                                      : Color(0Xff0F0F0D).withAlpha(9),
+                                  width: 2,
+                                ),
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Expanded(
+                                    child: Row(
+                                      children: [
+                                        Image.asset(
+                                          Assets.images.driver.path,
+                                          width: 60.w,
+                                          height: 60.h,
+                                          fit: BoxFit.contain,
+                                        ),
+                                        SizedBox(width: 8.w),
+                                        Flexible(
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                'Driver',
+                                                style: TextStyle(
+                                                  color: AppColors.greenColor,
+                                                  fontSize: 20.sp,
+                                                  fontWeight: FontWeight.w600,
+                                                ),
+                                              ),
+                                              Text(
+                                                'Earn Extra Income',
+                                                style: TextStyle(
+                                                  color: AppColors.greyColor,
+                                                  fontSize: 12.sp,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
                                     ),
-                                    Text(
-                                      'Earn Extra Income',
-                                      style: TextStyle(
-                                        color: AppColors.greyColor,
-                                        fontSize: 12.sp,
-                                      ),
+                                  ),
+                                  Icon(
+                                    Icons.arrow_forward_ios_sharp,
+                                    color: AppColors.greyColor,
+                                    size: 20,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        }),
+                      ),
+
+                      SizedBox(height: 20.h),
+
+                      // Passenger Option
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 20.w),
+                        child: Obx(() {
+                          return GestureDetector(
+                            onTap: () {
+                              controller.selectedRoleHandler('passenger');
+                            },
+                            child: Container(
+                              padding: EdgeInsets.all(20.r),
+                              width: double.maxFinite,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10.r),
+                                color: AppColors.whiteColor,
+                                border: Border.all(
+                                  color: controller.selectedRole.value == 'passenger'
+                                      ? AppColors.primaryColor
+                                      : Color(0Xff0F0F0D).withAlpha(9),
+                                  width: 2,
+                                ),
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Expanded(
+                                    child: Row(
+                                      children: [
+                                        Image.asset(
+                                          Assets.images.passenger.path,
+                                          width: 60.w,
+                                          height: 60.h,
+                                          fit: BoxFit.contain,
+                                        ),
+                                        SizedBox(width: 8.w),
+                                        Flexible(
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                'Passenger',
+                                                style: TextStyle(
+                                                  color: AppColors.greenColor,
+                                                  fontSize: 20.sp,
+                                                  fontWeight: FontWeight.w600,
+                                                ),
+                                              ),
+                                              Text(
+                                                'Earn extra income',
+                                                style: TextStyle(
+                                                  color: AppColors.greyColor,
+                                                  fontSize: 12.sp,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
                                     ),
-                                  ],
-                                )
-                              ],
+                                  ),
+                                  Icon(
+                                    Icons.arrow_forward_ios_sharp,
+                                    color: AppColors.greyColor,
+                                    size: 20,
+                                  ),
+                                ],
+                              ),
                             ),
-                            Icon(
-                              Icons.arrow_forward_ios_sharp,
-                              color: AppColors.greyColor,
-                            ),
-                          ],
+                          );
+                        }),
+                      ),
+
+                      Spacer(),
+
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 20.w),
+                        child: CustomPrimaryButton(
+                          title: 'Next',
+                          onHandler: () {
+                            Get.toNamed(AppRoutes.signUpScreen);
+                          },
                         ),
                       ),
-                    );
-                  }),
-                ),
+                      SizedBox(height: 20.h),
 
-                SizedBox(height: 25.h),
-
-                // Passenger Option
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 20.w),
-                  child: Obx(() {
-                    return GestureDetector(
-                      onTap: () {
-                        controller.selectedRoleHandler('passenger');
-                      },
-                      child: Container(
-                        padding: EdgeInsets.all(20.r),
-                        width: double.maxFinite,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10.r),
-                          color: AppColors.whiteColor,
-                          border: Border.all(
-                            color: controller.selectedRole.value == 'passenger'
-                                ? AppColors.primaryColor
-                                : Color(0Xff0F0F0D).withAlpha(9),
-                            width: 2,
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            'Already have an account?  ',
+                            style: TextStyle(
+                              color: AppColors.richTextColor,
+                              fontSize: 15,
+                            ),
                           ),
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Row(
-                              children: [
-                                Image.asset(Assets.images.passenger.path),
-                                SizedBox(width: 8.w),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      'Passenger',
-                                      style: TextStyle(
-                                        color: AppColors.greenColor,
-                                        fontSize: 20.sp,
-                                        fontWeight: FontWeight.w600,
-                                      ),
-                                    ),
-                                    Text(
-                                      'Earn extra income',
-                                      style: TextStyle(
-                                        color: AppColors.greyColor,
-                                        fontSize: 12.sp,
-                                      ),
-                                    ),
-                                  ],
-                                )
-                              ],
+                          GestureDetector(
+                            child: Text(
+                              'Sign In',
+                              style: TextStyle(
+                                color: AppColors.greenColor,
+                                fontSize: 15,
+                              ),
                             ),
-                            Icon(
-                              Icons.arrow_forward_ios_sharp,
-                              color: AppColors.greyColor,
-                            ),
-                          ],
-                        ),
+                            onTap: () {
+                              Get.toNamed(AppRoutes.signInScreen);
+                            },
+                          ),
+                        ],
                       ),
-                    );
-                  }),
-                ),
-
-                // Spacer(),
-                SizedBox(height: 50.h),
-
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 20.w),
-                  child: CustomPrimaryButton(
-                    title: 'Next',
-                    onHandler: () {
-                      Get.toNamed(AppRoutes.signUpScreen);
-                    },
+                      SizedBox(height: 30.h),
+                    ],
                   ),
                 ),
-                SizedBox(height: 20.h),
-
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      'Already have an account?  ',
-                      style: TextStyle(
-                        color: AppColors.richTextColor,
-                        fontSize: 15,
-                      ),
-                    ),
-                    GestureDetector(
-                      child: Text(
-                        'Sign In',
-                        style: TextStyle(
-                          color: AppColors.greenColor,
-                          fontSize: 15,
-                        ),
-                      ),
-                      onTap: () {
-                        Get.toNamed(AppRoutes.signInScreen);
-                      },
-                    ),
-                  ],
-                ),
-                SizedBox(height: 30.h),
-              ],
-            ),
-          ),
+              ),
+            );
+          },
         ),
       ),
     );

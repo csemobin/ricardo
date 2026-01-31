@@ -21,6 +21,7 @@ import 'package:ricardo/feature/view/splash_screen/on_board_screen.dart';
 import 'package:ricardo/feature/view/splash_screen/splash_screen.dart';
 import 'package:ricardo/feature/view/wallet/add_amount_screen.dart';
 import 'package:ricardo/feature/view/wallet/add_card_screen.dart';
+import 'package:ricardo/feature/view/wallet/payment_web_view_screen.dart';
 import 'package:ricardo/feature/view/wallet/payment_methods_selection_screen.dart';
 import 'package:ricardo/feature/view/wallet/withdraw_request_screen.dart';
 abstract class AppRoutes {
@@ -55,6 +56,7 @@ abstract class AppRoutes {
   static const String legalPolicyScreen = '/legal_policy_screen';
   static const String fiveZeroScreen = '/five_zero_screen';
   static const String addAmountScreen = 'add_amount_screen';
+  // static const String paymentWebViewScreen = 'payment_web_view_screen';
 
   ///  ============= > routes < ==============
   static final routes = <String, WidgetBuilder>{
@@ -82,6 +84,7 @@ abstract class AppRoutes {
     legalPolicyScreen : (context) => LegalPolicyScreen(),
     fiveZeroScreen: (context) => FiveZeroScreen(),
     addAmountScreen: (context) => AddAmountScreen(),
+    // paymentWebViewScreen: (context) => PaymentWebViewScreen(paymentUrl: paymentUrl),
   };
 
 }
