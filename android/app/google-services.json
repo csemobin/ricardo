@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "21095599679",
+    "project_id": "ricardo-7f01b",
+    "storage_bucket": "ricardo-7f01b.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:21095599679:android:309c16ff99ff266801b28a",
+        "android_client_info": {
+          "package_name": "com.example.ricardo"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCy5L5h4VlSvv0cj70XtUguGo83IM1A49s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
