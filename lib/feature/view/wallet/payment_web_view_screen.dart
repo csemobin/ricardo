@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:ricardo/feature/controllers/custom_bottom_nav_bar_controller.dart';
+import 'package:ricardo/feature/controllers/wallet/recent_history.dart';
+import 'package:ricardo/feature/models/wallet/wallet_history_model.dart';
 import 'package:ricardo/feature/view/wallet/wallet_screen.dart';
 import 'package:ricardo/routes/app_routes.dart';
 import 'package:webview_flutter/webview_flutter.dart';
@@ -94,15 +96,13 @@ class _PaymentWebViewScreenState extends State<PaymentWebViewScreen> {
   }
 
   void _handlePaymentSuccess() {
+
+    final hstController = Get.find<RecentHistoryController>();
+    hstController.fetchRecentHistory(isLoadMore: false);
+
     final controller = Get.find<CustomBottomNavBarController>();
     controller.selectedIndex.value = 1;
     Get.toNamed(AppRoutes.customBottomNavBar);
-    Get.snackbar(
-      'Success',
-      'Payment completed successfully',
-      backgroundColor: Colors.green,
-      colorText: Colors.white,
-    );
   }
 
   void _handlePaymentCancel() {

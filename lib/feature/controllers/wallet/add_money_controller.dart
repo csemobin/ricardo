@@ -6,7 +6,7 @@ import 'package:ricardo/services/api_urls.dart';
 
 class AddMoneyController extends GetxController{
   final TextEditingController addMoneyTEController = TextEditingController();
-  final GlobalKey<FormState> formState = GlobalKey<FormState>();
+  final GlobalKey<FormState> addMoneyFormState = GlobalKey<FormState>();
 
   final RxBool isAddedMoneyStatus = false.obs;
   final RxBool isAmountValid = false.obs;
@@ -39,6 +39,7 @@ class AddMoneyController extends GetxController{
 
     try{
       isAddedMoneyStatus.value = true;
+      isAddedMoneyStatus.value = false;
 
       final amount = {
         "amount": addMoneyTEController.text.trim()

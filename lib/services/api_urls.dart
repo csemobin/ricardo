@@ -38,6 +38,7 @@ class ApiUrls{
   // Wallet Related work are here
   static const String paymentCardInfo = '/payment-card/get-all-card-info';
   static String paymentCardDelete(String cardId) => '/payment-card/delete-card-info?cardId=$cardId';
+  static String paymentRecentHistory( int page, int len ) => '/payment/recent-transactions?page=$page&limit=$len';
 
   // Payment Related work are here
   static const String addBalance = '/payment/add-balance';

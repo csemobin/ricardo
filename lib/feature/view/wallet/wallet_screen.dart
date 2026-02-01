@@ -3,7 +3,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:ricardo/app/utils/app_colors.dart';
 import 'package:ricardo/app/utils/app_custom_design.dart';
-import 'package:ricardo/feature/controllers/user_controller.dart';
+import 'package:ricardo/feature/controllers/wallet/add_money_controller.dart';
+import 'package:ricardo/feature/controllers/wallet/recent_history.dart';
+import 'package:ricardo/feature/models/wallet/wallet_history_model.dart' hide Image;
 import 'package:ricardo/gen/assets.gen.dart';
 import 'package:ricardo/routes/app_routes.dart';
 import 'package:ricardo/widgets/custom_scaffold.dart';
@@ -16,11 +18,11 @@ class WalletScreen extends StatefulWidget {
 }
 
 class _WalletScreenState extends State<WalletScreen> {
-  final controller = UserController();
+  final controller = Get.put(RecentHistoryController());
   @override
   void initState() {
     super.initState();
-    controller.fetchUser();
+    controller.fetchRecentHistory(isLoadMore: false);
   }
   @override
   Widget build(BuildContext context) {
@@ -37,23 +39,27 @@ class _WalletScreenState extends State<WalletScreen> {
           ),
         ),
       ),
-      body: Obx((){
+      body: RefreshIndicator( onRefresh: ()async{
+        await controller.fetchRecentHistory(isLoadMore: false);
+      }, child: Obx((){
         return Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            if( controller.userModel.value?.userProfile?.role == 'driver')
+            if( controller.userRole == 'driver')
               _buildTodayEarningsContainer(),
             SizedBox(height: 10.h),
             _buildBalanceContainer(),
             SizedBox(height: 20.h),
-            if( controller.userModel.value?.userProfile?.role == 'driver')
-            _buildActionButtons(),
+            if( controller.userRole == 'driver')
+              _buildActionButtons(),
 
-            if( controller.userModel.value?.userProfile?.role == 'passenger')
+            if( controller.userRole == 'passenger')
               GestureDetector(
                 onTap: (){
-                    Get.toNamed(AppRoutes.addAmountScreen);
+                  final addMoneyStatus = Get.find<AddMoneyController>();
+                  addMoneyStatus.isAddedMoneyStatus.value = false;
+                  Get.toNamed(AppRoutes.addAmountScreen);
                 },
                 child: Container(
                   width: double.maxFinite,
@@ -82,7 +88,7 @@ class _WalletScreenState extends State<WalletScreen> {
             Expanded(child: _buildHistoryList()),
           ],
         );
-      }),
+      }),),
     );
   }
 
@@ -112,7 +118,7 @@ class _WalletScreenState extends State<WalletScreen> {
             ),
             SizedBox(height: 4.h),
             Text(
-              '\$0.00',
+              '\$ ${controller.todayEarnings.value.toString()  }',
               style: TextStyle(
                 fontSize: 16.sp,
                 fontWeight: FontWeight.w500,
@@ -152,7 +158,7 @@ class _WalletScreenState extends State<WalletScreen> {
             ),
             SizedBox(height: 4.h),
             Text(
-              '\$ ${controller.userModel.value?.userProfile?.wallet ?? '0.00'}',
+              '\$ ${controller.userWallet.value} ',
               style: TextStyle(
                 fontSize: 24.sp,
                 fontWeight: FontWeight.w500,
@@ -229,32 +235,44 @@ class _WalletScreenState extends State<WalletScreen> {
 
   // History List Builder
   Widget _buildHistoryList() {
-    return ListView.separated(
-      itemBuilder: (context, index) => _buildListTile(index),
-      separatorBuilder: (context, index) => Divider(
-        color: AppColors.dividerLineColor,
-        height: 1.h,
-      ),
-      itemCount: 18,
-      padding: EdgeInsets.only(
-        bottom: 80
-      ),
-    );
+    return Obx(() {
+      if (controller.isWalletLoadingStatus.value) {
+        return const Center(child: CircularProgressIndicator());
+      }
+
+      if (controller.recentHistoryList.isEmpty) {
+        return const Center(child: Text("No recent history found"));
+      }
+
+      return ListView.separated(
+        itemBuilder: (context, index) {
+          final data = controller.recentHistoryList[index];
+          return _buildListTile(index, data);
+        },
+        separatorBuilder: (context, index) => Divider(
+          color: AppColors.dividerLineColor,
+          height: 1.h,
+        ),
+        itemCount: controller.recentHistoryList.length,
+        padding: const EdgeInsets.only(bottom: 80),
+      );
+    });
   }
 
+
+
   // History List Item
-  Widget _buildListTile(int index) {
+  Widget _buildListTile(int index, RecentHistory data) {
     return ListTile(
       title: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Column(
-            mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Amina S. provide you a order',
+                data.title ?? "N/A",
                 style: TextStyle(
                   fontSize: 14.sp,
                   fontWeight: FontWeight.w400,
@@ -262,7 +280,7 @@ class _WalletScreenState extends State<WalletScreen> {
                 ),
               ),
               Text(
-                '18 Feb 2025   10:OO AM',
+                data.createdAt ?? "",
                 style: TextStyle(
                   fontSize: 12.sp,
                   fontWeight: FontWeight.w400,
@@ -272,7 +290,7 @@ class _WalletScreenState extends State<WalletScreen> {
             ],
           ),
           Text(
-            '+ \$100',
+            "",
             style: TextStyle(
               color: (index % 2 != 0)
                   ? AppColors.greenColor

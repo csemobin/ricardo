@@ -19,7 +19,9 @@ import 'package:ricardo/feature/controllers/profile/legal_controller.dart';
 import 'package:ricardo/feature/controllers/user_controller.dart';
 import 'package:ricardo/feature/controllers/wallet/add_money_controller.dart';
 import 'package:ricardo/feature/controllers/wallet/payment_method_controller.dart';
+import 'package:ricardo/feature/controllers/wallet/recent_history.dart';
 import 'package:ricardo/feature/controllers/wallet/withdraw_request_controller.dart';
+import 'package:ricardo/feature/models/wallet/wallet_history_model.dart';
 
 class DependencyInjection implements Bindings{
   @override
@@ -45,5 +47,6 @@ class DependencyInjection implements Bindings{
     Get.lazyPut(()=> WithdrawRequestController());
     Get.lazyPut(()=> HistoryController());
     Get.lazyPut(()=> ReviewsRatingsController());
+    Get.lazyPut(()=>RecentHistoryController());
   }
 }

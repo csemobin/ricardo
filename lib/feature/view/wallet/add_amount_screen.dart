@@ -36,7 +36,7 @@ class _AddAmountState extends State<AddAmountScreen> {
       body: SingleChildScrollView(
         keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
         child: Form(
-          key: controller.formState,
+          key: controller.addMoneyFormState,
           autovalidateMode: AutovalidateMode.onUserInteraction,
           child: Column(
             children: [
@@ -65,8 +65,9 @@ class _AddAmountState extends State<AddAmountScreen> {
                     onHandler: controller.isAmountValid.value
                         ? () {
                             FocusScope.of(context).unfocus();
+                            controller.isAddedMoneyStatus.value = false;
                             controller.addedAmount();
-                          }
+                        }
                         : null,
                   );
                 },
