@@ -17,6 +17,7 @@ import 'package:ricardo/feature/controllers/profile/favourite_rides_controller.d
 import 'package:ricardo/feature/controllers/history/history_controller.dart';
 import 'package:ricardo/feature/controllers/profile/legal_controller.dart';
 import 'package:ricardo/feature/controllers/user_controller.dart';
+import 'package:ricardo/feature/controllers/wallet/add_card_controller.dart';
 import 'package:ricardo/feature/controllers/wallet/add_money_controller.dart';
 import 'package:ricardo/feature/controllers/wallet/payment_method_controller.dart';
 import 'package:ricardo/feature/controllers/wallet/recent_history.dart';
@@ -48,5 +49,6 @@ class DependencyInjection implements Bindings{
     Get.lazyPut(()=> HistoryController());
     Get.lazyPut(()=> ReviewsRatingsController());
     Get.lazyPut(()=>RecentHistoryController());
+    Get.lazyPut(()=>AddCardController());
   }
 }
