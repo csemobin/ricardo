@@ -95,10 +95,17 @@ class _AddCardScreenState extends State<AddCardScreen> {
                   _showCountryBottomSheet(context);
                 },
               ),
+              CustomTextField(
+                controller: controller.moreInfoTEController,
+                minLines: 5,
+                hintText: 'If Additional Information',
+                labelText: 'Added Additional Information ( Optional )',
+                validator: (val){},
+              ),
               SizedBox(
                 height: 40.h,
               ),
-              Obx((){
+              Obx(() {
                 return CustomPrimaryButton(
                   title: controller.isCardAddStatus.value == true
                       ? 'Card Added...'

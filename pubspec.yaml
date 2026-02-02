@@ -35,6 +35,7 @@ dependencies:
   socket_io_client: ^3.1.4
   webview_flutter: ^4.13.1
   firebase_core: ^4.4.0
+  flutter_dotenv:
 
 dev_dependencies:
   flutter_test:
@@ -70,6 +71,7 @@ flutter:
     - assets/icons/
     - assets/fonts/
     - assets/lotties/
+    - .env
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
 

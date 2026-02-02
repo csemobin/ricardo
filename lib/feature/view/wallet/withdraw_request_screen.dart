@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:ricardo/app/utils/app_colors.dart';
@@ -106,7 +107,8 @@ class _WithdrawRequestScreenState extends State<WithdrawRequestScreen> {
                           withdrawController.selectCard(bankInfo);
                         },
                         child: Container(
-                          padding: EdgeInsets.symmetric(vertical: 18.r, horizontal: 12.r),
+                          padding: EdgeInsets.symmetric(
+                              vertical: 18.r, horizontal: 12.r),
                           decoration: BoxDecoration(
                             color: isSelected
                                 ? AppColors.primaryColor.withOpacity(0.1)
@@ -190,19 +192,19 @@ class _WithdrawRequestScreenState extends State<WithdrawRequestScreen> {
                   ),
                 );
               }),
-
               SizedBox(height: 14.h),
-
-
-                CustomPrimaryButton(
+              Obx(() {
+                return CustomPrimaryButton(
                   title: 'Withdraw',
                   // isDisable: !withdrawController.isFormValid.value,
-                  onHandler: () {
-                    confirmRequestPopupModal(context);
-                  },
-                ),
-
-            SizedBox(height: 40.h),
+                  onHandler: withdrawController.isFormValid.value == true
+                      ? () {
+                          confirmRequestPopupModal(context);
+                        }
+                      : null,
+                );
+              }),
+              SizedBox(height: 40.h),
 
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 12.h, vertical: 18.w),
@@ -230,26 +232,61 @@ class _WithdrawRequestScreenState extends State<WithdrawRequestScreen> {
 
   // Confirm Withdraw Request Pop up Model are here
   void confirmRequestPopupModal(BuildContext context) {
+    // Amount Related work are here
+    final amountString = withdrawController.amountTEController.text;
+    final amount = double.tryParse(amountString) ?? 0.0;
+
+    // Tax Related work are here - CORRECTED
+    final taxString = dotenv.env['APP_TAX'] ?? '0'; // Get from .env
+    final taxPercentage = double.tryParse(taxString) ?? 0.0; // Parse to double
+
+    // Calculate platform fee
+    final platformFee = amount * (taxPercentage / 100);
+
+    // Calculate net amount
+    final netAmount = amount - platformFee;
+
     showDialog(
+        barrierColor: Colors.transparent,
         barrierDismissible: false,
         context: context,
         builder: (BuildContext context) {
           return Dialog(
-            backgroundColor: Colors.transparent,
+            backgroundColor: Colors.white.withOpacity(0.8),
             insetPadding: EdgeInsets.symmetric(horizontal: 24.w),
             child: ClipRRect(
-              borderRadius: BorderRadius.circular(20.r),
+              borderRadius: BorderRadius.circular(12.r), // Changed: 12px radius
               child: BackdropFilter(
                 filter: ImageFilter.blur(
-                  sigmaX: 15,
-                  sigmaY: 15,
+                  sigmaX: 4, // Changed: Reduced blur for glass effect
+                  sigmaY: 4,
                 ),
                 child: Container(
+                  constraints: BoxConstraints(
+                    // Added: Fixed size
+                    minWidth: 345.w,
+                    maxWidth: 345.w,
+                    minHeight: 382.h,
+                    maxHeight: 382.h,
+                  ),
                   padding: EdgeInsets.all(20.r),
                   decoration: BoxDecoration(
-                      color: AppColors.whiteColor.withOpacity(0.30),
-                      border:
-                          Border.all(color: Colors.white.withOpacity(0.30))),
+                    color: AppColors.whiteColor.withOpacity(0.3),
+                    // Changed: 30% opacity
+                    borderRadius: BorderRadius.circular(12.r),
+                    // Changed: 12px radius
+                    border: Border.all(
+                        color: AppColors.whiteColor.withOpacity(0.3)),
+                    boxShadow: [
+                      // Added: Box shadow
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.1),
+                        offset: Offset(0, -4),
+                        blurRadius: 4,
+                        spreadRadius: 0,
+                      ),
+                    ],
+                  ),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -258,7 +295,7 @@ class _WithdrawRequestScreenState extends State<WithdrawRequestScreen> {
                           Navigator.pop(context);
                         },
                         child: Align(
-                          alignment: Alignment.bottomRight,
+                          alignment: Alignment.topRight, // Changed: topRight
                           child: Image.asset(Assets.images.crossIcon.path),
                         ),
                       ),
@@ -283,7 +320,7 @@ class _WithdrawRequestScreenState extends State<WithdrawRequestScreen> {
                                 style: testStyle(),
                               ),
                               Text(
-                                '\$150',
+                                '\$${withdrawController.amountTEController.text}',
                                 style: testStyle(),
                               )
                             ],
@@ -295,11 +332,11 @@ class _WithdrawRequestScreenState extends State<WithdrawRequestScreen> {
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: [
                               Text(
-                                'Platform Fee (10%)',
+                                'Platform Fee (${dotenv.env['APP_TAX']}) %)',
                                 style: testStyle(),
                               ),
                               Text(
-                                '\$15',
+                                '\$${platformFee.toStringAsFixed(2)}',
                                 style: testStyle(
                                   color: AppColors.errorColor,
                                 ),
@@ -317,7 +354,7 @@ class _WithdrawRequestScreenState extends State<WithdrawRequestScreen> {
                                 style: testStyle(),
                               ),
                               Text(
-                                '\$135',
+                                '\$${netAmount.toStringAsFixed(2)}',
                                 style: testStyle(
                                     color: AppColors.primaryColor,
                                     fontWeight: FontWeight.w600),
@@ -333,7 +370,8 @@ class _WithdrawRequestScreenState extends State<WithdrawRequestScreen> {
                         textAlign: TextAlign.center,
                         'Depending on the bank, it might \n take one or two working days.',
                         style: TextStyle(
-                          color: Color(0Xff4E4E4E),
+                          color: Colors.black,
+                          // Changed: Black color for readability
                           fontSize: 14.sp,
                           fontWeight: FontWeight.w400,
                         ),
@@ -345,7 +383,8 @@ class _WithdrawRequestScreenState extends State<WithdrawRequestScreen> {
                         textAlign: TextAlign.center,
                         'Are you sure you want to send this \nwithdrawal request?',
                         style: TextStyle(
-                          color: Color(0Xff4E4E4E),
+                          color: Colors.black,
+                          // Changed: Black color for readability
                           fontSize: 14.sp,
                           fontWeight: FontWeight.w400,
                         ),
@@ -384,18 +423,19 @@ class _WithdrawRequestScreenState extends State<WithdrawRequestScreen> {
                           SizedBox(
                             width: 10.w,
                           ),
-                          Expanded(
-                            child: Obx((){
-                              return CustomPrimaryButton(
-                                title: withdrawController.isWithdrawRequestStatus.value == true ? 'Confirming...' : 'Yes, Send',
-                                onHandler: () {
-                                  withdrawController.withdrawRequestHandler();
-                                  Navigator.pop(context);
-                                  // confirmationPopupModal(context);
-                                },
-                              );
-                            })
-                          )
+                          Expanded(child: Obx(() {
+                            return CustomPrimaryButton(
+                              title: withdrawController
+                                          .isWithdrawRequestStatus.value ==
+                                      true
+                                  ? 'Confirming...'
+                                  : 'Yes, Send',
+                              onHandler: () {
+                                withdrawController.withdrawRequestHandler();
+                                Navigator.pop(context);
+                              },
+                            );
+                          }))
                         ],
                       )
                     ],
@@ -481,9 +521,9 @@ class _WithdrawRequestScreenState extends State<WithdrawRequestScreen> {
     FontWeight? fontWeight,
   }) {
     return TextStyle(
-      color: color ?? AppColors.secondaryTextColor,
+      color: color ?? AppColors.darkColor,
       fontSize: fontSize ?? 14.sp,
-      fontWeight: fontWeight ?? FontWeight.w400,
+      fontWeight: fontWeight ?? FontWeight.w500,
     );
   }
 }

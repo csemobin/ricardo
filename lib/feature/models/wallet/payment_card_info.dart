@@ -6,6 +6,7 @@ class PaymentCardInfoModel {
   String? accountNumber;
   String? country;
   String? bankCode;
+  String? moreInfo;
   bool? isDeleted;
   String? createdAt;
   String? updatedAt;
@@ -18,9 +19,11 @@ class PaymentCardInfoModel {
       this.accountNumber,
       this.country,
       this.bankCode,
+        this.moreInfo,
       this.isDeleted,
       this.createdAt,
-      this.updatedAt});
+      this.updatedAt,
+      });
 
   PaymentCardInfoModel.fromJson(Map<String, dynamic> json) {
     sId = json['_id'];
@@ -30,6 +33,7 @@ class PaymentCardInfoModel {
     accountNumber = json['accountNumber'];
     country = json['country'];
     bankCode = json['bankCode'];
+    moreInfo = json['moreInfo'];
     isDeleted = json['isDeleted'];
     createdAt = json['createdAt'];
     updatedAt = json['updatedAt'];

@@ -18,6 +18,7 @@ class AddCardController extends GetxController{
   final TextEditingController accountNumberTEController = TextEditingController();
   final TextEditingController bankCodeTEController = TextEditingController();
   final TextEditingController selectedCountry = TextEditingController();
+  final TextEditingController moreInfoTEController = TextEditingController();
 
   RxBool isCardAddStatus = false.obs;
 
@@ -25,20 +26,26 @@ class AddCardController extends GetxController{
     try{
     isCardAddStatus.value = true;
 
+    if( moreInfoTEController.text.isEmpty ){
+      moreInfoTEController.text = ' ';
+    }
+
     final data = {
       "bankName": bankNameTEController.text.trim(),
       "accountName": accountHolderNameTEController.text.trim(),
       "accountNumber": accountNumberTEController.text.trim(),
       "bankCode": bankCodeTEController.text.trim(),
       "country": selectedCountry.text.trim(),
-
+      "moreInfo" : moreInfoTEController.text.trim(),
     };
 
     // final reqBody = jsonEncode(data);
     final response = await ApiClient.postData(ApiUrls.paymentCardStore, data);
     if( response.statusCode == 200 || response.statusCode == 201 ){
+      clearFields();
+      final cnt = Get.find<PaymentMethodController>();
+      cnt.fetchPaymentCardInfo();
       Get.back();
-      PaymentMethodController().fetchPaymentCardInfo();
     }else{
       Get.snackbar('Error', response.body['message'],snackPosition: SnackPosition.BOTTOM,backgroundColor: AppColors.errorColor);
     }
@@ -47,6 +54,14 @@ class AddCardController extends GetxController{
     }finally{
       isCardAddStatus.value = false;
     }
+  }
+  void clearFields(){
+    bankNameTEController.clear();
+    accountHolderNameTEController.clear();
+    accountNumberTEController.clear();
+    bankCodeTEController.clear();
+    selectedCountry.clear();
+    moreInfoTEController.clear();
   }
 
   @override
@@ -57,5 +72,6 @@ class AddCardController extends GetxController{
     accountNumberTEController.dispose();
     bankCodeTEController.dispose();
     selectedCountry.dispose();
+    moreInfoTEController.dispose();
   }
 }
