@@ -102,7 +102,7 @@ class _PaymentWebViewScreenState extends State<PaymentWebViewScreen> {
 
     final controller = Get.find<CustomBottomNavBarController>();
     controller.selectedIndex.value = 1;
-    Get.toNamed(AppRoutes.customBottomNavBar);
+    Get.offAllNamed(AppRoutes.customBottomNavBar);
   }
 
   void _handlePaymentCancel() {

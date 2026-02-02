@@ -4,8 +4,8 @@ class PaymentCardInfoModel {
   String? bankName;
   String? accountName;
   String? accountNumber;
-  String? routingNumber;
   String? country;
+  String? bankCode;
   bool? isDeleted;
   String? createdAt;
   String? updatedAt;
@@ -16,8 +16,8 @@ class PaymentCardInfoModel {
       this.bankName,
       this.accountName,
       this.accountNumber,
-      this.routingNumber,
       this.country,
+      this.bankCode,
       this.isDeleted,
       this.createdAt,
       this.updatedAt});
@@ -28,8 +28,8 @@ class PaymentCardInfoModel {
     bankName = json['bankName'];
     accountName = json['accountName'];
     accountNumber = json['accountNumber'];
-    routingNumber = json['routingNumber'];
     country = json['country'];
+    bankCode = json['bankCode'];
     isDeleted = json['isDeleted'];
     createdAt = json['createdAt'];
     updatedAt = json['updatedAt'];

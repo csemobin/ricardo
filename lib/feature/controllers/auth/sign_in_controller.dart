@@ -51,8 +51,9 @@ class SignInController extends GetxController {
             user?.userProfile?.role == 'driver' ||
             user?.userProfile?.isProfileCompleted == true &&
                 user?.userProfile?.role == 'passenger') {
-          CustomBottomNavBarController().selectedIndex.value = 0;
-          update();
+          final cnt = Get.find<CustomBottomNavBarController>();
+          cnt.onChange(0);
+          // cnt.selectedIndex.value = 0;
           Get.offAllNamed(AppRoutes.customBottomNavBar);
         } else if (user?.userProfile?.isProfileCompleted == false) {
           Get.offAllNamed(AppRoutes.driverProfileCreateScreen);

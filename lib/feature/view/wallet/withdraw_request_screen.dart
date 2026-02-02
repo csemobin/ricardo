@@ -65,6 +65,7 @@ class _WithdrawRequestScreenState extends State<WithdrawRequestScreen> {
                     FilteringTextInputFormatter.digitsOnly,
                     FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
                   ],
+                  keyboardType: TextInputType.number,
                 ),
               ),
               SizedBox(height: 18.h),
@@ -102,7 +103,7 @@ class _WithdrawRequestScreenState extends State<WithdrawRequestScreen> {
 
                       return GestureDetector(
                         onTap: () {
-                          withdrawController.selectCard(bankInfo!);
+                          withdrawController.selectCard(bankInfo);
                         },
                         child: Container(
                           padding: EdgeInsets.symmetric(vertical: 18.r, horizontal: 12.r),
@@ -387,8 +388,8 @@ class _WithdrawRequestScreenState extends State<WithdrawRequestScreen> {
                             child: Obx((){
                               return CustomPrimaryButton(
                                 title: withdrawController.isWithdrawRequestStatus.value == true ? 'Confirming...' : 'Yes, Send',
-                                onHandler: () async {
-                                  await withdrawController.withdrawRequestHandler();
+                                onHandler: () {
+                                  withdrawController.withdrawRequestHandler();
                                   Navigator.pop(context);
                                   // confirmationPopupModal(context);
                                 },

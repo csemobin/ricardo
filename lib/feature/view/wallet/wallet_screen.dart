@@ -57,8 +57,6 @@ class _WalletScreenState extends State<WalletScreen> {
             if( controller.userRole == 'passenger')
               GestureDetector(
                 onTap: (){
-                  final addMoneyStatus = Get.find<AddMoneyController>();
-                  addMoneyStatus.isAddedMoneyStatus.value = false;
                   Get.toNamed(AppRoutes.addAmountScreen);
                 },
                 child: Container(
@@ -167,8 +165,7 @@ class _WalletScreenState extends State<WalletScreen> {
             )
           ],
         ),
-      ),
-    );
+      ),    );
   }
 
   // Action Buttons (Payment & Withdraw)

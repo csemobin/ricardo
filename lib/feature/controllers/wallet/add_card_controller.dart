@@ -31,6 +31,7 @@ class AddCardController extends GetxController{
       "accountNumber": accountNumberTEController.text.trim(),
       "bankCode": bankCodeTEController.text.trim(),
       "country": selectedCountry.text.trim(),
+
     };
 
     // final reqBody = jsonEncode(data);

@@ -1,9 +1,9 @@
 class ApiUrls{
   // Base, Image, Socket
   // static const String baseUrl = "https://zsv1pz87-5000.inc1.devtunnels.ms/api/v1";
-  static const String baseUrl = "https://desert-attacks-midlands-hawaiian.trycloudflare.com/api/v1";
-  static const String imageBaseUrl = "https://desert-attacks-midlands-hawaiian.trycloudflare.com/images/";
-  static const String socketUrl = "https://zsv1pz87-5000.inc1.devtunnels.ms";
+  static const String baseUrl = "https://libraries-visibility-pin-replacement.trycloudflare.com/api/v1";
+  static const String imageBaseUrl = "https://libraries-visibility-pin-replacement.trycloudflare.com/images/";
+  static const String socketUrl = "https://libraries-visibility-pin-replacement.trycloudflare.com";
 
   // User Registration Related work
   static const String registration = '/user/register';

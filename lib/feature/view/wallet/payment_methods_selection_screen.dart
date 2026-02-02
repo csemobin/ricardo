@@ -101,7 +101,7 @@ class _PaymentMethodsSelectionScreenState
               if (controller.paymentCardInfoStatus.value == true) {
                 return PaymentMethodSkeletonList();
               }
-              if ( controller.paymentCardInfo.length == 0 ) {
+              if ( controller.paymentCardInfo.isEmpty ) {
                 return Center(
                   child: Text('No Card Added Yet'),
                 );

@@ -36,8 +36,6 @@ class RecentHistoryController extends GetxController {
         final recentHistories = data['recentHistory'] as List;
         recentHistoryList.value =
             recentHistories.map((e) => RecentHistory.fromJson(e)).toList();
-
-        print(recentHistoryList.length);
       } else {
         Get.snackbar('Error', response.body['data']['message']);
       }

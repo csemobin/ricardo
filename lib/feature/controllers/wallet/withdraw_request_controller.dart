@@ -48,7 +48,7 @@ class WithdrawRequestController extends GetxController {
         "accountName": card.accountName,
         "accountNumber": card.accountNumber,
         "country": card.country,
-        "bankCode": card.routingNumber,
+        "bankCode": card.bankCode,
         "moreInfo": "I have swift code",
       };
 

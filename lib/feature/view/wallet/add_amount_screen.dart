@@ -16,6 +16,7 @@ class AddAmountScreen extends StatefulWidget {
 }
 
 class _AddAmountState extends State<AddAmountScreen> {
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final controller = Get.put(AddMoneyController());
 
   @override
@@ -36,7 +37,7 @@ class _AddAmountState extends State<AddAmountScreen> {
       body: SingleChildScrollView(
         keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
         child: Form(
-          key: controller.addMoneyFormState,
+          key: _formKey,
           autovalidateMode: AutovalidateMode.onUserInteraction,
           child: Column(
             children: [
@@ -63,11 +64,7 @@ class _AddAmountState extends State<AddAmountScreen> {
                         ? 'Adding...'
                         : 'Add Money',
                     onHandler: controller.isAmountValid.value
-                        ? () {
-                            FocusScope.of(context).unfocus();
-                            controller.isAddedMoneyStatus.value = false;
-                            controller.addedAmount();
-                        }
+                        ? () => _formSubmit()
                         : null,
                   );
                 },
@@ -77,5 +74,11 @@ class _AddAmountState extends State<AddAmountScreen> {
         ),
       ),
     );
+  }
+
+  void _formSubmit() {
+    if (!_formKey.currentState!.validate()) return;
+    FocusScope.of(context).unfocus();
+    controller.addedAmount();
   }
 }

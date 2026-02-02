@@ -6,7 +6,6 @@ import 'package:ricardo/services/api_urls.dart';
 
 class AddMoneyController extends GetxController{
   final TextEditingController addMoneyTEController = TextEditingController();
-  final GlobalKey<FormState> addMoneyFormState = GlobalKey<FormState>();
 
   final RxBool isAddedMoneyStatus = false.obs;
   final RxBool isAmountValid = false.obs;
@@ -39,19 +38,22 @@ class AddMoneyController extends GetxController{
 
     try{
       isAddedMoneyStatus.value = true;
-      isAddedMoneyStatus.value = false;
 
       final amount = {
         "amount": addMoneyTEController.text.trim()
       };
 
       final response = await ApiClient.postData(ApiUrls.addBalance, amount);
-
       if( response.statusCode == 200 || response.statusCode == 201 ){
+        isAddedMoneyStatus.value = false;
         cleanField();
-        final paymentUrl = response.body['data']['paymentUrl'];
-        await Get.to(()=> PaymentWebViewScreen(paymentUrl: paymentUrl));
-
+        final String? paymentUrl = response.body['data']['paymentUrl'];
+        if (paymentUrl != null && paymentUrl.isNotEmpty) {
+          await Get.to(() => PaymentWebViewScreen(paymentUrl: paymentUrl));
+        }else{
+          Get.snackbar('Error', 'Something went wrong. Please try again!!',
+              snackPosition: SnackPosition.BOTTOM);
+        }
       }else{
         Get.snackbar('Error', response.body['message'],snackPosition: SnackPosition.BOTTOM);
       }
