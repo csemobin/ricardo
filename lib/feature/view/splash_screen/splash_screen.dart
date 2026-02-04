@@ -7,6 +7,7 @@ import 'package:ricardo/feature/models/user_model.dart';
 import 'package:ricardo/feature/view/splash_screen/on_board_screen.dart';
 import 'package:ricardo/gen/assets.gen.dart';
 import 'package:ricardo/routes/app_routes.dart';
+import 'package:ricardo/services/socket_services.dart';
 import 'package:ricardo/widgets/logo_widget.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -47,6 +48,14 @@ class _SplashScreenState extends State<SplashScreen>
 
   Future<void> _initializeSplash() async {
     try {
+      await SocketServices.init();
+     var  token = await PrefsHelper.getString(AppConstants.bearerToken);
+      var fcmToken = await PrefsHelper.getString(AppConstants.fcmToken);
+
+      token.isEmpty? null :  SocketServices.socket?.emit('user-connected', {
+          "accessToken" : token ,
+          "fcmToken" : fcmToken
+        });
       await Future.delayed(_splashDuration);
 
       if (!mounted) return;

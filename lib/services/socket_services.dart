@@ -1,13 +1,9 @@
 import 'dart:async';
-import 'package:socket_io_client/socket_io_client.dart' as IO;
-import 'package:socket_io_client/socket_io_client.dart';
 import 'package:ricardo/app/helpers/prefs_helper.dart';
 import 'package:ricardo/app/utils/app_constants.dart';
 import 'package:ricardo/services/api_urls.dart';
-
-
-
-
+import 'package:socket_io_client/socket_io_client.dart' as IO;
+import 'package:socket_io_client/socket_io_client.dart';
 
 
 
@@ -15,6 +11,10 @@ class SocketServices {
   static String token = '';
   static IO.Socket? socket;
 
+  // Singleton pattern
+  static final SocketServices _instance = SocketServices._internal();
+  factory SocketServices() => _instance;
+  SocketServices._internal();
 
   static Future<void> init() async {
     // Fetch the token from preferences
@@ -23,7 +23,7 @@ class SocketServices {
     // Check if the token is available
     if (token.isEmpty) {
       print("Token is missing! Cannot initialize the socket connection.");
-      return;  // Return early if token is missing
+      return; // Return early if token is missing
     }
 
     print("Initializing socket with token: $token  \n time${DateTime.now()}");
@@ -50,20 +50,26 @@ class SocketServices {
     socket?.onConnect((_) => print('✅ Socket connected successfully'));
     socket?.onConnectError((err) => print('❌ Socket connection error: $err'));
     socket?.onError((err) => print('❌ Socket error: $err'));
-    socket?.onDisconnect((reason) => print('⚠️ Socket disconnected. Reason: $reason'));
+    socket?.onDisconnect(
+            (reason) => print('⚠️ Socket disconnected. Reason: $reason'));
 
     // Connect the socket after the token is set
     socket?.connect();
   }
 
+  // Instance method for listening to events
   void on(String event, Function(dynamic) handler) {
     socket?.on(event, handler);
+    print('📡 Listening to socket event: $event');
   }
 
-  void off(String event, Function(dynamic) handler) {
-    socket?.off(event, handler);
+  // Instance method for removing event listeners
+  void off(String event) {
+    socket?.off(event);
+    print('🔇 Stopped listening to socket event: $event');
   }
 
+  // Static method for emitting with acknowledgment
   static Future<dynamic> emitWithAck(String event, dynamic body) async {
     Completer<dynamic> completer = Completer<dynamic>();
     socket?.emitWithAck(event, body, ack: (data) {
@@ -76,22 +82,20 @@ class SocketServices {
     return completer.future;
   }
 
-  /// Emit without acknowledgment
-  void emit(String event, dynamic body) {
-    if (socket != null && socket!.connected) {
-      socket!.emit(event, body);
-      print('📤 Emit: $event\n➡️ Data: $body');
-    } else {
-      print("⚠️ Emit failed: socket not connected");
+  // Static method for emitting events
+  static emit(String event, dynamic body) {
+    if (body != null) {
+      socket?.emit(event, body);
+      print('===========> Emit $event and \n $body');
     }
   }
 
-  /// Disconnect socket
-  void disconnect() {
+  // Check if socket is connected
+  static bool get isConnected => socket?.connected ?? false;
 
+  // Disconnect socket
+  static void disconnect() {
     socket?.disconnect();
-    print('🔌 Socket manually disconnected');
+    print('🔌 Socket disconnected');
   }
 }
-
-

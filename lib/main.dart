@@ -4,6 +4,7 @@ import 'package:ricardo/app.dart';
 import 'package:ricardo/app/helpers/device_utils.dart';
 import 'package:ricardo/firebase_options.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:ricardo/services/socket_services.dart';
 
 void main() async{
   await dotenv.load(fileName: '.env');
@@ -12,5 +13,6 @@ void main() async{
     options: DefaultFirebaseOptions.currentPlatform,
   );
   DeviceUtils.lockDevicePortrait();
+  // await SocketServices.init();
   runApp(RideSharingApplication());
 }

@@ -7,6 +7,8 @@ import 'package:ricardo/feature/controllers/user_controller.dart';
 import 'package:ricardo/routes/app_routes.dart';
 import 'package:ricardo/services/api_client.dart';
 import 'package:ricardo/services/api_urls.dart';
+import 'package:ricardo/services/get_fcm_tocken.dart';
+import 'package:ricardo/services/socket_services.dart';
 
 class SignInController extends GetxController {
   final TextEditingController emailTextEditingController =
@@ -42,6 +44,7 @@ class SignInController extends GetxController {
       final accessToken = response.body['data']['accessToken'];
       await PrefsHelper.setString(AppConstants.bearerToken, accessToken);
 
+
       if (response.body['data']!['accessToken'].toString().isNotEmpty) {
         final userController = Get.find<UserController>();
         await userController.fetchUser();
@@ -54,6 +57,23 @@ class SignInController extends GetxController {
           final cnt = Get.find<CustomBottomNavBarController>();
           cnt.onChange(0);
           // cnt.selectedIndex.value = 0;
+
+          String? getAccessToken = await PrefsHelper.getString('accessToken');
+          String? fcmToken = await FirebaseNotificationService.getFCMToken();
+          await PrefsHelper.setString(AppConstants.fcmToken, fcmToken);
+          await SocketServices.init();
+
+          SocketServices.socket?.emit('user-connected', {
+            "accessToken" : getAccessToken,
+            "fcmToken" : fcmToken
+          });
+
+
+          print('===== FCMTOKEN>>>>>>>>>>>>>>>>>>>>>> $fcmToken ==================');
+          print('=======AccessToken>>>>>>>>>>>>>>>>>>>>>> $getAccessToken');
+
+           /// here will be socket construction
+
           Get.offAllNamed(AppRoutes.customBottomNavBar);
         } else if (user?.userProfile?.isProfileCompleted == false) {
           Get.offAllNamed(AppRoutes.driverProfileCreateScreen);
@@ -80,6 +100,10 @@ class SignInController extends GetxController {
     final response = await ApiClient.postData(ApiUrls.authLogOut, {});
     if (response.statusCode == 200 || response.statusCode == 201) {
       await PrefsHelper.remove(AppConstants.bearerToken);
+      SocketServices.socket?.disconnect();
+      SocketServices.socket?.dispose();
+      PrefsHelper.remove(AppConstants.bearerToken);
+      PrefsHelper.remove(AppConstants.fcmToken);
       Get.offAllNamed(AppRoutes.signInScreen);
     } else {
       Get.snackbar('Error', response.body['data']['message']);
