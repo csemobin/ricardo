@@ -26,6 +26,7 @@ dependencies:
   dots_indicator: ^3.0.0
   dotted_border: ^2.1.0
   google_maps_flutter: ^2.14.0
+  flutter_polyline_points:
   flutter_intl_phone_field: ^0.0.7
   lottie: ^2.4.0
   logger: ^2.6.2
@@ -74,6 +75,7 @@ flutter:
     - assets/fonts/
     - assets/lotties/
     - .env
+    - assets/images/car_marker.png
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
 

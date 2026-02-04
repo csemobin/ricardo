@@ -47,3 +47,4 @@ android/app/src/main/AndroidManifest.xml
 # FVM Version Cache
 .fvm/
 env
+.env

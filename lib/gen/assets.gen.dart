@@ -148,6 +148,10 @@ class $AssetsImagesGen {
   AssetGenImage get carIcon =>
       const AssetGenImage('assets/images/car_icon.png');
 
+  /// File path: assets/images/car_marker.png
+  AssetGenImage get carMarker =>
+      const AssetGenImage('assets/images/car_marker.png');
+
   /// File path: assets/images/cross-icon.png
   AssetGenImage get crossIcon =>
       const AssetGenImage('assets/images/cross-icon.png');
@@ -362,6 +366,7 @@ class $AssetsImagesGen {
     applogo,
     arrowDropDown,
     carIcon,
+    carMarker,
     crossIcon,
     cuate,
     directRight,
@@ -433,10 +438,14 @@ class $AssetsLottiesGen {
 class Assets {
   const Assets._();
 
+  static const String aEnv = '.env';
   static const $AssetsFontsGen fonts = $AssetsFontsGen();
   static const $AssetsIconsGen icons = $AssetsIconsGen();
   static const $AssetsImagesGen images = $AssetsImagesGen();
   static const $AssetsLottiesGen lotties = $AssetsLottiesGen();
+
+  /// List of all assets
+  static List<String> get values => [aEnv];
 }
 
 class AssetGenImage {

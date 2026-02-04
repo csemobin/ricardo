@@ -33,6 +33,7 @@ class AppColors {
   static const Color whiteColor = Color(0xffFFFFFF);
   static const Color appGreyColor = Color(0Xff929292);
   static const Color dottedBorderColor = Color(0Xff1BB600);
+  static const Color markerBackgroundColor = Color(0xFF989696);
 
 
   static const Color secondaryColor = Color(0xff305CDE);
@@ -47,5 +48,4 @@ class AppColors {
   static const Color successColor = Color(0xff00A213);
   static const Color errorColor = Color(0xffF40000);
   static const Color termsPrivacyColor = Color(0xff0D0D0D);
-
 }
