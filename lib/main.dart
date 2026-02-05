@@ -13,6 +13,6 @@ void main() async{
     options: DefaultFirebaseOptions.currentPlatform,
   );
   DeviceUtils.lockDevicePortrait();
-  // await SocketServices.init();
+  await SocketServices.init();
   runApp(RideSharingApplication());
 }

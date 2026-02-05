@@ -39,14 +39,14 @@ dependencies:
   flutter_dotenv:
   firebase_messaging: ^16.1.1
   flutter_local_notifications: ^20.0.0
+  geolocator: ^10.1.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   build_runner:
   flutter_gen_runner:
-
-
+  flutter_launcher_icons:
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
   # activated in the `analysis_options.yaml` file located at the root of your
@@ -58,6 +58,13 @@ dev_dependencies:
 # following page: https://dart.dev/tools/pub/pubspec
 
 # The following section is specific to Flutter packages.
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/icon/icon.png"
+  adaptive_icon_foreground: "assets/icon/icon.png"
+  adaptive_icon_background: "#FFFFFF"
+
 flutter:
 
   # The following line ensures that the Material Icons font is

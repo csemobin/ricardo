@@ -21,7 +21,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.ricardo"
-        minSdk = 23  // <- must be 23+ for firebase_messaging
+        minSdk = 23
         targetSdk = 36
         versionCode = 1 // replace with flutter.versionCode if needed
         versionName = "1.0" // replace with flutter.versionName if needed

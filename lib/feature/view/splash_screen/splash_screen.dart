@@ -48,6 +48,7 @@ class _SplashScreenState extends State<SplashScreen>
 
   Future<void> _initializeSplash() async {
     try {
+
       await SocketServices.init();
      var  token = await PrefsHelper.getString(AppConstants.bearerToken);
       var fcmToken = await PrefsHelper.getString(AppConstants.fcmToken);
@@ -56,6 +57,7 @@ class _SplashScreenState extends State<SplashScreen>
           "accessToken" : token ,
           "fcmToken" : fcmToken
         });
+
       await Future.delayed(_splashDuration);
 
       if (!mounted) return;
