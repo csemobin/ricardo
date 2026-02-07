@@ -221,6 +221,9 @@ class $AssetsImagesGen {
   AssetGenImage get masterCardIcon =>
       const AssetGenImage('assets/images/master-card-icon.png');
 
+  /// File path: assets/images/offline.png
+  AssetGenImage get offline => const AssetGenImage('assets/images/offline.png');
+
   /// File path: assets/images/onboard_one.png
   AssetGenImage get onboardOne =>
       const AssetGenImage('assets/images/onboard_one.png');
@@ -385,6 +388,7 @@ class $AssetsImagesGen {
     logoutProfileScreen,
     logout,
     masterCardIcon,
+    offline,
     onboardOne,
     onboardThree,
     onboardTwo,

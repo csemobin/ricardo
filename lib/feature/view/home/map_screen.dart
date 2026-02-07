@@ -1,6 +1,9 @@
 import 'dart:async';
+import 'dart:ui' as ui;
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:ricardo/app/helpers/prefs_helper.dart';
@@ -8,6 +11,7 @@ import 'package:ricardo/app/utils/app_constants.dart';
 import 'package:ricardo/services/get_fcm_tocken.dart';
 import 'package:ricardo/services/socket_services.dart';
 import 'package:ricardo/widgets/animated_toggle_switch.dart';
+import 'package:ricardo/widgets/no_internet_message_map.dart';
 
 class MapScreen extends StatefulWidget {
   const MapScreen({super.key});
@@ -20,12 +24,34 @@ class _MapScreenState extends State<MapScreen> {
   StreamSubscription<Position>? positionStream;
 
   BitmapDescriptor? customMarker;
+
   Future<void> setCustomMarker() async {
+    // Method 1: Using ImageConfiguration to control size
     customMarker = await BitmapDescriptor.fromAssetImage(
-      mipmaps: true,
-      ImageConfiguration(size: Size(10, 10)),
+      const ImageConfiguration(
+        devicePixelRatio: 1.0, // Lower = smaller image
+        size: Size(50, 50), // Target size in logical pixels
+      ),
       "assets/images/car_marker.png",
     );
+    setState(() {});
+  }
+
+// Method 2: More precise control using asset() with custom bytes
+  Future<void> setCustomMarkerAdvanced() async {
+    final ByteData data = await rootBundle.load("assets/images/car_marker.png");
+    final ui.Codec codec = await ui.instantiateImageCodec(
+      data.buffer.asUint8List(),
+      targetWidth: 50, // Specify exact width
+      targetHeight: 50, // Specify exact height
+    );
+    final ui.FrameInfo frameInfo = await codec.getNextFrame();
+    final ByteData? byteData = await frameInfo.image.toByteData(
+      format: ui.ImageByteFormat.png,
+    );
+    final Uint8List resizedImageData = byteData!.buffer.asUint8List();
+
+    customMarker = BitmapDescriptor.fromBytes(resizedImageData);
     setState(() {});
   }
 
@@ -138,7 +164,8 @@ class _MapScreenState extends State<MapScreen> {
   List<LatLng> polylineCoordinates = [];
   double currentZoom = 16.4746;
   double markerSize = 40;
-
+  // Offline and online controller
+  bool isOnline = true;
   @override
   Widget build(BuildContext context) {
     polylineCoordinates.add(initialLocation);
@@ -184,7 +211,7 @@ class _MapScreenState extends State<MapScreen> {
                     initialLocation = updateLanLng;
                   });
                 },
-
+                anchor: Offset(0.5, 0.5)
               ),
               Marker(
                 markerId: const MarkerId('destination'),
@@ -218,11 +245,14 @@ class _MapScreenState extends State<MapScreen> {
             },
           ),
           SafeArea(
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
+            child: Column(
+              // crossAxisAlignment: CrossAxisAlignment.center,
+              // mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                SizedBox(height: 10,),
                 AnimatedToggleSwitch(),
+                SizedBox(height: 30,),
+                NoInternetMessageMap(),
               ],
             ),
           )

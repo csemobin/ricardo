@@ -199,8 +199,8 @@ class _WithdrawRequestScreenState extends State<WithdrawRequestScreen> {
                   // isDisable: !withdrawController.isFormValid.value,
                   onHandler: withdrawController.isFormValid.value == true
                       ? () {
-                          confirmRequestPopupModal(context);
-                        }
+                    confirmRequestPopupModal(context);
+                  }
                       : null,
                 );
               }),
@@ -230,15 +230,15 @@ class _WithdrawRequestScreenState extends State<WithdrawRequestScreen> {
     );
   }
 
-  // Confirm Withdraw Request Pop up Model are here
+  // Confirm Withdraw Request Pop up Modal
   void confirmRequestPopupModal(BuildContext context) {
-    // Amount Related work are here
+    // Amount Related work
     final amountString = withdrawController.amountTEController.text;
     final amount = double.tryParse(amountString) ?? 0.0;
 
-    // Tax Related work are here - CORRECTED
-    final taxString = dotenv.env['APP_TAX'] ?? '0'; // Get from .env
-    final taxPercentage = double.tryParse(taxString) ?? 0.0; // Parse to double
+    // Tax Related work
+    final taxString = dotenv.env['APP_TAX'] ?? '0';
+    final taxPercentage = double.tryParse(taxString) ?? 0.0;
 
     // Calculate platform fee
     final platformFee = amount * (taxPercentage / 100);
@@ -247,38 +247,31 @@ class _WithdrawRequestScreenState extends State<WithdrawRequestScreen> {
     final netAmount = amount - platformFee;
 
     showDialog(
-        barrierColor: Colors.transparent,
-        barrierDismissible: false,
-        context: context,
-        builder: (BuildContext context) {
-          return Dialog(
-            backgroundColor: Colors.white.withOpacity(0.8),
-            insetPadding: EdgeInsets.symmetric(horizontal: 24.w),
+      barrierColor: Colors.transparent,
+      barrierDismissible: false,
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          backgroundColor: Colors.white.withOpacity(0.8),
+          insetPadding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 24.h),
+          child: SingleChildScrollView(
             child: ClipRRect(
-              borderRadius: BorderRadius.circular(12.r), // Changed: 12px radius
+              borderRadius: BorderRadius.circular(12.r),
               child: BackdropFilter(
                 filter: ImageFilter.blur(
-                  sigmaX: 4, // Changed: Reduced blur for glass effect
+                  sigmaX: 4,
                   sigmaY: 4,
                 ),
                 child: Container(
-                  constraints: BoxConstraints(
-                    // Added: Fixed size
-                    minWidth: 345.w,
-                    maxWidth: 345.w,
-                    minHeight: 382.h,
-                    maxHeight: 382.h,
-                  ),
+                  width: double.infinity,
                   padding: EdgeInsets.all(20.r),
                   decoration: BoxDecoration(
                     color: AppColors.whiteColor.withOpacity(0.3),
-                    // Changed: 30% opacity
                     borderRadius: BorderRadius.circular(12.r),
-                    // Changed: 12px radius
                     border: Border.all(
-                        color: AppColors.whiteColor.withOpacity(0.3)),
+                      color: AppColors.whiteColor.withOpacity(0.3),
+                    ),
                     boxShadow: [
-                      // Added: Box shadow
                       BoxShadow(
                         color: Colors.black.withOpacity(0.1),
                         offset: Offset(0, -4),
@@ -295,7 +288,7 @@ class _WithdrawRequestScreenState extends State<WithdrawRequestScreen> {
                           Navigator.pop(context);
                         },
                         child: Align(
-                          alignment: Alignment.topRight, // Changed: topRight
+                          alignment: Alignment.topRight,
                           child: Image.asset(Assets.images.crossIcon.path),
                         ),
                       ),
@@ -307,9 +300,7 @@ class _WithdrawRequestScreenState extends State<WithdrawRequestScreen> {
                           color: AppColors.greenColor,
                         ),
                       ),
-                      SizedBox(
-                        height: 14.h,
-                      ),
+                      SizedBox(height: 14.h),
                       Column(
                         children: [
                           Row(
@@ -325,9 +316,7 @@ class _WithdrawRequestScreenState extends State<WithdrawRequestScreen> {
                               )
                             ],
                           ),
-                          SizedBox(
-                            height: 4.h,
-                          ),
+                          SizedBox(height: 4.h),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: [
@@ -343,9 +332,7 @@ class _WithdrawRequestScreenState extends State<WithdrawRequestScreen> {
                               )
                             ],
                           ),
-                          SizedBox(
-                            height: 4.h,
-                          ),
+                          SizedBox(height: 4.h),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: [
@@ -356,42 +343,35 @@ class _WithdrawRequestScreenState extends State<WithdrawRequestScreen> {
                               Text(
                                 '\$${netAmount.toStringAsFixed(2)}',
                                 style: testStyle(
-                                    color: AppColors.primaryColor,
-                                    fontWeight: FontWeight.w600),
+                                  color: AppColors.primaryColor,
+                                  fontWeight: FontWeight.w600,
+                                ),
                               )
                             ],
                           ),
                         ],
                       ),
-                      SizedBox(
-                        height: 18.h,
-                      ),
+                      SizedBox(height: 18.h),
                       Text(
                         textAlign: TextAlign.center,
                         'Depending on the bank, it might \n take one or two working days.',
                         style: TextStyle(
                           color: Colors.black,
-                          // Changed: Black color for readability
                           fontSize: 14.sp,
                           fontWeight: FontWeight.w400,
                         ),
                       ),
-                      SizedBox(
-                        height: 14.h,
-                      ),
+                      SizedBox(height: 14.h),
                       Text(
                         textAlign: TextAlign.center,
                         'Are you sure you want to send this \nwithdrawal request?',
                         style: TextStyle(
                           color: Colors.black,
-                          // Changed: Black color for readability
                           fontSize: 14.sp,
                           fontWeight: FontWeight.w400,
                         ),
                       ),
-                      SizedBox(
-                        height: 33.h,
-                      ),
+                      SizedBox(height: 33.h),
                       Row(
                         children: [
                           Expanded(
@@ -420,22 +400,22 @@ class _WithdrawRequestScreenState extends State<WithdrawRequestScreen> {
                               },
                             ),
                           ),
-                          SizedBox(
-                            width: 10.w,
-                          ),
-                          Expanded(child: Obx(() {
-                            return CustomPrimaryButton(
-                              title: withdrawController
-                                          .isWithdrawRequestStatus.value ==
-                                      true
-                                  ? 'Confirming...'
-                                  : 'Yes, Send',
-                              onHandler: () {
-                                withdrawController.withdrawRequestHandler();
-                                Navigator.pop(context);
-                              },
-                            );
-                          }))
+                          SizedBox(width: 10.w),
+                          Expanded(
+                            child: Obx(() {
+                              return CustomPrimaryButton(
+                                title: withdrawController
+                                    .isWithdrawRequestStatus.value ==
+                                    true
+                                    ? 'Confirming...'
+                                    : 'Yes, Send',
+                                onHandler: () {
+                                  withdrawController.withdrawRequestHandler();
+                                  Navigator.pop(context);
+                                },
+                              );
+                            }),
+                          )
                         ],
                       )
                     ],
@@ -443,19 +423,22 @@ class _WithdrawRequestScreenState extends State<WithdrawRequestScreen> {
                 ),
               ),
             ),
-          );
-        });
+          ),
+        );
+      },
+    );
   }
 
-  // Confirmation Pop Up Model are here
+  // Confirmation Pop Up Modal
   void confirmationPopupModal(BuildContext context) {
     showDialog(
-        barrierDismissible: true,
-        context: context,
-        builder: (BuildContext context) {
-          return Dialog(
-            backgroundColor: Colors.transparent,
-            insetPadding: EdgeInsets.symmetric(horizontal: 24.w),
+      barrierDismissible: true,
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          backgroundColor: Colors.transparent,
+          insetPadding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 24.h),
+          child: SingleChildScrollView(
             child: ClipRRect(
               borderRadius: BorderRadius.circular(20.r),
               child: BackdropFilter(
@@ -464,55 +447,61 @@ class _WithdrawRequestScreenState extends State<WithdrawRequestScreen> {
                   sigmaY: 15,
                 ),
                 child: Container(
+                  width: double.infinity,
                   padding: EdgeInsets.all(20.r),
                   decoration: BoxDecoration(
-                      color: AppColors.whiteColor.withOpacity(0.15),
-                      border: Border.all(color: Colors.white.withOpacity(0.8))),
+                    color: AppColors.whiteColor.withOpacity(0.15),
+                    borderRadius: BorderRadius.circular(20.r),
+                    border: Border.all(
+                      color: Colors.white.withOpacity(0.8),
+                    ),
+                  ),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Padding(padding: EdgeInsets.only(top: 32.h)),
-                      Image.asset(Assets.images.glassmorphismLogo.path),
-                      SizedBox(
-                        height: 30.h,
+                      SizedBox(height: 32.h),
+                      Image.asset(
+                        Assets.images.glassmorphismLogo.path,
+                        height: 80.h,
                       ),
+                      SizedBox(height: 30.h),
                       Text(
                         'Successfully Submitted',
                         style: TextStyle(
-                          fontSize: 20,
+                          fontSize: 20.sp,
                           fontWeight: FontWeight.w600,
                           color: AppColors.greenColor,
                         ),
                       ),
-                      SizedBox(
-                        height: 30.h,
-                      ),
+                      SizedBox(height: 20.h),
                       Text(
+                        'Your withdraw request sent successfully',
                         textAlign: TextAlign.center,
-                        'Your withdraw request send successfully',
                         style: TextStyle(
                           color: Colors.white,
-                          fontSize: 12.sp,
+                          fontSize: 14.sp,
                           fontWeight: FontWeight.w400,
+                          height: 1.4,
                         ),
                       ),
-                      SizedBox(
-                        height: 30.h,
-                      ),
+                      SizedBox(height: 30.h),
                       CustomPrimaryButton(
                         title: 'Back to Home',
                         onHandler: () {
                           Get.offAllNamed(AppRoutes.customBottomNavBar);
                           Get.find<CustomBottomNavBarController>().onChange(0);
                         },
-                      )
+                      ),
+                      SizedBox(height: 10.h),
                     ],
                   ),
                 ),
               ),
             ),
-          );
-        });
+          ),
+        );
+      },
+    );
   }
 
   TextStyle testStyle({
