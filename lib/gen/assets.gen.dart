@@ -369,6 +369,9 @@ class $AssetsImagesGen {
   /// File path: assets/images/visa.png
   AssetGenImage get visa => const AssetGenImage('assets/images/visa.png');
 
+  /// File path: assets/images/waiting.gif
+  AssetGenImage get waiting => const AssetGenImage('assets/images/waiting.gif');
+
   /// File path: assets/images/wallet-icon.png
   AssetGenImage get walletIcon =>
       const AssetGenImage('assets/images/wallet-icon.png');
@@ -453,6 +456,7 @@ class $AssetsImagesGen {
     viewReviewsProfileScreen,
     visaPayment,
     visa,
+    waiting,
     walletIcon,
     walletCoinBackground,
     walletNarrowBackground,

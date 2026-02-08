@@ -66,4 +66,9 @@ class _SearchLocationScreenState extends State<SearchLocationScreen> {
       ),
     );
   }
+
+  // Confirm Request Pop up modal
+  void confirmRequestPopUpModel( BuildContext context ){
+
+  }
 }

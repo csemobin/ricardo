@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:ricardo/app/utils/app_colors.dart';
+
+import 'glass_background_multiple_widget.dart';
 
 class AnimatedToggleSwitch extends StatefulWidget {
   const AnimatedToggleSwitch({super.key});
@@ -14,9 +18,98 @@ class _AnimatedToggleSwitchState extends State<AnimatedToggleSwitch> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        setState(() {
-          isOnline = !isOnline;
-        });
+        if (isOnline) {
+          // Going OFFLINE - Show confirmation dialog
+          showDialog(
+            barrierDismissible: true,
+            context: context,
+            builder: (context) {
+              return Dialog(
+                elevation: 5,
+                backgroundColor: Colors.transparent,
+                child: GlassBackgroundWidget(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    GestureDetector(
+                      onTap: () => Navigator.pop(context),
+                      child: Text(
+                        'X',
+                        textAlign: TextAlign.end,
+                        style: TextStyle(
+                          fontSize: 24.sp,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.whiteColor,
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 16.h),
+                    Icon(
+                      Icons.wifi_off,
+                      size: 50.r,
+                      color: Colors.red,
+                    ),
+                    SizedBox(height: 16.h),
+                    Text(
+                      'Are you sure you would like to go Offline?',
+                      style: TextStyle(
+                        fontSize: 18.sp,
+                        color: Color(0xff171717),
+                        fontWeight: FontWeight.w500,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    SizedBox(height: 24.h),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        TextButton(
+                          onPressed: () => Navigator.pop(context),
+                          style: TextButton.styleFrom(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 20.w,
+                              vertical: 12.h,
+                            ),
+                          ),
+                          child: Text(
+                            'Cancel',
+                            style: TextStyle(fontSize: 16.sp),
+                          ),
+                        ),
+                        ElevatedButton(
+                          onPressed: () {
+                            setState(() {
+                              isOnline = false; // Go offline
+                            });
+                            Navigator.pop(context);
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.red,
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 20.w,
+                              vertical: 12.h,
+                            ),
+                          ),
+                          child: Text(
+                            'Go Offline',
+                            style: TextStyle(
+                              fontSize: 16.sp,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              );
+            },
+          );
+        } else {
+          // Going ONLINE - Just change state directly, NO dialog
+          setState(() {
+            isOnline = true;
+          });
+        }
       },
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 300),
@@ -53,7 +146,8 @@ class _AnimatedToggleSwitchState extends State<AnimatedToggleSwitch> {
             AnimatedAlign(
               duration: const Duration(milliseconds: 300),
               curve: Curves.easeInOut,
-              alignment: isOnline ? Alignment.centerRight : Alignment.centerLeft,
+              alignment:
+              isOnline ? Alignment.centerRight : Alignment.centerLeft,
               child: Container(
                 width: 42,
                 height: 42,

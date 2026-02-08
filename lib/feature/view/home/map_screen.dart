@@ -11,10 +11,12 @@ import 'package:ricardo/app/helpers/prefs_helper.dart';
 import 'package:ricardo/app/utils/app_colors.dart';
 import 'package:ricardo/app/utils/app_constants.dart';
 import 'package:ricardo/gen/assets.gen.dart';
+import 'package:ricardo/gen/fonts.gen.dart';
 import 'package:ricardo/routes/app_routes.dart';
 import 'package:ricardo/services/get_fcm_tocken.dart';
 import 'package:ricardo/services/socket_services.dart';
 import 'package:ricardo/widgets/animated_toggle_switch.dart';
+import 'package:ricardo/widgets/glass_background_widget.dart';
 import 'package:ricardo/widgets/no_internet_message_map.dart';
 import 'package:slide_to_act/slide_to_act.dart';
 
@@ -337,54 +339,183 @@ class _MapScreenState extends State<MapScreen> {
                 // SizedBox(
                 //   height: 10,
                 // ),
-                // AnimatedToggleSwitch(),
+                AnimatedToggleSwitch(),
                 // // SizedBox(
                 // //   height: 30,
                 // // ),
                 // NoInternetMessageMap(),
                 //
                 // // Swiped Button are here
-                _buildSwippedButton()
+                _buildSwippedButton(),
 
-                // ClipRRect(
-                //   borderRadius: BorderRadius.circular(12.r),
-                //   child: BackdropFilter(
-                //     filter: ui.ImageFilter.blur(
-                //       sigmaX: 4,
-                //       sigmaY: 4,
-                //     ),
-                //     child: Container(
-                //       width: double.infinity,
-                //       padding: EdgeInsets.all(20.r),
-                //       decoration: BoxDecoration(
-                //         color: AppColors.whiteColor.withOpacity(0.3),
-                //         borderRadius: BorderRadius.circular(12.r),
-                //         border: Border.all(
-                //           color: AppColors.whiteColor.withOpacity(0.3),
-                //         ),
-                //         boxShadow: [
-                //           BoxShadow(
-                //             color: Colors.black.withOpacity(0.1),
-                //             offset: Offset(0, -4),
-                //             blurRadius: 4,
-                //             spreadRadius: 0,
-                //           ),
-                //         ],
+                // Padding(
+                //   padding: EdgeInsets.symmetric(horizontal: 25),
+                //   child: ClipRRect(
+                //     borderRadius: BorderRadius.circular(12.r),
+                //     child: BackdropFilter(
+                //       filter: ui.ImageFilter.blur(
+                //         sigmaX: 4,
+                //         sigmaY: 4,
                 //       ),
-                //       child: Column(
-                //         mainAxisSize: MainAxisSize.min,
-                //         children: [Text('Glass Effect related work are here')],
+                //       child: Container(
+                //         width: double.infinity,
+                //         padding: EdgeInsets.all(20.r),
+                //         decoration: BoxDecoration(
+                //           color: AppColors.whiteColor.withOpacity(0.3),
+                //           borderRadius: BorderRadius.circular(12.r),
+                //           border: Border.all(
+                //             color: AppColors.whiteColor,
+                //           ),
+                //           boxShadow: [
+                //             BoxShadow(
+                //               color: Colors.black.withOpacity(0.1),
+                //               offset: Offset(0, -4),
+                //               blurRadius: 4,
+                //               spreadRadius: 0,
+                //             ),
+                //           ],
+                //         ),
+                //         child: _buildPassengerRequestCard(),
                 //       ),
                 //     ),
                 //   ),
                 // ),
+                SizedBox(
+                  height: 25.h,
+                ),
+                Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 25.w,
+                  ),
+                  child: _bgGlassDesign(_buildPassengerRequestCard()),
+                ),
+                SizedBox(
+                  height: 25.h,
+                ),
 
+               /* ElevatedButton(
+                  onPressed: () => showDialog(
+                    barrierDismissible: true,
+                    context: context,
+                    builder: (context) {
+                      return Dialog(
+                        backgroundColor: Colors.transparent,
+                        child: GlassBackgroundWidget(child: Text('Maruf')),
+                      );
+                    },
+                  ),
+                  child: Text('Show Modal'),
+                ),*/
 
+                // AnimatedToggleSwitch(
+                //   value: isOnline,
+                //   onChanged: (newValue) {
+                //     // When toggle is clicked, show dialog first
+                //     showDialog(
+                //       barrierDismissible: true,
+                //       context: context,
+                //       builder: (context) {
+                //         return Dialog(
+                //           backgroundColor: Colors.transparent,
+                //           child: GlassBackgroundWidget(
+                //             child: Column(
+                //               mainAxisSize: MainAxisSize.min,
+                //               children: [
+                //                 Text(
+                //                   newValue
+                //                       ? 'Are you sure you want to go Online?'
+                //                       : 'Are you sure you want to go Offline?',
+                //                   style: TextStyle(fontSize: 16.sp),
+                //                   textAlign: TextAlign.center,
+                //                 ),
+                //                 SizedBox(height: 20.h),
+                //                 Row(
+                //                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                //                   children: [
+                //                     TextButton(
+                //                       onPressed: () {
+                //                         Navigator.pop(context);
+                //                         // Don't change status, keep old value
+                //                       },
+                //                       child: Text('No'),
+                //                     ),
+                //                     ElevatedButton(
+                //                       onPressed: () {
+                //                         setState(() {
+                //                           isOnline = newValue; // Change status
+                //                         });
+                //                         Navigator.pop(context);
+                //                       },
+                //                       child: Text('Yes'),
+                //                     ),
+                //                   ],
+                //                 ),
+                //               ],
+                //             ),
+                //           ),
+                //         );
+                //       },
+                //     );
+                //   },
+                // ),
+                GlassBackgroundWidget(
+                  child: Text('Maruf'),
+                ),
               ],
             ),
           )
         ],
       ),
+    );
+  }
+
+  Widget _bgGlassDesign(child) {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(12.r),
+      child: BackdropFilter(
+        filter: ui.ImageFilter.blur(
+          sigmaX: 4,
+          sigmaY: 4,
+        ),
+        child: Container(
+          width: double.infinity,
+          padding: EdgeInsets.all(20.r),
+          decoration: BoxDecoration(
+            color: AppColors.whiteColor.withOpacity(0.3),
+            borderRadius: BorderRadius.circular(12.r),
+            border: Border.all(
+              color: AppColors.whiteColor,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.1),
+                offset: Offset(0, -4),
+                blurRadius: 4,
+                spreadRadius: 0,
+              ),
+            ],
+          ),
+          child: child,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPassengerRequestCard() {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Image.asset(Assets.images.waiting.path),
+        Text(
+          'Waiting for Passenger request...',
+          style: TextStyle(
+            fontSize: 18.sp,
+            fontWeight: FontWeight.w500,
+            fontFamily: FontFamily.poppins,
+            color: AppColors.primaryColor,
+          ),
+        ),
+      ],
     );
   }
 
