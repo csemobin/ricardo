@@ -24,6 +24,7 @@ class AppColors {
   static const Color reviewMinColor = Color(0xffC4C4C7);
   static const Color favoriteRitesCarText = Color(0xff262626);
   static const Color blackColor = Color(0Xff000000);
+  static const Color locationBgColor = Color(0XffEEF2FC);
 
   static const Color greyColor = Color(0XffC1C2C2);
   static const Color greenColor = Color(0xff007635);

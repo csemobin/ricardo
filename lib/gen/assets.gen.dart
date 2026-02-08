@@ -205,6 +205,18 @@ class $AssetsImagesGen {
   AssetGenImage get greenPin =>
       const AssetGenImage('assets/images/green_pin.png');
 
+  /// File path: assets/images/grey_bookmark.png
+  AssetGenImage get greyBookmark =>
+      const AssetGenImage('assets/images/grey_bookmark.png');
+
+  /// File path: assets/images/grey_map.png
+  AssetGenImage get greyMap =>
+      const AssetGenImage('assets/images/grey_map.png');
+
+  /// File path: assets/images/grey_search.png
+  AssetGenImage get greySearch =>
+      const AssetGenImage('assets/images/grey_search.png');
+
   /// File path: assets/images/history-icon.png
   AssetGenImage get historyIcon =>
       const AssetGenImage('assets/images/history-icon.png');
@@ -223,6 +235,10 @@ class $AssetsImagesGen {
 
   /// File path: assets/images/logout.png
   AssetGenImage get logout => const AssetGenImage('assets/images/logout.png');
+
+  /// File path: assets/images/map_profile_image.png
+  AssetGenImage get mapProfileImage =>
+      const AssetGenImage('assets/images/map_profile_image.png');
 
   /// File path: assets/images/master-card-icon.png
   AssetGenImage get masterCardIcon =>
@@ -395,11 +411,15 @@ class $AssetsImagesGen {
     favoritesProfileImage,
     glassmorphismLogo,
     greenPin,
+    greyBookmark,
+    greyMap,
+    greySearch,
     historyIcon,
     homeIcon,
     location,
     logoutProfileScreen,
     logout,
+    mapProfileImage,
     masterCardIcon,
     offline,
     onboardOne,

@@ -337,38 +337,75 @@ class _MapScreenState extends State<MapScreen> {
                 // SizedBox(
                 //   height: 10,
                 // ),
-                AnimatedToggleSwitch(),
-                // SizedBox(
-                //   height: 30,
+                // AnimatedToggleSwitch(),
+                // // SizedBox(
+                // //   height: 30,
+                // // ),
+                // NoInternetMessageMap(),
+                //
+                // // Swiped Button are here
+                _buildSwippedButton()
+
+                // ClipRRect(
+                //   borderRadius: BorderRadius.circular(12.r),
+                //   child: BackdropFilter(
+                //     filter: ui.ImageFilter.blur(
+                //       sigmaX: 4,
+                //       sigmaY: 4,
+                //     ),
+                //     child: Container(
+                //       width: double.infinity,
+                //       padding: EdgeInsets.all(20.r),
+                //       decoration: BoxDecoration(
+                //         color: AppColors.whiteColor.withOpacity(0.3),
+                //         borderRadius: BorderRadius.circular(12.r),
+                //         border: Border.all(
+                //           color: AppColors.whiteColor.withOpacity(0.3),
+                //         ),
+                //         boxShadow: [
+                //           BoxShadow(
+                //             color: Colors.black.withOpacity(0.1),
+                //             offset: Offset(0, -4),
+                //             blurRadius: 4,
+                //             spreadRadius: 0,
+                //           ),
+                //         ],
+                //       ),
+                //       child: Column(
+                //         mainAxisSize: MainAxisSize.min,
+                //         children: [Text('Glass Effect related work are here')],
+                //       ),
+                //     ),
+                //   ),
                 // ),
-                NoInternetMessageMap(),
-
-                // Swiped Button are here
-                Padding(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 10,
-                  ),
-                  child: SlideAction(
-                    onSubmit: () => Get.toNamed(AppRoutes.searchLocationScreen),
-                    text: 'Lets Go...',
-                    innerColor: AppColors.greenColor,
-                    outerColor: AppColors.blackButton,
-                    sliderButtonIcon: const Icon(
-                      Icons.arrow_right_alt,
-                      color: Color(0XFFF6F6F6),
-                      size: 24,
-                      weight: 900,
-                    ),
-                    sliderRotate: false,
-                  ),
-                )
-
 
 
               ],
             ),
           )
         ],
+      ),
+    );
+  }
+
+  Widget _buildSwippedButton() {
+    return Padding(
+      padding: EdgeInsets.symmetric(
+        horizontal: 10,
+      ),
+      child: SlideAction(
+        // onSubmit: () => Get.toNamed(AppRoutes.setHomeLocation),
+        onSubmit: () => Get.toNamed(AppRoutes.searchLocationScreen),
+        text: 'Lets Go...',
+        innerColor: AppColors.greenColor,
+        outerColor: AppColors.blackButton,
+        sliderButtonIcon: const Icon(
+          Icons.arrow_right_alt,
+          color: Color(0XFFF6F6F6),
+          size: 24,
+          weight: 900,
+        ),
+        sliderRotate: false,
       ),
     );
   }

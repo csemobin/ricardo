@@ -16,6 +16,7 @@ import 'package:ricardo/feature/view/complete_profile/profile_complete_popup_mod
 import 'package:ricardo/feature/view/complete_profile/upload_driving_license_screen.dart';
 import 'package:ricardo/feature/view/complete_profile/upload_requirement_screen.dart';
 import 'package:ricardo/feature/view/home/search_location_screen.dart';
+import 'package:ricardo/feature/view/home/set_home_location.dart';
 import 'package:ricardo/feature/view/profile/screens/settings/legal_policy_screen.dart';
 import 'package:ricardo/feature/view/profile/screens/settings/privacy_policy_screen.dart';
 import 'package:ricardo/feature/view/splash_screen/on_board_screen.dart';
@@ -57,6 +58,7 @@ abstract class AppRoutes {
   static const String fiveZeroScreen = '/five_zero_screen';
   static const String addAmountScreen = 'add_amount_screen';
   static const String searchLocationScreen = 'search_location_screen';
+  static const String setHomeLocation = 'set_home_location';
   // static const String paymentWebViewScreen = 'payment_web_view_screen';
 
   ///  ============= > routes < ==============
@@ -86,6 +88,7 @@ abstract class AppRoutes {
     fiveZeroScreen: (context) => FiveZeroScreen(),
     addAmountScreen: (context) => AddAmountScreen(),
     searchLocationScreen: (context) => SearchLocationScreen(),
+    setHomeLocation: (context) => SetHomeLocation(),
     // paymentWebViewScreen: (context) => PaymentWebViewScreen(paymentUrl: paymentUrl),
   };
 
