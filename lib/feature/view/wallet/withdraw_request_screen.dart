@@ -199,8 +199,8 @@ class _WithdrawRequestScreenState extends State<WithdrawRequestScreen> {
                   // isDisable: !withdrawController.isFormValid.value,
                   onHandler: withdrawController.isFormValid.value == true
                       ? () {
-                    confirmRequestPopupModal(context);
-                  }
+                          confirmRequestPopupModal(context);
+                        }
                       : null,
                 );
               }),
@@ -405,8 +405,8 @@ class _WithdrawRequestScreenState extends State<WithdrawRequestScreen> {
                             child: Obx(() {
                               return CustomPrimaryButton(
                                 title: withdrawController
-                                    .isWithdrawRequestStatus.value ==
-                                    true
+                                            .isWithdrawRequestStatus.value ==
+                                        true
                                     ? 'Confirming...'
                                     : 'Yes, Send',
                                 onHandler: () {

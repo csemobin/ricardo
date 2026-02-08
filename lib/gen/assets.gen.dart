@@ -144,6 +144,9 @@ class $AssetsImagesGen {
   AssetGenImage get arrowDropDown =>
       const AssetGenImage('assets/images/arrow_drop_down.png');
 
+  /// File path: assets/images/bell.png
+  AssetGenImage get bell => const AssetGenImage('assets/images/bell.png');
+
   /// File path: assets/images/car_icon.png
   AssetGenImage get carIcon =>
       const AssetGenImage('assets/images/car_icon.png');
@@ -197,6 +200,10 @@ class $AssetsImagesGen {
   /// File path: assets/images/glassmorphism_logo.png
   AssetGenImage get glassmorphismLogo =>
       const AssetGenImage('assets/images/glassmorphism_logo.png');
+
+  /// File path: assets/images/green_pin.png
+  AssetGenImage get greenPin =>
+      const AssetGenImage('assets/images/green_pin.png');
 
   /// File path: assets/images/history-icon.png
   AssetGenImage get historyIcon =>
@@ -274,6 +281,10 @@ class $AssetsImagesGen {
   /// File path: assets/images/review-image.png
   AssetGenImage get reviewImage =>
       const AssetGenImage('assets/images/review-image.png');
+
+  /// File path: assets/images/right_arrow.png
+  AssetGenImage get rightArrow =>
+      const AssetGenImage('assets/images/right_arrow.png');
 
   /// File path: assets/images/setting-about-icon.png
   AssetGenImage get settingAboutIcon =>
@@ -368,6 +379,7 @@ class $AssetsImagesGen {
     amico,
     applogo,
     arrowDropDown,
+    bell,
     carIcon,
     carMarker,
     crossIcon,
@@ -382,6 +394,7 @@ class $AssetsImagesGen {
     favoriteDusbin,
     favoritesProfileImage,
     glassmorphismLogo,
+    greenPin,
     historyIcon,
     homeIcon,
     location,
@@ -402,6 +415,7 @@ class $AssetsImagesGen {
     rattingStar,
     removeBusket,
     reviewImage,
+    rightArrow,
     settingAboutIcon,
     settingDeleteIcon,
     settingLockIcon,

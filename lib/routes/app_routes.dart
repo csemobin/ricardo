@@ -15,13 +15,13 @@ import 'package:ricardo/feature/view/complete_profile/driver_profile_create_scre
 import 'package:ricardo/feature/view/complete_profile/profile_complete_popup_model_screen.dart';
 import 'package:ricardo/feature/view/complete_profile/upload_driving_license_screen.dart';
 import 'package:ricardo/feature/view/complete_profile/upload_requirement_screen.dart';
+import 'package:ricardo/feature/view/home/search_location_screen.dart';
 import 'package:ricardo/feature/view/profile/screens/settings/legal_policy_screen.dart';
 import 'package:ricardo/feature/view/profile/screens/settings/privacy_policy_screen.dart';
 import 'package:ricardo/feature/view/splash_screen/on_board_screen.dart';
 import 'package:ricardo/feature/view/splash_screen/splash_screen.dart';
 import 'package:ricardo/feature/view/wallet/add_amount_screen.dart';
 import 'package:ricardo/feature/view/wallet/add_card_screen.dart';
-import 'package:ricardo/feature/view/wallet/payment_web_view_screen.dart';
 import 'package:ricardo/feature/view/wallet/payment_methods_selection_screen.dart';
 import 'package:ricardo/feature/view/wallet/withdraw_request_screen.dart';
 abstract class AppRoutes {
@@ -56,6 +56,7 @@ abstract class AppRoutes {
   static const String legalPolicyScreen = '/legal_policy_screen';
   static const String fiveZeroScreen = '/five_zero_screen';
   static const String addAmountScreen = 'add_amount_screen';
+  static const String searchLocationScreen = 'search_location_screen';
   // static const String paymentWebViewScreen = 'payment_web_view_screen';
 
   ///  ============= > routes < ==============
@@ -84,6 +85,7 @@ abstract class AppRoutes {
     legalPolicyScreen : (context) => LegalPolicyScreen(),
     fiveZeroScreen: (context) => FiveZeroScreen(),
     addAmountScreen: (context) => AddAmountScreen(),
+    searchLocationScreen: (context) => SearchLocationScreen(),
     // paymentWebViewScreen: (context) => PaymentWebViewScreen(paymentUrl: paymentUrl),
   };
 

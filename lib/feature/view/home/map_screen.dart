@@ -1,17 +1,22 @@
 import 'dart:async';
 import 'dart:ui' as ui;
-import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:ricardo/app/helpers/prefs_helper.dart';
+import 'package:ricardo/app/utils/app_colors.dart';
 import 'package:ricardo/app/utils/app_constants.dart';
+import 'package:ricardo/gen/assets.gen.dart';
+import 'package:ricardo/routes/app_routes.dart';
 import 'package:ricardo/services/get_fcm_tocken.dart';
 import 'package:ricardo/services/socket_services.dart';
 import 'package:ricardo/widgets/animated_toggle_switch.dart';
 import 'package:ricardo/widgets/no_internet_message_map.dart';
+import 'package:slide_to_act/slide_to_act.dart';
 
 class MapScreen extends StatefulWidget {
   const MapScreen({super.key});
@@ -55,33 +60,33 @@ class _MapScreenState extends State<MapScreen> {
     setState(() {});
   }
 
-  Future<LatLng>getCurrentLocation() async{
+  Future<LatLng> getCurrentLocation() async {
     bool serviceEnable;
     LocationPermission permission;
 
     //Check if location service is enabled
     serviceEnable = await Geolocator.isLocationServiceEnabled();
 
-    if( !serviceEnable ){
+    if (!serviceEnable) {
       return Future.error('Location Services are disable');
     }
     permission = await Geolocator.checkPermission();
 
-    if( permission == LocationPermission.denied ){
+    if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
-      
-      if( permission == LocationPermission.denied ){
+
+      if (permission == LocationPermission.denied) {
         return Future.error("Location Permission denied");
       }
     }
-    
-    if( permission == LocationPermission.deniedForever ){
-      return Future.error("Location Permission Permanently denied.Enable from settings");
+
+    if (permission == LocationPermission.deniedForever) {
+      return Future.error(
+          "Location Permission Permanently denied.Enable from settings");
     }
 
     Position position = await Geolocator.getCurrentPosition(
-      desiredAccuracy:  LocationAccuracy.high
-    );
+        desiredAccuracy: LocationAccuracy.high);
 
     return LatLng(position.latitude, position.longitude);
   }
@@ -99,14 +104,12 @@ class _MapScreenState extends State<MapScreen> {
     String? fcmToken = await FirebaseNotificationService.getFCMToken();
     await PrefsHelper.setString(AppConstants.fcmToken, fcmToken);
     await SocketServices.init();
-    SocketServices.socket?.emit('user-connected', {
-      "accessToken" : getAccessToken,
-      "fcmToken" : fcmToken
-    });
+    SocketServices.socket?.emit('user-connected',
+        {"accessToken": getAccessToken, "fcmToken": fcmToken});
   }
 
   Future<void> getMyLocation() async {
-    var  token = await PrefsHelper.getString(AppConstants.bearerToken);
+    var token = await PrefsHelper.getString(AppConstants.bearerToken);
 
     LatLng myLocation = await getCurrentLocation();
 
@@ -117,8 +120,7 @@ class _MapScreenState extends State<MapScreen> {
     print('==============================>>>>>>>> ${myLocation.longitude}');
     print('==============================>>>>>>>> ${myLocation.latitude}');
 
-
-   /* Timer(const Duration(seconds: 3), (){
+    /* Timer(const Duration(seconds: 3), (){
       SocketServices.socket?.emit('update-user-location',{
         "accessToken": token,
         "location": {
@@ -150,13 +152,13 @@ class _MapScreenState extends State<MapScreen> {
         }
       });
 
-      print("Live location sent: ${newLocation.latitude}, ${newLocation.longitude}");
+      print(
+          "Live location sent: ${newLocation.latitude}, ${newLocation.longitude}");
     });
 
-    SocketServices.socket?.on('updated-user-location-data', (data){
+    SocketServices.socket?.on('updated-user-location-data', (data) {
       print(data);
     });
-
   }
 
   LatLng initialLocation = const LatLng(23.780696475817816, 90.40761484102724);
@@ -164,14 +166,101 @@ class _MapScreenState extends State<MapScreen> {
   List<LatLng> polylineCoordinates = [];
   double currentZoom = 16.4746;
   double markerSize = 40;
+
   // Offline and online controller
   bool isOnline = true;
+
   @override
   Widget build(BuildContext context) {
     polylineCoordinates.add(initialLocation);
     polylineCoordinates.add(destination);
 
     return Scaffold(
+      extendBodyBehindAppBar: true,
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(120),
+        child: ClipRRect(
+          borderRadius: BorderRadius.only(
+            bottomLeft: Radius.circular(30),
+            bottomRight: Radius.circular(30),
+          ),
+          child: BackdropFilter(
+            filter: ui.ImageFilter.blur(sigmaX: 4, sigmaY: 4),
+            child: Container(
+              decoration: BoxDecoration(
+                  color: Color(0x80FFFFFF),
+                  borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(30),
+                    bottomRight: Radius.circular(30),
+                  ),
+                  border: Border.all(color: Colors.white, width: 2)),
+              child: SafeArea(
+                child: Padding(
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
+                  child: Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(50),
+                              border: Border.all(
+                                color: Colors.green,
+                                width: 2,
+                              ),
+                            ),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(50),
+                              child: Image.asset(
+                                Assets.images.profileImage.path,
+                                fit: BoxFit.cover,
+                                width: 50,
+                                height: 50,
+                              ),
+                            ),
+                          ),
+                          Image.asset(
+                            Assets.images.bell.path,
+                            width: 24,
+                            height: 24,
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 12.h),
+                      Row(
+                        children: [
+                          Image.asset(
+                            Assets.images.greenPin.path,
+                            width: 20,
+                            height: 20,
+                          ),
+                          SizedBox(width: 8.w),
+                          Expanded(
+                            child: Text(
+                              '36 East 8th Street, New York, NY 10003, Un...',
+                              style: TextStyle(
+                                fontSize: 14.sp,
+                                color: Colors.black,
+                                fontWeight: FontWeight.w500,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                          SizedBox(width: 8.w),
+                          Image.asset(Assets.images.rightArrow.path)
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
       body: Stack(
         children: [
           GoogleMap(
@@ -197,22 +286,19 @@ class _MapScreenState extends State<MapScreen> {
               target: initialLocation,
               zoom: currentZoom,
             ),
-            polylines: {
-
-            },
+            polylines: {},
             markers: {
               Marker(
-                markerId: const MarkerId('marker'),
-                position: initialLocation,
-                draggable: true,
-                icon: customMarker ?? BitmapDescriptor.defaultMarker,
-                onDragEnd: (updateLanLng){
-                  setState(() {
-                    initialLocation = updateLanLng;
-                  });
-                },
-                anchor: Offset(0.5, 0.5)
-              ),
+                  markerId: const MarkerId('marker'),
+                  position: initialLocation,
+                  draggable: true,
+                  icon: customMarker ?? BitmapDescriptor.defaultMarker,
+                  onDragEnd: (updateLanLng) {
+                    setState(() {
+                      initialLocation = updateLanLng;
+                    });
+                  },
+                  anchor: Offset(0.5, 0.5)),
               Marker(
                 markerId: const MarkerId('destination'),
                 position: destination,
@@ -226,14 +312,13 @@ class _MapScreenState extends State<MapScreen> {
             },
             circles: {
               Circle(
-                circleId: CircleId('marker'),
-                center: initialLocation,
-                radius: 10,
-                strokeColor: Colors.white,
-                strokeWidth: 1,
-                fillColor: Color(0xFF006491).withOpacity(0.2),
-                consumeTapEvents: true
-              ),
+                  circleId: CircleId('marker'),
+                  center: initialLocation,
+                  radius: 10,
+                  strokeColor: Colors.white,
+                  strokeWidth: 1,
+                  fillColor: Color(0xFF006491).withOpacity(0.2),
+                  consumeTapEvents: true),
               Circle(
                 circleId: const CircleId('destination'),
                 center: destination,
@@ -249,10 +334,37 @@ class _MapScreenState extends State<MapScreen> {
               // crossAxisAlignment: CrossAxisAlignment.center,
               // mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                SizedBox(height: 10,),
+                // SizedBox(
+                //   height: 10,
+                // ),
                 AnimatedToggleSwitch(),
-                SizedBox(height: 30,),
+                // SizedBox(
+                //   height: 30,
+                // ),
                 NoInternetMessageMap(),
+
+                // Swiped Button are here
+                Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 10,
+                  ),
+                  child: SlideAction(
+                    onSubmit: () => Get.toNamed(AppRoutes.searchLocationScreen),
+                    text: 'Lets Go...',
+                    innerColor: AppColors.greenColor,
+                    outerColor: AppColors.blackButton,
+                    sliderButtonIcon: const Icon(
+                      Icons.arrow_right_alt,
+                      color: Color(0XFFF6F6F6),
+                      size: 24,
+                      weight: 900,
+                    ),
+                    sliderRotate: false,
+                  ),
+                )
+
+
+
               ],
             ),
           )
