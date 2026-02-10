@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:ricardo/feature/controllers/auth/car_registration_controller.dart';
+import 'package:ricardo/feature/controllers/home/google_search_location_controller.dart';
 import 'package:ricardo/feature/controllers/profile/change_password_controller.dart';
 import 'package:ricardo/feature/controllers/auth/forget_password_controller.dart';
 import 'package:ricardo/feature/controllers/auth/forget_password_otp_verify_controller.dart';
@@ -24,9 +25,9 @@ import 'package:ricardo/feature/controllers/wallet/recent_history.dart';
 import 'package:ricardo/feature/controllers/wallet/withdraw_request_controller.dart';
 import 'package:ricardo/feature/models/wallet/wallet_history_model.dart';
 
-class DependencyInjection implements Bindings{
+class DependencyInjection implements Bindings {
   @override
-  void dependencies(){
+  void dependencies() {
     Get.put(LegalController());
     Get.put(CustomBottomNavBarController());
     Get.put(DrivingLicenseController());
@@ -39,16 +40,17 @@ class DependencyInjection implements Bindings{
     Get.put(UserController());
     Get.put(CarRegistrationController());
     Get.lazyPut(() => DriverProfileController());
-    Get.lazyPut(()=> ChangePasswordController());
-    Get.lazyPut(()=>ProfileUpdateController());
-    Get.lazyPut(()=> SupportController());
-    Get.lazyPut(()=> FavouriteRidesController());
-    Get.lazyPut(()=> PaymentMethodController());
-    Get.lazyPut(()=> AddMoneyController());
-    Get.lazyPut(()=> WithdrawRequestController());
-    Get.lazyPut(()=> HistoryController());
-    Get.lazyPut(()=> ReviewsRatingsController());
-    Get.lazyPut(()=>RecentHistoryController());
-    Get.lazyPut(()=>AddCardController());
+    Get.lazyPut(() => ChangePasswordController());
+    Get.lazyPut(() => ProfileUpdateController());
+    Get.lazyPut(() => SupportController());
+    Get.lazyPut(() => FavouriteRidesController());
+    Get.lazyPut(() => PaymentMethodController());
+    Get.lazyPut(() => AddMoneyController());
+    Get.lazyPut(() => WithdrawRequestController());
+    Get.lazyPut(() => HistoryController());
+    Get.lazyPut(() => ReviewsRatingsController());
+    Get.lazyPut(() => RecentHistoryController());
+    Get.lazyPut(() => AddCardController());
+    Get.lazyPut(() => GoogleSearchLocationController());
   }
 }

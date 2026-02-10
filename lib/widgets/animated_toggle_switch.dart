@@ -43,10 +43,12 @@ class _AnimatedToggleSwitchState extends State<AnimatedToggleSwitch> {
                       ),
                     ),
                     SizedBox(height: 16.h),
-                    Icon(
-                      Icons.wifi_off,
-                      size: 50.r,
-                      color: Colors.red,
+                    Center(
+                      child: Icon(
+                        Icons.wifi_off,
+                        size: 50.r,
+                        color: Colors.red,
+                      ),
                     ),
                     SizedBox(height: 16.h),
                     Text(
@@ -72,13 +74,16 @@ class _AnimatedToggleSwitchState extends State<AnimatedToggleSwitch> {
                           ),
                           child: Text(
                             'Cancel',
-                            style: TextStyle(fontSize: 16.sp),
+                            style: TextStyle(
+                              fontSize: 16.sp,
+                              color: AppColors.whiteColor,
+                            ),
                           ),
                         ),
                         ElevatedButton(
                           onPressed: () {
                             setState(() {
-                              isOnline = false; // Go offline
+                              isOnline = false;
                             });
                             Navigator.pop(context);
                           },
@@ -147,7 +152,7 @@ class _AnimatedToggleSwitchState extends State<AnimatedToggleSwitch> {
               duration: const Duration(milliseconds: 300),
               curve: Curves.easeInOut,
               alignment:
-              isOnline ? Alignment.centerRight : Alignment.centerLeft,
+                  isOnline ? Alignment.centerRight : Alignment.centerLeft,
               child: Container(
                 width: 42,
                 height: 42,
