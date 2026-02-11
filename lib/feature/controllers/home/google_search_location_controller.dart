@@ -1,77 +1,301 @@
 import 'dart:async';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
 import 'package:ricardo/feature/models/home/place_suggestion.dart';
 import 'package:ricardo/services/map_service.dart';
 
 class GoogleSearchLocationController extends GetxController {
-  final pickUpLocation = TextEditingController();
+  // Text controllers
+  final pickupController = TextEditingController();
+  final dropController = TextEditingController();
+  final noteController = TextEditingController();
 
-  RxList<PlaceSuggestion> pickupSuggestions = <PlaceSuggestion>[].obs;
-  RxBool isLoadingPickup = false.obs;
+  // Suggestions lists
+  final pickupPlaces = <PlaceSuggestion>[].obs;
+  final dropPlaces = <PlaceSuggestion>[].obs;
 
-  Timer? _debouncePickup;
+  // Loading states
+  final isLoadingPickup = false.obs;
+  final isLoadingDrop = false.obs;
+  final isLoadingFare = false.obs;
 
-  // Selected Location Data
-  Rx<PlaceDetails?> selectedPickup = Rx<PlaceDetails?>(null);
+  // Clear buttons visibility
+  final showClearPickup = false.obs;
+  final showClearDrop = false.obs;
 
-  // ✅ ADD THIS FLAG - prevents search when selecting
-  bool _isSelectingLocation = false;
+  // Selected locations
+  final selectedPickup = Rxn<PlaceDetails>();
+  final selectedDrop = Rxn<PlaceDetails>();
+
+  // Fare calculation results
+  final distance = ''.obs;
+  final duration = ''.obs;
+  final fare = 0.0.obs;
+
+  // Timers for search delay
+  Timer? _pickupTimer;
+  Timer? _dropTimer;
 
   @override
   void onInit() {
     super.onInit();
+    _setupListeners();
+  }
 
-    pickUpLocation.addListener(() {
-      // ✅ Only search if NOT programmatically setting text
-      if (!_isSelectingLocation) {
-        _onPickupChange(pickUpLocation.text);
+  void _setupListeners() {
+    // Listen to pickup text changes
+    pickupController.addListener(() {
+      final hasText = pickupController.text.isNotEmpty;
+      if (showClearPickup.value != hasText) showClearPickup.value = hasText;
+
+      if (!_isSelectingPickup) {
+        _startPickupSearch();
+      }
+    });
+
+    // Listen to drop text changes
+    dropController.addListener(() {
+      final hasText = dropController.text.isNotEmpty;
+      if (showClearDrop.value != hasText) showClearDrop.value = hasText;
+
+      if (!_isSelectingDrop) {
+        _startDropSearch();
       }
     });
   }
 
-  void _onPickupChange(String query) {
-    if (_debouncePickup?.isActive ?? false) _debouncePickup!.cancel();
-    _debouncePickup = Timer(Duration(milliseconds: 500), () {
-      searchPickupLocation(query);
+  bool _isSelectingPickup = false;
+  bool _isSelectingDrop = false;
+
+  void _startPickupSearch() {
+    _pickupTimer?.cancel();
+    _pickupTimer = Timer(Duration(milliseconds: 500), () {
+      _searchPickup(pickupController.text);
     });
   }
 
-  Future<void> searchPickupLocation(String query) async {
+  void _startDropSearch() {
+    _dropTimer?.cancel();
+    _dropTimer = Timer(Duration(milliseconds: 500), () {
+      _searchDrop(dropController.text);
+    });
+  }
+
+  Future<void> _searchPickup(String query) async {
     if (query.isEmpty) {
-      pickupSuggestions.clear();
+      pickupPlaces.clear();
       isLoadingPickup.value = false;
-      return;  // ✅ Return early if empty
+      return;
     }
 
     isLoadingPickup.value = true;
-
-    final results = await PlacesService.getPlaceSuggestions(query);
-    pickupSuggestions.value = results;
-    isLoadingPickup.value = false;
+    try {
+      final results = await PlacesService.getPlaceSuggestions(query);
+      pickupPlaces.value = results;
+    } finally {
+      isLoadingPickup.value = false;
+    }
   }
 
-  Future<void> selectPickupLocation(PlaceSuggestion suggestion) async {
-    // ✅ Prevent listener from triggering
-    _isSelectingLocation = true;
+  Future<void> _searchDrop(String query) async {
+    if (query.isEmpty) {
+      dropPlaces.clear();
+      isLoadingDrop.value = false;
+      return;
+    }
 
-    pickUpLocation.text = suggestion.description;
-    pickupSuggestions.clear();  // ✅ Clear immediately
+    isLoadingDrop.value = true;
+    try {
+      final results = await PlacesService.getPlaceSuggestions(query);
+      dropPlaces.value = results;
+    } finally {
+      isLoadingDrop.value = false;
+    }
+  }
 
-    // ✅ Small delay then reset flag
-    Future.delayed(Duration(milliseconds: 100), () {
-      _isSelectingLocation = false;
-    });
+  Future<void> selectPickup(PlaceSuggestion place) async {
+    _isSelectingPickup = true;
 
-    // Get detailed info
-    final details = await PlacesService.getPlaceDetails(suggestion.placeId);
+    pickupController.text = place.description;
+    showClearPickup.value = true;
+    pickupPlaces.clear();
+
+    await Future.delayed(Duration(milliseconds: 100));
+    _isSelectingPickup = false;
+
+    final details = await PlacesService.getPlaceDetails(place.placeId);
     selectedPickup.value = details;
+  }
+
+  Future<void> selectDrop(PlaceSuggestion place) async {
+    _isSelectingDrop = true;
+
+    dropController.text = place.description;
+    showClearDrop.value = true;
+    dropPlaces.clear();
+
+    await Future.delayed(Duration(milliseconds: 100));
+    _isSelectingDrop = false;
+
+    final details = await PlacesService.getPlaceDetails(place.placeId);
+    selectedDrop.value = details;
+  }
+
+  void clearPickup() {
+    pickupController.clear();
+    showClearPickup.value = false;
+    pickupPlaces.clear();
+    selectedPickup.value = null;
+    _clearFare();
+  }
+
+  void clearDrop() {
+    dropController.clear();
+    showClearDrop.value = false;
+    dropPlaces.clear();
+    selectedDrop.value = null;
+    _clearFare();
+  }
+
+  void clearNote() {
+    noteController.clear();
+  }
+
+  void _clearFare() {
+    distance.value = '';
+    duration.value = '';
+    fare.value = 0.0;
+  }
+
+  bool get canCalculateFare {
+    return selectedPickup.value != null && selectedDrop.value != null;
+  }
+
+  bool get hasFare {
+    return fare.value > 0;
+  }
+
+  Future<void> calculateFare() async {
+    if (!canCalculateFare) {
+      Get.snackbar('Error', 'Please select both locations');
+      return;
+    }
+
+    isLoadingFare.value = true;
+
+    try {
+      final pickup = selectedPickup.value!;
+      final drop = selectedDrop.value!;
+
+      print('Calculating fare...');
+      print('Pickup: ${pickup.address}');
+      print('Drop: ${drop.address}');
+      print('Note: ${noteController.text}');
+
+      // Call Google Distance API
+      final apiResponse = await _getDistanceFromGoogle(
+        pickupLat: pickup.lat,
+        pickupLng: pickup.lng,
+        dropLat: drop.lat,
+        dropLng: drop.lng,
+      );
+
+      if (apiResponse != null) {
+        _updateFareFromResponse(apiResponse);
+
+        Get.snackbar(
+          'Success',
+          'Fare calculated!',
+          backgroundColor: Colors.green,
+          colorText: Colors.white,
+        );
+      }
+    } finally {
+      isLoadingFare.value = false;
+    }
+  }
+
+  Future<Map<String, dynamic>?> _getDistanceFromGoogle({
+    required double pickupLat,
+    required double pickupLng,
+    required double dropLat,
+    required double dropLng,
+  }) async {
+    final apiKey = dotenv.env['MAP_API_KEY'];
+    final origin = '$pickupLat,$pickupLng';
+    final destination = '$dropLat,$dropLng';
+
+    final url = 'https://maps.googleapis.com/maps/api/distancematrix/json'
+        '?origins=$origin'
+        '&destinations=$destination'
+        '&mode=driving'
+        '&key=$apiKey';
+
+    try {
+      final response = await GetConnect().get(url);
+
+      if (response.statusCode == 200) {
+        return response.body;
+      }
+    } catch (e) {
+      print('API Error: $e');
+    }
+
+    return null;
+  }
+
+  void _updateFareFromResponse(Map<String, dynamic> response) {
+    try {
+      final data = response['rows']?[0]?['elements']?[0];
+
+      if (data == null || data['status'] != 'OK') {
+        print('No valid distance data');
+        return;
+      }
+
+      // Get distance and duration
+      distance.value = data['distance']?['text'] ?? '';
+      duration.value = data['duration']?['text'] ?? '';
+
+      // Calculate fare (simplified formula)
+      final distanceInMeters = (data['distance']?['value'] ?? 0).toDouble();
+      final durationInSeconds = (data['duration']?['value'] ?? 0).toDouble();
+
+      final distanceInKm = distanceInMeters / 1000;
+      final durationInMinutes = durationInSeconds / 60;
+
+      // Simple fare calculation
+      final baseFare = 50.0;
+      final perKm = 12.0;
+      final perMinute = 1.0;
+
+      fare.value = baseFare +
+          (distanceInKm * perKm) +
+          (durationInMinutes * perMinute);
+
+      // Minimum fare
+      if (fare.value < 80.0) fare.value = 80.0;
+
+      // Round to 2 decimal places
+      fare.value = double.parse(fare.value.toStringAsFixed(2));
+
+      print('Distance: $distance');
+      print('Duration: $duration');
+      print('Fare: ₹$fare');
+    } catch (e) {
+      print('Error updating fare: $e');
+    }
   }
 
   @override
   void onClose() {
+    pickupController.dispose();
+    dropController.dispose();
+    noteController.dispose();
+    _pickupTimer?.cancel();
+    _dropTimer?.cancel();
     super.onClose();
-    pickUpLocation.dispose();
-    _debouncePickup?.cancel();
   }
 }

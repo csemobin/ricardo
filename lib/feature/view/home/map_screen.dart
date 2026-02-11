@@ -20,11 +20,8 @@ import 'package:ricardo/services/foreground_location_service.dart';
 import 'package:ricardo/services/get_fcm_tocken.dart';
 import 'package:ricardo/services/location_permission_service.dart';
 import 'package:ricardo/services/socket_services.dart';
-import 'package:ricardo/widgets/accepted_ride_button.dart';
 import 'package:ricardo/widgets/animated_toggle_switch.dart';
-import 'package:ricardo/widgets/glass_background_widget.dart';
 import 'package:ricardo/widgets/location_permission_dialog.dart';
-import 'package:ricardo/widgets/no_internet_message_map.dart';
 import 'package:slide_to_act/slide_to_act.dart';
 
 class MapScreen extends StatefulWidget {
@@ -49,6 +46,7 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
     getMyLocation();
     userController.fetchUser();
   }
+
   Future<void> _initForegroundTask() async {
     ForegroundLocationService.initForegroundTask();
     FlutterForegroundTask.addTaskDataCallback(_onReceiveTaskData);
@@ -127,22 +125,22 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
   }
 
 // Method 2: More precise control using asset() with custom bytes
-  Future<void> setCustomMarkerAdvanced() async {
-    final ByteData data = await rootBundle.load("assets/images/car_marker.png");
-    final ui.Codec codec = await ui.instantiateImageCodec(
-      data.buffer.asUint8List(),
-      targetWidth: 50, // Specify exact width
-      targetHeight: 50, // Specify exact height
-    );
-    final ui.FrameInfo frameInfo = await codec.getNextFrame();
-    final ByteData? byteData = await frameInfo.image.toByteData(
-      format: ui.ImageByteFormat.png,
-    );
-    final Uint8List resizedImageData = byteData!.buffer.asUint8List();
-
-    customMarker = BitmapDescriptor.fromBytes(resizedImageData);
-    setState(() {});
-  }
+//   Future<void> setCustomMarkerAdvanced() async {
+//     final ByteData data = await rootBundle.load("assets/images/car_marker.png");
+//     final ui.Codec codec = await ui.instantiateImageCodec(
+//       data.buffer.asUint8List(),
+//       targetWidth: 50, // Specify exact width
+//       targetHeight: 50, // Specify exact height
+//     );
+//     final ui.FrameInfo frameInfo = await codec.getNextFrame();
+//     final ByteData? byteData = await frameInfo.image.toByteData(
+//       format: ui.ImageByteFormat.png,
+//     );
+//     final Uint8List resizedImageData = byteData!.buffer.asUint8List();
+//
+//     customMarker = BitmapDescriptor.fromBytes(resizedImageData);
+//     setState(() {});
+//   }
 
   Future<LatLng> getCurrentLocation() async {
     bool serviceEnable;
@@ -180,8 +178,10 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
     String? fcmToken = await FirebaseNotificationService.getFCMToken();
     await PrefsHelper.setString(AppConstants.fcmToken, fcmToken);
     await SocketServices.init();
-    SocketServices.socket?.emit('user-connected',
-        {"accessToken": getAccessToken, "fcmToken": fcmToken});
+    SocketServices.socket?.emit('user-connected', {
+      "accessToken": getAccessToken,
+      "fcmToken": fcmToken,
+    });
   }
 
   Future<void> getMyLocation() async {
@@ -256,8 +256,6 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(120),
         child: Obx(() {
-          // ✅ Add Obx here
-          // Get reactive data
           final userController = Get.find<UserController>();
           final user = userController.userModel.value?.userProfile;
           final profileImage =
@@ -568,6 +566,7 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
               );
             }),
           ),
+
           // ✅ Location disabled banner
           StreamBuilder<bool>(
             stream: _locationStatusStream(),
@@ -595,7 +594,8 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
                             ),
                             TextButton(
                               onPressed: () {
-                                LocationPermissionService.openLocationSettings();
+                                LocationPermissionService
+                                    .openLocationSettings();
                               },
                               child: Text(
                                 'ENABLE',
@@ -717,7 +717,6 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
     positionStream?.cancel();
     super.dispose();
   }
-
 
   // ✅ Stream to monitor location status
   Stream<bool> _locationStatusStream() {
