@@ -7,6 +7,7 @@ import 'package:ricardo/feature/controllers/wallet/add_money_controller.dart';
 import 'package:ricardo/feature/controllers/wallet/recent_history.dart';
 import 'package:ricardo/feature/models/wallet/wallet_history_model.dart' hide Image;
 import 'package:ricardo/gen/assets.gen.dart';
+import 'package:ricardo/gen/fonts.gen.dart';
 import 'package:ricardo/routes/app_routes.dart';
 import 'package:ricardo/widgets/custom_scaffold.dart';
 
@@ -149,14 +150,15 @@ class _WalletScreenState extends State<WalletScreen> {
             Text(
               'BALANCE',
               style: TextStyle(
-                color: AppColors.darkColor,
-                fontWeight: FontWeight.w500,
-                fontSize: 18.sp,
+                color: AppColors.whiteColor,
+                fontWeight: FontWeight.bold,
+                fontFamily: FontFamily.poppins,
+                fontSize: 24.sp,
               ),
             ),
             SizedBox(height: 4.h),
             Text(
-              '\$ ${controller.userWallet.value} ',
+              '\$ ${controller.userWallet.value.toStringAsFixed(2)} ',
               style: TextStyle(
                 fontSize: 24.sp,
                 fontWeight: FontWeight.w500,

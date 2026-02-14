@@ -1,9 +1,12 @@
 import 'dart:async';
+import 'dart:ffi';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
 import 'package:ricardo/feature/models/home/place_suggestion.dart';
+import 'package:ricardo/routes/app_routes.dart';
+import 'package:ricardo/services/api_client.dart';
 import 'package:ricardo/services/map_service.dart';
 
 class GoogleSearchLocationController extends GetxController {
@@ -176,7 +179,7 @@ class GoogleSearchLocationController extends GetxController {
   bool get hasFare {
     return fare.value > 0;
   }
-
+  RxBool showPopUpStatus = false.obs;
   Future<void> calculateFare() async {
     if (!canCalculateFare) {
       Get.snackbar('Error', 'Please select both locations');
@@ -203,14 +206,16 @@ class GoogleSearchLocationController extends GetxController {
       );
 
       if (apiResponse != null) {
+        showPopUpStatus.value = true;
         _updateFareFromResponse(apiResponse);
 
-        Get.snackbar(
-          'Success',
-          'Fare calculated!',
-          backgroundColor: Colors.green,
-          colorText: Colors.white,
-        );
+        // ✅ REMOVED: No need for Snackbar since popup will show
+        // Get.snackbar(
+        //   'Success',
+        //   'Fare calculated!',
+        //   backgroundColor: Colors.green,
+        //   colorText: Colors.white,
+        // );
       }
     } finally {
       isLoadingFare.value = false;
@@ -287,6 +292,32 @@ class GoogleSearchLocationController extends GetxController {
     } catch (e) {
       print('Error updating fare: $e');
     }
+  }
+
+  RxBool isBookRideState = false.obs;
+
+  Future<void>bookRideHandler() async{
+
+    debugPrint('================>>>>>>>>>>>>yessssssssssssss');
+    Get.offAllNamed(AppRoutes.customBottomNavBar);
+
+    // bool status = false;
+    // isBookRideState.value = true;
+    // try{
+    //   final response = await ApiClient.postData(AppRoutes.setHomeLocation,
+    //       {}
+    //   );
+    //   if( response.statusCode == 200 || response.statusCode == 201 ){
+    //     status = true;
+    //   }else{
+    //     status = false;
+    //   }
+    // }catch(e){
+    //   debugPrint(e.toString());
+    // }finally{
+    //   isBookRideState.value = false;
+    // }
+
   }
 
   @override

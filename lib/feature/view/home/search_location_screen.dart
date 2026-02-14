@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -9,6 +11,7 @@ import 'package:ricardo/services/location_permission_service.dart';
 import 'package:ricardo/widgets/custom_primary_button.dart';
 import 'package:ricardo/widgets/custom_scaffold.dart';
 import 'package:ricardo/widgets/custom_text_field.dart';
+import 'package:ricardo/widgets/glass_background_widget.dart';
 
 class SearchLocationScreen extends StatelessWidget {
   SearchLocationScreen({super.key});
@@ -46,7 +49,6 @@ class SearchLocationScreen extends StatelessWidget {
               SizedBox(height: 16.h),
               _buildNoteField(),
               SizedBox(height: 24.h),
-              _buildFareCard(),
               SizedBox(height: 24.h),
               _buildActionButton(),
             ],
@@ -58,66 +60,66 @@ class SearchLocationScreen extends StatelessWidget {
 
   Widget _buildPickupField() {
     return Obx(() => CustomTextField(
-      focusNode: pickupFocus,
-      controller: controller.pickupController,
-      labelText: 'Pick-up Location',
-      hintText: 'Enter pick-up location',
-      prefixIcon: Image.asset(
-        Assets.images.greenPin.path,
-        width: 20.w,
-        height: 20.h,
-      ),
-      suffixIcon: controller.showClearPickup.value
-          ? IconButton(
-        onPressed: () {
-          controller.clearPickup();
-          pickupFocus.unfocus();
-        },
-        icon: Icon(
-          Icons.close,
-          color: Colors.grey[700],
-          size: 20.w,
-        ),
-        padding: EdgeInsets.zero,
-        constraints: BoxConstraints(
-          minWidth: 40.w,
-          minHeight: 40.h,
-        ),
-      )
-          : SizedBox(width: 40.w), // Keep space for alignment
-    ));
+          focusNode: pickupFocus,
+          controller: controller.pickupController,
+          labelText: 'Pick-up Location',
+          hintText: 'Enter pick-up location',
+          prefixIcon: Image.asset(
+            Assets.images.greenPin.path,
+            width: 20.w,
+            height: 20.h,
+          ),
+          suffixIcon: controller.showClearPickup.value
+              ? IconButton(
+                  onPressed: () {
+                    controller.clearPickup();
+                    pickupFocus.unfocus();
+                  },
+                  icon: Icon(
+                    Icons.close,
+                    color: Colors.grey[700],
+                    size: 20.w,
+                  ),
+                  padding: EdgeInsets.zero,
+                  constraints: BoxConstraints(
+                    minWidth: 40.w,
+                    minHeight: 40.h,
+                  ),
+                )
+              : SizedBox(width: 40.w), // Keep space for alignment
+        ));
   }
 
   Widget _buildDropField() {
     return Obx(() => CustomTextField(
-      focusNode: dropFocus,
-      controller: controller.dropController,
-      labelText: 'Drop-off Location',
-      hintText: 'Enter drop-off location',
-      prefixIcon: Image.asset(
-        Assets.images.greyMap.path,
-        width: 20.w,
-        height: 20.h,
-      ),
-      suffixIcon: controller.showClearDrop.value
-          ? IconButton(
-        onPressed: () {
-          controller.clearDrop();
-          dropFocus.unfocus();
-        },
-        icon: Icon(
-          Icons.close,
-          color: Colors.grey[700],
-          size: 20.w,
-        ),
-        padding: EdgeInsets.zero,
-        constraints: BoxConstraints(
-          minWidth: 40.w,
-          minHeight: 40.h,
-        ),
-      )
-          : SizedBox(width: 40.w),
-    ));
+          focusNode: dropFocus,
+          controller: controller.dropController,
+          labelText: 'Drop-off Location',
+          hintText: 'Enter drop-off location',
+          prefixIcon: Image.asset(
+            Assets.images.greyMap.path,
+            width: 20.w,
+            height: 20.h,
+          ),
+          suffixIcon: controller.showClearDrop.value
+              ? IconButton(
+                  onPressed: () {
+                    controller.clearDrop();
+                    dropFocus.unfocus();
+                  },
+                  icon: Icon(
+                    Icons.close,
+                    color: Colors.grey[700],
+                    size: 20.w,
+                  ),
+                  padding: EdgeInsets.zero,
+                  constraints: BoxConstraints(
+                    minWidth: 40.w,
+                    minHeight: 40.h,
+                  ),
+                )
+              : SizedBox(width: 40.w),
+        ));
   }
 
   Widget _buildNoteField() {
@@ -254,12 +256,12 @@ class SearchLocationScreen extends StatelessWidget {
                 ),
                 subtitle: place.secondaryText.isNotEmpty
                     ? Text(
-                  place.secondaryText,
-                  style: TextStyle(
-                    fontSize: 12.sp,
-                    color: Colors.grey[600],
-                  ),
-                )
+                        place.secondaryText,
+                        style: TextStyle(
+                          fontSize: 12.sp,
+                          color: Colors.grey[600],
+                        ),
+                      )
                     : null,
                 onTap: () => onSelect(place),
                 shape: RoundedRectangleBorder(
@@ -273,144 +275,468 @@ class SearchLocationScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildFareCard() {
-    return Obx(() {
-      if (!controller.hasFare) return SizedBox();
+  void _buildFareCard(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: Colors.transparent,
+        contentPadding: EdgeInsets.zero,
+        insetPadding: EdgeInsets.symmetric(horizontal: 16.w),
+        content: Obx(
+          () {
+            if (!controller.hasFare) return const SizedBox();
+            return ClipRRect(
+              borderRadius: BorderRadius.circular(12.r),
+              child: BackdropFilter(
+                filter: ImageFilter.blur(
+                  sigmaX: 6,
+                  sigmaY: 6,
+                ),
+                child: Container(
+                  width: double.infinity,
+                  constraints: BoxConstraints(
+                    maxHeight: MediaQuery.of(context).size.height *
+                        0.9, // Limit height to 90% of screen
+                  ),
+                  padding: EdgeInsets.all(20.r),
+                  decoration: BoxDecoration(
+                    color: AppColors.whiteColor.withOpacity(0.95),
+                    borderRadius: BorderRadius.circular(12.r),
+                    border: Border.all(
+                      color: AppColors.whiteColor.withOpacity(0.5),
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.1),
+                        offset: const Offset(0, -4),
+                        blurRadius: 6,
+                        spreadRadius: 0,
+                      ),
+                    ],
+                  ),
+                  child: SingleChildScrollView(
+                    // Make content scrollable
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        // ... rest of your dialog content remains the same
+                        // Header with close button
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              'Confirm Request',
+                              style: TextStyle(
+                                fontSize: 22.sp,
+                                fontWeight: FontWeight.w500,
+                                color: AppColors.greenColor,
+                              ),
+                            ),
+                            IconButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                              icon: Icon(
+                                Icons.close,
+                                color: AppColors.blackColor,
+                                size: 24.w,
+                              ),
+                              padding: EdgeInsets.zero,
+                              constraints: BoxConstraints(
+                                minWidth: 40.w,
+                                minHeight: 40.h,
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 16.h),
 
-      return Container(
-        margin: EdgeInsets.symmetric(vertical: 8.h),
-        padding: EdgeInsets.all(16.w),
-        decoration: BoxDecoration(
-          color: AppColors.greenColor.withOpacity(0.1),
-          borderRadius: BorderRadius.circular(12.r),
-          border: Border.all(
-            color: AppColors.greenColor.withOpacity(0.3),
-            width: 1,
-          ),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Fare Details',
-                  style: TextStyle(
-                    fontSize: 16.sp,
-                    fontWeight: FontWeight.w700,
-                    color: AppColors.greenColor,
-                  ),
-                ),
-                Icon(
-                  Icons.price_check,
-                  color: AppColors.greenColor,
-                  size: 20.w,
-                ),
-              ],
-            ),
-            SizedBox(height: 12.h),
-            _buildFareRow(
-              'Distance',
-              controller.distance.value,
-              Icons.directions_car,
-            ),
-            SizedBox(height: 8.h),
-            _buildFareRow(
-              'Duration',
-              controller.duration.value,
-              Icons.access_time,
-            ),
-            SizedBox(height: 8.h),
-            _buildFareRow(
-              'Pickup',
-              controller.pickupController.text,
-              Icons.location_on,
-              color: AppColors.greenColor,
-            ),
-            SizedBox(height: 8.h),
-            _buildFareRow(
-              'Drop-off',
-              controller.dropController.text,
-              Icons.location_on,
-              color: Colors.red,
-            ),
-            if (controller.noteController.text.isNotEmpty) ...[
-              SizedBox(height: 8.h),
-              _buildFareRow(
-                'Note',
-                controller.noteController.text,
-                Icons.note,
-                color: Colors.orange,
-              ),
-            ],
-            SizedBox(height: 12.h),
-            Divider(color: Colors.grey[300]),
-            SizedBox(height: 12.h),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Estimated Fare',
-                  style: TextStyle(
-                    fontSize: 16.sp,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-                Text(
-                  '₹${controller.fare.value}',
-                  style: TextStyle(
-                    fontSize: 22.sp,
-                    fontWeight: FontWeight.w800,
-                    color: AppColors.greenColor,
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-      );
-    });
-  }
+                        // Trip distance row
+                        Container(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 8.w, vertical: 8.h),
+                          decoration: BoxDecoration(
+                            color: AppColors.greenColor.withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(8.r),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                'Your Trip',
+                                style: TextStyle(
+                                  fontSize: 14.sp,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              Text(
+                                controller.distance.value.isNotEmpty
+                                    ? controller.distance.value
+                                    : '12.5 Km',
+                                style: TextStyle(
+                                  fontSize: 14.sp,
+                                  fontWeight: FontWeight.w700,
+                                  color: AppColors.greenColor,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(height: 16.h),
 
-  Widget _buildFareRow(String label, String value, IconData icon,
-      {Color color = Colors.grey}) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Icon(
-          icon,
-          size: 18.w,
-          color: color,
-        ),
-        SizedBox(width: 10.w),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                label,
-                style: TextStyle(
-                  fontSize: 12.sp,
-                  color: Colors.grey[600],
+                        // Location details
+                        Container(
+                          padding: EdgeInsets.all(12.w),
+                          decoration: BoxDecoration(
+                            color: Colors.grey[50],
+                            borderRadius: BorderRadius.circular(8.r),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              // Pickup location row
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Icon(
+                                    Icons.circle,
+                                    color: AppColors.greenColor,
+                                    size: 16.w,
+                                  ),
+                                  SizedBox(width: 12.w),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          'PICKUP',
+                                          style: TextStyle(
+                                            fontSize: 10.sp,
+                                            color: Colors.grey[600],
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+                                        SizedBox(height: 2.h),
+                                        Text(
+                                          controller.pickupController.text
+                                                  .isNotEmpty
+                                              ? controller.pickupController.text
+                                              : 'Block B, Banasree, Dhaka.',
+                                          style: TextStyle(
+                                            fontSize: 13.sp,
+                                          ),
+                                          maxLines: 2,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+
+                              // Dotted line
+                              Padding(
+                                padding: EdgeInsets.only(left: 6.w),
+                                child: Container(
+                                  width: 2,
+                                  height: 20.h,
+                                  color: Colors.grey[400],
+                                ),
+                              ),
+
+                              // Drop location row
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Icon(
+                                    Icons.location_pin,
+                                    color: Colors.red,
+                                    size: 16.w,
+                                  ),
+                                  SizedBox(width: 12.w),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          'DROP',
+                                          style: TextStyle(
+                                            fontSize: 10.sp,
+                                            color: Colors.grey[600],
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+                                        SizedBox(height: 2.h),
+                                        Text(
+                                          controller.dropController.text
+                                                  .isNotEmpty
+                                              ? controller.dropController.text
+                                              : 'Green Road, Dhanmondi, Dhaka.',
+                                          style: TextStyle(
+                                            fontSize: 13.sp,
+                                          ),
+                                          maxLines: 2,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(height: 16.h),
+
+                        // Fare row
+                        Container(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 12.w, vertical: 8.h),
+                          decoration: BoxDecoration(
+                            color: Colors.grey[100],
+                            borderRadius: BorderRadius.circular(8.r),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                'Ride fare:',
+                                style: TextStyle(
+                                  fontSize: 14.sp,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              Text(
+                                '\$${controller.fare.value.toStringAsFixed(2)}',
+                                style: TextStyle(
+                                  fontSize: 16.sp,
+                                  fontWeight: FontWeight.w700,
+                                  color: AppColors.greenColor,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(height: 16.h),
+
+                        // Information section
+                        Container(
+                          padding: EdgeInsets.all(12.w),
+                          decoration: BoxDecoration(
+                            color: Colors.blue.withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(8.r),
+                          ),
+                          child: Column(
+                            children: [
+                              Text(
+                                'Before you confirm',
+                                style: TextStyle(
+                                  fontSize: 13.sp,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.blue[800],
+                                ),
+                              ),
+                              SizedBox(height: 8.h),
+                              Text(
+                                '• If you are late, a \$0.20/min delay fee will apply.',
+                                style: TextStyle(
+                                  fontSize: 11.sp,
+                                  color: Colors.grey[700],
+                                ),
+                              ),
+                              SizedBox(height: 4.h),
+                              Text(
+                                '• If you cancel after a driver is on the way, a cancellation fee will be charged.',
+                                style: TextStyle(
+                                  fontSize: 11.sp,
+                                  color: Colors.grey[700],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(height: 16.h),
+
+                        Text(
+                          'Do you want to continue?',
+                          style: TextStyle(
+                            fontSize: 14.sp,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        SizedBox(height: 16.h),
+
+                        // Action buttons
+                        Row(
+                          children: [
+                            Expanded(
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.grey[200],
+                                  foregroundColor: Colors.grey[800],
+                                  padding: EdgeInsets.symmetric(vertical: 14.h),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8.r),
+                                  ),
+                                ),
+                                child: Text(
+                                  'Cancel',
+                                  style: TextStyle(
+                                    fontSize: 14.sp,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            SizedBox(width: 12.w),
+                            Expanded(
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  controller.bookRideHandler();
+                                  // Navigator.pop(context);
+                                  // // Add your confirm action here
+                                  // Get.snackbar(
+                                  //   'Success',
+                                  //   'Ride confirmed successfully!',
+                                  //   backgroundColor: AppColors.greenColor,
+                                  //   colorText: Colors.white,
+                                  //   snackPosition: SnackPosition.TOP,
+                                  // );
+                                  // controller.showPopUpStatus
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: AppColors.greenColor,
+                                  foregroundColor: Colors.white,
+                                  padding: EdgeInsets.symmetric(vertical: 14.h),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8.r),
+                                  ),
+                                ),
+                                child: Text(
+                                  'Yes, Send',
+                                  style: TextStyle(
+                                    fontSize: 14.sp,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+
+                        // Note section if exists
+                        if (controller.noteController.text.isNotEmpty) ...[
+                          SizedBox(height: 16.h),
+                          Container(
+                            padding: EdgeInsets.all(12.w),
+                            decoration: BoxDecoration(
+                              color: Colors.orange.withOpacity(0.1),
+                              borderRadius: BorderRadius.circular(8.r),
+                            ),
+                            child: Row(
+                              children: [
+                                Icon(
+                                  Icons.note,
+                                  color: Colors.orange,
+                                  size: 18.w,
+                                ),
+                                SizedBox(width: 8.w),
+                                Expanded(
+                                  child: Text(
+                                    controller.noteController.text,
+                                    style: TextStyle(
+                                      fontSize: 12.sp,
+                                    ),
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+
+                        SizedBox(height: 12.h),
+                        Divider(color: Colors.grey[300]),
+                        SizedBox(height: 12.h),
+
+                        // Estimated fare
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              'Estimated Fare',
+                              style: TextStyle(
+                                fontSize: 16.sp,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                            Text(
+                              '₹${controller.fare.value.toStringAsFixed(2)}',
+                              style: TextStyle(
+                                fontSize: 22.sp,
+                                fontWeight: FontWeight.w800,
+                                color: AppColors.greenColor,
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 8.h), // Add bottom padding
+                      ],
+                    ),
+                  ),
                 ),
               ),
-              SizedBox(height: 2.h),
-              Text(
-                value,
-                style: TextStyle(
-                  fontSize: 14.sp,
-                  fontWeight: FontWeight.w600,
-                ),
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ],
-          ),
+            );
+          },
         ),
-      ],
+      ),
     );
   }
+
+  // Widget _buildFareRow(String label, String value, IconData icon,
+  //     {Color color = Colors.grey}) {
+  //   return Row(
+  //     crossAxisAlignment: CrossAxisAlignment.start,
+  //     children: [
+  //       Icon(
+  //         icon,
+  //         size: 18.w,
+  //         color: color,
+  //       ),
+  //       SizedBox(width: 10.w),
+  //       Expanded(
+  //         child: Column(
+  //           crossAxisAlignment: CrossAxisAlignment.start,
+  //           children: [
+  //             Text(
+  //               label,
+  //               style: TextStyle(
+  //                 fontSize: 12.sp,
+  //                 color: Colors.grey[600],
+  //               ),
+  //             ),
+  //             SizedBox(height: 2.h),
+  //             Text(
+  //               value,
+  //               style: TextStyle(
+  //                 fontSize: 14.sp,
+  //                 fontWeight: FontWeight.w600,
+  //               ),
+  //               maxLines: 2,
+  //               overflow: TextOverflow.ellipsis,
+  //             ),
+  //           ],
+  //         ),
+  //       ),
+  //     ],
+  //   );
+  // }
 
   Widget _buildActionButton() {
     return Obx(() {
@@ -419,17 +745,9 @@ class SearchLocationScreen extends StatelessWidget {
           children: [
             CustomPrimaryButton(
               onHandler: () {
-                print('=== CONFIRMING RIDE ===');
-                print('Pickup: ${controller.selectedPickup.value?.address}');
-                print('Drop: ${controller.selectedDrop.value?.address}');
-                print('Note: ${controller.noteController.text}');
-                print('Distance: ${controller.distance.value}');
-                print('Duration: ${controller.duration.value}');
-                print('Fare: ₹${controller.fare.value}');
-                print('=======================');
-
-                // Navigate to next screen
-                // Get.to(() => RideConfirmationScreen());
+                pickupFocus.unfocus();
+                dropFocus.unfocus();
+                _buildFareCard(Get.context!);
               },
               title: 'Confirm Ride',
             ),
@@ -488,18 +806,22 @@ class SearchLocationScreen extends StatelessWidget {
               return;
             }
 
+            // Calculate fare
             await controller.calculateFare();
+
+            // ✅ ADDED: Automatically open popup after fare calculation
+            if (controller.hasFare) {
+              _buildFareCard(Get.context!);
+            }
           },
-          title: controller.isLoadingFare.value ? 'Calculating...' : 'Calculate Fare',
+          title: controller.isLoadingFare.value ? 'Calculating...' : 'Find Ride',
         );
       }
     });
   }
 
-  @override
   void dispose() {
     pickupFocus.dispose();
     dropFocus.dispose();
-    // super.dispose();
   }
 }
