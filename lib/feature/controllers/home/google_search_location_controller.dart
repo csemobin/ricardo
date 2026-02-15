@@ -4,9 +4,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
+import 'package:ricardo/app/helpers/prefs_helper.dart';
+import 'package:ricardo/feature/controllers/custom_bottom_nav_bar_controller.dart';
+import 'package:ricardo/feature/controllers/user_controller.dart';
 import 'package:ricardo/feature/models/home/place_suggestion.dart';
 import 'package:ricardo/routes/app_routes.dart';
 import 'package:ricardo/services/api_client.dart';
+import 'package:ricardo/services/api_urls.dart';
 import 'package:ricardo/services/map_service.dart';
 
 class GoogleSearchLocationController extends GetxController {
@@ -194,7 +198,11 @@ class GoogleSearchLocationController extends GetxController {
 
       print('Calculating fare...');
       print('Pickup: ${pickup.address}');
+      print('Pickup: ${pickup.lat}');
+      print('Pickup: ${pickup.lng}');
       print('Drop: ${drop.address}');
+      print('Drop: ${drop.lat}');
+      print('Drop: ${drop.lng}');
       print('Note: ${noteController.text}');
 
       // Call Google Distance API
@@ -297,9 +305,50 @@ class GoogleSearchLocationController extends GetxController {
   RxBool isBookRideState = false.obs;
 
   Future<void>bookRideHandler() async{
+    try{
+      isBookRideState.value = true;
 
-    debugPrint('================>>>>>>>>>>>>yessssssssssssss');
-    Get.offAllNamed(AppRoutes.customBottomNavBar);
+      final data = {
+        "pickupAddress": selectedPickup.value?.address,
+        "destinationAddress": selectedDrop.value?.address,
+        "note": noteController.text,
+        "pickupLocation": {
+          "type": "Point",
+          "coordinates": [selectedDrop.value?.lng, selectedDrop.value?.lat]
+        },
+        "destinationLocation": {
+          "type": "Point",
+          "coordinates": [selectedPickup.value?.lng, selectedPickup.value?.lat]
+        }
+      };
+
+      final response = await ApiClient.postData(ApiUrls.rideBookRide, data);
+      if( response.statusCode == 200 || response.statusCode == 201 ){
+          cleanField();
+          final cnt = Get.find<UserController>();
+          cnt.isBottomModalSheetStatus.value = true;
+          Get.toNamed(AppRoutes.customBottomNavBar);
+      }else{
+        Get.snackbar('Error', response.body['message']);
+      }
+    }catch(e){
+      debugPrint(e.toString());
+    }finally{
+      isBookRideState.value = false;
+    }
+
+    // print('selected Drop Destination ============>>>  ${selectedDrop.value?.lng}');
+    // print('selected Drop Destination ============>>>  ${selectedDrop.value?.lat}');
+    // print('selected Drop Destination ============>>>   ${selectedDrop.value?.address}');
+    //
+    // print('============================      $data', );
+    //
+    // print('selected Drop Destination ============>>>  ${selectedPickup.value?.lat}');
+    // print('selected Drop Destination ============>>>  ${selectedPickup.value?.lng}');
+    // print('selected Drop Destination ============>>>  ${selectedPickup.value?.address}');
+
+    // debugPrint('================>>>>>>>>>>>>yessssssssssssss');
+    // Get.offAllNamed(AppRoutes.customBottomNavBar);
 
     // bool status = false;
     // isBookRideState.value = true;
@@ -319,7 +368,11 @@ class GoogleSearchLocationController extends GetxController {
     // }
 
   }
-
+  void cleanField(){
+    pickupController.clear();
+    dropController.clear();
+    noteController.clear();
+  }
   @override
   void onClose() {
     pickupController.dispose();

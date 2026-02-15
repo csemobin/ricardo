@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:ricardo/app/utils/app_colors.dart';
@@ -8,6 +9,7 @@ import 'package:ricardo/feature/controllers/home/google_search_location_controll
 import 'package:ricardo/feature/models/home/place_suggestion.dart';
 import 'package:ricardo/gen/assets.gen.dart';
 import 'package:ricardo/services/location_permission_service.dart';
+import 'package:ricardo/widgets/custom_loader.dart';
 import 'package:ricardo/widgets/custom_primary_button.dart';
 import 'package:ricardo/widgets/custom_scaffold.dart';
 import 'package:ricardo/widgets/custom_text_field.dart';
@@ -372,7 +374,7 @@ class SearchLocationScreen extends StatelessWidget {
                               Text(
                                 controller.distance.value.isNotEmpty
                                     ? controller.distance.value
-                                    : '12.5 Km',
+                                    : '0.0 Km',
                                 style: TextStyle(
                                   fontSize: 14.sp,
                                   fontWeight: FontWeight.w700,
@@ -422,7 +424,7 @@ class SearchLocationScreen extends StatelessWidget {
                                           controller.pickupController.text
                                                   .isNotEmpty
                                               ? controller.pickupController.text
-                                              : 'Block B, Banasree, Dhaka.',
+                                              : ' ',
                                           style: TextStyle(
                                             fontSize: 13.sp,
                                           ),
@@ -473,7 +475,7 @@ class SearchLocationScreen extends StatelessWidget {
                                           controller.dropController.text
                                                   .isNotEmpty
                                               ? controller.dropController.text
-                                              : 'Green Road, Dhanmondi, Dhaka.',
+                                              : ' ',
                                           style: TextStyle(
                                             fontSize: 13.sp,
                                           ),
@@ -529,6 +531,7 @@ class SearchLocationScreen extends StatelessWidget {
                             borderRadius: BorderRadius.circular(8.r),
                           ),
                           child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
                                 'Before you confirm',
@@ -539,11 +542,22 @@ class SearchLocationScreen extends StatelessWidget {
                                 ),
                               ),
                               SizedBox(height: 8.h),
-                              Text(
-                                '• If you are late, a \$0.20/min delay fee will apply.',
-                                style: TextStyle(
-                                  fontSize: 11.sp,
-                                  color: Colors.grey[700],
+                              RichText(
+                                text: TextSpan(
+                                  style: TextStyle(
+                                    fontSize: 11.sp,
+                                    color: Colors.grey[700],
+                                  ),
+                                  children: [
+                                    TextSpan(text: '• If you are late, a \$'),
+                                    TextSpan(
+                                      text:
+                                          '${dotenv.env['LATE_FINE_CHARGE']}/min',
+                                      style: TextStyle(
+                                          color: AppColors.errorColor),
+                                    ),
+                                    TextSpan(text: ' delay fee will apply.'),
+                                  ],
                                 ),
                               ),
                               SizedBox(height: 4.h),
@@ -595,35 +609,46 @@ class SearchLocationScreen extends StatelessWidget {
                             ),
                             SizedBox(width: 12.w),
                             Expanded(
-                              child: ElevatedButton(
-                                onPressed: () {
-                                  controller.bookRideHandler();
-                                  // Navigator.pop(context);
-                                  // // Add your confirm action here
-                                  // Get.snackbar(
-                                  //   'Success',
-                                  //   'Ride confirmed successfully!',
-                                  //   backgroundColor: AppColors.greenColor,
-                                  //   colorText: Colors.white,
-                                  //   snackPosition: SnackPosition.TOP,
-                                  // );
-                                  // controller.showPopUpStatus
+                              child: Obx(
+                                () {
+                                  return controller.isBookRideState.value ==
+                                          true
+                                      ? CustomLoader()
+                                      : ElevatedButton(
+                                          onPressed: () {
+                                            controller.bookRideHandler();
+                                            Navigator.pop(context);
+                                            // Navigator.pop(context);
+                                            // // Add your confirm action here
+                                            // Get.snackbar(
+                                            //   'Success',
+                                            //   'Ride confirmed successfully!',
+                                            //   backgroundColor: AppColors.greenColor,
+                                            //   colorText: Colors.white,
+                                            //   snackPosition: SnackPosition.TOP,
+                                            // );
+                                            // controller.showPopUpStatus
+                                          },
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor:
+                                                AppColors.greenColor,
+                                            foregroundColor: Colors.white,
+                                            padding: EdgeInsets.symmetric(
+                                                vertical: 14.h),
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(8.r),
+                                            ),
+                                          ),
+                                          child: Text(
+                                            'Yes, Send',
+                                            style: TextStyle(
+                                              fontSize: 14.sp,
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                          ),
+                                        );
                                 },
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: AppColors.greenColor,
-                                  foregroundColor: Colors.white,
-                                  padding: EdgeInsets.symmetric(vertical: 14.h),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(8.r),
-                                  ),
-                                ),
-                                child: Text(
-                                  'Yes, Send',
-                                  style: TextStyle(
-                                    fontSize: 14.sp,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
                               ),
                             ),
                           ],
@@ -775,7 +800,7 @@ class SearchLocationScreen extends StatelessWidget {
           onHandler: () async {
             // Check location permission
             final status =
-            await LocationPermissionService.checkAndRequestLocation();
+                await LocationPermissionService.checkAndRequestLocation();
 
             if (status != LocationStatus.granted) {
               showDialog(
@@ -814,7 +839,8 @@ class SearchLocationScreen extends StatelessWidget {
               _buildFareCard(Get.context!);
             }
           },
-          title: controller.isLoadingFare.value ? 'Calculating...' : 'Find Ride',
+          title:
+              controller.isLoadingFare.value ? 'Calculating...' : 'Find Ride',
         );
       }
     });

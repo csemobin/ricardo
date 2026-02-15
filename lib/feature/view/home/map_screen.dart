@@ -239,6 +239,7 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
 
   LatLng initialLocation = const LatLng(23.780696475817816, 90.40761484102724);
   LatLng destination = const LatLng(23.83655877786759, 90.36862693085972);
+
   List<LatLng> polylineCoordinates = [];
   double currentZoom = 16.4746;
   double markerSize = 40;
@@ -248,9 +249,6 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    polylineCoordinates.add(initialLocation);
-    polylineCoordinates.add(destination);
-
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: PreferredSize(
@@ -444,6 +442,7 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
                   //
                   // // Swiped Button are here
                   Spacer(),
+
                   if (role == 'passenger') _buildSwippedButton(),
                   SizedBox(
                     height: 100.h,

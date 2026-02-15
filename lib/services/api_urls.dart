@@ -50,4 +50,7 @@ class ApiUrls{
 
   //Driver Rating
   static const String driverGetRating = '/driver/get-ratings';
+
+  //Booked a Ride
+  static const String rideBookRide = '/ride/book-ride';
 }

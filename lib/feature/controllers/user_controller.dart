@@ -4,7 +4,7 @@ import 'package:ricardo/services/api_client.dart';
 import 'package:ricardo/services/api_urls.dart';
 
 class UserController extends GetxController {
-
+  RxBool isBottomModalSheetStatus = false.obs;
   Rx<UserModel?> userModel = Rx<UserModel?>(null);
 
   RxBool isUserDataLoadingStatus = false.obs;
