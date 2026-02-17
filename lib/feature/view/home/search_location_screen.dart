@@ -19,6 +19,9 @@ class SearchLocationScreen extends StatelessWidget {
   SearchLocationScreen({super.key});
 
   final controller = Get.put(GoogleSearchLocationController());
+  final googleSearchLocationController =
+      Get.find<GoogleSearchLocationController>();
+
   final pickupFocus = FocusNode();
   final dropFocus = FocusNode();
 
@@ -26,6 +29,12 @@ class SearchLocationScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return CustomScaffold(
       appBar: AppBar(
+        leading: IconButton(
+            onPressed: () {
+              controller.cleanField();
+              Navigator.pop(context);
+            },
+            icon: Icon(Icons.arrow_back)),
         title: Text(
           "Let's Go...",
           style: TextStyle(
@@ -617,6 +626,8 @@ class SearchLocationScreen extends StatelessWidget {
                                       : ElevatedButton(
                                           onPressed: () {
                                             controller.bookRideHandler();
+                                            googleSearchLocationController
+                                                .isModalOn.value = true;
                                             Navigator.pop(context);
                                             // Navigator.pop(context);
                                             // // Add your confirm action here
@@ -780,9 +791,12 @@ class SearchLocationScreen extends StatelessWidget {
             TextButton(
               onPressed: () {
                 // Clear fare and recalculate
-                controller.distance.value = '';
-                controller.duration.value = '';
-                controller.fare.value = 0.0;
+                // controller.distance.value = '';
+                // controller.duration.value = '';
+                // controller.fare.value = 0.0;
+                pickupFocus.unfocus();
+                dropFocus.unfocus();
+                _buildFareCard(Get.context!);
               },
               child: Text(
                 'Recalculate Fare',

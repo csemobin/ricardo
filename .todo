@@ -1,0 +1,13 @@
+search location er field ta complete ride hoye gele then field ta clear hobe
+
+
+post api
+======>>>> 699041309345c9fc93ad6d75
+Get hit =============>>> /ride/request-area-rider?rideId=699041309345c9fc93ad6d75
+===========>>>>> Result
+while ( ( ( searchRadiusIndex == null || searchRadiusIndex < 4 ) && expandSearchRadius == true )  || drivers == 0 )
+  ========================>>>>> jdi ( ( searchRadiusIndex == null || searchRadiusIndex < 4 ) && expandSearchRadius == true ) hoy tile nearest api same ride id diye hit korbo
+    expandSearchRadius until true &&& jei field da dibe Riyan bhai ooita 4 na hoi
+
+
+

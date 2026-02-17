@@ -6,6 +6,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
 import 'package:ricardo/app/helpers/prefs_helper.dart';
 import 'package:ricardo/feature/controllers/custom_bottom_nav_bar_controller.dart';
+import 'package:ricardo/feature/controllers/home/map/ride_controller.dart';
 import 'package:ricardo/feature/controllers/user_controller.dart';
 import 'package:ricardo/feature/models/home/place_suggestion.dart';
 import 'package:ricardo/routes/app_routes.dart';
@@ -40,7 +41,7 @@ class GoogleSearchLocationController extends GetxController {
   final distance = ''.obs;
   final duration = ''.obs;
   final fare = 0.0.obs;
-
+  final sendingMetersValue = 0.0.obs;
   // Timers for search delay
   Timer? _pickupTimer;
   Timer? _dropTimer;
@@ -240,6 +241,7 @@ class GoogleSearchLocationController extends GetxController {
     final origin = '$pickupLat,$pickupLng';
     final destination = '$dropLat,$dropLng';
 
+    // https://maps.googleapis.com/maps/api/distancematrix/json?origins=${origin}&destinations=${destination}&key=${apiKey}
     final url = 'https://maps.googleapis.com/maps/api/distancematrix/json'
         '?origins=$origin'
         '&destinations=$destination'
@@ -276,34 +278,37 @@ class GoogleSearchLocationController extends GetxController {
       final distanceInMeters = (data['distance']?['value'] ?? 0).toDouble();
       final durationInSeconds = (data['duration']?['value'] ?? 0).toDouble();
 
+      sendingMetersValue.value = distanceInMeters;
+
       final distanceInKm = distanceInMeters / 1000;
+      final distanceInMiles = distanceInMeters / 1609.34;
       final durationInMinutes = durationInSeconds / 60;
 
-      // Simple fare calculation
-      final baseFare = 50.0;
-      final perKm = 12.0;
-      final perMinute = 1.0;
+      // ✅ Fixed: Proper null handling for environment variable
+      final milesRateStr = dotenv.env['MILES_FARE'];
+      final milesRate = double.tryParse(milesRateStr ?? '') ?? 1; // Default rate if not set
 
-      fare.value = baseFare +
-          (distanceInKm * perKm) +
-          (durationInMinutes * perMinute);
+      print('Distance (km): $distanceInKm');
+      print('Distance (miles): $distanceInMiles');
+      print('Miles Rate: \$$milesRate');
 
-      // Minimum fare
-      if (fare.value < 80.0) fare.value = 80.0;
+      // Calculate fare based on miles
+      fare.value = distanceInMiles * milesRate;
 
       // Round to 2 decimal places
       fare.value = double.parse(fare.value.toStringAsFixed(2));
 
-      print('Distance: $distance');
-      print('Duration: $duration');
-      print('Fare: ₹$fare');
+      print('Distance: ${distance.value}');
+      print('Duration: ${duration.value}');
+      print('Fare: \$${fare.value}');
     } catch (e) {
       print('Error updating fare: $e');
+      fare.value = 0.0;
     }
   }
 
   RxBool isBookRideState = false.obs;
-
+  RxBool isModalOn = false.obs;
   Future<void>bookRideHandler() async{
     try{
       isBookRideState.value = true;
@@ -312,6 +317,7 @@ class GoogleSearchLocationController extends GetxController {
         "pickupAddress": selectedPickup.value?.address,
         "destinationAddress": selectedDrop.value?.address,
         "note": noteController.text,
+        "destinationMeters": sendingMetersValue.value,
         "pickupLocation": {
           "type": "Point",
           "coordinates": [selectedDrop.value?.lng, selectedDrop.value?.lat]
@@ -324,10 +330,11 @@ class GoogleSearchLocationController extends GetxController {
 
       final response = await ApiClient.postData(ApiUrls.rideBookRide, data);
       if( response.statusCode == 200 || response.statusCode == 201 ){
-          cleanField();
           final cnt = Get.find<UserController>();
           cnt.isBottomModalSheetStatus.value = true;
           Get.toNamed(AppRoutes.customBottomNavBar);
+          final cntTwo = Get.find<RideController>();
+          cntTwo.fetchRiderData();
       }else{
         Get.snackbar('Error', response.body['message']);
       }

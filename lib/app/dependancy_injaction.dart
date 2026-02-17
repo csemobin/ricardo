@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:ricardo/feature/controllers/auth/car_registration_controller.dart';
 import 'package:ricardo/feature/controllers/home/google_search_location_controller.dart';
+import 'package:ricardo/feature/controllers/home/map/ride_controller.dart';
 import 'package:ricardo/feature/controllers/profile/change_password_controller.dart';
 import 'package:ricardo/feature/controllers/auth/forget_password_controller.dart';
 import 'package:ricardo/feature/controllers/auth/forget_password_otp_verify_controller.dart';
@@ -52,5 +53,6 @@ class DependencyInjection implements Bindings {
     Get.lazyPut(() => RecentHistoryController());
     Get.lazyPut(() => AddCardController());
     Get.lazyPut(() => GoogleSearchLocationController());
+    Get.lazyPut(() => RideController());
   }
 }

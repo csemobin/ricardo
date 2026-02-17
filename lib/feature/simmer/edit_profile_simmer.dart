@@ -3,7 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:ricardo/app/utils/app_colors.dart';
 
 class ShimmerContainer extends StatefulWidget {
-  const ShimmerContainer();
+  const ShimmerContainer({super.key});
 
   @override
   State<ShimmerContainer> createState() => _ShimmerContainerState();
