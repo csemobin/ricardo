@@ -9,5 +9,27 @@ while ( ( ( searchRadiusIndex == null || searchRadiusIndex < 4 ) && expandSearch
   ========================>>>>> jdi ( ( searchRadiusIndex == null || searchRadiusIndex < 4 ) && expandSearchRadius == true ) hoy tile nearest api same ride id diye hit korbo
     expandSearchRadius until true &&& jei field da dibe Riyan bhai ooita 4 na hoi
 
+===========================================================
+driver er length ta chek kora baki ache
 
 
+
+
+====================MOst important one things
+state management not yet when i am close the application or change the screen
+then again do the work and come from map screen
+
+
+
+
+*********************************************
+1 - Socket Connect When Ride Request
+
+
+I/flutter ( 4451): 💡 ApiClient : ====> API Response: [201] /ride/request-area-rider?rideId=699427211c5a57194d189fb1
+I/flutter ( 4451): {statusCode: 201, success: true, message: Request Area Driver Retrieved Successfully, data: {expandSearchRadius: false, searchRadiusIndex: 1, message: Drivers notified, drivers: [{_id: 696f2a250c440e726d3e0017, name: Maruf, email: kinoco4540@naprb.com, password: $2b$12$PexysbsZvP8ps3EmKf/IWOZPCeCkzUO..itsxFIcfZCdigWjtfLeC, phone: +880888855555, wallet: 0.51, location: {type: Point, coordinates: [90.3775031, 23.8230633]}, isProfileCompleted: true, isActive: active, role: driver, isDeleted: false, isVerified: true, image: {publicFolderPath: public/images/scaled_1000012295.jpg, filename: scaled_1000012295.jpg, createdAt: 2026-01-20T14:55:39.412Z, updatedAt: 2026-01-20T14:55:39.412Z}, createdAt: 2026-01-20T07:09:25.299Z, updatedAt: 2026-02-05T08:19:54.211Z, dob: 2026-01-21T00:00:00.000Z, gender: male, aboutMe: vvbbhvhgvvvvc, distance: 0, driver: {_id: 696f2a250c440e726d3e0019, userId: 696f2a250c440e726d3
+I/flutter ( 4451): ====================================================================
+I/flutter ( 4451): {expandSearchRadius: false, searchRadiusIndex: 1, message: Drivers notified, drivers: [{_id: 696f2a250c440e726d3e0017, name: Maruf, email: kinoco4540@naprb.com, password: $2b$12$PexysbsZvP8ps3EmKf/IWOZPCeCkzUO..itsxFIcfZCdigWjtfLeC, phone: +880888855555, wallet: 0.51, location: {type: Point, coordinates: [90.3775031, 23.8230633]}, isProfileCompleted: true, isActive: active, role: driver, isDeleted: false, isVerified: true, image: {publicFolderPath: public/images/scaled_1000012295.jpg, filename: scaled_1000012295.jpg, createdAt: 2026-01-20T14:55:39.412Z, updatedAt: 2026-01-20T14:55:39.412Z}, createdAt: 2026-01-20T07:09:25.299Z, updatedAt: 2026-02-05T08:19:54.211Z, dob: 2026-01-21T00:00:00.000Z, gender: male, aboutMe: vvbbhvhgvvvvc, distance: 0, driver: {_id: 696f2a250c440e726d3e0019, userId: 696f2a250c440e726d3e0017, approvalStatus: approved, isApproved: true, licenseUploaded: true, vehicleDataUploaded: true, pricePerMile: 1, isOnline: true, isBusy: false, ratingAverage: 0, totalRatings: 0, totalCompletedRide
+W/ImageReader_JNI( 4451): Unable to acquire a buffer item, very likely client tried to acquire more than maxImages buffers
+I/flutter ( 4451): 💡 ApiClient : ====> API Response: [201] /user/me
+I/flutter ( 4451): {statusCode: 201, success: true, message: Your profile Retrieved Successfully, data: {userProfile: {location: {type: Point, coordinates: [90.4075579, 23.7809026]}, _id: 69734654e521faf2febce658, name: Maruf Mobin, email: officework20480@gmail.com, gender: male, phone: 01712345678, wallet: 517710.74, address: Banani, Dhaka, isProfileCompleted: true, isActive: active, role: passenger, isDeleted: false, isVerified: true, image: {publicFolderPath: public/images/scaled_1000013037.jpg, filename: scaled_1000013037.jpg, createdAt: 2026-01-24T12:43:48.893Z, updatedAt: 2026-01-24T12:43:48.893Z}, createdAt: 2026-01-23T09:58:44.904Z, updatedAt: 2026-02-17T08:30:08.288Z, aboutMe: this is maruf, dob: 2026-01-24T00:00:00.000Z}}}

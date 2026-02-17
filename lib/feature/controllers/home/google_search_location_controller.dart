@@ -333,8 +333,13 @@ class GoogleSearchLocationController extends GetxController {
           final cnt = Get.find<UserController>();
           cnt.isBottomModalSheetStatus.value = true;
           Get.toNamed(AppRoutes.customBottomNavBar);
+          final id = response.body['data']['_id'];
+
+
           final cntTwo = Get.find<RideController>();
-          cntTwo.fetchRiderData();
+          cntTwo.rideId.value = id;
+          cntTwo.fetchRiderData(id);
+
       }else{
         Get.snackbar('Error', response.body['message']);
       }

@@ -259,6 +259,10 @@ class $AssetsImagesGen {
   AssetGenImage get onboardTwo =>
       const AssetGenImage('assets/images/onboard_two.png');
 
+  /// File path: assets/images/origin-human-logo.png
+  AssetGenImage get originHumanLogo =>
+      const AssetGenImage('assets/images/origin-human-logo.png');
+
   /// File path: assets/images/passenger.png
   AssetGenImage get passenger =>
       const AssetGenImage('assets/images/passenger.png');
@@ -428,6 +432,7 @@ class $AssetsImagesGen {
     onboardOne,
     onboardThree,
     onboardTwo,
+    originHumanLogo,
     passenger,
     paymentIcon,
     paymentMethodIcon,

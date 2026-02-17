@@ -32,7 +32,7 @@ class SearchLocationScreen extends StatelessWidget {
         leading: IconButton(
             onPressed: () {
               controller.cleanField();
-              Navigator.pop(context);
+              Navigator.canPop(context);
             },
             icon: Icon(Icons.arrow_back)),
         title: Text(
@@ -414,7 +414,7 @@ class SearchLocationScreen extends StatelessWidget {
                                     color: AppColors.greenColor,
                                     size: 16.w,
                                   ),
-                                  SizedBox(width: 12.w),
+                                  SizedBox(width: 5.w,),
                                   Expanded(
                                     child: Column(
                                       crossAxisAlignment:
@@ -455,6 +455,7 @@ class SearchLocationScreen extends StatelessWidget {
                                   color: Colors.grey[400],
                                 ),
                               ),
+                              SizedBox(height: 5,),
 
                               // Drop location row
                               Row(
@@ -465,7 +466,7 @@ class SearchLocationScreen extends StatelessWidget {
                                     color: Colors.red,
                                     size: 16.w,
                                   ),
-                                  SizedBox(width: 12.w),
+                                  SizedBox(width: 5.w),
                                   Expanded(
                                     child: Column(
                                       crossAxisAlignment:
@@ -558,10 +559,10 @@ class SearchLocationScreen extends StatelessWidget {
                                     color: Colors.grey[700],
                                   ),
                                   children: [
-                                    TextSpan(text: '• If you are late, a \$'),
+                                    TextSpan(text: '• If you are late, a '),
                                     TextSpan(
                                       text:
-                                          '${dotenv.env['LATE_FINE_CHARGE']}/min',
+                                          '\$${dotenv.env['LATE_FINE_CHARGE']}/min',
                                       style: TextStyle(
                                           color: AppColors.errorColor),
                                     ),
@@ -713,7 +714,7 @@ class SearchLocationScreen extends StatelessWidget {
                               ),
                             ),
                             Text(
-                              '₹${controller.fare.value.toStringAsFixed(2)}',
+                              '\$${controller.fare.value.toStringAsFixed(2)}',
                               style: TextStyle(
                                 fontSize: 22.sp,
                                 fontWeight: FontWeight.w800,

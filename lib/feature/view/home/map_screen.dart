@@ -426,6 +426,7 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver{
               ),
             },
           ),
+
           // Bottom Sheet related work are here
           if (googleSearchLocationController.isModalOn.value)
             Positioned(
@@ -435,6 +436,7 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver{
               right: 0,
               child: BottomSheet(
                 onClosing: (){},
+                backgroundColor: Colors.transparent,
                 enableDrag: false,
                 builder: (context) {
                   return RideRequestBottomSheet(

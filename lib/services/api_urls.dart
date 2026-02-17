@@ -53,4 +53,5 @@ class ApiUrls{
 
   //Booked a Ride
   static const String rideBookRide = '/ride/book-ride';
+  static String requestAreaRider(String id ) => '/ride/request-area-rider?rideId=$id';
 }
