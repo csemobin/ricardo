@@ -8,6 +8,7 @@ import 'package:ricardo/services/api_urls.dart';
 
 class RideController extends GetxController {
   RxList<NearestDrivers> drivers = <NearestDrivers>[].obs;
+  RxList<NearestDrivers> favouriteDrivers = <NearestDrivers>[].obs;
 
   RxInt selectedTab = 0.obs;
 
@@ -38,13 +39,18 @@ class RideController extends GetxController {
             snackPosition: SnackPosition.BOTTOM);
 
         final List driversList = response.body['data']['drivers'];
-        drivers.value =
-            driversList.map((e) => NearestDrivers.fromJson(e)).toList();
+
+        // All Drivers are here
+        final allDrivers = driversList.map((e) => NearestDrivers.fromJson(e)).toList();
+        drivers.value = allDrivers;
+
+        favouriteDrivers.value = allDrivers.where((driver) => driver.isFavorite == true).toList();
+
 
         final bool isExpandedValue =
             response.body['data']['expandSearchRadius'] ?? false;
         final int searchRadiusIndexValue =
-            response.body['data']['searchRadiusIndex'];
+        response.body['data']['searchRadiusIndex'];
         final bool rideCancelValue =
             response.body['data']['rideCancel'] ?? false;
 

@@ -191,7 +191,7 @@ class _NearByDriverScreenState extends State<NearByDriverScreen> {
                               Padding(
                                 padding: EdgeInsets.only(bottom: 8.h),
                                 child: Text(
-                                  'Nearby rides (${ cnt.drivers.length > 0 && cnt.drivers.length <=9 ? '0${cnt.drivers.length}' : '${cnt.drivers.length}'})',
+                                  'Nearby rides (${ cnt.drivers.isNotEmpty && cnt.drivers.length <=9 ? '0${cnt.drivers.length}' : '${cnt.drivers.length}'})',
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                     color: cnt.selectedTab.value == 0
@@ -213,8 +213,8 @@ class _NearByDriverScreenState extends State<NearByDriverScreen> {
                                       ? AppColors.greenColor
                                       : Colors.grey.shade300,
                                   borderRadius: BorderRadius.only(
-                                    topLeft: Radius.circular(10.r),   // ✅ top-left radius
-                                    topRight: Radius.circular(10.r),  // ✅ top-right radius
+                                    topLeft: Radius.circular(10.r),
+                                    topRight: Radius.circular(10.r),
                                   ),
                                 ),
                               ),
@@ -231,7 +231,7 @@ class _NearByDriverScreenState extends State<NearByDriverScreen> {
                               Padding(
                                 padding: EdgeInsets.only(bottom: 8.h),
                                 child: Text(
-                                  'Favorites rides (02)',
+                                  'Favorites rides (${ cnt.favouriteDrivers.isNotEmpty && cnt.favouriteDrivers.length <=9 ? '0${cnt.favouriteDrivers.length}' : '${cnt.favouriteDrivers.length}'})',
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                     color: cnt.selectedTab.value == 1
@@ -497,17 +497,231 @@ class _NearByDriverScreenState extends State<NearByDriverScreen> {
                       ),
                     )
                   : ListView.separated(
-                      physics: NeverScrollableScrollPhysics(),
-                      shrinkWrap: true,
-                      // scrollDirection: Axis.vertical,
-                      itemCount: 20,
-                      itemBuilder: (context, index) {
-                        return Text('mobin');
-                      },
-                      separatorBuilder: (context, index) {
-                        return SizedBox(height: 10.h);
-                      },
+                physics: NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
+                // scrollDirection: Axis.vertical,
+                itemCount: cnt.favouriteDrivers.length,
+                itemBuilder: (context, index) {
+                  final cardDetails = cnt.favouriteDrivers[index];
+                  return  // Driver Card
+                    Container(
+                      padding: EdgeInsets.symmetric(
+                          horizontal: 12.h, vertical: 16.h),
+                      decoration: BoxDecoration(
+                        color: AppColors.whiteColor,
+                        borderRadius: BorderRadius.circular(10.r),
+                        border: Border.all(color: AppColors.successColor),
+                      ),
+                      child: Column(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Row(
+                                children: [
+                                  ClipRRect(
+                                    borderRadius: BorderRadius.circular(50),
+                                    child: Image.network(
+                                      '${ApiUrls.imageBaseUrl}${cardDetails.image}',
+                                      height: 85.h,
+                                      width: 85.w,
+                                      fit: BoxFit.cover,
+                                      errorBuilder:
+                                          (context, error, stackTrace) =>
+                                          Icon(Icons.person, size: 85.h),
+                                    ),
+                                  ),
+                                  SizedBox(width: 12.w),
+                                  Column(
+                                    crossAxisAlignment:
+                                    CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        cardDetails.name.toString(),
+                                        style: TextStyle(
+                                          fontFamily: FontFamily.poppins,
+                                          fontSize: 14.sp,
+                                          fontWeight: FontWeight.w600,
+                                          color: AppColors.successColor,
+                                        ),
+                                      ),
+                                      Row(
+                                        children: [
+                                          Icon(Icons.star,
+                                              color: Colors.yellow, size: 16),
+                                          SizedBox(width: 4),
+                                          Text(
+                                            '${cardDetails.rating} ( ${cardDetails.totalRatings} )',
+                                            style: TextStyle(
+                                              fontFamily: FontFamily.poppins,
+                                              fontSize: 12.sp,
+                                              fontWeight: FontWeight.w500,
+                                              color: AppColors.blackBText,
+                                            ),
+                                          ),
+                                          SizedBox(width: 8.w),
+                                          Container(
+                                            width: 2.w,
+                                            height: 15.h,
+                                            decoration: BoxDecoration(
+                                              color: Colors.black
+                                                  .withOpacity(0.30),
+                                            ),
+                                          ),
+                                          SizedBox(width: 8.w),
+                                          Text(
+                                            '${cardDetails.trips} Trips',
+                                            style: TextStyle(
+                                              fontFamily: FontFamily.poppins,
+                                              fontSize: 12.sp,
+                                              fontWeight: FontWeight.w500,
+                                              color: AppColors.blackBText,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      Row(
+                                        children: [
+                                          Icon(
+                                            Icons.call,
+                                            color: AppColors.greenColor,
+                                          ),
+                                          SizedBox(width: 4),
+                                          Text(
+                                            '${cardDetails.phone}',
+                                            style: TextStyle(
+                                              fontFamily: FontFamily.poppins,
+                                              fontSize: 12.sp,
+                                              fontWeight: FontWeight.w500,
+                                              color: AppColors.blackBText,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                              GestureDetector(
+                                onTap: () {},
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    color: AppColors.whiteColor,
+                                    borderRadius: BorderRadius.circular(50),
+                                    border: Border.all(color: Colors.grey.shade200),
+
+                                  ),
+                                  child: SvgPicture.asset(Assets.icons.driverCardPhone),
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 10.h),
+                          Divider(
+                            color: AppColors.successColor,
+                            height: 1.h,
+                          ),
+                          SizedBox(height: 10.h),
+                          Text(
+                            'Car info.',
+                            style: TextStyle(
+                              fontSize: 14.sp,
+                              fontWeight: FontWeight.w500,
+                              fontFamily: FontFamily.poppins,
+                              color: Colors.black.withOpacity(0.8),
+                            ),
+                          ),
+                          SizedBox(height: 8.h),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    '${cardDetails.vehicle?.carName}',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w500,
+                                      fontFamily: FontFamily.poppins,
+                                      fontSize: 14.sp,
+                                      color: AppColors.favoriteRitesCarText,
+                                    ),
+                                  ),
+                                  Text(
+                                    '${cardDetails.vehicle?.numberOfSeat} Seat',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w500,
+                                      fontFamily: FontFamily.poppins,
+                                      fontSize: 14.sp,
+                                      color: AppColors.favoriteRitesCarText,
+                                    ),
+                                  ),
+                                  Text(
+                                    '${cardDetails.vehicle?.carPlateNumber}',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w500,
+                                      fontFamily: FontFamily.poppins,
+                                      fontSize: 14.sp,
+                                      color: AppColors.favoriteRitesCarText,
+                                    ),
+                                  ),
+                                  Text(
+                                    '5 km away from you.',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w500,
+                                      fontFamily: FontFamily.poppins,
+                                      fontSize: 14.sp,
+                                      color: AppColors.successColor,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(15),
+                                child: Image.network(
+                                  '${ApiUrls.imageBaseUrl}${cardDetails.vehicle?.carImage?.filename}',
+                                  width: 92.w,
+                                  height: 92.h,
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (context, error,
+                                      stackTrace) =>
+                                      Icon(Icons.directions_car, size: 92.h),
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 15.h),
+                          ElevatedButton(
+                            onPressed: () {},
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Color(0xFF34A853),
+                              foregroundColor: Colors.white,
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 24, vertical: 14),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              elevation: 0,
+                            ),
+                            child: Text(
+                              'Request Ride',
+                              style: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     );
+                },
+                separatorBuilder: (context, index) {
+                  return SizedBox(height: 10.h);
+                },
+                padding: EdgeInsets.only(
+                  bottom: 16.h,
+                ),
+              );
             }),
           ],
         ),
