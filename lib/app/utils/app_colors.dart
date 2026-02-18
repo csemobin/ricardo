@@ -34,7 +34,7 @@ class AppColors {
   static const Color appGreyColor = Color(0Xff929292);
   static const Color dottedBorderColor = Color(0Xff1BB600);
   static const Color markerBackgroundColor = Color(0xFF989696);
-
+  static const Color swippedButtonColor = Color(0xff737373);
 
   static const Color secondaryColor = Color(0xff305CDE);
   static const Color blue1 = Color(0xff59B5F7);

@@ -15,6 +15,7 @@ import 'package:ricardo/feature/view/complete_profile/driver_profile_create_scre
 import 'package:ricardo/feature/view/complete_profile/profile_complete_popup_model_screen.dart';
 import 'package:ricardo/feature/view/complete_profile/upload_driving_license_screen.dart';
 import 'package:ricardo/feature/view/complete_profile/upload_requirement_screen.dart';
+import 'package:ricardo/feature/view/home/map/nearby_driver_screen.dart';
 import 'package:ricardo/feature/view/home/search_location_screen.dart';
 import 'package:ricardo/feature/view/home/set_home_location.dart';
 import 'package:ricardo/feature/view/profile/screens/settings/legal_policy_screen.dart';
@@ -59,6 +60,7 @@ abstract class AppRoutes {
   static const String addAmountScreen = 'add_amount_screen';
   static const String searchLocationScreen = 'search_location_screen';
   static const String setHomeLocation = 'set_home_location';
+  static const String nearByDriverScreen = 'nearby_driver_screen';
   // static const String paymentWebViewScreen = 'payment_web_view_screen';
 
   ///  ============= > routes < ==============
@@ -89,6 +91,7 @@ abstract class AppRoutes {
     addAmountScreen: (context) => AddAmountScreen(),
     searchLocationScreen: (context) => SearchLocationScreen(),
     setHomeLocation: (context) => SetHomeLocation(),
+    nearByDriverScreen: (context) => NearByDriverScreen(),
     // paymentWebViewScreen: (context) => PaymentWebViewScreen(paymentUrl: paymentUrl),
   };
 

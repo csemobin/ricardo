@@ -101,6 +101,9 @@ class $AssetsIconsGen {
   /// File path: assets/icons/button.svg
   String get button => 'assets/icons/button.svg';
 
+  /// File path: assets/icons/driver_card_phone.svg
+  String get driverCardPhone => 'assets/icons/driver_card_phone.svg';
+
   /// File path: assets/icons/logo.svg
   String get logo => 'assets/icons/logo.svg';
 
@@ -109,7 +112,7 @@ class $AssetsIconsGen {
       const AssetGenImage('assets/icons/sortLogo.png');
 
   /// List of all assets
-  List<dynamic> get values => [button, logo, sortLogo];
+  List<dynamic> get values => [button, driverCardPhone, logo, sortLogo];
 }
 
 class $AssetsImagesGen {
