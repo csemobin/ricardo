@@ -716,6 +716,8 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver{
         sliderButtonYOffset: 0,
         // onSubmit: () => Get.toNamed(AppRoutes.setHomeLocation),
         onSubmit: () => Get.toNamed(AppRoutes.searchLocationScreen),
+        // onSubmit: () => Get.toNamed(AppRoutes.rateReviewDriver),
+        // onSubmit: () => Get.toNamed(AppRoutes.reportScreen),
         text: 'Lets Go...',
         textStyle: TextStyle(
           fontSize: 20.sp,

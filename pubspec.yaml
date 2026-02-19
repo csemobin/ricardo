@@ -43,6 +43,7 @@ dependencies:
   slide_to_act: ^2.0.2
   permission_handler: ^11.0.1
   flutter_foreground_task: ^8.11.0
+  flutter_rating_bar: ^4.0.1
 
 dev_dependencies:
   flutter_test:

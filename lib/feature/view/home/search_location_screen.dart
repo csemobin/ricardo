@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:ricardo/app/utils/app_colors.dart';
@@ -59,7 +60,6 @@ class SearchLocationScreen extends StatelessWidget {
               _buildDropSuggestions(),
               SizedBox(height: 16.h),
               _buildNoteField(),
-              SizedBox(height: 24.h),
               SizedBox(height: 24.h),
               _buildActionButton(),
             ],
