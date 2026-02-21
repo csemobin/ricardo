@@ -158,6 +158,10 @@ class $AssetsImagesGen {
   AssetGenImage get carMarker =>
       const AssetGenImage('assets/images/car_marker.png');
 
+  /// File path: assets/images/congratulations.gif
+  AssetGenImage get congratulations =>
+      const AssetGenImage('assets/images/congratulations.gif');
+
   /// File path: assets/images/cross-icon.png
   AssetGenImage get crossIcon =>
       const AssetGenImage('assets/images/cross-icon.png');
@@ -408,6 +412,7 @@ class $AssetsImagesGen {
     bell,
     carIcon,
     carMarker,
+    congratulations,
     crossIcon,
     cuate,
     directRight,

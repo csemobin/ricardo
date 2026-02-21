@@ -12,8 +12,10 @@ import 'package:ricardo/app/helpers/prefs_helper.dart';
 import 'package:ricardo/app/utils/app_colors.dart';
 import 'package:ricardo/app/utils/app_constants.dart';
 import 'package:ricardo/feature/controllers/home/google_search_location_controller.dart';
+import 'package:ricardo/feature/controllers/home/map/ride_controller.dart';
 import 'package:ricardo/feature/controllers/user_controller.dart';
 import 'package:ricardo/feature/view/home/map/RideRequestBottomSheet.dart';
+import 'package:ricardo/feature/view/home/map/ride_traking_bottom_sheet.dart';
 import 'package:ricardo/gen/assets.gen.dart';
 import 'package:ricardo/gen/fonts.gen.dart';
 import 'package:ricardo/routes/app_routes.dart';
@@ -33,10 +35,11 @@ class MapScreen extends StatefulWidget {
   State<MapScreen> createState() => _MapScreenState();
 }
 
-class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver{
+class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
   final userController = Get.find<UserController>();
   final googleSearchLocationController =
       Get.find<GoogleSearchLocationController>();
+  final rideController = Get.find<RideController>();
 
   @override
   void initState() {
@@ -435,19 +438,18 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver{
               left: 0,
               right: 0,
               child: BottomSheet(
-                onClosing: (){},
+                onClosing: () {},
                 backgroundColor: Colors.transparent,
                 enableDrag: false,
                 builder: (context) {
                   return RideRequestBottomSheet(
-                    pickupLocation: googleSearchLocationController
-                        .pickupController.text,
-                    dropLocation: googleSearchLocationController
-                        .dropController.text,
-                    distance:
-                    googleSearchLocationController.distance.value,
-                    rideFare: googleSearchLocationController.fare.value
-                        .toString(),
+                    pickupLocation:
+                        googleSearchLocationController.pickupController.text,
+                    dropLocation:
+                        googleSearchLocationController.dropController.text,
+                    distance: googleSearchLocationController.distance.value,
+                    rideFare:
+                        googleSearchLocationController.fare.value.toString(),
                   );
                 },
               ),
@@ -474,10 +476,17 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver{
                   // // Swiped Button are here
                   Spacer(),
 
-                  if (role == 'passenger' &&
-                      googleSearchLocationController.isModalOn.value == false)
+                  if ((role == 'passenger' &&
+                          googleSearchLocationController.isModalOn.value ==
+                              false) &&
+                      rideController.isSwippedButtonShow.value == false)
                     _buildSwippedButton(),
 
+                  // if( rideController.isSwippedButtonShow.value == true )
+                  //   RideTrackingBottomSheet(
+                  //       status: status, driverName: driverName, driverRating: driverRating, driverTrips: driverTrips, driverPhone: driverPhone, carName: carName, carSeats: carSeats, carPlate: carPlate, distanceAway: distanceAway, eta: eta, driverImage: driverImage, carImage: carImage
+                  //   ),
+                    // showRideTrackingSheet(context, status),
                   SizedBox(
                     height: 100.h,
                   ),

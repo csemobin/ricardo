@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:ricardo/app/utils/app_colors.dart';
 
-class GlassBackgroundWidget extends StatelessWidget {
+class GlassBackgroundMultipleChildrenWidget extends StatelessWidget {
   final List<Widget> children;
   final EdgeInsetsGeometry? padding;
   final double? borderRadius;
@@ -11,7 +11,7 @@ class GlassBackgroundWidget extends StatelessWidget {
   final MainAxisAlignment? mainAxisAlignment;
   final CrossAxisAlignment? crossAxisAlignment;
 
-  const GlassBackgroundWidget({
+  const GlassBackgroundMultipleChildrenWidget({
     super.key,
     required this.children,
     this.padding,

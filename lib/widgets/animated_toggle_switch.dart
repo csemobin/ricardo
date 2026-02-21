@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:ricardo/app/utils/app_colors.dart';
 
-import 'glass_background_multiple_widget.dart';
+import 'glass_background_multiple_children_widget.dart';
 
 class AnimatedToggleSwitch extends StatefulWidget {
   const AnimatedToggleSwitch({super.key});
@@ -27,7 +27,7 @@ class _AnimatedToggleSwitchState extends State<AnimatedToggleSwitch> {
               return Dialog(
                 elevation: 5,
                 backgroundColor: Colors.transparent,
-                child: GlassBackgroundWidget(
+                child: GlassBackgroundMultipleChildrenWidget(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     GestureDetector(

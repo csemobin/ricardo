@@ -5,8 +5,11 @@ import 'package:get/get.dart';
 import 'package:ricardo/feature/models/home/nearest_driver_model.dart';
 import 'package:ricardo/services/api_client.dart';
 import 'package:ricardo/services/api_urls.dart';
+import 'package:ricardo/services/socket_services.dart';
 
 class RideController extends GetxController {
+  RxBool isSwippedButtonShow = false.obs;
+  // Mapped Swipped Button
   RxList<NearestDrivers> drivers = <NearestDrivers>[].obs;
   RxList<NearestDrivers> favouriteDrivers = <NearestDrivers>[].obs;
 
@@ -67,4 +70,32 @@ class RideController extends GetxController {
     }
   }
 
+  //Request A Ride Related Controller are here
+  RxBool isRequestBookRide = false.obs;
+  RxBool isRideAccepted = false.obs;
+  RxString acceptedRideDriverName = ''.obs;
+
+  Future<void>fetchSendPickUpRequest(String riderId, String driverId)async{
+    try{
+      isRequestBookRide.value = true;
+
+      final response = await ApiClient.getData(ApiUrls.sendPickUpRequest(riderId, driverId));
+      if( response.statusCode == 200 || response.statusCode == 201 ){
+        print('RIyan BHai ==========================================');
+        SocketServices.socket?.on('ride-accepted', (data) {
+          if( data['isRideAccepted'] == true ){
+            isRideAccepted.value = data['isRideAccepted'];
+            acceptedRideDriverName.value = data['driver']['driverName'];
+          }
+          print(data);
+        });
+      }else{
+
+      }
+    }catch(e){
+      debugPrint(e.toString());
+    }finally{
+      isRequestBookRide.value = false;
+    }
+  }
 }

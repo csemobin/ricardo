@@ -2,7 +2,6 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:ricardo/app/utils/app_colors.dart';
@@ -14,7 +13,6 @@ import 'package:ricardo/widgets/custom_loader.dart';
 import 'package:ricardo/widgets/custom_primary_button.dart';
 import 'package:ricardo/widgets/custom_scaffold.dart';
 import 'package:ricardo/widgets/custom_text_field.dart';
-import 'package:ricardo/widgets/glass_background_widget.dart';
 
 class SearchLocationScreen extends StatelessWidget {
   SearchLocationScreen({super.key});

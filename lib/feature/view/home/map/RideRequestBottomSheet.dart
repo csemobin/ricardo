@@ -9,7 +9,8 @@ import 'package:ricardo/gen/assets.gen.dart';
 import 'package:ricardo/gen/fonts.gen.dart';
 import 'package:ricardo/routes/app_routes.dart';
 import 'package:ricardo/services/api_urls.dart';
-import 'package:ricardo/widgets/glass_background_widget.dart';
+import 'package:ricardo/widgets/glass_background_widget.dart' as Glass;
+import 'package:ricardo/widgets/request_ride_handler.dart';
 
 class RideRequestBottomSheet extends StatefulWidget {
   final String pickupLocation;
@@ -46,7 +47,7 @@ class _RideRequestBottomSheetState extends State<RideRequestBottomSheet> {
           topRight: Radius.circular(50.r),
         ),
       ),
-      child: GlassBackgroundWidget(
+      child: Glass.GlassBackgroundWidget(
         padding: EdgeInsets.all(0.0),
         child: SingleChildScrollView(
           child: Column(
@@ -257,10 +258,12 @@ class _RideRequestBottomSheetState extends State<RideRequestBottomSheet> {
                           ),
                           InkWell(
                             onTap: () {
-                              Get.toNamed(AppRoutes.nearByDriverScreen,arguments: {
-                                'title' : 'Nearby rides (${cnt.drivers.length})',
-                                'estimatedCost' : widget.rideFare
-                              });
+                              Get.toNamed(AppRoutes.nearByDriverScreen,
+                                  arguments: {
+                                    'title':
+                                        'Nearby rides (${cnt.drivers.length})',
+                                    'estimatedCost': widget.rideFare
+                                  });
                             },
                             child: Text('See All'),
                           ),
@@ -373,10 +376,11 @@ class _RideRequestBottomSheetState extends State<RideRequestBottomSheet> {
                                     decoration: BoxDecoration(
                                       color: AppColors.whiteColor,
                                       borderRadius: BorderRadius.circular(50),
-                                      border: Border.all(color: Colors.grey.shade200),
-
+                                      border: Border.all(
+                                          color: Colors.grey.shade200),
                                     ),
-                                    child: SvgPicture.asset(Assets.icons.driverCardPhone),
+                                    child: SvgPicture.asset(
+                                        Assets.icons.driverCardPhone),
                                   ),
                                 ),
                               ],
@@ -456,26 +460,29 @@ class _RideRequestBottomSheetState extends State<RideRequestBottomSheet> {
                               ],
                             ),
                             SizedBox(height: 15.h),
-                            ElevatedButton(
-                              onPressed: () {},
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Color(0xFF34A853),
-                                foregroundColor: Colors.white,
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: 24, vertical: 14),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                                elevation: 0,
-                              ),
-                              child: Text(
-                                'Request Ride',
-                                style: TextStyle(
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                            ),
+                            RequestRideHandler(cnt: cnt, cardDetails: cardDetails),
+                            // ElevatedButton(
+                            //   onPressed: () {
+                            //     // cnt.fetchSendPickUpRequest(cnt.rideId.value, cardDetails.sId!);
+                            //   },
+                            //   style: ElevatedButton.styleFrom(
+                            //     backgroundColor: Color(0xFF34A853),
+                            //     foregroundColor: Colors.white,
+                            //     padding: EdgeInsets.symmetric(
+                            //         horizontal: 24, vertical: 14),
+                            //     shape: RoundedRectangleBorder(
+                            //       borderRadius: BorderRadius.circular(10),
+                            //     ),
+                            //     elevation: 0,
+                            //   ),
+                            //   child: Text(
+                            //     'Request Ride',
+                            //     style: TextStyle(
+                            //       fontSize: 15,
+                            //       fontWeight: FontWeight.w500,
+                            //     ),
+                            //   ),
+                            // ),
                           ],
                         ),
                       ),

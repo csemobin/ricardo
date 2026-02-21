@@ -33,3 +33,115 @@ I/flutter ( 4451): {expandSearchRadius: false, searchRadiusIndex: 1, message: Dr
 W/ImageReader_JNI( 4451): Unable to acquire a buffer item, very likely client tried to acquire more than maxImages buffers
 I/flutter ( 4451): 💡 ApiClient : ====> API Response: [201] /user/me
 I/flutter ( 4451): {statusCode: 201, success: true, message: Your profile Retrieved Successfully, data: {userProfile: {location: {type: Point, coordinates: [90.4075579, 23.7809026]}, _id: 69734654e521faf2febce658, name: Maruf Mobin, email: officework20480@gmail.com, gender: male, phone: 01712345678, wallet: 517710.74, address: Banani, Dhaka, isProfileCompleted: true, isActive: active, role: passenger, isDeleted: false, isVerified: true, image: {publicFolderPath: public/images/scaled_1000013037.jpg, filename: scaled_1000013037.jpg, createdAt: 2026-01-24T12:43:48.893Z, updatedAt: 2026-01-24T12:43:48.893Z}, createdAt: 2026-01-23T09:58:44.904Z, updatedAt: 2026-02-17T08:30:08.288Z, aboutMe: this is maruf, dob: 2026-01-24T00:00:00.000Z}}}
+
+**************************************************
+************** 21 / 2 / 2026 *********************
+**************************************************
+
+=> Sending Ride Request Pop up Modal Handle ( Done )
+=> Show The all kind of Marker ( 1 Hour )
+=> info Window ( 1 to 2 hour )
+=>  Path Show Related work ( rest of the time )
+=> Request Ride Related work When Done
+=> Review & Report related work & Tips
+
+
+
+{
+    "isRideAccepted": true,
+    "ride": {
+        "_id": "699942c32353042b9941302e",
+        "passenger": "69734654e521faf2febce658",
+        "driver": "696f2a250c440e726d3e0017",
+        "pickupAddress": "43 Mohakhali C/A, Dhaka 1212, Bangladesh",
+        "destinationAddress": "House - 94, 4 Road - 03, Dhaka 1216, Bangladesh",
+        "pickupLocation": {
+            "type": "Point",
+            "coordinates": [
+                90.3773286,
+                23.8231815
+            ]
+        },
+        "destinationLocation": {
+            "type": "Point",
+            "coordinates": [
+                90.4076056,
+                23.7807517
+            ]
+        },
+        "destinationMeters": 8073,
+        "fare": 5.02,
+        "note": null,
+        "status": "accepted",
+        "waitingTime": 0,
+        "waitingTimeFare": 0,
+        "cancelledBy": null,
+        "cancellationReason": null,
+        "cancellationFine": 0,
+        "reviewId": null,
+        "totalPayAmount": 0,
+        "acceptedAt": "2026-02-21T05:30:17.663Z",
+        "completeAt": null,
+        "cancelledAt": null,
+        "searchStartedAt": "2026-02-21T05:29:39.895Z",
+        "searchRadiusIndex": 1,
+        "lastSearchAt": "2026-02-21T05:29:40.056Z",
+        "notifiedDriverIds": [
+            "696f2a250c440e726d3e0017"
+        ],
+        "createdAt": "2026-02-21T05:29:39.609Z",
+        "updatedAt": "2026-02-21T05:30:17.663Z",
+        "driverAcceptedLocation": {
+            "type": "Point",
+            "coordinates": [
+                90.38,
+                23.82
+            ]
+        }
+    },
+    "driver": {
+        "driverLocation": {
+            "type": "Point",
+            "coordinates": [
+                90.3773286,
+                23.8231815
+            ]
+        },
+        "driverName": "Maruf",
+        "driverPhone": "+880888855555",
+        "driverEmail": "kinoco4540@naprb.com",
+        "driverImage": "scaled_1000012295.jpg"
+    },
+    "driverCar": {
+        "_id": "6971f97ea52990722b14852c",
+        "driverId": "696f2a250c440e726d3e0017",
+        "carName": "maruf",
+        "carPlateNumber": "LMN-H-264",
+        "carImage": {
+            "publicFolderPath": "public/images/scaled_1000012655.jpg",
+            "filename": "scaled_1000012655.jpg",
+            "createdAt": "2026-01-22T10:18:38.233Z",
+            "updatedAt": "2026-01-22T10:18:38.233Z"
+        },
+        "registrationCardImage": {
+            "publicFolderPath": "public/images/scaled_03adf73e-b907-4cdd-803f-2d1efe35e0701661665219536859274.jpg",
+            "filename": "scaled_03adf73e-b907-4cdd-803f-2d1efe35e0701661665219536859274.jpg",
+            "createdAt": "2026-01-22T10:18:38.233Z",
+            "updatedAt": "2026-01-22T10:18:38.233Z"
+        },
+        "numberPlateImage": {
+            "publicFolderPath": "public/images/scaled_c35d47a5-f6e7-499b-abd0-bce418897d5a4741053082114281646.jpg",
+            "filename": "scaled_c35d47a5-f6e7-499b-abd0-bce418897d5a4741053082114281646.jpg",
+            "createdAt": "2026-01-22T10:18:38.233Z",
+            "updatedAt": "2026-01-22T10:18:38.233Z"
+        },
+        "carRegistrationDate": "2026-01-22T00:00:00.000Z",
+        "numberOfSeat": 4,
+        "vehicleType": "car",
+        "isReviewed": false,
+        "isUploaded": true,
+        "isDeleted": false,
+        "createdAt": "2026-01-22T10:18:38.233Z",
+        "updatedAt": "2026-01-22T10:18:38.233Z"
+    }
+}
