@@ -10,6 +10,8 @@ class GlassBackgroundMultipleChildrenWidget extends StatelessWidget {
   final MainAxisSize? mainAxisSize;
   final MainAxisAlignment? mainAxisAlignment;
   final CrossAxisAlignment? crossAxisAlignment;
+  final double? blurOne;
+  final double? blurTwo;
 
   const GlassBackgroundMultipleChildrenWidget({
     super.key,
@@ -19,6 +21,8 @@ class GlassBackgroundMultipleChildrenWidget extends StatelessWidget {
     this.mainAxisSize,
     this.mainAxisAlignment,
     this.crossAxisAlignment,
+    this.blurOne,
+    this.blurTwo,
   });
 
   @override
@@ -27,8 +31,8 @@ class GlassBackgroundMultipleChildrenWidget extends StatelessWidget {
       borderRadius: BorderRadius.circular(borderRadius ?? 12.r),
       child: BackdropFilter(
         filter: ImageFilter.blur(
-          sigmaX: 4,
-          sigmaY: 4,
+          sigmaX: blurOne ?? 4,
+          sigmaY: blurTwo ?? 4,
         ),
         child: Container(
           width: double.infinity,

@@ -42,6 +42,7 @@ class AppColors {
   static const Color appBarTitleColor = Color(0xff333333);
   static const Color borderColor = Color(0xffDAE9F3);
   static const Color goldColor = Color(0xff856A00);
+  static const Color orangeColor = Color(0xffFFC403);
   static const Color bookedColor = Color(0xffC2B067);
   static const Color secondaryColorShade100 = Color(0xffFCE6F1);
   static const Color darkColor = Color(0xff000000);

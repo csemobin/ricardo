@@ -11,8 +11,6 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  cupertino_icons: ^1.0.8
-  get:
   flutter_screenutil: ^5.9.3
   flutter_svg: ^2.2.3
   fluttertoast: ^9.0.0
@@ -25,8 +23,6 @@ dependencies:
   smooth_page_indicator: ^1.2.0+3
   dots_indicator: ^3.0.0
   dotted_border: ^2.1.0
-  google_maps_flutter: ^2.14.0
-  flutter_polyline_points:
   flutter_intl_phone_field: ^0.0.7
   lottie: ^2.4.0
   logger: ^2.6.2
@@ -39,11 +35,18 @@ dependencies:
   flutter_dotenv:
   firebase_messaging: ^16.1.1
   flutter_local_notifications: ^20.0.0
-  geolocator: ^10.1.0
   slide_to_act: ^2.0.2
   permission_handler: ^11.0.1
   flutter_foreground_task: ^8.11.0
   flutter_rating_bar: ^4.0.1
+
+  google_maps_flutter: ^2.5.0
+  flutter_polyline_points: ^2.0.0
+  http: ^1.1.0
+  geolocator: ^10.1.0
+  get: ^4.6.6
+  cupertino_icons: ^1.0.6
+
 
 dev_dependencies:
   flutter_test:

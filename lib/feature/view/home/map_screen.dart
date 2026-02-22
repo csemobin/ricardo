@@ -1,8 +1,6 @@
 import 'dart:async';
 import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_foreground_task/flutter_foreground_task.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:geolocator/geolocator.dart';
@@ -15,11 +13,12 @@ import 'package:ricardo/feature/controllers/home/google_search_location_controll
 import 'package:ricardo/feature/controllers/home/map/ride_controller.dart';
 import 'package:ricardo/feature/controllers/user_controller.dart';
 import 'package:ricardo/feature/view/home/map/RideRequestBottomSheet.dart';
-import 'package:ricardo/feature/view/home/map/ride_traking_bottom_sheet.dart';
+import 'package:ricardo/feature/view/home/map/bottom_sheet_screen.dart';
 import 'package:ricardo/gen/assets.gen.dart';
 import 'package:ricardo/gen/fonts.gen.dart';
 import 'package:ricardo/routes/app_routes.dart';
 import 'package:ricardo/services/api_urls.dart';
+import 'package:ricardo/services/direction_services.dart';
 import 'package:ricardo/services/foreground_location_service.dart';
 import 'package:ricardo/services/get_fcm_tocken.dart';
 import 'package:ricardo/services/location_permission_service.dart';
@@ -47,11 +46,12 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
     WidgetsBinding.instance.addObserver(this);
 
     // ✅ Initialize and start - FIXED
-    _initForegroundTask();
+    // _initForegroundTask();
     connectSocket();
     setCustomMarker();
     getMyLocation();
     userController.fetchUser();
+    _loadRoute();
   }
 
   Future<void> _initForegroundTask() async {
@@ -203,18 +203,6 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
     print('==============================>>>>>>>> ${myLocation.longitude}');
     print('==============================>>>>>>>> ${myLocation.latitude}');
 
-    /* Timer(const Duration(seconds: 3), (){
-      SocketServices.socket?.emit('update-user-location',{
-        "accessToken": token,
-        "location": {
-          "type": "Point",
-          "coordinates": [myLocation.longitude, myLocation.latitude]
-        }
-      });
-
-      print('Yesssssssssssssssssssssss');
-
-    });*/
     positionStream = Geolocator.getPositionStream(
       locationSettings: const LocationSettings(
         accuracy: LocationAccuracy.high,
@@ -253,6 +241,95 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
 
   // Offline and online controller
   bool isOnline = true;
+
+  /********** MAP Polyline Related Start  here *************/
+  static const _origin = LatLng(23.7293, 90.3854);
+  static const _destination = LatLng(23.7380, 90.3950);
+  static const user = LatLng(23.7384, 90.3950);
+
+  GoogleMapController? _mapController;
+  Set<Polyline> _polylines = {};
+  Set<Marker> _markers = {};
+  bool _isLoading = false;
+  String? _errorMessage;
+
+  Future<void> _loadRoute() async {
+    setState(() {
+      _isLoading = true;
+      _errorMessage = null;
+    });
+
+    try {
+      final points = await DirectionsService.getPolyline(_origin, _destination);
+
+      if (points.isEmpty) {
+        setState(() {
+          Get.snackbar('Error', 'Could not load route. Please check your API key.');
+        });
+        return;
+      }
+
+      setState(() {
+        _polylines = {
+          Polyline(
+            polylineId: const PolylineId('route'),
+            points: points,
+            color: Colors.red,
+            width: 6,
+            startCap: Cap.roundCap,
+            endCap: Cap.roundCap,
+          ),
+        };
+        _markers = {
+          Marker(
+            markerId: const MarkerId('origin'),
+            position: _origin,
+            // icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
+            icon: customMarker ?? BitmapDescriptor.defaultMarker,
+            infoWindow: const InfoWindow(title: 'Origin'),
+          ),
+          Marker(
+            markerId: const MarkerId('destination'),
+            position: _destination,
+            icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
+            infoWindow: const InfoWindow(title: 'Destination'),
+          ),
+          // Marker(
+          //   markerId: const MarkerId('user'),
+          //   position: user,
+          //   icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
+          //   infoWindow: const InfoWindow(title: 'User'),
+          // ),
+        };
+        _isLoading = false;
+      });
+
+      final bounds = _boundsFromLatLng(points);
+      _mapController?.animateCamera(CameraUpdate.newLatLngBounds(bounds, 80));
+    } catch (e) {
+      setState(() {
+        _errorMessage = 'Error loading route: $e';
+        _isLoading = false;
+      });
+    }
+  }
+
+  LatLngBounds _boundsFromLatLng(List<LatLng> points) {
+    double? minLat, minLng, maxLat, maxLng;
+
+    for (var point in points) {
+      minLat = minLat == null ? point.latitude : minLat < point.latitude ? minLat : point.latitude;
+      minLng = minLng == null ? point.longitude : minLng < point.longitude ? minLng : point.longitude;
+      maxLat = maxLat == null ? point.latitude : maxLat > point.latitude ? maxLat : point.latitude;
+      maxLng = maxLng == null ? point.longitude : maxLng > point.longitude ? maxLng : point.longitude;
+    }
+
+    return LatLngBounds(
+      southwest: LatLng(minLat!, minLng!),
+      northeast: LatLng(maxLat!, maxLng!),
+    );
+  }
+  /********** MAP Polyline Related work are here *************/
 
   @override
   Widget build(BuildContext context) {
@@ -362,6 +439,7 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
         }),
       ),
       body: Stack(
+        fit: StackFit.expand,
         children: [
           GoogleMap(
             onCameraMove: (CameraPosition position) {
@@ -386,30 +464,37 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
               target: initialLocation,
               zoom: currentZoom,
             ),
-            polylines: {},
-            markers: {
-              Marker(
-                  markerId: const MarkerId('marker'),
-                  position: initialLocation,
-                  draggable: true,
-                  icon: customMarker ?? BitmapDescriptor.defaultMarker,
-                  onDragEnd: (updateLanLng) {
-                    setState(() {
-                      initialLocation = updateLanLng;
-                    });
-                  },
-                  anchor: Offset(0.5, 0.5)),
-              Marker(
-                markerId: const MarkerId('destination'),
-                position: destination,
-                draggable: true,
-                onDragEnd: (updatedLatLng) {
-                  setState(() {
-                    destination = updatedLatLng;
-                  });
-                },
-              )
+            polylines: _polylines,
+            markers: _markers,
+            myLocationButtonEnabled: true,
+            myLocationEnabled: true,
+            onMapCreated: (controller) {
+              _mapController = controller;
+              _loadRoute();
             },
+            // markers: {
+            //   Marker(
+            //       markerId: const MarkerId('marker'),
+            //       position: initialLocation,
+            //       draggable: true,
+            //       icon: customMarker ?? BitmapDescriptor.defaultMarker,
+            //       onDragEnd: (updateLanLng) {
+            //         setState(() {
+            //           initialLocation = updateLanLng;
+            //         });
+            //       },
+            //       anchor: Offset(0.5, 0.5)),
+            //   Marker(
+            //     markerId: const MarkerId('destination'),
+            //     position: destination,
+            //     draggable: true,
+            //     onDragEnd: (updatedLatLng) {
+            //       setState(() {
+            //         destination = updatedLatLng;
+            //       });
+            //     },
+            //   )
+            // },
             circles: {
               Circle(
                   circleId: CircleId('marker'),
@@ -454,7 +539,51 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
                 },
               ),
             ),
+          // 3. ✅ DraggableScrollableSheet DIRECTLY in Stack, NOT inside Column
+          // rideController.isSwippedButtonShow.value == true
 
+         /* Obx(() {
+            if (rideController.isSwippedButtonShow.value == false) {
+              return DraggableScrollableSheet(
+                initialChildSize: 0.2,
+                minChildSize: 0.15,
+                maxChildSize: 0.85,
+                snap: true,
+                snapSizes: [0.15, 0.4, 0.85],
+                expand: true,
+                builder: (context, scrollController) {
+                  return Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius:
+                          BorderRadius.vertical(top: Radius.circular(24.r)),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.15),
+                          blurRadius: 20,
+                          offset: Offset(0, -4),
+                        ),
+                      ],
+                    ),
+                    child: ListView(
+                      controller: scrollController,
+                      children: [
+                        Text('maruf'),
+                        Text('maruf'),
+
+                      ],
+                    ),
+                  );
+                },
+              );
+            }
+            return SizedBox.shrink();
+          }),*/
+
+          // Bottom Sheet Related work are here
+          BottomSheetScreen(),
+
+          if(rideController.isSwippedButtonShow.value == true)
           SafeArea(
             child: Obx(() {
               final role = userController.userModel.value?.userProfile?.role;
@@ -482,11 +611,28 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
                       rideController.isSwippedButtonShow.value == false)
                     _buildSwippedButton(),
 
-                  // if( rideController.isSwippedButtonShow.value == true )
-                  //   RideTrackingBottomSheet(
-                  //       status: status, driverName: driverName, driverRating: driverRating, driverTrips: driverTrips, driverPhone: driverPhone, carName: carName, carSeats: carSeats, carPlate: carPlate, distanceAway: distanceAway, eta: eta, driverImage: driverImage, carImage: carImage
-                  //   ),
-                    // showRideTrackingSheet(context, status),
+
+                  /*if (rideController.isSwippedButtonShow.value == true)
+                    RideTrackingBottomSheet(
+                      status: RideStatus.driverOnWay,
+                      driverName: 'Maruf',
+                      driverRating: '3.3',
+                      driverTrips: '2.0',
+                      driverPhone: '01936696236',
+                      carName: 'BMW',
+                      carSeats: '4',
+                      distanceAway: '10',
+                      eta: '10',
+                      driverImage:
+                          'https://t4.ftcdn.net/jpg/03/17/25/45/360_F_317254576_lKDALRrvGoBr7gQSa1k4kJBx7O2D15dc.jpg',
+                      carImage:
+                          'https://t4.ftcdn.net/jpg/03/17/25/45/360_F_317254576_lKDALRrvGoBr7gQSa1k4kJBx7O2D15dc.jpg',
+                      carPlate:
+                          'https://t4.ftcdn.net/jpg/03/17/25/45/360_F_317254576_lKDALRrvGoBr7gQSa1k4kJBx7O2D15dc.jpg',
+                    ),
+                  */
+
+                  // showRideTrackingSheet(context, status),
                   SizedBox(
                     height: 100.h,
                   ),

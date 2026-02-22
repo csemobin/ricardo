@@ -58,9 +58,11 @@ class _RequestRideHandlerState extends State<RequestRideHandler> {
       barrierDismissible: false,
       builder: (dialogContext) {
         return Dialog(
-          backgroundColor: Colors.transparent,
+          backgroundColor: Colors.white.withOpacity(0.8),
           insetPadding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 40.h),
           child: GlassBackgroundMultipleChildrenWidget(
+            blurOne: 10,
+            blurTwo: 10,
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -68,7 +70,7 @@ class _RequestRideHandlerState extends State<RequestRideHandler> {
               Image.asset(
                 Assets.images.waiting.path,
                 fit: BoxFit.contain,
-                height: 150.h, // ✅ Fix overflow
+                height: 150.h,
               ),
               SizedBox(height: 12.h),
               Text(
@@ -120,9 +122,11 @@ class _RequestRideHandlerState extends State<RequestRideHandler> {
       barrierDismissible: false,
       builder: (dialogContext) {
         return Dialog(
-          backgroundColor: Colors.transparent,
+          backgroundColor: Colors.white.withOpacity(0.8),
           insetPadding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 40.h),
           child: GlassBackgroundMultipleChildrenWidget(
+            blurOne: 10,
+            blurTwo: 10,
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,

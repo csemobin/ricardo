@@ -32,7 +32,8 @@ class CustomButtonNavBar extends GetView<CustomBottomNavBarController> {
     return Obx(
 
       () {
-        RxBool status = true.obs;
+        // RxBool status = true.obs;
+        RxBool status = false.obs;
         final val = Get.find<GoogleSearchLocationController>();
         if( val.isModalOn.value == true ) status.value = false;
         return Scaffold(
