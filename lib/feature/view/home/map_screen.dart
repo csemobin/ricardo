@@ -3,17 +3,19 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter_foreground_task/flutter_foreground_task.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:ricardo/app/helpers/prefs_helper.dart';
 import 'package:ricardo/app/utils/app_colors.dart';
 import 'package:ricardo/app/utils/app_constants.dart';
+import 'package:ricardo/feature/controllers/custom_bottom_nav_bar_controller.dart';
 import 'package:ricardo/feature/controllers/home/google_search_location_controller.dart';
+import 'package:ricardo/feature/controllers/home/map/map_opt_controller.dart';
 import 'package:ricardo/feature/controllers/home/map/ride_controller.dart';
 import 'package:ricardo/feature/controllers/user_controller.dart';
 import 'package:ricardo/feature/view/home/map/RideRequestBottomSheet.dart';
-import 'package:ricardo/feature/view/home/map/bottom_sheet_screen.dart';
 import 'package:ricardo/gen/assets.gen.dart';
 import 'package:ricardo/gen/fonts.gen.dart';
 import 'package:ricardo/routes/app_routes.dart';
@@ -24,6 +26,7 @@ import 'package:ricardo/services/get_fcm_tocken.dart';
 import 'package:ricardo/services/location_permission_service.dart';
 import 'package:ricardo/services/socket_services.dart';
 import 'package:ricardo/widgets/animated_toggle_switch.dart';
+import 'package:ricardo/widgets/driver_bottom_sheet.dart';
 import 'package:ricardo/widgets/location_permission_dialog.dart';
 import 'package:slide_to_act/slide_to_act.dart';
 
@@ -39,19 +42,19 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
   final googleSearchLocationController =
       Get.find<GoogleSearchLocationController>();
   final rideController = Get.find<RideController>();
+  final mapOPTController = Get.find<MapOPTController>();
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-
     // ✅ Initialize and start - FIXED
     // _initForegroundTask();
     connectSocket();
     setCustomMarker();
     getMyLocation();
     userController.fetchUser();
-    _loadRoute();
+    // _loadRoute();
   }
 
   Future<void> _initForegroundTask() async {
@@ -232,7 +235,9 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
     });
   }
 
+  // LatLng initialLocation = const LatLng(23.780696475817816, 90.40761484102724) ;
   LatLng initialLocation = const LatLng(23.780696475817816, 90.40761484102724);
+
   LatLng destination = const LatLng(23.83655877786759, 90.36862693085972);
 
   List<LatLng> polylineCoordinates = [];
@@ -250,6 +255,14 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
   GoogleMapController? _mapController;
   Set<Polyline> _polylines = {};
   Set<Marker> _markers = {};
+
+  final Set<Marker> _singleMarkers = {
+    // Marker(
+    //   markerId: MarkerId('current_marker'),
+    //    icon: BitmapDescriptor.fromAssetImage( , '')
+    //    // icon:  BitmapDescriptor.asset(configuration, assetName)
+    // )
+  };
   bool _isLoading = false;
   String? _errorMessage;
 
@@ -264,13 +277,30 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
 
       if (points.isEmpty) {
         setState(() {
-          Get.snackbar('Error', 'Could not load route. Please check your API key.');
+          Get.snackbar(
+              'Error', 'Could not load route. Please check your API key.');
         });
         return;
       }
 
       setState(() {
+        // _polylines = {
+        //   Polyline(
+        //     polylineId: const PolylineId('route'),
+        //     points: points,
+        //     color: Colors.red,
+        //     width: 6,
+        //     startCap: Cap.roundCap,
+        //     endCap: Cap.roundCap,
+        //     // patterns: [
+        //     //   PatternItem.dot,
+        //     //   PatternItem.gap(10),
+        //     // ],
+        //   ),
+        // };
+
         _polylines = {
+          // ✅ Your existing main route (solid line on road) - no change
           Polyline(
             polylineId: const PolylineId('route'),
             points: points,
@@ -278,6 +308,21 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
             width: 6,
             startCap: Cap.roundCap,
             endCap: Cap.roundCap,
+          ),
+
+          // ✅ NEW: Dotted line from person (marker) → to route start point
+          Polyline(
+            polylineId: const PolylineId('walking_connector'),
+            points: [
+              _origin, // person's position (house/off-road)
+              points.first, // where the road route actually begins
+            ],
+            color: Colors.red,
+            width: 4,
+            patterns: [
+              PatternItem.dot,
+              PatternItem.gap(12),
+            ],
           ),
         };
         _markers = {
@@ -291,8 +336,12 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
           Marker(
             markerId: const MarkerId('destination'),
             position: _destination,
-            icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
-            infoWindow: const InfoWindow(title: 'Destination'),
+            icon:
+                BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
+            // infoWindow: const InfoWindow(title: 'Destination'),
+            onTap: () {
+              DriverBottomSheet.show(context); // ← call bottom sheet on tap
+            },
           ),
           // Marker(
           //   markerId: const MarkerId('user'),
@@ -318,10 +367,26 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
     double? minLat, minLng, maxLat, maxLng;
 
     for (var point in points) {
-      minLat = minLat == null ? point.latitude : minLat < point.latitude ? minLat : point.latitude;
-      minLng = minLng == null ? point.longitude : minLng < point.longitude ? minLng : point.longitude;
-      maxLat = maxLat == null ? point.latitude : maxLat > point.latitude ? maxLat : point.latitude;
-      maxLng = maxLng == null ? point.longitude : maxLng > point.longitude ? maxLng : point.longitude;
+      minLat = minLat == null
+          ? point.latitude
+          : minLat < point.latitude
+              ? minLat
+              : point.latitude;
+      minLng = minLng == null
+          ? point.longitude
+          : minLng < point.longitude
+              ? minLng
+              : point.longitude;
+      maxLat = maxLat == null
+          ? point.latitude
+          : maxLat > point.latitude
+              ? maxLat
+              : point.latitude;
+      maxLng = maxLng == null
+          ? point.longitude
+          : maxLng > point.longitude
+              ? maxLng
+              : point.longitude;
     }
 
     return LatLngBounds(
@@ -329,22 +394,31 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
       northeast: LatLng(maxLat!, maxLng!),
     );
   }
+
   /********** MAP Polyline Related work are here *************/
+
+late String userId ='';
+  void  _getUserId() async{
+    userId = await PrefsHelper.getString(AppConstants.userId);
+  }
+
+
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(120),
         child: Obx(() {
           final userController = Get.find<UserController>();
+
           final user = userController.userModel.value?.userProfile;
           final profileImage =
               user?.image?.filename ?? Assets.images.profileImage.path;
           final userName = user?.name ?? 'User';
-          final currentLocation =
-              user?.address ?? '36 East 8th Street, New York, NY 10003, Un...';
+          // ✅ In your initState or wherever you load user data
 
           return ClipRRect(
             borderRadius: BorderRadius.only(
@@ -381,19 +455,27 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
                               ),
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(50),
-                                child: Image.network(
-                                  '${ApiUrls.imageBaseUrl}$profileImage',
-                                  fit: BoxFit.cover,
-                                  width: 50,
-                                  height: 50,
-                                  errorBuilder: (context, error, stackTrace) {
-                                    return Image.asset(
-                                      Assets.images.profileImage.path,
-                                      fit: BoxFit.cover,
-                                      width: 50,
-                                      height: 50,
-                                    );
+                                child: GestureDetector(
+                                  onTap: () {
+                                    final cnt = Get.find<
+                                        CustomBottomNavBarController>();
+                                    cnt.selectedIndex.value = 3;
+                                    Get.toNamed(AppRoutes.customBottomNavBar);
                                   },
+                                  child: Image.network(
+                                    '${ApiUrls.imageBaseUrl}$profileImage',
+                                    fit: BoxFit.cover,
+                                    width: 50,
+                                    height: 50,
+                                    errorBuilder: (context, error, stackTrace) {
+                                      return Image.asset(
+                                        Assets.images.profileImage.path,
+                                        fit: BoxFit.cover,
+                                        width: 50,
+                                        height: 50,
+                                      );
+                                    },
+                                  ),
                                 ),
                               ),
                             ),
@@ -415,7 +497,7 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
                             SizedBox(width: 8.w),
                             Expanded(
                               child: Text(
-                                currentLocation,
+                                mapOPTController.currentLocation.value,
                                 style: TextStyle(
                                   fontSize: 14.sp,
                                   color: Colors.black,
@@ -465,7 +547,7 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
               zoom: currentZoom,
             ),
             polylines: _polylines,
-            markers: _markers,
+            markers: mapOPTController.isFirstStep == false ? _singleMarkers : _markers,
             myLocationButtonEnabled: true,
             myLocationEnabled: true,
             onMapCreated: (controller) {
@@ -495,7 +577,7 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
             //     },
             //   )
             // },
-            circles: {
+            circles:  {
               Circle(
                   circleId: CircleId('marker'),
                   center: initialLocation,
@@ -542,7 +624,7 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
           // 3. ✅ DraggableScrollableSheet DIRECTLY in Stack, NOT inside Column
           // rideController.isSwippedButtonShow.value == true
 
-         /* Obx(() {
+          /* Obx(() {
             if (rideController.isSwippedButtonShow.value == false) {
               return DraggableScrollableSheet(
                 initialChildSize: 0.2,
@@ -581,9 +663,9 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
           }),*/
 
           // Bottom Sheet Related work are here
-          BottomSheetScreen(),
+          // BottomSheetScreen(),
 
-          if(rideController.isSwippedButtonShow.value == true)
+          // if(rideController.isSwippedButtonShow.value == true)
           SafeArea(
             child: Obx(() {
               final role = userController.userModel.value?.userProfile?.role;
@@ -610,7 +692,6 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
                               false) &&
                       rideController.isSwippedButtonShow.value == false)
                     _buildSwippedButton(),
-
 
                   /*if (rideController.isSwippedButtonShow.value == true)
                     RideTrackingBottomSheet(
@@ -870,7 +951,7 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
       child: SlideAction(
         sliderButtonYOffset: 0,
         // onSubmit: () => Get.toNamed(AppRoutes.setHomeLocation),
-        onSubmit: () => Get.toNamed(AppRoutes.searchLocationScreen),
+        onSubmit: () => Get.toNamed(AppRoutes.searchLocationScreen, arguments: {'back_disable': true}),
         // onSubmit: () => Get.toNamed(AppRoutes.rateReviewDriver),
         // onSubmit: () => Get.toNamed(AppRoutes.reportScreen),
         text: 'Lets Go...',
@@ -895,6 +976,13 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
     );
   }
 
+  // ✅ Stream to monitor location status
+  Stream<bool> _locationStatusStream() {
+    return Stream.periodic(Duration(seconds: 5), (_) async {
+      return await LocationPermissionService.isLocationEnabled();
+    }).asyncMap((event) => event);
+  }
+
   @override
   void dispose() {
     // ✅ Stop service and remove listener - FIXED
@@ -906,12 +994,5 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
     WidgetsBinding.instance.removeObserver(this);
     positionStream?.cancel();
     super.dispose();
-  }
-
-  // ✅ Stream to monitor location status
-  Stream<bool> _locationStatusStream() {
-    return Stream.periodic(Duration(seconds: 5), (_) async {
-      return await LocationPermissionService.isLocationEnabled();
-    }).asyncMap((event) => event);
   }
 }

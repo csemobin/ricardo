@@ -29,11 +29,14 @@ class SearchLocationScreen extends StatelessWidget {
     return CustomScaffold(
       appBar: AppBar(
         leading: IconButton(
-            onPressed: () {
-              controller.cleanField();
-              Navigator.canPop(context);
-            },
-            icon: Icon(Icons.arrow_back)),
+          onPressed: () {
+            controller.cleanField();
+            if (Navigator.canPop(context)) {
+              Navigator.pop(context);
+            }
+          },
+          icon: Icon(Icons.arrow_back),
+        ),
         title: Text(
           "Let's Go...",
           style: TextStyle(
@@ -412,7 +415,9 @@ class SearchLocationScreen extends StatelessWidget {
                                     color: AppColors.greenColor,
                                     size: 16.w,
                                   ),
-                                  SizedBox(width: 5.w,),
+                                  SizedBox(
+                                    width: 5.w,
+                                  ),
                                   Expanded(
                                     child: Column(
                                       crossAxisAlignment:
@@ -453,7 +458,9 @@ class SearchLocationScreen extends StatelessWidget {
                                   color: Colors.grey[400],
                                 ),
                               ),
-                              SizedBox(height: 5,),
+                              SizedBox(
+                                height: 5,
+                              ),
 
                               // Drop location row
                               Row(

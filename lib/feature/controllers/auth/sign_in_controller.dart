@@ -50,6 +50,15 @@ class SignInController extends GetxController {
         await userController.fetchUser();
         final user = userController.userModel.value;
 
+        if (response.body['data']!['user']['role'].toString() == 'super_admin') {
+          Get.snackbar('Error', 'You are not Eligible for login!');
+          passwordTextEditingController.clear();
+          emailTextEditingController.clear();
+          PrefsHelper.remove('accessToken');
+          isLoginStatus.value = false;
+          return;
+        }
+
         if (user?.userProfile?.isProfileCompleted == true &&
             user?.userProfile?.role == 'driver' ||
             user?.userProfile?.isProfileCompleted == true &&
@@ -58,19 +67,19 @@ class SignInController extends GetxController {
           cnt.onChange(0);
           // cnt.selectedIndex.value = 0;
 
-          String? getAccessToken = await PrefsHelper.getString('accessToken');
-          String? fcmToken = await FirebaseNotificationService.getFCMToken();
-          PrefsHelper.setString(AppConstants.fcmToken, fcmToken);
-          await SocketServices.init();
-
-          SocketServices.socket?.emit('user-connected', {
-            "accessToken" : getAccessToken,
-            "fcmToken" : fcmToken
-          });
-
-
-          print('===== FCMTOKEN>>>>>>>>>>>>>>>>>>>>>> $fcmToken ==================');
-          print('=======AccessToken>>>>>>>>>>>>>>>>>>>>>> $getAccessToken');
+          // String? getAccessToken = await PrefsHelper.getString('accessToken');
+          // String? fcmToken = await FirebaseNotificationService.getFCMToken();
+          // PrefsHelper.setString(AppConstants.fcmToken, fcmToken);
+          // await SocketServices.init();
+          //
+          // SocketServices.socket?.emit('user-connected', {
+          //   "accessToken" : getAccessToken,
+          //   "fcmToken" : fcmToken
+          // });
+          //
+          //
+          // print('===== FCMTOKEN>>>>>>>>>>>>>>>>>>>>>> $fcmToken ==================');
+          // print('=======AccessToken>>>>>>>>>>>>>>>>>>>>>> $getAccessToken');
 
            /// here will be socket construction
 

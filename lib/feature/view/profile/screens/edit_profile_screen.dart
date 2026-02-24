@@ -82,23 +82,30 @@ class EditProfileScreen extends StatelessWidget {
               ),
               SizedBox(height: 20.h),
 
-              /// PHONE
-              IntlPhoneField(
+              CustomTextField(
                 controller: controller.phoneController,
-                initialCountryCode: controller.phoneController.text.substring(0,),
-                keyboardType: TextInputType.number,
-                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                validator: (phone) =>
-                phone == null || !phone.isValidNumber()
-                    ? 'Invalid phone'
-                    : null,
-                onChanged: controller.updatePhoneNumber,
-                decoration: _inputDecoration('Phone number'),
-                dropdownIconPosition: IconPosition.trailing,
-                 flagsButtonPadding: EdgeInsets.only(
-                   left: 10.w
-                 ),
+                labelText: 'Enter Number',
+                hintText: 'Enter You Number',
               ),
+              SizedBox(height: 20.h),
+
+              /// PHONE
+              // IntlPhoneField(
+              //   controller: controller.phoneController,
+              //   initialCountryCode: controller.phoneController.text.substring(0,),
+              //   keyboardType: TextInputType.number,
+              //   inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+              //   validator: (phone) =>
+              //   phone == null || !phone.isValidNumber()
+              //       ? 'Invalid phone'
+              //       : null,
+              //   onChanged: controller.updatePhoneNumber,
+              //   decoration: _inputDecoration('Phone number'),
+              //   dropdownIconPosition: IconPosition.trailing,
+              //    flagsButtonPadding: EdgeInsets.only(
+              //      left: 10.w
+              //    ),
+              // ),
 
               SizedBox(height: 12.h),
 

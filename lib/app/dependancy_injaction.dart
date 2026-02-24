@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:ricardo/feature/controllers/auth/car_registration_controller.dart';
 import 'package:ricardo/feature/controllers/home/google_search_location_controller.dart';
+import 'package:ricardo/feature/controllers/home/map/map_opt_controller.dart';
 import 'package:ricardo/feature/controllers/home/map/rate_review_controller.dart';
 import 'package:ricardo/feature/controllers/home/map/report_controller.dart';
 import 'package:ricardo/feature/controllers/home/map/ride_controller.dart';
@@ -26,7 +27,6 @@ import 'package:ricardo/feature/controllers/wallet/add_money_controller.dart';
 import 'package:ricardo/feature/controllers/wallet/payment_method_controller.dart';
 import 'package:ricardo/feature/controllers/wallet/recent_history.dart';
 import 'package:ricardo/feature/controllers/wallet/withdraw_request_controller.dart';
-import 'package:ricardo/feature/models/wallet/wallet_history_model.dart';
 
 class DependencyInjection implements Bindings {
   @override
@@ -42,6 +42,7 @@ class DependencyInjection implements Bindings {
     Get.put(ResetPasswordController());
     Get.put(UserController());
     Get.put(CarRegistrationController());
+    Get.put(MapOPTController());
     Get.lazyPut(() => DriverProfileController());
     Get.lazyPut(() => ChangePasswordController());
     Get.lazyPut(() => ProfileUpdateController());

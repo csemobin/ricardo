@@ -2,20 +2,25 @@ import 'dart:ffi';
 
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
+import 'package:logger/logger.dart';
 import 'package:ricardo/feature/models/home/nearest_driver_model.dart';
+import 'package:ricardo/feature/models/socket/accept_ride_model.dart';
 import 'package:ricardo/services/api_client.dart';
 import 'package:ricardo/services/api_urls.dart';
 import 'package:ricardo/services/socket_services.dart';
 
 class RideController extends GetxController {
+  RxBool firstScreenIndicator = false.obs;
+
   RxBool isSwippedButtonShow = false.obs;
+
   // Mapped Swipped Button
   RxList<NearestDrivers> drivers = <NearestDrivers>[].obs;
   RxList<NearestDrivers> favouriteDrivers = <NearestDrivers>[].obs;
 
   RxInt selectedTab = 0.obs;
 
-  void changeTab(int val){
+  void changeTab(int val) {
     selectedTab.value = val;
   }
 
@@ -31,6 +36,7 @@ class RideController extends GetxController {
   // Nearby Rider Related work are here
   RxBool isButtonShow = false.obs;
 
+
   Future<void> fetchRiderData(String id) async {
     try {
       isRiderDataLoading.value = true;
@@ -44,16 +50,17 @@ class RideController extends GetxController {
         final List driversList = response.body['data']['drivers'];
 
         // All Drivers are here
-        final allDrivers = driversList.map((e) => NearestDrivers.fromJson(e)).toList();
+        final allDrivers =
+            driversList.map((e) => NearestDrivers.fromJson(e)).toList();
         drivers.value = allDrivers;
 
-        favouriteDrivers.value = allDrivers.where((driver) => driver.isFavorite == true).toList();
-
+        favouriteDrivers.value =
+            allDrivers.where((driver) => driver.isFavorite == true).toList();
 
         final bool isExpandedValue =
             response.body['data']['expandSearchRadius'] ?? false;
         final int searchRadiusIndexValue =
-        response.body['data']['searchRadiusIndex'];
+            response.body['data']['searchRadiusIndex'];
         final bool rideCancelValue =
             response.body['data']['rideCancel'] ?? false;
 
@@ -74,28 +81,54 @@ class RideController extends GetxController {
   RxBool isRequestBookRide = false.obs;
   RxBool isRideAccepted = false.obs;
   RxString acceptedRideDriverName = ''.obs;
-
-  Future<void>fetchSendPickUpRequest(String riderId, String driverId)async{
-    try{
+  Rx<AcceptRideModel?> acceptRideModel = Rx<AcceptRideModel?>(null);
+  Future<void> fetchSendPickUpRequest(String riderId, String driverId) async {
+    try {
       isRequestBookRide.value = true;
 
-      final response = await ApiClient.getData(ApiUrls.sendPickUpRequest(riderId, driverId));
-      if( response.statusCode == 200 || response.statusCode == 201 ){
-        print('RIyan BHai ==========================================');
-        SocketServices.socket?.on('ride-accepted', (data) {
-          if( data['isRideAccepted'] == true ){
-            isRideAccepted.value = data['isRideAccepted'];
-            acceptedRideDriverName.value = data['driver']['driverName'];
-          }
-          print(data);
-        });
-      }else{
+      final response =
+          await ApiClient.getData(ApiUrls.sendPickUpRequest(riderId, driverId));
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        SocketServices.socket?.on(
+          'ride-accepted',
+              (data) {
+            if (data is Map<String, dynamic>) {
 
+              if (data['isRideAccepted'] == true) {
+                isRideAccepted.value = true;
+
+                acceptedRideDriverName.value =
+                    data['driver']?['driverName'] ?? '';
+
+                // ✅ Convert JSON to Model
+                acceptRideModel.value = AcceptRideModel.fromJson(data);
+              }
+            }
+
+            debugPrint('================ Socket ride accepted data ================');
+            Logger().e(data);
+
+            debugPrint('================ Socket ride accepted data ================');
+            debugPrint('================ String converstion ================');
+
+            print(acceptRideModel.value);
+          },
+        );
       }
-    }catch(e){
+    } catch (e) {
       debugPrint(e.toString());
-    }finally{
+    } finally {
       isRequestBookRide.value = false;
+    }
+  }
+
+  Future<void> cancelRequest(String riderId, String driverId) async {
+    final response =
+        await ApiClient.getData(ApiUrls.cancelRequest(riderId, driverId));
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      Get.snackbar('Error', response.body['message']);
+    } else {
+      Get.snackbar('Error', response.body['message']);
     }
   }
 }

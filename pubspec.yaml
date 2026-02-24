@@ -39,7 +39,7 @@ dependencies:
   permission_handler: ^11.0.1
   flutter_foreground_task: ^8.11.0
   flutter_rating_bar: ^4.0.1
-
+  geocoding: ^3.0.0
   google_maps_flutter: ^2.5.0
   flutter_polyline_points: ^2.0.0
   http: ^1.1.0

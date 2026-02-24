@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:ricardo/app/helpers/prefs_helper.dart';
@@ -7,6 +8,7 @@ import 'package:ricardo/feature/models/user_model.dart';
 import 'package:ricardo/feature/view/splash_screen/on_board_screen.dart';
 import 'package:ricardo/gen/assets.gen.dart';
 import 'package:ricardo/routes/app_routes.dart';
+import 'package:ricardo/services/get_fcm_tocken.dart';
 import 'package:ricardo/services/socket_services.dart';
 import 'package:ricardo/widgets/logo_widget.dart';
 
@@ -48,21 +50,12 @@ class _SplashScreenState extends State<SplashScreen>
 
   Future<void> _initializeSplash() async {
     try {
-
-      await SocketServices.init();
-     var  token = await PrefsHelper.getString(AppConstants.bearerToken);
-      var fcmToken = await PrefsHelper.getString(AppConstants.fcmToken);
-
-      token.isEmpty? null :  SocketServices.socket?.emit('user-connected', {
-          "accessToken" : token ,
-          "fcmToken" : fcmToken
-        });
-
       await Future.delayed(_splashDuration);
 
       if (!mounted) return;
 
       final accessToken = await PrefsHelper.getString(AppConstants.bearerToken);
+
       if( accessToken.isEmpty ){
         await Get.offAll(
               () => const OnBoardScreen(),
@@ -73,6 +66,7 @@ class _SplashScreenState extends State<SplashScreen>
         );
       }
       if( accessToken.isNotEmpty ){
+        await SocketServices.init();
         final UserController userController = Get.find<UserController>();
         await userController.fetchUser();
         final UserModel? user = userController.userModel.value;
@@ -91,6 +85,16 @@ class _SplashScreenState extends State<SplashScreen>
           Get.offAllNamed(AppRoutes.uploadRequirementScreen);
           return;
         }
+        // SocketServices.socket?.on('connect', (_) async{
+        //
+        //   var  token = await PrefsHelper.getString(AppConstants.bearerToken);
+        //    var fcmToken = await PrefsHelper.getString(AppConstants.fcmToken);
+        //
+        //   SocketServices.socket?.emit('user-connected', {
+        //     "accessToken" : token ,
+        //     "fcmToken" : fcmToken
+        //   });
+        // });
         Get.offAllNamed(AppRoutes.customBottomNavBar);
       }
 
@@ -128,3 +132,36 @@ class _SplashScreenState extends State<SplashScreen>
     super.dispose();
   }
 }
+//
+//
+// export const connectSocket = ({ accessToken, fcmToken }) => {
+//   socket = io(BASE_URL, {
+//     transports: ["websocket"],
+//   });
+//
+// socket.on("connect", () => {
+// socket.emit("user-connected", {
+// accessToken,
+// fcmToken,
+// });
+// });
+//
+// socket.on("notification", (data) => {
+// notificationApi.util.invalidateTags(["notification", "notificationCount"]);
+// console.log("📢 In-app notification:", data);
+// });
+//
+// return socket;
+// };
+
+/*
+* if (!data?.data?.userProfile) return;
+
+      const fcmToken = await requestFcmToken();
+
+      connectSocket({
+        accessToken: localStorage.getItem("accessToken"),
+        fcmToken: fcmToken || "",
+      });
+*
+* */

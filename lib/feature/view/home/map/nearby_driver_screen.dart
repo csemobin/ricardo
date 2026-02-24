@@ -8,9 +8,7 @@ import 'package:ricardo/feature/controllers/home/map/ride_controller.dart';
 import 'package:ricardo/gen/assets.gen.dart';
 import 'package:ricardo/gen/fonts.gen.dart';
 import 'package:ricardo/services/api_urls.dart';
-import 'package:ricardo/widgets/confirm_pop_up_modal.dart';
 import 'package:ricardo/widgets/custom_scaffold.dart';
-import 'package:ricardo/widgets/glass_background_multiple_children_widget.dart';
 import 'package:ricardo/widgets/request_ride_handler.dart';
 
 class NearByDriverScreen extends StatefulWidget {

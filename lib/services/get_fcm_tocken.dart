@@ -31,9 +31,7 @@ class FirebaseNotificationService {
     }
 
     // Initialize local notifications
-    // const androidInit = AndroidInitializationSettings('@mipmap/ic_launcher');
-    const androidInit = AndroidInitializationSettings(
-        'notification_icon'); // <- just name, no @mipmap/
+    const androidInit = AndroidInitializationSettings('@mipmap/ic_launcher');
 
     const iosInit = DarwinInitializationSettings(
       requestSoundPermission: true,
@@ -53,35 +51,59 @@ class FirebaseNotificationService {
   }
 
   /// **Handle foreground FCM messages and show local notification**
-  static Future<void> _handleForegroundMessage(RemoteMessage message) async {
-    debugPrint(
-        "📩 Received foreground notification: ${message.notification?.title}");
+  static Future<void> _handleForegroundMessage(
+      RemoteMessage message) async {
 
     final notification = message.notification;
-    final android = notification?.android;
+    if (notification == null) return;
 
-    if (notification != null &&
-        (android != null || defaultTargetPlatform == TargetPlatform.iOS)) {
-      _localNotifications.show(
-        id: DateTime.now().microsecond,
-        body: notification.body,
-        title: notification.title,
-        notificationDetails: NotificationDetails(
-          android: AndroidNotificationDetails(
-            'reservation_channel',
-            'Gestion App',
-            importance: Importance.max,
-            priority: Priority.high,
-            playSound: true,
-            icon: 'notification_icon',
-            styleInformation: BigTextStyleInformation(notification.body ?? '',
-                contentTitle: notification.title ?? ''),
-          ),
-          iOS: DarwinNotificationDetails(),
+    await _localNotifications.show(
+      id: DateTime.now().millisecondsSinceEpoch ~/ 1000,
+      title: notification.title ?? "Notification",
+      body: notification.body ?? "",
+      notificationDetails: const NotificationDetails(
+        android: AndroidNotificationDetails(
+          'reservation_channel',
+          'Gestion App',
+          channelDescription: 'Important notifications',
+          importance: Importance.max,
+          priority: Priority.high,
+          playSound: true,
+          icon: '@mipmap/ic_launcher',
         ),
-      );
-    }
+        iOS: DarwinNotificationDetails(),
+      ),
+    );
   }
+  // static Future<void> _handleForegroundMessage(RemoteMessage message) async {
+  //   debugPrint(
+  //       "📩 Received foreground notification: ${message.notification?.title}");
+  //
+  //   final notification = message.notification;
+  //   final android = notification?.android;
+  //
+  //   if (notification != null &&
+  //       (android != null || defaultTargetPlatform == TargetPlatform.iOS)) {
+  //     _localNotifications.show(
+  //       id: DateTime.now().microsecond,
+  //       body: notification.body,
+  //       title: notification.title,
+  //       notificationDetails: NotificationDetails(
+  //         android: AndroidNotificationDetails(
+  //           'reservation_channel',
+  //           'Gestion App',
+  //           importance: Importance.max,
+  //           priority: Priority.high,
+  //           playSound: true,
+  //           icon: 'notification_icon',
+  //           styleInformation: BigTextStyleInformation(notification.body ?? '',
+  //               contentTitle: notification.title ?? ''),
+  //         ),
+  //         iOS: DarwinNotificationDetails(),
+  //       ),
+  //     );
+  //   }
+  // }
 
   /// **Retrieve FCM Token**
   static Future<String?> getFCMToken() async {

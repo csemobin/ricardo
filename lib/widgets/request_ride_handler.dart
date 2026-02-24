@@ -51,7 +51,7 @@ class _RequestRideHandlerState extends State<RequestRideHandler> {
     super.dispose();
   }
 
-  void _showWaitingDialog() {
+  void _showWaitingDialog( String rideId, String cardDetails, RideController cnt ) {
     _isWaitingDialogOpen = true;
     showDialog(
       context: context,
@@ -96,6 +96,7 @@ class _RequestRideHandlerState extends State<RequestRideHandler> {
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: () {
+                    cnt.cancelRequest(rideId, cardDetails);
                     _isWaitingDialogOpen = false;
                     Navigator.of(dialogContext).pop();
                   },
@@ -171,14 +172,13 @@ class _RequestRideHandlerState extends State<RequestRideHandler> {
                     Navigator.of(dialogContext).pop();
 
                     final cnt = Get.find<CustomBottomNavBarController>();
-                    cnt.selectedIndex.value = 0;
-
-                    Get.offAllNamed(AppRoutes.homeScreen);
+                    final riderController = Get.find<RideController>();
                     final googleSearchLocationController =
                     Get.find<GoogleSearchLocationController>();
-                    googleSearchLocationController.isModalOn.value = false;
 
-                    final riderController = Get.find<RideController>();
+                    cnt.selectedIndex.value = 0;
+                    Get.offAllNamed(AppRoutes.homeScreen);
+                    googleSearchLocationController.isModalOn.value = false;
                     riderController.isSwippedButtonShow.value = true;
                   },
                   style: ElevatedButton.styleFrom(
@@ -206,7 +206,7 @@ class _RequestRideHandlerState extends State<RequestRideHandler> {
         onPressed: () {
           widget.cnt.fetchSendPickUpRequest(
               widget.cnt.rideId.value, widget.cardDetails.sId!);
-          _showWaitingDialog();
+          _showWaitingDialog( widget.cnt.rideId.value, widget.cardDetails.sId!,widget!.cnt );
         },
         style: ElevatedButton.styleFrom(
           backgroundColor: Color(0xFF34A853),

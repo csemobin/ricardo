@@ -1,9 +1,9 @@
 class ApiUrls{
   // Base, Image, Socket
   // static const String baseUrl = "https://zsv1pz87-5000.inc1.devtunnels.ms/api/v1";
-  static const String baseUrl = "https://rk78xcdz-8080.asse.devtunnels.ms/api/v1";
-  static const String imageBaseUrl = "https://rk78xcdz-8080.asse.devtunnels.ms/images/";
-  static const String socketUrl = "https://rk78xcdz-8080.asse.devtunnels.ms";
+  static const String baseUrl = "https://tales-headset-assuming-defence.trycloudflare.com/api/v1";
+  static const String imageBaseUrl = "https://tales-headset-assuming-defence.trycloudflare.com/images/";
+  static const String socketUrl = "https://tales-headset-assuming-defence.trycloudflare.com";
 
   // User Registration Related work
   static const String registration = '/user/register';
@@ -55,4 +55,5 @@ class ApiUrls{
   static const String rideBookRide = '/ride/book-ride';
   static String requestAreaRider(String id ) => '/ride/request-area-rider?rideId=$id';
   static String sendPickUpRequest( String riderId, String driverId) => '/ride/send-pick-request?rideId=$riderId&driverId=$driverId';
+  static String cancelRequest( String riderId, String driverId) => '/ride/cancel-pick-request?rideId=$riderId&driverId=$driverId';
 }

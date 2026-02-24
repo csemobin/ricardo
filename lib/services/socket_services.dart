@@ -47,7 +47,16 @@ class SocketServices {
     print("Socket initialized with token: $token  \n time${DateTime.now()}");
 
     // Setup event listeners
-    socket?.onConnect((_) => print('✅ Socket connected successfully'));
+    socket?.onConnect((_) =>  SocketServices.socket?.on('connect', (_) async{
+
+      var  token = await PrefsHelper.getString(AppConstants.bearerToken);
+      var fcmToken = await PrefsHelper.getString(AppConstants.fcmToken);
+
+      SocketServices.socket?.emit('user-connected', {
+        "accessToken" : token ,
+        "fcmToken" : fcmToken
+      });
+    }));
     socket?.onConnectError((err) => print('❌ Socket connection error: $err'));
     socket?.onError((err) => print('❌ Socket error: $err'));
     socket?.onDisconnect(

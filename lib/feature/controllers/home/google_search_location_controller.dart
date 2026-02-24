@@ -1,11 +1,8 @@
 import 'dart:async';
-import 'dart:ffi';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
-import 'package:ricardo/app/helpers/prefs_helper.dart';
-import 'package:ricardo/feature/controllers/custom_bottom_nav_bar_controller.dart';
 import 'package:ricardo/feature/controllers/home/map/ride_controller.dart';
 import 'package:ricardo/feature/controllers/user_controller.dart';
 import 'package:ricardo/feature/models/home/place_suggestion.dart';
