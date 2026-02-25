@@ -1,33 +1,7 @@
-import 'dart:async';
 import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
-import 'package:flutter_foreground_task/flutter_foreground_task.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:geolocator/geolocator.dart';
-import 'package:get/get.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:ricardo/app/helpers/prefs_helper.dart';
-import 'package:ricardo/app/utils/app_colors.dart';
-import 'package:ricardo/app/utils/app_constants.dart';
-import 'package:ricardo/feature/controllers/custom_bottom_nav_bar_controller.dart';
-import 'package:ricardo/feature/controllers/home/google_search_location_controller.dart';
-import 'package:ricardo/feature/controllers/home/map/map_opt_controller.dart';
-import 'package:ricardo/feature/controllers/home/map/ride_controller.dart';
-import 'package:ricardo/feature/controllers/user_controller.dart';
-import 'package:ricardo/feature/view/home/map/RideRequestBottomSheet.dart';
-import 'package:ricardo/gen/assets.gen.dart';
-import 'package:ricardo/gen/fonts.gen.dart';
-import 'package:ricardo/routes/app_routes.dart';
-import 'package:ricardo/services/api_urls.dart';
-import 'package:ricardo/services/direction_services.dart';
-import 'package:ricardo/services/foreground_location_service.dart';
-import 'package:ricardo/services/get_fcm_tocken.dart';
-import 'package:ricardo/services/location_permission_service.dart';
-import 'package:ricardo/services/socket_services.dart';
-import 'package:ricardo/widgets/animated_toggle_switch.dart';
-import 'package:ricardo/widgets/driver_bottom_sheet.dart';
-import 'package:ricardo/widgets/location_permission_dialog.dart';
-import 'package:slide_to_act/slide_to_act.dart';
+import 'package:ricardo/feature/view/home/map/custom_header.dart';
+import 'link_export_file.dart';
 
 class MapScreen extends StatefulWidget {
   const MapScreen({super.key});
@@ -42,7 +16,7 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
       Get.find<GoogleSearchLocationController>();
   final rideController = Get.find<RideController>();
   final mapOPTController = Get.find<MapOPTController>();
-  LatLng initialLocation = const LatLng(23.780696475817816, 90.40761484102724);
+  // LatLng initialLocation = const LatLng(23.780696475817816, 90.40761484102724);
 
   @override
   void initState() {
@@ -55,6 +29,26 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
     getMyLocation();
     userController.fetchUser();
     // _loadRoute();
+  }
+
+  void addCustomMarker(LatLng position, String title) async {
+    final BitmapDescriptor customIcon = await getCustomMarker();
+
+    _markers.add(
+      Marker(
+        markerId: MarkerId('custom_${position.latitude}_${position.longitude}'),
+        position: position,
+        infoWindow: InfoWindow(title: title),
+        icon: customIcon,
+      ),
+    );
+  }
+
+  Future<BitmapDescriptor> getCustomMarker() async {
+    return await BitmapDescriptor.fromAssetImage(
+      const ImageConfiguration(size: Size(48, 48)), // marker size
+      mapOPTController.userController.userModel.value?.userProfile?.image?.filename?.isNotEmpty == true ? 'assets/images/marker.png' : '',
+    );
   }
 
   Future<void> _initForegroundTask() async {
@@ -70,7 +64,7 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
 
       if (lat != null && lng != null) {
         setState(() {
-          initialLocation = LatLng(lat, lng);
+          // initialLocation = LatLng(lat, lng);
         });
       }
     }
@@ -129,28 +123,11 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
         devicePixelRatio: 1.0, // Lower = smaller image
         size: Size(50, 50), // Target size in logical pixels
       ),
-      "assets/images/car_marker.png",
+      "assets/images/location_black_marker.png",
     );
     setState(() {});
   }
 
-// Method 2: More precise control using asset() with custom bytes
-//   Future<void> setCustomMarkerAdvanced() async {
-//     final ByteData data = await rootBundle.load("assets/images/car_marker.png");
-//     final ui.Codec codec = await ui.instantiateImageCodec(
-//       data.buffer.asUint8List(),
-//       targetWidth: 50, // Specify exact width
-//       targetHeight: 50, // Specify exact height
-//     );
-//     final ui.FrameInfo frameInfo = await codec.getNextFrame();
-//     final ByteData? byteData = await frameInfo.image.toByteData(
-//       format: ui.ImageByteFormat.png,
-//     );
-//     final Uint8List resizedImageData = byteData!.buffer.asUint8List();
-//
-//     customMarker = BitmapDescriptor.fromBytes(resizedImageData);
-//     setState(() {});
-//   }
 
   Future<LatLng> getCurrentLocation() async {
     bool serviceEnable;
@@ -199,9 +176,9 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
 
     LatLng myLocation = await getCurrentLocation();
 
-    setState(() {
-      initialLocation = myLocation;
-    });
+    // setState(() {
+    //   initialLocation = myLocation;
+    // });
 
     print('==============================>>>>>>>> ${myLocation.longitude}');
     print('==============================>>>>>>>> ${myLocation.latitude}');
@@ -214,9 +191,9 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
     ).listen((Position position) {
       LatLng newLocation = LatLng(position.latitude, position.longitude);
 
-      setState(() {
-        initialLocation = newLocation;
-      });
+      // setState(() {
+      //   initialLocation = newLocation;
+      // });
 
       SocketServices.socket?.emit('update-user-location', {
         "accessToken": token,
@@ -237,11 +214,10 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
 
   // LatLng initialLocation = const LatLng(23.780696475817816, 90.40761484102724) ;
 
-
   LatLng destination = const LatLng(23.83655877786759, 90.36862693085972);
 
   List<LatLng> polylineCoordinates = [];
-  double currentZoom = 16.4746;
+  double currentZoom = 18.5746;
   double markerSize = 40;
 
   // Offline and online controller
@@ -256,13 +232,7 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
   Set<Polyline> _polylines = {};
   Set<Marker> _markers = {};
 
-  final Set<Marker> _singleMarkers = {
-    // Marker(
-    //   markerId: MarkerId('current_marker'),
-    //    icon: BitmapDescriptor.fromAssetImage( , '')
-    //    // icon:  BitmapDescriptor.asset(configuration, assetName)
-    // )
-  };
+  final Set<Marker> _singleMarkers = {};
   bool _isLoading = false;
   String? _errorMessage;
 
@@ -397,132 +367,15 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
 
   /********** MAP Polyline Related work are here *************/
 
-late String userId ='';
-  void  _getUserId() async{
+  late String userId = '';
+
+  void _getUserId() async {
     userId = await PrefsHelper.getString(AppConstants.userId);
   }
 
-
-
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
-      extendBodyBehindAppBar: true,
-      appBar: PreferredSize(
-        preferredSize: Size.fromHeight(120),
-        child: Obx(() {
-          final userController = Get.find<UserController>();
-
-          final user = userController.userModel.value?.userProfile;
-          final profileImage =
-              user?.image?.filename ?? Assets.images.profileImage.path;
-          final userName = user?.name ?? 'User';
-          // ✅ In your initState or wherever you load user data
-
-          return ClipRRect(
-            borderRadius: BorderRadius.only(
-              bottomLeft: Radius.circular(30),
-              bottomRight: Radius.circular(30),
-            ),
-            child: BackdropFilter(
-              filter: ui.ImageFilter.blur(sigmaX: 4, sigmaY: 4),
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Color(0x80FFFFFF),
-                  borderRadius: BorderRadius.only(
-                    bottomLeft: Radius.circular(30),
-                    bottomRight: Radius.circular(30),
-                  ),
-                  border: Border.all(color: Colors.white, width: 2),
-                ),
-                child: SafeArea(
-                  child: Padding(
-                    padding:
-                        EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
-                    child: Column(
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(50),
-                                border: Border.all(
-                                  color: Colors.green,
-                                  width: 2,
-                                ),
-                              ),
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(50),
-                                child: GestureDetector(
-                                  onTap: () {
-                                    final cnt = Get.find<
-                                        CustomBottomNavBarController>();
-                                    cnt.selectedIndex.value = 3;
-                                    Get.toNamed(AppRoutes.customBottomNavBar);
-                                  },
-                                  child: Image.network(
-                                    '${ApiUrls.imageBaseUrl}$profileImage',
-                                    fit: BoxFit.cover,
-                                    width: 50,
-                                    height: 50,
-                                    errorBuilder: (context, error, stackTrace) {
-                                      return Image.asset(
-                                        Assets.images.profileImage.path,
-                                        fit: BoxFit.cover,
-                                        width: 50,
-                                        height: 50,
-                                      );
-                                    },
-                                  ),
-                                ),
-                              ),
-                            ),
-                            GestureDetector(
-                              onTap: ()=> Get.toNamed(AppRoutes.notificationScreen),
-                              child: Image.asset(
-                                Assets.images.bell.path,
-                                width: 24,
-                                height: 24,
-                              ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 12.h),
-                        Row(
-                          children: [
-                            Image.asset(
-                              Assets.images.greenPin.path,
-                              width: 20,
-                              height: 20,
-                            ),
-                            SizedBox(width: 8.w),
-                            Expanded(
-                              child: Text(
-                                mapOPTController.currentLocation.value,
-                                style: TextStyle(
-                                  fontSize: 14.sp,
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ),
-                            SizedBox(width: 8.w),
-                            Image.asset(Assets.images.rightArrow.path),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          );
-        }),
-      ),
       body: Stack(
         fit: StackFit.expand,
         children: [
@@ -546,17 +399,29 @@ late String userId ='';
             //initialCameraPosition: _mapCtrl.kGooglePlex,
 
             initialCameraPosition: CameraPosition(
-              target: LatLng(mapOPTController.currentLatitudePosition!.value, mapOPTController.currentLongitudePosition!.value),
+              target: LatLng(mapOPTController.currentLatitudePosition!.value,
+                  mapOPTController.currentLongitudePosition!.value),
               zoom: currentZoom,
             ),
-            polylines: _polylines,
-            markers: mapOPTController.isFirstStep == false ? _singleMarkers : _markers,
-            myLocationButtonEnabled: true,
-            myLocationEnabled: true,
-            onMapCreated: (controller) {
-              _mapController = controller;
-              _loadRoute();
+            markers: {
+              Marker(
+                markerId: const MarkerId('currentPassenger'),
+                position: LatLng(
+                    mapOPTController.currentLatitudePosition!.value,
+                    mapOPTController.currentLongitudePosition!.value),
+                icon: customMarker ?? BitmapDescriptor.defaultMarker,
+              )
             },
+            // polylines: _polylines,
+            // markers: mapOPTController.isFirstStep == false
+            //     ? _singleMarkers
+            //     : _markers,
+            // myLocationButtonEnabled: true,
+            // myLocationEnabled: true,
+            // onMapCreated: (controller) {
+            //   _mapController = controller;
+            //   // _loadRoute();
+            // },
             // markers: {
             //   Marker(
             //       markerId: const MarkerId('marker'),
@@ -580,15 +445,17 @@ late String userId ='';
             //     },
             //   )
             // },
-            circles:  {
+            circles: {
               Circle(
-                  circleId: CircleId('marker'),
-                  center: initialLocation,
+                  circleId: CircleId('currentPassenger'),
+                  center: LatLng(mapOPTController.currentLatitudePosition!.value,
+                      mapOPTController.currentLongitudePosition!.value),
                   radius: 10,
                   strokeColor: Colors.white,
                   strokeWidth: 1,
                   fillColor: Color(0xFF006491).withOpacity(0.2),
-                  consumeTapEvents: true),
+                  consumeTapEvents: true,
+              ),
               Circle(
                 circleId: const CircleId('destination'),
                 center: destination,
@@ -600,8 +467,8 @@ late String userId ='';
             },
           ),
 
-          // Bottom Sheet related work are here
-          if (googleSearchLocationController.isModalOn.value)
+          /* Single Bottom Modal Sheet [ Fixed ]  */
+          if ( googleSearchLocationController.isModalOn.value )
             Positioned(
               top: 0,
               bottom: 0,
@@ -624,11 +491,17 @@ late String userId ='';
                 },
               ),
             ),
+
+          /*Custom Header are here [Fixed] */
+
+          CustomHeader(mapOPTController: mapOPTController),
+
+
           // 3. ✅ DraggableScrollableSheet DIRECTLY in Stack, NOT inside Column
           // rideController.isSwippedButtonShow.value == true
 
-          /* Obx(() {
-            if (rideController.isSwippedButtonShow.value == false) {
+          /*Obx(() {
+            if (rideController.isSwippedButtonShow.value == true) {
               return DraggableScrollableSheet(
                 initialChildSize: 0.2,
                 minChildSize: 0.15,
@@ -680,6 +553,7 @@ late String userId ='';
                   //   height: 10,
                   // ),
 
+                  /* Driver Toggle Switch [ Fixed ] */
                   if (role == 'driver') AnimatedToggleSwitch(),
 
                   // // SizedBox(
@@ -690,10 +564,11 @@ late String userId ='';
                   // // Swiped Button are here
                   Spacer(),
 
-                  if ((role == 'passenger' &&
+                  /* Passenger Swipped Button [ Fixed ] */
+                  if ( ( role == 'passenger' &&
                           googleSearchLocationController.isModalOn.value ==
-                              false) &&
-                      rideController.isSwippedButtonShow.value == false)
+                              false ) &&
+                      rideController.isSwippedButtonShow.value == false )
                     _buildSwippedButton(),
 
                   /*if (rideController.isSwippedButtonShow.value == true)
@@ -954,7 +829,8 @@ late String userId ='';
       child: SlideAction(
         sliderButtonYOffset: 0,
         // onSubmit: () => Get.toNamed(AppRoutes.setHomeLocation),
-        onSubmit: () => Get.toNamed(AppRoutes.searchLocationScreen, arguments: {'back_disable': true}),
+        onSubmit: () => Get.toNamed(AppRoutes.searchLocationScreen,
+            arguments: {'back_disable': true}),
         // onSubmit: () => Get.toNamed(AppRoutes.rateReviewDriver),
         // onSubmit: () => Get.toNamed(AppRoutes.reportScreen),
         text: 'Lets Go...',

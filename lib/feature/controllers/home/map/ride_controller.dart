@@ -3,6 +3,7 @@ import 'dart:ffi';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:logger/logger.dart';
+import 'package:ricardo/feature/controllers/home/google_search_location_controller.dart';
 import 'package:ricardo/feature/models/home/nearest_driver_model.dart';
 import 'package:ricardo/feature/models/socket/accept_ride_model.dart';
 import 'package:ricardo/services/api_client.dart';
@@ -10,10 +11,9 @@ import 'package:ricardo/services/api_urls.dart';
 import 'package:ricardo/services/socket_services.dart';
 
 class RideController extends GetxController {
-  RxBool firstScreenIndicator = false.obs;
+  final val = Get.find<GoogleSearchLocationController>();
 
   RxBool isSwippedButtonShow = false.obs;
-
   // Mapped Swipped Button
   RxList<NearestDrivers> drivers = <NearestDrivers>[].obs;
   RxList<NearestDrivers> favouriteDrivers = <NearestDrivers>[].obs;

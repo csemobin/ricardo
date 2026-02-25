@@ -1,16 +1,11 @@
-import 'dart:ffi';
-
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:ricardo/feature/controllers/user_controller.dart';
 
 class MapOPTController extends GetxController{
   // Controller are here
   final userController = Get.find<UserController>();
-
-  RxBool isFirstStep = false.obs;
 
   @override
   void onInit(){

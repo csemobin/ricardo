@@ -4,6 +4,8 @@ import 'package:get/get.dart';
 import 'package:ricardo/app/utils/app_colors.dart';
 import 'package:ricardo/feature/controllers/custom_bottom_nav_bar_controller.dart';
 import 'package:ricardo/feature/controllers/home/google_search_location_controller.dart';
+import 'package:ricardo/feature/controllers/home/map/map_opt_controller.dart';
+import 'package:ricardo/feature/controllers/home/map/ride_controller.dart';
 import 'package:ricardo/feature/view/history/history_screen.dart';
 import 'package:ricardo/feature/view/home/home_screen.dart';
 import 'package:ricardo/feature/view/profile/profile_screen.dart';
@@ -33,9 +35,10 @@ class CustomButtonNavBar extends GetView<CustomBottomNavBarController> {
 
       () {
         RxBool status = true.obs;
-        // RxBool status = false.obs;
-        final val = Get.find<GoogleSearchLocationController>();
-        if( val.isModalOn.value == true ) status.value = false;
+        final googleSLController = Get.find<GoogleSearchLocationController>();
+        final rideCnt = Get.find<RideController>();
+
+        if( googleSLController.isModalOn.value == true  ) status.value = false;
         return Scaffold(
           extendBodyBehindAppBar: true,
           extendBody: true,

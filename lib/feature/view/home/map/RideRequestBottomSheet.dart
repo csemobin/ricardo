@@ -3,6 +3,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:ricardo/app/utils/app_colors.dart';
+import 'package:ricardo/feature/controllers/home/google_search_location_controller.dart';
+import 'package:ricardo/feature/controllers/home/map/map_opt_controller.dart';
 import 'package:ricardo/feature/controllers/home/map/ride_controller.dart';
 import 'package:ricardo/feature/simmer/ride_sharing_shimmer.dart';
 import 'package:ricardo/gen/assets.gen.dart';
@@ -32,7 +34,8 @@ class RideRequestBottomSheet extends StatefulWidget {
 
 class _RideRequestBottomSheetState extends State<RideRequestBottomSheet> {
   final controller = Get.put(RideController());
-
+  final rideController = Get.find<RideController>();
+  final googleSearchLocationController = Get.find<GoogleSearchLocationController>();
   @override
   void initState() {
     super.initState();
@@ -162,6 +165,7 @@ class _RideRequestBottomSheetState extends State<RideRequestBottomSheet> {
               // Main Driver Section
               Obx(() {
                 final cnt = Get.find<RideController>();
+                final mapOptController = Get.find<MapOPTController>();
 
                 // Show shimmer while loading
                 if (cnt.isRiderDataLoading.value) {
@@ -487,12 +491,12 @@ class _RideRequestBottomSheetState extends State<RideRequestBottomSheet> {
                         ),
                       ),
 
-                      SizedBox(height: 46.h),
+                      SizedBox(height: 20.h),
 
                       // View In Map Button
                       Container(
                         width: double.infinity,
-                        height: 60,
+                        height: 50,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(50),
                           gradient: LinearGradient(
@@ -515,7 +519,9 @@ class _RideRequestBottomSheetState extends State<RideRequestBottomSheet> {
                           color: Colors.transparent,
                           child: InkWell(
                             borderRadius: BorderRadius.circular(50),
-                            onTap: () {},
+                            onTap: () {
+
+                            },
                             child: Center(
                               child: Text(
                                 'View In Map',
@@ -534,8 +540,6 @@ class _RideRequestBottomSheetState extends State<RideRequestBottomSheet> {
                   ),
                 );
               }),
-
-              SizedBox(height: 20.h),
 
               // Your Trip section (only when no drivers found yet)
               Obx(() {

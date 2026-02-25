@@ -236,6 +236,18 @@ class $AssetsImagesGen {
   AssetGenImage get location =>
       const AssetGenImage('assets/images/location.png');
 
+  /// File path: assets/images/location_black_marker.png
+  AssetGenImage get locationBlackMarker =>
+      const AssetGenImage('assets/images/location_black_marker.png');
+
+  /// File path: assets/images/location_marker.png
+  AssetGenImage get locationMarker =>
+      const AssetGenImage('assets/images/location_marker.png');
+
+  /// File path: assets/images/locatioon_red_marker.png
+  AssetGenImage get locatioonRedMarker =>
+      const AssetGenImage('assets/images/locatioon_red_marker.png');
+
   /// File path: assets/images/logout-profile-screen.png
   AssetGenImage get logoutProfileScreen =>
       const AssetGenImage('assets/images/logout-profile-screen.png');
@@ -432,6 +444,9 @@ class $AssetsImagesGen {
     historyIcon,
     homeIcon,
     location,
+    locationBlackMarker,
+    locationMarker,
+    locatioonRedMarker,
     logoutProfileScreen,
     logout,
     mapProfileImage,

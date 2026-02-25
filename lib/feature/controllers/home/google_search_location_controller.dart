@@ -21,6 +21,16 @@ class GoogleSearchLocationController extends GetxController {
   final pickupPlaces = <PlaceSuggestion>[].obs;
   final dropPlaces = <PlaceSuggestion>[].obs;
 
+  // Add this method to hide modal
+  void hideModal() {
+    isModalOn.value = false;
+  }
+
+  // Add this method to show modal
+  void showModal() {
+    isModalOn.value = true;
+  }
+
   // Loading states
   final isLoadingPickup = false.obs;
   final isLoadingDrop = false.obs;

@@ -5,7 +5,6 @@ import 'package:ricardo/app/utils/app_colors.dart';
 import 'package:ricardo/feature/controllers/custom_bottom_nav_bar_controller.dart';
 import 'package:ricardo/feature/controllers/home/google_search_location_controller.dart';
 import 'package:ricardo/feature/controllers/home/map/ride_controller.dart';
-import 'package:ricardo/feature/controllers/user_controller.dart';
 import 'package:ricardo/feature/models/home/nearest_driver_model.dart';
 import 'package:ricardo/gen/assets.gen.dart';
 import 'package:ricardo/gen/fonts.gen.dart';
@@ -201,7 +200,7 @@ class _RequestRideHandlerState extends State<RequestRideHandler> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: double.infinity,
+      width: 150,
       child: ElevatedButton(
         onPressed: () {
           widget.cnt.fetchSendPickUpRequest(
@@ -211,7 +210,7 @@ class _RequestRideHandlerState extends State<RequestRideHandler> {
         style: ElevatedButton.styleFrom(
           backgroundColor: Color(0xFF34A853),
           foregroundColor: Colors.white,
-          padding: EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+          // padding: EdgeInsets.symmetric(horizontal: 24, vertical: 14),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
           ),
