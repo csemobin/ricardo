@@ -56,4 +56,7 @@ class ApiUrls{
   static String requestAreaRider(String id ) => '/ride/request-area-rider?rideId=$id';
   static String sendPickUpRequest( String riderId, String driverId) => '/ride/send-pick-request?rideId=$riderId&driverId=$driverId';
   static String cancelRequest( String riderId, String driverId) => '/ride/cancel-pick-request?rideId=$riderId&driverId=$driverId';
+
+  //Notification
+  static String notification( int limit, int page ) =>'/notification?limit=$limit&page=$page';
 }

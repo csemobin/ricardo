@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 import 'package:ricardo/feature/controllers/auth/car_registration_controller.dart';
 import 'package:ricardo/feature/controllers/home/google_search_location_controller.dart';
 import 'package:ricardo/feature/controllers/home/map/map_opt_controller.dart';
+import 'package:ricardo/feature/controllers/home/map/notification_controller.dart';
 import 'package:ricardo/feature/controllers/home/map/rate_review_controller.dart';
 import 'package:ricardo/feature/controllers/home/map/report_controller.dart';
 import 'package:ricardo/feature/controllers/home/map/ride_controller.dart';
@@ -59,5 +60,6 @@ class DependencyInjection implements Bindings {
     Get.lazyPut(() => RideController());
     Get.lazyPut(()=> RateAndReviewController());
     Get.lazyPut(()=> ReportController());
+    Get.lazyPut(()=> NotificationController());
   }
 }

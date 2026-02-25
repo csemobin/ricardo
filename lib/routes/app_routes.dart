@@ -18,6 +18,7 @@ import 'package:ricardo/feature/view/complete_profile/upload_driving_license_scr
 import 'package:ricardo/feature/view/complete_profile/upload_requirement_screen.dart';
 import 'package:ricardo/feature/view/home/map/nearby_driver_screen.dart';
 import 'package:ricardo/feature/view/home/map/rate_review_driver.dart';
+import 'package:ricardo/feature/view/home/notification_screen.dart';
 import 'package:ricardo/feature/view/home/search_location_screen.dart';
 import 'package:ricardo/feature/view/home/set_home_location.dart';
 import 'package:ricardo/feature/view/profile/screens/settings/legal_policy_screen.dart';
@@ -70,6 +71,7 @@ abstract class AppRoutes {
   static const String nearByDriverScreen = 'nearby_driver_screen';
   static const String rateReviewDriver = 'rate_review_driver';
   static const String reportScreen = 'report_screen';
+  static const String notificationScreen = 'notification_screen';
 
   // static const String paymentWebViewScreen = 'payment_web_view_screen';
 
@@ -105,6 +107,7 @@ abstract class AppRoutes {
     nearByDriverScreen: (context) => NearByDriverScreen(),
     rateReviewDriver: (context) => RateReviewDriver(),
     reportScreen: (context) => ReportScreen(),
+    notificationScreen: (context) => NotificationScreen(),
     // paymentWebViewScreen: (context) => PaymentWebViewScreen(paymentUrl: paymentUrl),
   };
 }

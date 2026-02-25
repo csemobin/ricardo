@@ -3,7 +3,6 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter_foreground_task/flutter_foreground_task.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -43,6 +42,7 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
       Get.find<GoogleSearchLocationController>();
   final rideController = Get.find<RideController>();
   final mapOPTController = Get.find<MapOPTController>();
+  LatLng initialLocation = const LatLng(23.780696475817816, 90.40761484102724);
 
   @override
   void initState() {
@@ -236,7 +236,7 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
   }
 
   // LatLng initialLocation = const LatLng(23.780696475817816, 90.40761484102724) ;
-  LatLng initialLocation = const LatLng(23.780696475817816, 90.40761484102724);
+
 
   LatLng destination = const LatLng(23.83655877786759, 90.36862693085972);
 
@@ -479,10 +479,13 @@ late String userId ='';
                                 ),
                               ),
                             ),
-                            Image.asset(
-                              Assets.images.bell.path,
-                              width: 24,
-                              height: 24,
+                            GestureDetector(
+                              onTap: ()=> Get.toNamed(AppRoutes.notificationScreen),
+                              child: Image.asset(
+                                Assets.images.bell.path,
+                                width: 24,
+                                height: 24,
+                              ),
                             ),
                           ],
                         ),
@@ -524,10 +527,10 @@ late String userId ='';
         fit: StackFit.expand,
         children: [
           GoogleMap(
-            onCameraMove: (CameraPosition position) {
-              LatLng center = position.target;
-              print("Map center: ${center.latitude}, ${center.longitude}");
-            },
+            // onCameraMove: (CameraPosition position) {
+            //   LatLng center = position.target;
+            //   print("Map center: ${center.latitude}, ${center.longitude}");
+            // },
             // onCameraMove: (CameraPosition position) {
             //   currentZoom = position.zoom;
             //
@@ -543,7 +546,7 @@ late String userId ='';
             //initialCameraPosition: _mapCtrl.kGooglePlex,
 
             initialCameraPosition: CameraPosition(
-              target: initialLocation,
+              target: LatLng(mapOPTController.currentLatitudePosition!.value, mapOPTController.currentLongitudePosition!.value),
               zoom: currentZoom,
             ),
             polylines: _polylines,

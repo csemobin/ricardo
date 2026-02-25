@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
@@ -21,11 +23,16 @@ class MapOPTController extends GetxController{
   // ***************************************************
 
   RxString currentLocation = 'Fetching location...'.obs;
+  RxDouble? currentLatitudePosition = 0.0.obs;
+  RxDouble? currentLongitudePosition = 0.0.obs;
+
   Future<void> getLocation() async {
     try {
       Position position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high,
       );
+      currentLatitudePosition?.value = position.latitude;
+      currentLongitudePosition?.value = position.longitude;
 
       // Convert coordinates to address using geocoding
       List<Placemark> placemarks = await placemarkFromCoordinates(

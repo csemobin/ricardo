@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:ricardo/app/helpers/time_format.dart';
 import 'package:ricardo/app/utils/app_colors.dart';
 import 'package:ricardo/app/utils/app_custom_design.dart';
 import 'package:ricardo/feature/controllers/wallet/add_money_controller.dart';
@@ -279,7 +280,7 @@ class _WalletScreenState extends State<WalletScreen> {
                 ),
               ),
               Text(
-                data.createdAt ?? "",
+                TimeFormatHelper.formatFullDateTime(data.createdAt) ?? "",
                 style: TextStyle(
                   fontSize: 12.sp,
                   fontWeight: FontWeight.w400,
