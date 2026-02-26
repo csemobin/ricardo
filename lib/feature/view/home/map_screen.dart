@@ -1,6 +1,7 @@
 import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:ricardo/feature/view/home/map/custom_header.dart';
+import 'package:ricardo/widgets/map_custom_header_back.dart';
 import 'link_export_file.dart';
 
 class MapScreen extends StatefulWidget {
@@ -16,6 +17,7 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
       Get.find<GoogleSearchLocationController>();
   final rideController = Get.find<RideController>();
   final mapOPTController = Get.find<MapOPTController>();
+
   // LatLng initialLocation = const LatLng(23.780696475817816, 90.40761484102724);
 
   @override
@@ -47,7 +49,11 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
   Future<BitmapDescriptor> getCustomMarker() async {
     return await BitmapDescriptor.fromAssetImage(
       const ImageConfiguration(size: Size(48, 48)), // marker size
-      mapOPTController.userController.userModel.value?.userProfile?.image?.filename?.isNotEmpty == true ? 'assets/images/marker.png' : '',
+      mapOPTController.userController.userModel.value?.userProfile?.image
+                  ?.filename?.isNotEmpty ==
+              true
+          ? 'assets/images/marker.png'
+          : '',
     );
   }
 
@@ -127,7 +133,6 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
     );
     setState(() {});
   }
-
 
   Future<LatLng> getCurrentLocation() async {
     bool serviceEnable;
@@ -447,14 +452,14 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
             // },
             circles: {
               Circle(
-                  circleId: CircleId('currentPassenger'),
-                  center: LatLng(mapOPTController.currentLatitudePosition!.value,
-                      mapOPTController.currentLongitudePosition!.value),
-                  radius: 10,
-                  strokeColor: Colors.white,
-                  strokeWidth: 1,
-                  fillColor: Color(0xFF006491).withOpacity(0.2),
-                  consumeTapEvents: true,
+                circleId: CircleId('currentPassenger'),
+                center: LatLng(mapOPTController.currentLatitudePosition!.value,
+                    mapOPTController.currentLongitudePosition!.value),
+                radius: 10,
+                strokeColor: Colors.white,
+                strokeWidth: 1,
+                fillColor: Color(0xFF006491).withOpacity(0.2),
+                consumeTapEvents: true,
               ),
               Circle(
                 circleId: const CircleId('destination'),
@@ -468,7 +473,7 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
           ),
 
           /* Single Bottom Modal Sheet [ Fixed ]  */
-          if ( googleSearchLocationController.isModalOn.value )
+          /*if ( googleSearchLocationController.isModalOn.value )
             Positioned(
               top: 0,
               bottom: 0,
@@ -490,12 +495,52 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
                   );
                 },
               ),
-            ),
+            ),*/
+          // Bottom Sheet - Only shows when ALL conditions are true
+          Obx(() {
+            if (googleSearchLocationController.isModalOn.value &&
+                rideController.viewInMap.value &&
+                rideController.viewInMapReturn.value == false) {
+              return Positioned(
+                top: 0,
+                bottom: 0,
+                left: 0,
+                right: 0,
+                child: BottomSheet(
+                  onClosing: () {},
+                  backgroundColor: Colors.transparent,
+                  enableDrag: false,
+                  builder: (context) {
+                    return RideRequestBottomSheet(
+                      pickupLocation:
+                          googleSearchLocationController.pickupController.text,
+                      dropLocation:
+                          googleSearchLocationController.dropController.text,
+                      distance: googleSearchLocationController.distance.value
+                          .toString(),
+                      rideFare:
+                          googleSearchLocationController.fare.value.toString(),
+                    );
+                  },
+                ),
+              );
+            }
+            return SizedBox.shrink();
+          }),
 
           /*Custom Header are here [Fixed] */
+          // CustomHeader(mapOPTController: mapOPTController),
 
-          CustomHeader(mapOPTController: mapOPTController),
-
+          // Custom Header - Only shows when conditions are true
+          Obx(() {
+            if (rideController.viewInMap.value &&
+                rideController.viewInMapReturn.value == false) {
+              return CustomHeader(mapOPTController: mapOPTController);
+            }
+            return MapCustomHeaderBack(
+              rideController: rideController,
+            );
+          }),
 
           // 3. ✅ DraggableScrollableSheet DIRECTLY in Stack, NOT inside Column
           // rideController.isSwippedButtonShow.value == true
@@ -565,11 +610,17 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
                   Spacer(),
 
                   /* Passenger Swipped Button [ Fixed ] */
-                  if ( ( role == 'passenger' &&
-                          googleSearchLocationController.isModalOn.value ==
-                              false ) &&
-                      rideController.isSwippedButtonShow.value == false )
-                    _buildSwippedButton(),
+                  // Passenger Swipped Button - Only shows when ALL conditions are false
+                  Obx(() {
+                    if (role == 'passenger' &&
+                        googleSearchLocationController.isModalOn.value ==
+                            false &&
+                        rideController.isSwippedButtonShow.value == false &&
+                        rideController.viewInMap.value == true) {
+                      return _buildSwippedButton();
+                    }
+                    return SizedBox.shrink();
+                  }),
 
                   /*if (rideController.isSwippedButtonShow.value == true)
                     RideTrackingBottomSheet(

@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:logger/logger.dart';
@@ -12,8 +10,25 @@ import 'package:ricardo/services/socket_services.dart';
 
 class RideController extends GetxController {
   final val = Get.find<GoogleSearchLocationController>();
-
   RxBool isSwippedButtonShow = false.obs;
+
+  /*Map handle Related work are here Start */
+
+  RxBool viewInMap = true.obs;
+  RxBool viewInMapReturn = false.obs;
+  // Add this method to handle view in map toggle
+  void toggleViewInMap() {
+    viewInMap.value = false;
+    viewInMapReturn.value = true;
+  }
+
+  // Add this method to return to normal view
+  void returnToNormalView() {
+    viewInMap.value = true;
+    viewInMapReturn.value = false;
+  }
+  /*Map handle Related work are here Start */
+
   // Mapped Swipped Button
   RxList<NearestDrivers> drivers = <NearestDrivers>[].obs;
   RxList<NearestDrivers> favouriteDrivers = <NearestDrivers>[].obs;

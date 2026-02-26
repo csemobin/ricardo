@@ -12,7 +12,7 @@ export 'package:ricardo/feature/controllers/home/google_search_location_controll
 export 'package:ricardo/feature/controllers/home/map/map_opt_controller.dart';
 export 'package:ricardo/feature/controllers/home/map/ride_controller.dart';
 export 'package:ricardo/feature/controllers/user_controller.dart';
-export 'package:ricardo/feature/view/home/map/RideRequestBottomSheet.dart';
+export 'package:ricardo/feature/view/home/map/ride_request_bottom_sheet.dart';
 export 'package:ricardo/gen/assets.gen.dart';
 export 'package:ricardo/gen/fonts.gen.dart';
 export 'package:ricardo/routes/app_routes.dart';

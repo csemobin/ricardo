@@ -36,6 +36,7 @@ class _RideRequestBottomSheetState extends State<RideRequestBottomSheet> {
   final controller = Get.put(RideController());
   final rideController = Get.find<RideController>();
   final googleSearchLocationController = Get.find<GoogleSearchLocationController>();
+
   @override
   void initState() {
     super.initState();
@@ -108,38 +109,38 @@ class _RideRequestBottomSheetState extends State<RideRequestBottomSheet> {
                 final cnt = Get.find<RideController>();
                 return cnt.drivers.isEmpty
                     ? Container(
-                        color: AppColors.whiteColor,
-                        width: double.maxFinite,
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(
-                              vertical: 17.h, horizontal: 23.w),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                "Finding nearby rides..",
-                                style: TextStyle(
-                                  fontSize: 14.sp,
-                                  fontWeight: FontWeight.w600,
-                                  color: AppColors.blackColor,
-                                  fontFamily: FontFamily.poppins,
-                                  letterSpacing: 0.5,
-                                ),
-                              ),
-                              SizedBox(height: 4.h),
-                              Text(
-                                "We have sent your ride request to the nearby riders.",
-                                style: TextStyle(
-                                  fontSize: 12.sp,
-                                  fontWeight: FontWeight.w400,
-                                  color: Colors.grey.shade600,
-                                  letterSpacing: 0.5,
-                                ),
-                              ),
-                            ],
+                  color: AppColors.whiteColor,
+                  width: double.maxFinite,
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(
+                        vertical: 17.h, horizontal: 23.w),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Finding nearby rides..",
+                          style: TextStyle(
+                            fontSize: 14.sp,
+                            fontWeight: FontWeight.w600,
+                            color: AppColors.blackColor,
+                            fontFamily: FontFamily.poppins,
+                            letterSpacing: 0.5,
                           ),
                         ),
-                      )
+                        SizedBox(height: 4.h),
+                        Text(
+                          "We have sent your ride request to the nearby riders.",
+                          style: TextStyle(
+                            fontSize: 12.sp,
+                            fontWeight: FontWeight.w400,
+                            color: Colors.grey.shade600,
+                            letterSpacing: 0.5,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                )
                     : SizedBox.shrink();
               }),
 
@@ -180,7 +181,7 @@ class _RideRequestBottomSheetState extends State<RideRequestBottomSheet> {
                     cnt.searchRadiusIndex.value <= 3) {
                   return Padding(
                     padding:
-                        EdgeInsets.symmetric(horizontal: 30.w, vertical: 20.h),
+                    EdgeInsets.symmetric(horizontal: 30.w, vertical: 20.h),
                     child: SizedBox(
                       width: double.infinity,
                       child: ElevatedButton(
@@ -210,7 +211,7 @@ class _RideRequestBottomSheetState extends State<RideRequestBottomSheet> {
                 if (cnt.rideCancel.value == true) {
                   return Padding(
                     padding:
-                        EdgeInsets.symmetric(horizontal: 30.w, vertical: 20.h),
+                    EdgeInsets.symmetric(horizontal: 30.w, vertical: 20.h),
                     child: SizedBox(
                       width: double.infinity,
                       child: ElevatedButton(
@@ -265,7 +266,7 @@ class _RideRequestBottomSheetState extends State<RideRequestBottomSheet> {
                               Get.toNamed(AppRoutes.nearByDriverScreen,
                                   arguments: {
                                     'title':
-                                        'Nearby rides (${cnt.drivers.length})',
+                                    'Nearby rides (${cnt.drivers.length})',
                                     'estimatedCost': widget.rideFare
                                   });
                             },
@@ -300,13 +301,13 @@ class _RideRequestBottomSheetState extends State<RideRequestBottomSheet> {
                                         fit: BoxFit.cover,
                                         errorBuilder:
                                             (context, error, stackTrace) =>
-                                                Icon(Icons.person, size: 85.h),
+                                            Icon(Icons.person, size: 85.h),
                                       ),
                                     ),
                                     SizedBox(width: 12.w),
                                     Column(
                                       crossAxisAlignment:
-                                          CrossAxisAlignment.start,
+                                      CrossAxisAlignment.start,
                                       children: [
                                         Text(
                                           cardDetails.name.toString(),
@@ -457,7 +458,7 @@ class _RideRequestBottomSheetState extends State<RideRequestBottomSheet> {
                                     height: 92.h,
                                     fit: BoxFit.cover,
                                     errorBuilder: (context, error,
-                                            stackTrace) =>
+                                        stackTrace) =>
                                         Icon(Icons.directions_car, size: 92.h),
                                   ),
                                 ),
@@ -465,35 +466,13 @@ class _RideRequestBottomSheetState extends State<RideRequestBottomSheet> {
                             ),
                             SizedBox(height: 15.h),
                             RequestRideHandler(cnt: cnt, cardDetails: cardDetails),
-                            // ElevatedButton(
-                            //   onPressed: () {
-                            //     // cnt.fetchSendPickUpRequest(cnt.rideId.value, cardDetails.sId!);
-                            //   },
-                            //   style: ElevatedButton.styleFrom(
-                            //     backgroundColor: Color(0xFF34A853),
-                            //     foregroundColor: Colors.white,
-                            //     padding: EdgeInsets.symmetric(
-                            //         horizontal: 24, vertical: 14),
-                            //     shape: RoundedRectangleBorder(
-                            //       borderRadius: BorderRadius.circular(10),
-                            //     ),
-                            //     elevation: 0,
-                            //   ),
-                            //   child: Text(
-                            //     'Request Ride',
-                            //     style: TextStyle(
-                            //       fontSize: 15,
-                            //       fontWeight: FontWeight.w500,
-                            //     ),
-                            //   ),
-                            // ),
                           ],
                         ),
                       ),
 
                       SizedBox(height: 20.h),
 
-                      // View In Map Button
+                      // View In Map Button - FIXED HERE
                       Container(
                         width: double.infinity,
                         height: 50,
@@ -520,7 +499,20 @@ class _RideRequestBottomSheetState extends State<RideRequestBottomSheet> {
                           child: InkWell(
                             borderRadius: BorderRadius.circular(50),
                             onTap: () {
+                              // Get all controllers
+                              final rideController = Get.find<RideController>();
+                              final googleSearchController = Get.find<GoogleSearchLocationController>();
 
+
+
+                              print('View in map clicked - hiding all UI elements Ride Request Bottom Sheet ');
+
+                              // Optional: Force refresh the UI
+                              setState(() {
+                                // Hide everything
+                                rideController.toggleViewInMap();  // Sets viewInMap=false, viewInMapReturn=true
+                                googleSearchController.hideModal(); // Sets isModalOn=false
+                              });
                             },
                             child: Center(
                               child: Text(
@@ -546,92 +538,92 @@ class _RideRequestBottomSheetState extends State<RideRequestBottomSheet> {
                 final cnt = Get.find<RideController>();
                 return cnt.drivers.isEmpty
                     ? Column(
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 20.w),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 20.w),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  "Your Trip",
+                          Text(
+                            "Your Trip",
+                            style: TextStyle(
+                              fontSize: 16.sp,
+                              fontWeight: FontWeight.w600,
+                              color: AppColors.blackColor,
+                            ),
+                          ),
+                          Text(
+                            widget.distance,
+                            style: TextStyle(
+                              fontSize: 14.sp,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.grey.shade700,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 16.h),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 20.w),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Image.asset(
+                                Assets.images.originHumanLogo.path,
+                                width: 20,
+                                height: 20,
+                                fit: BoxFit.contain,
+                              ),
+                              SizedBox(width: 12.w),
+                              Expanded(
+                                child: Text(
+                                  widget.pickupLocation,
                                   style: TextStyle(
-                                    fontSize: 16.sp,
-                                    fontWeight: FontWeight.w600,
+                                    fontSize: 14.sp,
+                                    fontWeight: FontWeight.w400,
                                     color: AppColors.blackColor,
                                   ),
                                 ),
-                                Text(
-                                  widget.distance,
+                              ),
+                            ],
+                          ),
+                          Container(
+                            margin: EdgeInsets.only(
+                                left: 8, top: 5, bottom: 5),
+                            width: 2,
+                            height: 20,
+                            decoration: BoxDecoration(
+                                color: AppColors.blackColor),
+                          ),
+                          Row(
+                            children: [
+                              Icon(
+                                Icons.location_on,
+                                color: AppColors.primaryColor,
+                                size: 20.sp,
+                              ),
+                              SizedBox(width: 12.w),
+                              Expanded(
+                                child: Text(
+                                  widget.dropLocation,
                                   style: TextStyle(
                                     fontSize: 14.sp,
-                                    fontWeight: FontWeight.w500,
-                                    color: Colors.grey.shade700,
+                                    fontWeight: FontWeight.w400,
+                                    color: AppColors.blackColor,
                                   ),
                                 ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
-                          SizedBox(height: 16.h),
-                          Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 20.w),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  children: [
-                                    Image.asset(
-                                      Assets.images.originHumanLogo.path,
-                                      width: 20,
-                                      height: 20,
-                                      fit: BoxFit.contain,
-                                    ),
-                                    SizedBox(width: 12.w),
-                                    Expanded(
-                                      child: Text(
-                                        widget.pickupLocation,
-                                        style: TextStyle(
-                                          fontSize: 14.sp,
-                                          fontWeight: FontWeight.w400,
-                                          color: AppColors.blackColor,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                Container(
-                                  margin: EdgeInsets.only(
-                                      left: 8, top: 5, bottom: 5),
-                                  width: 2,
-                                  height: 20,
-                                  decoration: BoxDecoration(
-                                      color: AppColors.blackColor),
-                                ),
-                                Row(
-                                  children: [
-                                    Icon(
-                                      Icons.location_on,
-                                      color: AppColors.primaryColor,
-                                      size: 20.sp,
-                                    ),
-                                    SizedBox(width: 12.w),
-                                    Expanded(
-                                      child: Text(
-                                        widget.dropLocation,
-                                        style: TextStyle(
-                                          fontSize: 14.sp,
-                                          fontWeight: FontWeight.w400,
-                                          color: AppColors.blackColor,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-                          SizedBox(height: 24.h),
                         ],
-                      )
+                      ),
+                    ),
+                    SizedBox(height: 24.h),
+                  ],
+                )
                     : SizedBox.shrink();
               }),
 
