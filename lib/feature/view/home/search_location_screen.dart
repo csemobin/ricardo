@@ -635,6 +635,7 @@ class SearchLocationScreen extends StatelessWidget {
                                             googleSearchLocationController
                                                 .isModalOn.value = true;
                                             Navigator.pop(context);
+                                            Navigator.pop(context);
                                             // Navigator.pop(context);
                                             // // Add your confirm action here
                                             // Get.snackbar(

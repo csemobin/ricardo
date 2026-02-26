@@ -50,8 +50,29 @@ class _MapCustomHeaderBackState extends State<MapCustomHeaderBack> {
                   child: Row(
                     children: [
                       IconButton(
-                        onPressed: () {},
-                        icon: Icon(Icons.arrow_back),
+                        onPressed: () {
+                          // Get all controllers
+                          final rideController = Get.find<RideController>();
+                          final googleSearchController =
+                              Get.find<GoogleSearchLocationController>();
+
+                          // Hide everything
+                          rideController
+                              .returnToNormalView(); // Sets viewInMap=false, viewInMapReturn=true
+                          googleSearchController
+                              .showModal(); // Sets isModalOn=false
+
+                          // print('View in map clicked - hiding all UI elements');
+
+                          // Optional: Force refresh the UI
+                          setState(() {});
+                        },
+                        icon: Icon(
+                          Icons.arrow_back,
+                          color: Colors.black,
+                          size: 25,
+                          weight: 800,
+                        ),
                       ),
                       SizedBox(
                         width: 35.w,
@@ -64,8 +85,7 @@ class _MapCustomHeaderBackState extends State<MapCustomHeaderBack> {
                             fontFamily: FontFamily.poppins,
                             fontSize: 18.sp,
                             color: AppColors.blackColor,
-                            letterSpacing: 0.5
-                        ),
+                            letterSpacing: 0.5),
                       ),
                     ],
                   ),

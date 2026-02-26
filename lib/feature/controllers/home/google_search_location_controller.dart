@@ -327,11 +327,11 @@ class GoogleSearchLocationController extends GetxController {
         "destinationMeters": sendingMetersValue.value,
         "pickupLocation": {
           "type": "Point",
-          "coordinates": [selectedDrop.value?.lng, selectedDrop.value?.lat]
+          "coordinates": [selectedPickup.value?.lng, selectedPickup.value?.lat]
         },
         "destinationLocation": {
           "type": "Point",
-          "coordinates": [selectedPickup.value?.lng, selectedPickup.value?.lat]
+          "coordinates": [selectedDrop.value?.lng, selectedDrop.value?.lat]
         }
       };
 

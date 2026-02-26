@@ -28,6 +28,7 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
     // _initForegroundTask();
     connectSocket();
     setCustomMarker();
+    setCustomCarMarkers();
     getMyLocation();
     userController.fetchUser();
     // _loadRoute();
@@ -130,6 +131,18 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
         size: Size(50, 50), // Target size in logical pixels
       ),
       "assets/images/location_black_marker.png",
+    );
+    setState(() {});
+  }
+  BitmapDescriptor? customCarMarker;
+  Future<void> setCustomCarMarkers() async {
+    // Method 1: Using ImageConfiguration to control size
+    customCarMarker = await BitmapDescriptor.fromAssetImage(
+      const ImageConfiguration(
+        devicePixelRatio: 1.0, // Lower = smaller image
+        size: Size(50, 50), // Target size in logical pixels
+      ),
+      "assets/images/car_marker.png",
     );
     setState(() {});
   }
@@ -384,7 +397,7 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
       body: Stack(
         fit: StackFit.expand,
         children: [
-          GoogleMap(
+          Obx(()=> GoogleMap(
             // onCameraMove: (CameraPosition position) {
             //   LatLng center = position.target;
             //   print("Map center: ${center.latitude}, ${center.longitude}");
@@ -408,15 +421,7 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
                   mapOPTController.currentLongitudePosition!.value),
               zoom: currentZoom,
             ),
-            markers: {
-              Marker(
-                markerId: const MarkerId('currentPassenger'),
-                position: LatLng(
-                    mapOPTController.currentLatitudePosition!.value,
-                    mapOPTController.currentLongitudePosition!.value),
-                icon: customMarker ?? BitmapDescriptor.defaultMarker,
-              )
-            },
+            markers: _buildMarkers(),
             // polylines: _polylines,
             // markers: mapOPTController.isFirstStep == false
             //     ? _singleMarkers
@@ -470,7 +475,7 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
                 fillColor: const Color(0xFF006491).withOpacity(0.2),
               ),
             },
-          ),
+          ),),
 
           /* Single Bottom Modal Sheet [ Fixed ]  */
           /*if ( googleSearchLocationController.isModalOn.value )
@@ -533,8 +538,8 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
 
           // Custom Header - Only shows when conditions are true
           Obx(() {
-            if (rideController.viewInMap.value &&
-                rideController.viewInMapReturn.value == false) {
+            if ( rideController.viewInMap.value &&
+                rideController.viewInMapReturn.value == false ) {
               return CustomHeader(mapOPTController: mapOPTController);
             }
             return MapCustomHeaderBack(
@@ -818,6 +823,47 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
     );
   }
 
+  Set<Marker> _buildMarkers() {
+    Set<Marker> markers = {};
+
+    // ✅ Current passenger marker
+    markers.add(
+      Marker(
+        markerId: const MarkerId('currentPassenger'),
+        position: LatLng(
+          mapOPTController.currentLatitudePosition!.value,
+          mapOPTController.currentLongitudePosition!.value,
+        ),
+        icon: customMarker ?? BitmapDescriptor.defaultMarker,
+      ),
+    );
+
+    // ✅ Get drivers safely
+    final drivers = rideController.drivers;
+
+    if (drivers != null) {
+      for (var driver in drivers) {
+        print('===================DRIVER DRIVER');
+        print(driver);
+        final coords = driver.location?.coordinates;
+
+        if (coords != null && coords.length == 2) {
+          final double longitude = coords[0];
+          final double latitude = coords[1];
+
+          markers.add(
+            Marker(
+              markerId: MarkerId(driver.sId ?? UniqueKey().toString()),
+              position: LatLng(latitude, longitude),
+              icon: customCarMarker ?? BitmapDescriptor.defaultMarker,
+            ),
+          );
+        }
+      }
+    }
+
+    return markers;
+  }
   Widget _bgGlassDesign(child) {
     return ClipRRect(
       borderRadius: BorderRadius.circular(12.r),

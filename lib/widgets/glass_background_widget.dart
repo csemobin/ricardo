@@ -22,11 +22,11 @@ class GlassBackgroundWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
-      borderRadius: BorderRadius.circular(borderRadius ?? 12.r),
+      borderRadius: BorderRadius.circular(borderRadius ?? 24.r),
       child: BackdropFilter(
         filter: ImageFilter.blur(
-          sigmaX: 4,
-          sigmaY: 4,
+          sigmaX: 8,
+          sigmaY: 8,
         ),
         child: Container(
           width: double.infinity,
