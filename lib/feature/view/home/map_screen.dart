@@ -2,6 +2,7 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:ricardo/feature/view/home/map/custom_header.dart';
 import 'package:ricardo/widgets/map_custom_header_back.dart';
+import 'package:ricardo/widgets/request_ride_handler.dart';
 import 'link_export_file.dart';
 
 class MapScreen extends StatefulWidget {
@@ -134,7 +135,9 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
     );
     setState(() {});
   }
+
   BitmapDescriptor? customCarMarker;
+
   Future<void> setCustomCarMarkers() async {
     // Method 1: Using ImageConfiguration to control size
     customCarMarker = await BitmapDescriptor.fromAssetImage(
@@ -328,7 +331,7 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
                 BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
             // infoWindow: const InfoWindow(title: 'Destination'),
             onTap: () {
-              DriverBottomSheet.show(context); // ← call bottom sheet on tap
+              // DriverModal.show(context); // ← call bottom sheet on tap
             },
           ),
           // Marker(
@@ -397,85 +400,88 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
       body: Stack(
         fit: StackFit.expand,
         children: [
-          Obx(()=> GoogleMap(
-            // onCameraMove: (CameraPosition position) {
-            //   LatLng center = position.target;
-            //   print("Map center: ${center.latitude}, ${center.longitude}");
-            // },
-            // onCameraMove: (CameraPosition position) {
-            //   currentZoom = position.zoom;
-            //
-            //   double newSize = (currentZoom * 3).clamp(20, 100);
-            //   if ((newSize - markerSize).abs() > 2) {
-            //     markerSize = newSize;
-            //     setCustomMarker();
-            //   }
-            // },
-            mapType: MapType.normal,
-            zoomGesturesEnabled: true,
-            zoomControlsEnabled: true,
-            //initialCameraPosition: _mapCtrl.kGooglePlex,
+          Obx(
+            () => GoogleMap(
+              // onCameraMove: (CameraPosition position) {
+              //   LatLng center = position.target;
+              //   print("Map center: ${center.latitude}, ${center.longitude}");
+              // },
+              // onCameraMove: (CameraPosition position) {
+              //   currentZoom = position.zoom;
+              //
+              //   double newSize = (currentZoom * 3).clamp(20, 100);
+              //   if ((newSize - markerSize).abs() > 2) {
+              //     markerSize = newSize;
+              //     setCustomMarker();
+              //   }
+              // },
+              mapType: MapType.normal,
+              // zoomGesturesEnabled: true,
+              // zoomControlsEnabled: true,
+              //initialCameraPosition: _mapCtrl.kGooglePlex,
 
-            initialCameraPosition: CameraPosition(
-              target: LatLng(mapOPTController.currentLatitudePosition!.value,
-                  mapOPTController.currentLongitudePosition!.value),
-              zoom: currentZoom,
-            ),
-            markers: _buildMarkers(),
-            // polylines: _polylines,
-            // markers: mapOPTController.isFirstStep == false
-            //     ? _singleMarkers
-            //     : _markers,
-            // myLocationButtonEnabled: true,
-            // myLocationEnabled: true,
-            // onMapCreated: (controller) {
-            //   _mapController = controller;
-            //   // _loadRoute();
-            // },
-            // markers: {
-            //   Marker(
-            //       markerId: const MarkerId('marker'),
-            //       position: initialLocation,
-            //       draggable: true,
-            //       icon: customMarker ?? BitmapDescriptor.defaultMarker,
-            //       onDragEnd: (updateLanLng) {
-            //         setState(() {
-            //           initialLocation = updateLanLng;
-            //         });
-            //       },
-            //       anchor: Offset(0.5, 0.5)),
-            //   Marker(
-            //     markerId: const MarkerId('destination'),
-            //     position: destination,
-            //     draggable: true,
-            //     onDragEnd: (updatedLatLng) {
-            //       setState(() {
-            //         destination = updatedLatLng;
-            //       });
-            //     },
-            //   )
-            // },
-            circles: {
-              Circle(
-                circleId: CircleId('currentPassenger'),
-                center: LatLng(mapOPTController.currentLatitudePosition!.value,
+              initialCameraPosition: CameraPosition(
+                target: LatLng(mapOPTController.currentLatitudePosition!.value,
                     mapOPTController.currentLongitudePosition!.value),
-                radius: 10,
-                strokeColor: Colors.white,
-                strokeWidth: 1,
-                fillColor: Color(0xFF006491).withOpacity(0.2),
-                consumeTapEvents: true,
+                zoom: currentZoom,
               ),
-              Circle(
-                circleId: const CircleId('destination'),
-                center: destination,
-                radius: 10,
-                strokeColor: Colors.white,
-                strokeWidth: 1,
-                fillColor: const Color(0xFF006491).withOpacity(0.2),
-              ),
-            },
-          ),),
+              markers: _buildMarkers(),
+              // polylines: _polylines,
+              // markers: mapOPTController.isFirstStep == false
+              //     ? _singleMarkers
+              //     : _markers,
+              // myLocationButtonEnabled: true,
+              // myLocationEnabled: true,
+              // onMapCreated: (controller) {
+              //   _mapController = controller;
+              //   // _loadRoute();
+              // },
+              // markers: {
+              //   Marker(
+              //       markerId: const MarkerId('marker'),
+              //       position: initialLocation,
+              //       draggable: true,
+              //       icon: customMarker ?? BitmapDescriptor.defaultMarker,
+              //       onDragEnd: (updateLanLng) {
+              //         setState(() {
+              //           initialLocation = updateLanLng;
+              //         });
+              //       },
+              //       anchor: Offset(0.5, 0.5)),
+              //   Marker(
+              //     markerId: const MarkerId('destination'),
+              //     position: destination,
+              //     draggable: true,
+              //     onDragEnd: (updatedLatLng) {
+              //       setState(() {
+              //         destination = updatedLatLng;
+              //       });
+              //     },
+              //   )
+              // },
+              circles: {
+                Circle(
+                  circleId: CircleId('currentPassenger'),
+                  center: LatLng(
+                      mapOPTController.currentLatitudePosition!.value,
+                      mapOPTController.currentLongitudePosition!.value),
+                  radius: 10,
+                  strokeColor: Colors.white,
+                  strokeWidth: 1,
+                  fillColor: Color(0xFF006491).withOpacity(0.2),
+                  consumeTapEvents: true,
+                ),
+                Circle(
+                  circleId: const CircleId('destination'),
+                  center: destination,
+                  radius: 10,
+                  strokeColor: Colors.white,
+                  strokeWidth: 1,
+                  fillColor: const Color(0xFF006491).withOpacity(0.2),
+                ),
+              },
+            ),
+          ),
 
           /* Single Bottom Modal Sheet [ Fixed ]  */
           /*if ( googleSearchLocationController.isModalOn.value )
@@ -538,8 +544,8 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
 
           // Custom Header - Only shows when conditions are true
           Obx(() {
-            if ( rideController.viewInMap.value &&
-                rideController.viewInMapReturn.value == false ) {
+            if (rideController.viewInMap.value &&
+                rideController.viewInMapReturn.value == false) {
               return CustomHeader(mapOPTController: mapOPTController);
             }
             return MapCustomHeaderBack(
@@ -840,13 +846,9 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
 
     // ✅ Get drivers safely
     final drivers = rideController.drivers;
-
     if (drivers != null) {
       for (var driver in drivers) {
-        print('===================DRIVER DRIVER');
-        print(driver);
         final coords = driver.location?.coordinates;
-
         if (coords != null && coords.length == 2) {
           final double longitude = coords[0];
           final double latitude = coords[1];
@@ -856,6 +858,190 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
               markerId: MarkerId(driver.sId ?? UniqueKey().toString()),
               position: LatLng(latitude, longitude),
               icon: customCarMarker ?? BitmapDescriptor.defaultMarker,
+              onTap: () => showDialog(
+                context: context,
+                // backgroundColor: Colors.transparent,
+                builder: (context) => Dialog(
+                  backgroundColor: Colors.transparent,
+                  insetPadding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: SingleChildScrollView(
+                    child: Container(
+                      margin: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(20),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.15),
+                            blurRadius: 10,
+                            spreadRadius: 2,
+                          ),
+                        ],
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(12),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            // ───── Driver Info Row ─────
+
+                            Row(
+                              children: [
+                                driver.image != null && driver.image!.isNotEmpty
+                                    ? ClipRRect(
+                                        clipBehavior: Clip.antiAlias,
+                                        borderRadius: BorderRadius.circular(50),
+                                        child: Image.network(
+                                          '${ApiUrls.imageBaseUrl}${driver.image}',
+                                          fit: BoxFit.cover,
+                                          height: 60,
+                                          width: 60,
+                                          errorBuilder:
+                                              (context, error, stackTrace) {
+                                            return Image.asset(
+                                                'assets/images/driver.png');
+                                          },
+                                        ),
+                                      )
+                                    : CircleAvatar(
+                                        radius: 50,
+                                        child: Image.asset(
+                                          'assets/images/driver.png',
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
+                                const SizedBox(width: 12),
+                                Expanded(
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        '${driver.name}',
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.green,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 4),
+                                      Row(
+                                        children: [
+                                          Icon(Icons.star,
+                                              color: Colors.amber, size: 16),
+                                          SizedBox(width: 4),
+                                          Text(
+                                              '${driver.rating} (${driver.totalRatings})'),
+                                          SizedBox(width: 8),
+                                          Text('|'),
+                                          SizedBox(width: 8),
+                                          Text('${driver.trips} Trips'),
+                                        ],
+                                      ),
+                                      const SizedBox(height: 4),
+                                      Row(
+                                        children: [
+                                          Icon(Icons.phone,
+                                              color: Colors.green, size: 16),
+                                          SizedBox(width: 4),
+                                          Text('${driver.phone}'),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                const CircleAvatar(
+                                  backgroundColor: Colors.green,
+                                  child: Icon(Icons.phone, color: Colors.white),
+                                ),
+                              ],
+                            ),
+
+                            const Divider(height: 24),
+
+                            // ───── Car Info ─────
+                            const Align(
+                              alignment: Alignment.center,
+                              child: Text('Car info.',
+                                  style: TextStyle(color: Colors.grey)),
+                            ),
+                            const SizedBox(height: 10),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        '${driver.vehicle?.carName}',
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      SizedBox(height: 4),
+                                      Text(
+                                          '${driver.vehicle?.numberOfSeat} Seat'),
+                                      SizedBox(height: 4),
+                                      Text('${driver.vehicle?.carPlateNumber}'),
+                                      SizedBox(height: 4),
+                                      Text(
+                                        '1 km away from you.',
+                                        style: TextStyle(color: Colors.green),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(10),
+                                  child: Image.network(
+                                    // Assets.images.favoriteRidesBookCar.path,
+                                    '${ApiUrls.imageBaseUrl}${driver.vehicle?.carImage?.filename}',
+                                    width: 80,
+                                    height: 80,
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                              ],
+                            ),
+
+                            const SizedBox(height: 16),
+
+                            // ───── Request Ride Button ─────
+                            // SizedBox(
+                            //   width: 160,
+                            //   child: ElevatedButton(
+                            //     onPressed: () => RequestRideHandler(cnt: rideController, cardDetails: driver),
+                            //     style: ElevatedButton.styleFrom(
+                            //       backgroundColor: Colors.green,
+                            //       // padding:
+                            //       //     const EdgeInsets.symmetric(vertical: 14),
+                            //       shape: RoundedRectangleBorder(
+                            //         borderRadius: BorderRadius.circular(12),
+                            //       ),
+                            //     ),
+                            //     child: const Text(
+                            //       'Request Ride',
+                            //       style: TextStyle(
+                            //         fontSize: 16,
+                            //         color: Colors.white,
+                            //       ),
+                            //     ),
+                            //   ),
+                            // ),
+                            RequestRideHandler(cnt: rideController, cardDetails: driver),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
             ),
           );
         }
@@ -864,6 +1050,7 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
 
     return markers;
   }
+
   Widget _bgGlassDesign(child) {
     return ClipRRect(
       borderRadius: BorderRadius.circular(12.r),

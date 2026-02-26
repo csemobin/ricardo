@@ -1,25 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:ricardo/gen/assets.gen.dart';
 
-class DriverBottomSheet {
+class DriverModal {
   //Static method — call it from anywhere
-  static void show(BuildContext context) {
+  static void show(BuildContext context, dynamic driver) {
     showDialog(
       context: context,
       // backgroundColor: Colors.transparent,
       builder: (context) => Dialog(
           backgroundColor: Colors.transparent,
           insetPadding: const EdgeInsets.symmetric(horizontal: 16),
-          child:  _DriverBottomSheetContent()
+          child:  _DriverBottomSheetContent(driver)
       ),
     );
   }
 }
 
 // Separate private widget for the content
-class _DriverBottomSheetContent extends StatelessWidget {
-  const _DriverBottomSheetContent();
+class _DriverBottomSheetContent extends StatefulWidget {
+  const _DriverBottomSheetContent(this.driver);
+  final dynamic driver;
 
+  @override
+  State<_DriverBottomSheetContent> createState() => _DriverBottomSheetContentState();
+}
+
+class _DriverBottomSheetContentState extends State<_DriverBottomSheetContent> {
   @override
   Widget build(BuildContext context) {
     return IntrinsicHeight(
@@ -60,7 +66,7 @@ class _DriverBottomSheetContent extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         const Text(
-                          'Rakibul Hasa.K',
+                          'Rakibul Islam Maruf Maruf',
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
@@ -96,9 +102,9 @@ class _DriverBottomSheetContent extends StatelessWidget {
                   ),
                 ],
               ),
-      
+
               const Divider(height: 24),
-      
+
               // ───── Car Info ─────
               const Align(
                 alignment: Alignment.centerLeft,
@@ -142,9 +148,9 @@ class _DriverBottomSheetContent extends StatelessWidget {
                   ),
                 ],
               ),
-      
+
               const SizedBox(height: 16),
-      
+
               // ───── Request Ride Button ─────
               SizedBox(
                 width: double.infinity,

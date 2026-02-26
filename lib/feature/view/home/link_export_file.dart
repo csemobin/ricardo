@@ -23,6 +23,6 @@ export 'package:ricardo/services/get_fcm_tocken.dart';
 export 'package:ricardo/services/location_permission_service.dart';
 export 'package:ricardo/services/socket_services.dart';
 export 'package:ricardo/widgets/animated_toggle_switch.dart';
-export 'package:ricardo/widgets/driver_bottom_sheet.dart';
+export 'package:ricardo/widgets/driver_modal.dart';
 export 'package:ricardo/widgets/location_permission_dialog.dart';
 export 'package:slide_to_act/slide_to_act.dart';
