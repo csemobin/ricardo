@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:ricardo/app/utils/app_colors.dart';
 import 'package:ricardo/gen/fonts.gen.dart';
 import 'package:ricardo/services/location_permission_service.dart';
+import 'package:ricardo/widgets/glass_background_widget.dart';
 
 class LocationPermissionDialog extends StatelessWidget {
   final LocationStatus status;
@@ -16,13 +17,15 @@ class LocationPermissionDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Dialog(
+      backgroundColor: Colors.transparent,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20.r),
       ),
-      child: Padding(
+      child: GlassBackgroundWidget(
+        child: Padding(
         padding: EdgeInsets.all(24.r),
         child: Column(
-          mainAxisSize: MainAxisSize.max,
+          mainAxisSize: MainAxisSize.min,
           children: [
             // ✅ Icon
             Container(
@@ -58,7 +61,7 @@ class LocationPermissionDialog extends StatelessWidget {
               _getMessage(),
               style: TextStyle(
                 fontSize: 14.sp,
-                color: Colors.grey[600],
+                color: Colors.white,
               ),
               textAlign: TextAlign.center,
             ),
@@ -102,13 +105,14 @@ class LocationPermissionDialog extends StatelessWidget {
           ],
         ),
       ),
+      )
     );
   }
 
   String _getTitle() {
     switch (status) {
       case LocationStatus.serviceDisabled:
-        return 'Location Service Disabled';
+        return 'Help us guide you better';
       case LocationStatus.permissionDenied:
         return 'Location Permission Required';
       case LocationStatus.permissionDeniedForever:
@@ -121,7 +125,7 @@ class LocationPermissionDialog extends StatelessWidget {
   String _getMessage() {
     switch (status) {
       case LocationStatus.serviceDisabled:
-        return 'Please enable location services to use this ride-sharing app. We need your location to find rides near you.';
+        return 'Pick your location and begin finding cars near you.';
       case LocationStatus.permissionDenied:
         return 'We need location permission to show nearby rides and drivers. Please grant permission.';
       case LocationStatus.permissionDeniedForever:

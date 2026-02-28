@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
-import 'package:flutter_intl_phone_field/phone_number.dart';
 import 'package:ricardo/feature/controllers/user_controller.dart';
 import 'package:ricardo/services/api_client.dart';
 import 'package:ricardo/services/api_urls.dart';
@@ -21,7 +20,7 @@ class ProfileUpdateController extends GetxController {
 
   Rx<XFile?> selectedImage = Rx<XFile?>(null);
   RxString profileImageUrl = ''.obs;
-  Rx<PhoneNumber?> phoneNumber = Rx<PhoneNumber?>(null);
+  Rx<DateTime?> selectedDate = Rx<DateTime?>(null);
 
   RxString selectedGender = 'Male'.obs;
   RxInt wordCount = 0.obs;
@@ -35,53 +34,44 @@ class ProfileUpdateController extends GetxController {
     super.onInit();
     loadUserProfile();
 
+    nameTEController.addListener(checkFormValidity);
+    phoneController.addListener(checkFormValidity);
     aboutTEController.addListener(() {
       _countWords();
       checkFormValidity();
     });
-
     textController.addListener(checkFormValidity);
   }
 
-  /// LOAD EXISTING USER DATA
   void loadUserProfile() {
     final profile = userController.userModel?.value?.userProfile;
     if (profile == null) return;
 
-    if( profile.aboutMe != null ){
-      aboutTEController.text = profile.aboutMe!;
+    if (profile.name != null) nameTEController.text = profile.name!;
+    if (profile.phone != null && profile.phone!.isNotEmpty) phoneController.text = profile.phone!;
+
+    if (profile.dob != null && profile.dob!.isNotEmpty) {
+      try {
+        DateTime d = profile.dob!.contains('T')
+            ? DateTime.parse(profile.dob!).toLocal()
+            : DateFormat('yyyy-MM-dd').parse(profile.dob!);
+        selectedDate.value = d;
+        textController.text = DateFormat('dd-MM-yyyy').format(d);
+      } catch (e) {
+        debugPrint('Error parsing DOB: $e');
+      }
     }
 
-    if( profile.name != null ){
-      nameTEController.text = profile.name!;
-    }
-    // Phone
-    if (profile.phone != null) {
-      phoneController.text = profile.phone!;
-      phoneNumber.value = PhoneNumber(
-        countryISOCode: 'BD',
-        countryCode: '+880',
-        number: profile.phone!.replaceFirst('+880', ''),
-      );
+    if (profile.aboutMe != null) aboutTEController.text = profile.aboutMe!;
+
+    if (profile.gender != null && profile.gender!.isNotEmpty) {
+      String gender = profile.gender!.toLowerCase();
+      if (gender == 'male') selectedGender.value = 'Male';
+      else if (gender == 'female') selectedGender.value = 'Female';
+      else selectedGender.value = 'Others';
     }
 
-    // DOB
-    if (profile.dob != null) {
-      DateTime d = DateFormat('yyyy-MM-dd').parse(profile.dob!);
-      textController.text = DateFormat('dd-MM-yyyy').format(d);
-    }
-
-    // About
-    aboutTEController.text = profile.aboutMe ?? '';
-
-    // Gender
-    if (profile.gender != null) {
-      selectedGender.value =
-          profile.gender![0].toUpperCase() + profile.gender!.substring(1);
-    }
-
-    // Profile Image URL
-    if (profile.image != null && profile.image!.filename!.isNotEmpty) {
+    if (profile.image?.filename != null && profile.image!.filename!.isNotEmpty) {
       profileImageUrl.value = profile.image!.filename!;
     }
 
@@ -89,8 +79,9 @@ class ProfileUpdateController extends GetxController {
     checkFormValidity();
   }
 
-  void updatePhoneNumber(PhoneNumber number) {
-    phoneNumber.value = number;
+  void updateDateOfBirth(DateTime date) {
+    selectedDate.value = date;
+    textController.text = DateFormat('dd-MM-yyyy').format(date);
     checkFormValidity();
   }
 
@@ -102,41 +93,34 @@ class ProfileUpdateController extends GetxController {
   }
 
   void _countWords() {
-    wordCount.value = aboutTEController.text
-        .trim()
-        .split(RegExp(r'\s+'))
-        .where((e) => e.isNotEmpty)
-        .length;
+    final text = aboutTEController.text.trim();
+    wordCount.value = text.isEmpty ? 0 : text.split(RegExp(r'\s+')).length;
   }
 
   void checkFormValidity() {
-    final isPhoneValid =
-        phoneNumber.value != null && phoneNumber.value!.isValidNumber();
-
-    final isDobValid = textController.text.isNotEmpty;
-
-    final isAboutValid =
-        aboutTEController.text.trim().isNotEmpty && wordCount.value <= 200;
-
-    canSubmit.value = isPhoneValid && isDobValid && isAboutValid;
+    canSubmit.value =
+        nameTEController.text.trim().isNotEmpty &&
+            phoneController.text.trim().isNotEmpty &&
+            textController.text.trim().isNotEmpty &&
+            selectedDate.value != null &&
+            aboutTEController.text.trim().isNotEmpty;
   }
 
-  /// UPDATE PROFILE API
   Future<void> updateUserProfile() async {
-    if (!formKey.currentState!.validate() || !canSubmit.value) return;
+    if (!canSubmit.value) return;
 
     try {
       isLoading.value = true;
 
-      DateTime dob =
-      DateFormat('dd-MM-yyyy').parse(textController.text.trim());
+      final dob = DateFormat('dd-MM-yyyy').parse(textController.text.trim());
+
       final data = {
         "name": nameTEController.text.trim(),
-        "phone": phoneNumber.value!.completeNumber,
+        "phone": phoneController.text.trim(),
         "dob": DateFormat('yyyy-MM-dd').format(dob),
         "gender": selectedGender.value.toLowerCase(),
         "about": aboutTEController.text.trim(),
-        "role": userController.userModel.value?.userProfile?.role
+        "role": userController.userModel.value?.userProfile?.role ?? 'user',
       };
 
       List<MultipartBody>? image;
@@ -149,17 +133,30 @@ class ProfileUpdateController extends GetxController {
         {"data": jsonEncode(data)},
         multipartBody: image,
       );
-print('==================================');
- print(response.body.toString());
-      if (response.statusCode == 200 || response.statusCode == 201 ) {
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
         await userController.fetchUser();
         Get.back();
-        Get.snackbar('Success', 'Profile updated successfully');
+        Get.snackbar('Success', 'Profile updated successfully',
+            snackPosition: SnackPosition.BOTTOM,
+            backgroundColor: Colors.green,
+            colorText: Colors.white);
       } else {
-        Get.snackbar('Error', response.body['data']['message']);
+        String errorMessage = 'Failed to update profile';
+        if (response.body?['data'] != null) {
+          errorMessage = response.body['data']['message'] ?? errorMessage;
+        }
+        Get.snackbar('Error', errorMessage,
+            snackPosition: SnackPosition.BOTTOM,
+            backgroundColor: Colors.red,
+            colorText: Colors.white);
       }
     } catch (e) {
-      debugPrint(e.toString());
+      debugPrint('Error updating profile: $e');
+      Get.snackbar('Error', 'An error occurred: ${e.toString()}',
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.red,
+          colorText: Colors.white);
     } finally {
       isLoading.value = false;
     }
@@ -170,6 +167,7 @@ print('==================================');
     phoneController.dispose();
     textController.dispose();
     aboutTEController.dispose();
+    nameTEController.dispose();
     super.onClose();
   }
 }

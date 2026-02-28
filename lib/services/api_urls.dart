@@ -1,9 +1,9 @@
 class ApiUrls{
   // Base, Image, Socket
   // static const String baseUrl = "https://zsv1pz87-5000.inc1.devtunnels.ms/api/v1";
-  static const String baseUrl = "https://tales-headset-assuming-defence.trycloudflare.com/api/v1";
-  static const String imageBaseUrl = "https://tales-headset-assuming-defence.trycloudflare.com/images/";
-  static const String socketUrl = "https://tales-headset-assuming-defence.trycloudflare.com";
+  static const String baseUrl = "https://api.gogodriver.us/api/v1";
+  static const String imageBaseUrl = "https://api.gogodriver.us/images/";
+  static const String socketUrl = "https://api.gogodriver.us";
 
   // User Registration Related work
   static const String registration = '/user/register';

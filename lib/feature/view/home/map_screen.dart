@@ -788,9 +788,12 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
                   child: Material(
                     color: Colors.red,
                     child: SafeArea(
-                      bottom: false,
+                      minimum: EdgeInsets.only(bottom: 25),
+                      bottom: true,
+                      left: true,
                       child: Padding(
-                        padding: EdgeInsets.all(12),
+                        padding: EdgeInsets.only(
+                            top: 20, bottom: 20, left: 12, right: 12),
                         child: Row(
                           children: [
                             Icon(Icons.location_off, color: Colors.white),
@@ -1034,7 +1037,8 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
                             //     ),
                             //   ),
                             // ),
-                            RequestRideHandler(cnt: rideController, cardDetails: driver),
+                            RequestRideHandler(
+                                cnt: rideController, cardDetails: driver),
                           ],
                         ),
                       ),

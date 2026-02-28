@@ -703,12 +703,8 @@ class _NearByDriverScreenState extends State<NearByDriverScreen> {
                           ),
                           SizedBox(height: 8.h),
                           Row(
-                            mainAxisAlignment:
-                            MainAxisAlignment.spaceBetween,
                             children: [
                               Column(
-                                crossAxisAlignment:
-                                CrossAxisAlignment.start,
                                 children: [
                                   Text(
                                     '${cardDetails.vehicle?.carName}',
@@ -751,17 +747,16 @@ class _NearByDriverScreenState extends State<NearByDriverScreen> {
                               ClipRRect(
                                 borderRadius: BorderRadius.circular(15),
                                 child: Image.network(
-                                  '${ApiUrls.imageBaseUrl}${cardDetails.vehicle
-                                      ?.carImage?.filename}',
-                                  width: 92.w,
-                                  height: 92.h,
-                                  fit: BoxFit.cover,
-                                  errorBuilder:
-                                      (context, error, stackTrace) =>
-                                      Icon(
-                                          Icons.directions_car,
-                                          size: 92.h),
-                                ),
+                                  cardDetails.image != null && cardDetails.image!.isNotEmpty
+                                      ? '${ApiUrls.imageBaseUrl}${cardDetails.image}'
+                                      : 'assets/images/profile-icon.png', // if backend default exists
+                                  errorBuilder: (context, error, stackTrace) {
+                                    return Image.asset(
+                                      'assets/images/driver.png',
+                                      fit: BoxFit.cover,
+                                    );
+                                  },
+                                )
                               ),
                             ],
                           ),

@@ -308,7 +308,7 @@ class ApiClient extends GetxService {
       bearerToken = await PrefsHelper.getString(AppConstants.bearerToken);
 
       var mainHeaders = {
-        //'Content-Type': 'application/json',
+        'Content-Type': 'multipart/form-data', // Change to multipart form-data
         'Authorization': 'Bearer $bearerToken'
       };
 
