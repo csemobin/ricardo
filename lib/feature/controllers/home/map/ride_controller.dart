@@ -55,6 +55,8 @@ class RideController extends GetxController {
   Future<void> fetchRiderData(String id) async {
     try {
       isRiderDataLoading.value = true;
+      drivers.clear();
+      favouriteDrivers.clear();
 
       final response = await ApiClient.getData(ApiUrls.requestAreaRider(id));
 

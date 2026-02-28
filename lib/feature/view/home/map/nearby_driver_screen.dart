@@ -703,8 +703,10 @@ class _NearByDriverScreenState extends State<NearByDriverScreen> {
                           ),
                           SizedBox(height: 8.h),
                           Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
                                     '${cardDetails.vehicle?.carName}',

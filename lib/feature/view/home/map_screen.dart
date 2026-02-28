@@ -14,31 +14,38 @@ class MapScreen extends StatefulWidget {
 
 class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
   final userController = Get.find<UserController>();
-  final googleSearchLocationController =
+  final GoogleSearchLocationController googleSearchLocationController =
       Get.find<GoogleSearchLocationController>();
   final rideController = Get.find<RideController>();
   final mapOPTController = Get.find<MapOPTController>();
-
+  GoogleMapController? _mapController;
   // LatLng initialLocation = const LatLng(23.780696475817816, 90.40761484102724);
-
+  Set<Marker> markers = {};
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    // ✅ Initialize and start - FIXED
-    // _initForegroundTask();
     connectSocket();
     setCustomMarker();
     setCustomCarMarkers();
     getMyLocation();
     userController.fetchUser();
-    // _loadRoute();
+
+    _loadRoute(); // ← ADD THIS
+
+    ever(rideController.isRideAccepted, (bool accepted) {
+      if (accepted == true) {
+        _loadRoute();
+      }
+    });
+    WidgetsBinding.instance.addPostFrameCallback((_) => _loadRoute());
+
   }
 
   void addCustomMarker(LatLng position, String title) async {
     final BitmapDescriptor customIcon = await getCustomMarker();
 
-    _markers.add(
+    _mapMarkers.add(
       Marker(
         markerId: MarkerId('custom_${position.latitude}_${position.longitude}'),
         position: position,
@@ -245,53 +252,69 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
   bool isOnline = true;
 
   /********** MAP Polyline Related Start  here *************/
-  static const _origin = LatLng(23.7293, 90.3854);
-  static const _destination = LatLng(23.7380, 90.3950);
-  static const user = LatLng(23.7384, 90.3950);
-
-  GoogleMapController? _mapController;
   Set<Polyline> _polylines = {};
-  Set<Marker> _markers = {};
-
-  final Set<Marker> _singleMarkers = {};
-  bool _isLoading = false;
-  String? _errorMessage;
+  Set<Marker> _mapMarkers = {};
 
   Future<void> _loadRoute() async {
-    setState(() {
-      _isLoading = true;
-      _errorMessage = null;
-    });
-
     try {
-      final points = await DirectionsService.getPolyline(_origin, _destination);
+      final acceptedRide = rideController.acceptRideModel.value;
+
+      final LatLng origin;
+      final LatLng dest;
+
+      if (rideController.isRideAccepted.value && acceptedRide != null) {
+
+        print('============================ _mapMarkers');
+        print('+++++++++++++++++++++++++++++++++++++++++');
+        print('============================ _mapMarkers');
+
+        _mapMarkers.clear();
+        _polylines.clear();
+        setState(() {});
+
+        final pickupCoords = acceptedRide.ride?.pickupLocation?.coordinates;
+        final destCoords = acceptedRide.ride?.destinationLocation?.coordinates;
+
+        origin = (pickupCoords != null && pickupCoords.length == 2)
+            ? LatLng(pickupCoords[1], pickupCoords[0])
+            : LatLng(
+          googleSearchLocationController.selectedPickup.value?.lat ?? 0.0,
+          googleSearchLocationController.selectedPickup.value?.lng ?? 0.0,
+        );
+
+        dest = (destCoords != null && destCoords.length == 2)
+            ? LatLng(destCoords[1], destCoords[0])
+            : LatLng(
+          googleSearchLocationController.selectedDrop.value?.lat ?? 0.0,
+          googleSearchLocationController.selectedDrop.value?.lng ?? 0.0,
+        );
+      } else {
+        origin = LatLng(
+          googleSearchLocationController.selectedPickup.value?.lat ?? 0.0,
+          googleSearchLocationController.selectedPickup.value?.lng ?? 0.0,
+        );
+        dest = LatLng(
+          googleSearchLocationController.selectedDrop.value?.lat ?? 0.0,
+          googleSearchLocationController.selectedDrop.value?.lng ?? 0.0,
+        );
+      }
+
+      // Guard: don't draw if coords are 0,0
+      if (origin.latitude == 0.0 || dest.latitude == 0.0) {
+        debugPrint('Skipping route — coords not ready');
+        return;
+      }
+
+      final points = await DirectionsService.getPolyline(origin, dest);
 
       if (points.isEmpty) {
-        setState(() {
-          Get.snackbar(
-              'Error', 'Could not load route. Please check your API key.');
-        });
+        Get.snackbar('Error', 'Could not load route. Please check your API key.');
         return;
       }
 
       setState(() {
-        // _polylines = {
-        //   Polyline(
-        //     polylineId: const PolylineId('route'),
-        //     points: points,
-        //     color: Colors.red,
-        //     width: 6,
-        //     startCap: Cap.roundCap,
-        //     endCap: Cap.roundCap,
-        //     // patterns: [
-        //     //   PatternItem.dot,
-        //     //   PatternItem.gap(10),
-        //     // ],
-        //   ),
-        // };
-
+        // ✅ Polylines
         _polylines = {
-          // ✅ Your existing main route (solid line on road) - no change
           Polyline(
             polylineId: const PolylineId('route'),
             points: points,
@@ -300,60 +323,70 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
             startCap: Cap.roundCap,
             endCap: Cap.roundCap,
           ),
-
-          // ✅ NEW: Dotted line from person (marker) → to route start point
           Polyline(
             polylineId: const PolylineId('walking_connector'),
-            points: [
-              _origin, // person's position (house/off-road)
-              points.first, // where the road route actually begins
-            ],
+            points: [origin, points.first],
             color: Colors.red,
             width: 4,
-            patterns: [
-              PatternItem.dot,
-              PatternItem.gap(12),
-            ],
+            patterns: [PatternItem.dot, PatternItem.gap(12)],
           ),
         };
-        _markers = {
+
+        // ✅ Always keep current passenger marker
+        _mapMarkers = {
           Marker(
-            markerId: const MarkerId('origin'),
-            position: _origin,
-            // icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
+            markerId: const MarkerId('currentPassenger'),
+            position: LatLng(
+              mapOPTController.currentLatitudePosition!.value,
+              mapOPTController.currentLongitudePosition!.value,
+            ),
             icon: customMarker ?? BitmapDescriptor.defaultMarker,
-            infoWindow: const InfoWindow(title: 'Origin'),
           ),
-          Marker(
-            markerId: const MarkerId('destination'),
-            position: _destination,
-            icon:
-                BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
-            // infoWindow: const InfoWindow(title: 'Destination'),
-            onTap: () {
-              // DriverModal.show(context); // ← call bottom sheet on tap
-            },
-          ),
-          // Marker(
-          //   markerId: const MarkerId('user'),
-          //   position: user,
-          //   icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
-          //   infoWindow: const InfoWindow(title: 'User'),
-          // ),
         };
-        _isLoading = false;
+
+        if (rideController.isRideAccepted.value) {
+          // ✅ Ride accepted: show pickup (car icon) + destination marker only
+          _mapMarkers.add(
+            Marker(
+              markerId: const MarkerId('pickup_point'),
+              position: origin,
+              icon: customCarMarker ?? BitmapDescriptor.defaultMarker, // car icon at pickup
+            ),
+          );
+          _mapMarkers.add(
+            Marker(
+              markerId: const MarkerId('destination_point'),
+              position: dest,
+              icon: BitmapDescriptor.defaultMarker, // pin at destination
+            ),
+          );
+        } else {
+          // ✅ Not accepted: show all nearby driver markers
+          for (var driver in rideController.drivers) {
+            final coords = driver.location?.coordinates;
+            if (coords != null && coords.length == 2) {
+              _mapMarkers.add(
+                Marker(
+                  markerId: MarkerId(driver.sId ?? UniqueKey().toString()),
+                  position: LatLng(coords[1], coords[0]),
+                  icon: customCarMarker ?? BitmapDescriptor.defaultMarker,
+                  onTap: () => _showDriverDialog(driver),
+                ),
+              );
+            }
+          }
+        }
       });
 
-      final bounds = _boundsFromLatLng(points);
-      _mapController?.animateCamera(CameraUpdate.newLatLngBounds(bounds, 80));
-    } catch (e) {
-      setState(() {
-        _errorMessage = 'Error loading route: $e';
-        _isLoading = false;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        final bounds = _boundsFromLatLng(points);
+        _mapController?.animateCamera(CameraUpdate.newLatLngBounds(bounds, 80));
       });
+
+    } catch (e) {
+      debugPrint(e.toString());
     }
   }
-
   LatLngBounds _boundsFromLatLng(List<LatLng> points) {
     double? minLat, minLng, maxLat, maxLng;
 
@@ -426,7 +459,11 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
                 zoom: currentZoom,
               ),
               markers: _buildMarkers(),
-              // polylines: _polylines,
+              polylines: _polylines,
+              onMapCreated: (controller) {
+                _mapController = controller;
+                _loadRoute(); // ← also call here so map is ready
+              },
               // markers: mapOPTController.isFirstStep == false
               //     ? _singleMarkers
               //     : _markers,
@@ -833,8 +870,6 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
   }
 
   Set<Marker> _buildMarkers() {
-    Set<Marker> markers = {};
-
     // ✅ Current passenger marker
     markers.add(
       Marker(
@@ -858,201 +893,207 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
 
           markers.add(
             Marker(
-              markerId: MarkerId(driver.sId ?? UniqueKey().toString()),
+                markerId: MarkerId( driver.sId ?? UniqueKey().toString()),
               position: LatLng(latitude, longitude),
               icon: customCarMarker ?? BitmapDescriptor.defaultMarker,
-              onTap: () => showDialog(
-                context: context,
-                // backgroundColor: Colors.transparent,
-                builder: (context) => Dialog(
-                  backgroundColor: Colors.transparent,
-                  insetPadding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: SingleChildScrollView(
-                    child: Container(
-                      margin: const EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(20),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.15),
-                            blurRadius: 10,
-                            spreadRadius: 2,
-                          ),
-                        ],
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(12),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            // ───── Driver Info Row ─────
-
-                            Row(
-                              children: [
-                                driver.image != null && driver.image!.isNotEmpty
-                                    ? ClipRRect(
-                                        clipBehavior: Clip.antiAlias,
-                                        borderRadius: BorderRadius.circular(50),
-                                        child: Image.network(
-                                          '${ApiUrls.imageBaseUrl}${driver.image}',
-                                          fit: BoxFit.cover,
-                                          height: 60,
-                                          width: 60,
-                                          errorBuilder:
-                                              (context, error, stackTrace) {
-                                            return Image.asset(
-                                                'assets/images/driver.png');
-                                          },
-                                        ),
-                                      )
-                                    : CircleAvatar(
-                                        radius: 50,
-                                        child: Image.asset(
-                                          'assets/images/driver.png',
-                                          fit: BoxFit.cover,
-                                        ),
-                                      ),
-                                const SizedBox(width: 12),
-                                Expanded(
-                                  child: Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        '${driver.name}',
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.green,
-                                        ),
-                                      ),
-                                      const SizedBox(height: 4),
-                                      Row(
-                                        children: [
-                                          Icon(Icons.star,
-                                              color: Colors.amber, size: 16),
-                                          SizedBox(width: 4),
-                                          Text(
-                                              '${driver.rating} (${driver.totalRatings})'),
-                                          SizedBox(width: 8),
-                                          Text('|'),
-                                          SizedBox(width: 8),
-                                          Text('${driver.trips} Trips'),
-                                        ],
-                                      ),
-                                      const SizedBox(height: 4),
-                                      Row(
-                                        children: [
-                                          Icon(Icons.phone,
-                                              color: Colors.green, size: 16),
-                                          SizedBox(width: 4),
-                                          Text('${driver.phone}'),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                const CircleAvatar(
-                                  backgroundColor: Colors.green,
-                                  child: Icon(Icons.phone, color: Colors.white),
-                                ),
-                              ],
-                            ),
-
-                            const Divider(height: 24),
-
-                            // ───── Car Info ─────
-                            const Align(
-                              alignment: Alignment.center,
-                              child: Text('Car info.',
-                                  style: TextStyle(color: Colors.grey)),
-                            ),
-                            const SizedBox(height: 10),
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        '${driver.vehicle?.carName}',
-                                        style: TextStyle(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                      SizedBox(height: 4),
-                                      Text(
-                                          '${driver.vehicle?.numberOfSeat} Seat'),
-                                      SizedBox(height: 4),
-                                      Text('${driver.vehicle?.carPlateNumber}'),
-                                      SizedBox(height: 4),
-                                      Text(
-                                        '1 km away from you.',
-                                        style: TextStyle(color: Colors.green),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                ClipRRect(
-                                  borderRadius: BorderRadius.circular(10),
-                                  child: Image.network(
-                                    // Assets.images.favoriteRidesBookCar.path,
-                                    '${ApiUrls.imageBaseUrl}${driver.vehicle?.carImage?.filename}',
-                                    width: 80,
-                                    height: 80,
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                              ],
-                            ),
-
-                            const SizedBox(height: 16),
-
-                            // ───── Request Ride Button ─────
-                            // SizedBox(
-                            //   width: 160,
-                            //   child: ElevatedButton(
-                            //     onPressed: () => RequestRideHandler(cnt: rideController, cardDetails: driver),
-                            //     style: ElevatedButton.styleFrom(
-                            //       backgroundColor: Colors.green,
-                            //       // padding:
-                            //       //     const EdgeInsets.symmetric(vertical: 14),
-                            //       shape: RoundedRectangleBorder(
-                            //         borderRadius: BorderRadius.circular(12),
-                            //       ),
-                            //     ),
-                            //     child: const Text(
-                            //       'Request Ride',
-                            //       style: TextStyle(
-                            //         fontSize: 16,
-                            //         color: Colors.white,
-                            //       ),
-                            //     ),
-                            //   ),
-                            // ),
-                            RequestRideHandler(
-                                cnt: rideController, cardDetails: driver),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ),
+              onTap: () => _showDriverDialog(driver),
+            )
           );
         }
       }
     }
 
     return markers;
+  }
+
+  void _showDriverDialog(driver) {
+    showDialog(
+      context: context,
+      builder: (context) => Dialog(
+        backgroundColor: Colors.transparent,
+        insetPadding: const EdgeInsets.symmetric(horizontal: 16),
+        child: SingleChildScrollView(
+          child: Container(
+            margin: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(20),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.15),
+                  blurRadius: 10,
+                  spreadRadius: 2,
+                ),
+              ],
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(12),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+
+                  // ───── Driver Info Row ─────
+                  Row(
+                    children: [
+                      driver.image != null && driver.image!.isNotEmpty
+                          ? ClipRRect(
+                        clipBehavior: Clip.antiAlias,
+                        borderRadius: BorderRadius.circular(50),
+                        child: Image.network(
+                          '${ApiUrls.imageBaseUrl}${driver.image}',
+                          fit: BoxFit.cover,
+                          height: 60,
+                          width: 60,
+                          errorBuilder: (context, error, stackTrace) =>
+                              Image.asset(
+                                'assets/images/driver.png',
+                                height: 60,
+                                width: 60,
+                                fit: BoxFit.cover,
+                              ),
+                        ),
+                      )
+                          : CircleAvatar(
+                        radius: 30,
+                        child: Image.asset(
+                          'assets/images/driver.png',
+                          height: 60,
+                          width: 60,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              '${driver.name}',
+                              style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.green,
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            Row(
+                              children: [
+                                const Icon(Icons.star, color: Colors.amber, size: 16),
+                                const SizedBox(width: 4),
+                                Text('${driver.rating} (${driver.totalRatings})'),
+                                const SizedBox(width: 8),
+                                const Text('|'),
+                                const SizedBox(width: 8),
+                                Text('${driver.trips} Trips'),
+                              ],
+                            ),
+                            const SizedBox(height: 4),
+                            Row(
+                              children: [
+                                const Icon(Icons.phone, color: Colors.green, size: 16),
+                                const SizedBox(width: 4),
+                                Text('${driver.phone}'),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                      CircleAvatar(
+                        backgroundColor: Colors.green,
+                        child: IconButton(
+                          icon: const Icon(Icons.phone, color: Colors.white),
+                          onPressed: () {
+                            // add call logic here if needed
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  const Divider(height: 24),
+
+                  // ───── Car Info Label ─────
+                  const Align(
+                    alignment: Alignment.center,
+                    child: Text(
+                      'Car Info.',
+                      style: TextStyle(
+                        color: Colors.grey,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+
+                  // ───── Car Info Row ─────
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              '${driver.vehicle?.carName}',
+                              style: const TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            Text('${driver.vehicle?.numberOfSeat} Seat'),
+                            const SizedBox(height: 4),
+                            Text('${driver.vehicle?.carPlateNumber}'),
+                            const SizedBox(height: 4),
+                            const Text(
+                              '1 km away from you.',
+                              style: TextStyle(color: Colors.green),
+                            ),
+                          ],
+                        ),
+                      ),
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(15),
+                        child: driver.image != null && driver.image!.isNotEmpty
+                            ? Image.network(
+                          '${ApiUrls.imageBaseUrl}${driver.image}',
+                          width: 92.w,
+                          height: 92.h,
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) =>
+                              Image.asset(
+                                'assets/images/driver.png',
+                                width: 92.w,
+                                height: 92.h,
+                                fit: BoxFit.cover,
+                              ),
+                        )
+                            : Image.asset(
+                          'assets/images/driver.png',
+                          width: 92.w,
+                          height: 92.h,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  const SizedBox(height: 16),
+
+                  // ───── Request Ride Button ─────
+                  RequestRideHandler(
+                    cnt: rideController,
+                    cardDetails: driver,
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
   }
 
   Widget _bgGlassDesign(child) {
