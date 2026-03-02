@@ -28,6 +28,8 @@ class _AnimatedToggleSwitchState extends State<AnimatedToggleSwitch> {
                 elevation: 5,
                 backgroundColor: Colors.transparent,
                 child: GlassBackgroundMultipleChildrenWidget(
+                  blurOne: 8,
+                  blurTwo: 8,
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     GestureDetector(

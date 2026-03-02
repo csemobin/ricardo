@@ -117,7 +117,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
             if (widget.isDatePicker) {
              showDatePicker(context: context, 
                  firstDate: DateTime.utc(1950),
-                 lastDate: DateTime.now() 
+                 lastDate: DateTime.now()
              );
             } else {
               widget.onTap?.call();

@@ -66,7 +66,7 @@ class _DriverBottomSheetContentState extends State<_DriverBottomSheetContent> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         const Text(
-                          'Rakibul Islam Maruf Maruf',
+                          'Rakibul Islam',
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,

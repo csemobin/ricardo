@@ -752,6 +752,8 @@ class _NearByDriverScreenState extends State<NearByDriverScreen> {
                                   cardDetails.image != null && cardDetails.image!.isNotEmpty
                                       ? '${ApiUrls.imageBaseUrl}${cardDetails.image}'
                                       : 'assets/images/profile-icon.png', // if backend default exists
+                                  width: 92.w,
+                                  height: 92.h,
                                   errorBuilder: (context, error, stackTrace) {
                                     return Image.asset(
                                       'assets/images/driver.png',

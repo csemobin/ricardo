@@ -9,7 +9,7 @@ import 'package:ricardo/services/api_client.dart';
 import 'package:ricardo/services/api_urls.dart';
 
 class ProfileUpdateController extends GetxController {
-  final userController = Get.put(UserController());
+  final userController = Get.find<UserController>();
 
   final formKey = GlobalKey<FormState>();
 
@@ -164,6 +164,11 @@ class ProfileUpdateController extends GetxController {
 
   @override
   void onClose() {
+    phoneController.clear();
+    textController.clear();
+    aboutTEController.clear();
+    nameTEController.clear();
+
     phoneController.dispose();
     textController.dispose();
     aboutTEController.dispose();
