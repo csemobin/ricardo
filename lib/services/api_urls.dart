@@ -1,9 +1,14 @@
 class ApiUrls{
   // Base, Image, Socket
   // static const String baseUrl = "https://zsv1pz87-5000.inc1.devtunnels.ms/api/v1";
-  static const String baseUrl = "https://api.gogodriver.us/api/v1";
-  static const String imageBaseUrl = "https://api.gogodriver.us/images/";
-  static const String socketUrl = "https://api.gogodriver.us";
+
+  // static const String baseUrl = "https://api.gogodriver.us/api/v1";
+  // static const String imageBaseUrl = "https://api.gogodriver.us/images/";
+  // static const String socketUrl = "https://api.gogodriver.us";
+
+  static const String baseUrl = "https://answered-buffer-please-career.trycloudflare.com/api/v1";
+  static const String imageBaseUrl = "https://answered-buffer-please-career.trycloudflare.com/images/";
+  static const String socketUrl = "https://answered-buffer-please-career.trycloudflare.com";
 
   // User Registration Related work
   static const String registration = '/user/register';
@@ -59,4 +64,6 @@ class ApiUrls{
 
   //Notification
   static String notification( int limit, int page ) =>'/notification?limit=$limit&page=$page';
+
+  static String driverSwitchAvailabilityStatus = '/driver/switch-availability-status';
 }

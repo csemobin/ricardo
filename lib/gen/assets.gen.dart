@@ -107,12 +107,21 @@ class $AssetsIconsGen {
   /// File path: assets/icons/logo.svg
   String get logo => 'assets/icons/logo.svg';
 
+  /// File path: assets/icons/place_indicator.svg
+  String get placeIndicator => 'assets/icons/place_indicator.svg';
+
   /// File path: assets/icons/sortLogo.png
   AssetGenImage get sortLogo =>
       const AssetGenImage('assets/icons/sortLogo.png');
 
   /// List of all assets
-  List<dynamic> get values => [button, driverCardPhone, logo, sortLogo];
+  List<dynamic> get values => [
+    button,
+    driverCardPhone,
+    logo,
+    placeIndicator,
+    sortLogo,
+  ];
 }
 
 class $AssetsImagesGen {
@@ -231,6 +240,10 @@ class $AssetsImagesGen {
   /// File path: assets/images/home-icon.png
   AssetGenImage get homeIcon =>
       const AssetGenImage('assets/images/home-icon.png');
+
+  /// File path: assets/images/live_area.png
+  AssetGenImage get liveArea =>
+      const AssetGenImage('assets/images/live_area.png');
 
   /// File path: assets/images/location.png
   AssetGenImage get location =>
@@ -443,6 +456,7 @@ class $AssetsImagesGen {
     greySearch,
     historyIcon,
     homeIcon,
+    liveArea,
     location,
     locationBlackMarker,
     locationMarker,

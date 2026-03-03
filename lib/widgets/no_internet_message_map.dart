@@ -21,23 +21,29 @@ class NoInternetMessageMap extends StatelessWidget {
             ),
             child: Image.asset(Assets.images.offline.path),
           ),
-          SizedBox(width: 10,),
+          SizedBox(
+            width: 10,
+          ),
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('You\'re Offline!', style: TextStyle(
-                fontSize: 20.sp,
-                fontWeight: FontWeight.w600,
-                color: Color(0XFF171717),
-                fontFamily: FontFamily.poppins
-              ),),
-              Text('Go online to start accepting jobs. ', style: TextStyle(
-                fontSize: 12.sp,
-                fontWeight: FontWeight.w400,
-                fontFamily: FontFamily.poppins,
-                color: AppColors.secondaryTextColor
-              ),),
+              Text(
+                'You\'re Offline!',
+                style: TextStyle(
+                    fontSize: 20.sp,
+                    fontWeight: FontWeight.w600,
+                    color: Color(0XFF171717),
+                    fontFamily: FontFamily.poppins),
+              ),
+              Text(
+                'Go online to start accepting jobs. ',
+                style: TextStyle(
+                    fontSize: 12.sp,
+                    fontWeight: FontWeight.w400,
+                    fontFamily: FontFamily.poppins,
+                    color: AppColors.secondaryTextColor),
+              ),
             ],
           )
         ],
