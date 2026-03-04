@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class AcceptRideButton extends StatefulWidget {
   final VoidCallback onPressed;
 
-  const AcceptRideButton({Key? key, required this.onPressed}) : super(key: key);
+  const AcceptRideButton({super.key, required this.onPressed});
 
   @override
   State<AcceptRideButton> createState() => _AcceptRideButtonState();

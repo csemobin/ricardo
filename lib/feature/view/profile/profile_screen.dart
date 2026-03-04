@@ -92,7 +92,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       context: context,
       builder: (BuildContext context) {
         return Dialog(
-          backgroundColor: Colors.transparent,
+          backgroundColor: Colors.white.withOpacity(0.2),
           insetPadding: EdgeInsets.symmetric(horizontal: 24.w),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(20.r),
@@ -122,7 +122,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.w600,
-                        color: AppColors.greyColor500,
+                        color: AppColors.whiteColor,
                       ),
                     ),
                     SizedBox(
@@ -156,7 +156,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               color: AppColors.greyColor500,
                               borderRadius: BorderRadius.circular(50.r),
                               border: Border.all(
-                                color: AppColors.greyColor500,
+                                color: AppColors.whiteColor,
                                 width: 1,
                               ),
                             ),
@@ -256,14 +256,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ClipRRect(
                         borderRadius: BorderRadius.circular(12),
                         child: Image.network(
-                          controller.userModel.value?.userProfile?.image
-                                      ?.filename !=
-                                  null
-                              ? '${ApiUrls.imageBaseUrl}${userData?.image?.filename ?? ''}'
-                              : Assets.images.profileImage.path,
+                          (userData?.image?.filename != null &&
+                              userData!.image!.filename!.isNotEmpty)
+                              ? '${ApiUrls.imageBaseUrl}${userData.image!.filename}'
+                              : '',
                           height: 85.h,
                           width: 85.w,
                           fit: BoxFit.cover,
+
+                          errorBuilder: (context, error, stackTrace) {
+                            return Image.asset(
+                              Assets.images.defaultImage.path,
+                              height: 85.h,
+                              width: 85.w,
+                              fit: BoxFit.cover,
+                            );
+                          },
                         ),
                       ),
                       SizedBox(

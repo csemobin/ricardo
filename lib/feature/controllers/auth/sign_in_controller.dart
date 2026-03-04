@@ -7,7 +7,6 @@ import 'package:ricardo/feature/controllers/user_controller.dart';
 import 'package:ricardo/routes/app_routes.dart';
 import 'package:ricardo/services/api_client.dart';
 import 'package:ricardo/services/api_urls.dart';
-import 'package:ricardo/services/get_fcm_tocken.dart';
 import 'package:ricardo/services/socket_services.dart';
 
 class SignInController extends GetxController {

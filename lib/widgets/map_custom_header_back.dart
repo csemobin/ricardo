@@ -18,7 +18,6 @@ class _MapCustomHeaderBackState extends State<MapCustomHeaderBack> {
       top: 0,
       right: 0,
       left: 0,
-      bottom: 700,
       child: Obx(() {
         final userController = Get.find<UserController>();
 
@@ -34,9 +33,9 @@ class _MapCustomHeaderBackState extends State<MapCustomHeaderBack> {
             bottomRight: Radius.circular(30),
           ),
           child: BackdropFilter(
-            filter: ui.ImageFilter.blur(sigmaX: 8, sigmaY: 8),
+            filter: ui.ImageFilter.blur(sigmaX: 16, sigmaY: 16),
             child: Container(
-              height: 64,
+              height: MediaQuery.of(context).size.height * 0.14,
               decoration: BoxDecoration(
                 color: Color(0x80FFFFFF),
                 borderRadius: BorderRadius.only(

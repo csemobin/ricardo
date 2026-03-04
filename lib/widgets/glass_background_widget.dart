@@ -25,8 +25,8 @@ class GlassBackgroundWidget extends StatelessWidget {
       borderRadius: BorderRadius.circular(borderRadius ?? 24.r),
       child: BackdropFilter(
         filter: ImageFilter.blur(
-          sigmaX: 8,
-          sigmaY: 8,
+          sigmaX: 16,
+          sigmaY: 16,
         ),
         child: Container(
           width: double.infinity,

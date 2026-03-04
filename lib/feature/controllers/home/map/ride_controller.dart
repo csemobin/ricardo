@@ -106,31 +106,32 @@ class RideController extends GetxController {
       final response =
           await ApiClient.getData(ApiUrls.sendPickUpRequest(riderId, driverId));
       if (response.statusCode == 200 || response.statusCode == 201) {
-        SocketServices.socket?.on(
-          'ride-accepted',
-              (data) {
-            if (data is Map<String, dynamic>) {
-
-              if (data['isRideAccepted'] == true) {
-                isRideAccepted.value = true;
-
-                acceptedRideDriverName.value =
-                    data['driver']?['driverName'] ?? '';
-
-                // ✅ Convert JSON to Model
-                acceptRideModel.value = AcceptRideModel.fromJson(data);
-              }
-            }
-
-            debugPrint('================ Socket ride accepted data ================');
-            Logger().e(data);
-
-            debugPrint('================ Socket ride accepted data ================');
-            debugPrint('================ String converstion ================');
-
-            print(acceptRideModel.value);
-          },
-        );
+        Get.snackbar('success', response.body['message']);
+        // SocketServices.socket?.on(
+        //   'ride-accepted',
+        //       (data) {
+        //     if (data is Map<String, dynamic>) {
+        //
+        //       if (data['isRideAccepted'] == true) {
+        //         isRideAccepted.value = true;
+        //
+        //         acceptedRideDriverName.value =
+        //             data['driver']?['driverName'] ?? '';
+        //
+        //         // ✅ Convert JSON to Model
+        //         acceptRideModel.value = AcceptRideModel.fromJson(data);
+        //       }
+        //     }
+        //
+        //     debugPrint('================ Socket ride accepted data ================');
+        //     Logger().e(data);
+        //
+        //     debugPrint('================ Socket ride accepted data ================');
+        //     debugPrint('================ String converstion ================');
+        //
+        //     print(acceptRideModel.value);
+        //   },
+        // );
       }
     } catch (e) {
       debugPrint(e.toString());

@@ -66,4 +66,5 @@ class ApiUrls{
   static String notification( int limit, int page ) =>'/notification?limit=$limit&page=$page';
 
   static String driverSwitchAvailabilityStatus = '/driver/switch-availability-status';
+  static String rideAcceptRideByRideId( String rideId ) => '/ride/accept-ride?rideId=$rideId';
 }

@@ -10,6 +10,9 @@ class NoInternetMessageMap extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      margin: EdgeInsets.only(
+        top: 16.h,
+      ),
       height: 64.h,
       width: double.maxFinite,
       color: Color(0XFFEBEBEB),

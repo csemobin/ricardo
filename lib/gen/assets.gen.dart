@@ -178,6 +178,10 @@ class $AssetsImagesGen {
   /// File path: assets/images/cuate.png
   AssetGenImage get cuate => const AssetGenImage('assets/images/cuate.png');
 
+  /// File path: assets/images/default_image.jpg
+  AssetGenImage get defaultImage =>
+      const AssetGenImage('assets/images/default_image.jpg');
+
   /// File path: assets/images/direct-right.png
   AssetGenImage get directRight =>
       const AssetGenImage('assets/images/direct-right.png');
@@ -440,6 +444,7 @@ class $AssetsImagesGen {
     congratulations,
     crossIcon,
     cuate,
+    defaultImage,
     directRight,
     documentIcon,
     driver,

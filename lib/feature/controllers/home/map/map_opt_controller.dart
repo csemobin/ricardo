@@ -1,6 +1,8 @@
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:ricardo/app/helpers/custom_location_helper.dart';
 import 'package:ricardo/feature/controllers/user_controller.dart';
 import 'package:ricardo/feature/models/socket/ride_details_socket_model.dart';
 import 'package:ricardo/services/api_client.dart';
@@ -80,5 +82,27 @@ class MapOPTController extends GetxController {
   //***************************************************
   // ******* Socket Rider Response  ****
   // ***************************************************
-  final RxList<RideDetailsSocketModel?> passengerRideRelatedData = <RideDetailsSocketModel?>[].obs;
+  RxBool isPassengerRequest = false.obs;
+  Rx<RideDetailsSocketModel?> rideDetailsData =
+  Rx<RideDetailsSocketModel?>(null);
+
+  //***************************************************
+  // ******* Book a Ride From the Driver  **************
+  // ***************************************************
+
+  Future<void>rideAcceptRide( String rideId ) async{
+    LatLng currentLatLun = await CustomLocationHelper.getCurrentLocation();
+    final response = await ApiClient.postData(ApiUrls.rideAcceptRideByRideId(rideId),{
+      "coordinates": [
+        currentLatLun.longitude,
+        currentLatLun.latitude
+      ]
+    });
+    if( response.statusCode == 200 || response.statusCode == 201 ){
+
+    }else{
+      Get.snackbar('Error', response.body['message']);
+    }
+  }
+
 }

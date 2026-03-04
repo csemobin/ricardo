@@ -41,6 +41,9 @@ class _AnimatedToggleSwitchState
           }
         },
         child: AnimatedContainer(
+          margin: EdgeInsets.only(
+            top: 10.h
+          ),
           duration: const Duration(milliseconds: 300),
           width: 150,
           height: 50,

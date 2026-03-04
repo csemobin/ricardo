@@ -16,13 +16,12 @@ class CustomHeader extends StatelessWidget {
       top: 0,
       right: 0,
       left: 0,
-      bottom: 650,
       child: Obx(() {
         final userController = Get.find<UserController>();
 
         final user = userController.userModel.value?.userProfile;
         final profileImage =
-            user?.image?.filename ?? Assets.images.profileImage.path;
+            user?.image?.filename ?? Assets.images.defaultImage.path;
         final userName = user?.name ?? 'User';
         // ✅ In your initState or wherever you load user data
 
@@ -34,7 +33,7 @@ class CustomHeader extends StatelessWidget {
           child: BackdropFilter(
             filter: ui.ImageFilter.blur(sigmaX: 8, sigmaY: 8),
             child: Container(
-              height: 64,
+              height: MediaQuery.of(context).size.height * 0.20,
               decoration: BoxDecoration(
                 color: Color(0x80FFFFFF),
                 borderRadius: BorderRadius.only(
