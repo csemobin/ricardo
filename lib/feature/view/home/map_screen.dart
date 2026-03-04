@@ -994,11 +994,11 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
 
                 /* Driver Waiting Passenger Request a Card */
                 Obx(() {
-                  if (userController.userModel.value?.userProfile?.role ==
+                  if ( userController.userModel.value?.userProfile?.role ==
                           AppConstants.driver &&
                       mapOPTController.isPassengerRequest.value == false &&
                       userController.userModel.value?.driverProfile?.isOnline ==
-                          true) {
+                          true ) {
                     return Container(
                       margin: EdgeInsets.only(bottom: 90.h),
                       padding: EdgeInsets.symmetric(
@@ -1007,9 +1007,9 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
                       child: _bgGlassDesign(_buildPassengerRequestCard()),
                     );
                   }
-                  if (userController.userModel.value?.userProfile?.role ==
+                  if ( userController.userModel.value?.userProfile?.role ==
                           AppConstants.driver &&
-                      mapOPTController.isPassengerRequest.value == true) {
+                      mapOPTController.isPassengerRequest.value == true ) {
                     return GlassBackgroundMultipleChildrenWidget(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       blurOne: 20,

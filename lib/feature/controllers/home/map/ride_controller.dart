@@ -132,8 +132,11 @@ class RideController extends GetxController {
         //     print(acceptRideModel.value);
         //   },
         // );
+      }else{
+        Get.snackbar('Error', response.body['message']);
       }
     } catch (e) {
+      Get.snackbar('Error', e.toString());
       debugPrint(e.toString());
     } finally {
       isRequestBookRide.value = false;
@@ -141,6 +144,7 @@ class RideController extends GetxController {
   }
 
   Future<void> cancelRequest(String riderId, String driverId) async {
+    print('=============maruf maruf maruf maruf maruf $riderId, $driverId');
     final response =
         await ApiClient.getData(ApiUrls.cancelRequest(riderId, driverId));
     if (response.statusCode == 200 || response.statusCode == 201) {

@@ -1,4 +1,5 @@
 class RideDetailsSocketModel {
+  String? driverId;
   String? rideId;
   String? pickupAddress;
   String? destinationAddress;
@@ -12,6 +13,7 @@ class RideDetailsSocketModel {
 
   RideDetailsSocketModel({
     this.rideId,
+    this.driverId,
     this.pickupAddress,
     this.destinationAddress,
     this.destinationMeters,
@@ -25,6 +27,7 @@ class RideDetailsSocketModel {
 
   RideDetailsSocketModel.fromJson(Map<String, dynamic> json) {
     rideId = json['rideId'];
+    driverId = json['driverId'];
     pickupAddress = json['pickupAddress'];
     destinationAddress = json['destinationAddress'];
     destinationMeters = json['destinationMeters'];

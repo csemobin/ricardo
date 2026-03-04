@@ -1,4 +1,6 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:ricardo/app/utils/app_colors.dart';
@@ -29,15 +31,20 @@ class _RequestRideHandlerState extends State<RequestRideHandler> {
   Worker? _rideAcceptedWorker;
   bool _isWaitingDialogOpen = false;
 
+  // ✅ Timer for auto-cancel after 2 minutes
+  Timer? _autoCancelTimer;
+
   @override
   void initState() {
     super.initState();
 
-    // ✅ Listen OUTSIDE of build using ever()
     _rideAcceptedWorker = ever(widget.cnt.isRideAccepted, (bool accepted) {
       if (accepted && _isWaitingDialogOpen && mounted) {
+        // ✅ Ride accepted — cancel the auto-cancel timer immediately
+        _cancelAutoTimer();
+
         _isWaitingDialogOpen = false;
-        widget.cnt.isRideAccepted.value = false; // reset
+        widget.cnt.isRideAccepted.value = false;
         Navigator.of(context).pop(); // close waiting dialog
         _showAcceptedDialog(widget.cnt.acceptedRideDriverName.value);
       }
@@ -46,12 +53,53 @@ class _RequestRideHandlerState extends State<RequestRideHandler> {
 
   @override
   void dispose() {
-    _rideAcceptedWorker?.dispose(); // ✅ Always clean up
+    _rideAcceptedWorker?.dispose();
+    _cancelAutoTimer(); // ✅ Always clean up timer on dispose
     super.dispose();
   }
 
-  void _showWaitingDialog( String rideId, String cardDetails, RideController cnt ) {
+  // ── Cancel & clear the timer safely ─────────────────────────────────────────
+  void _cancelAutoTimer() {
+    _autoCancelTimer?.cancel();
+    _autoCancelTimer = null;
+  }
+
+  // ── Start 2-minute auto-cancel timer ────────────────────────────────────────
+  void _startAutoCancelTimer(String rideId, String driverId, RideController cnt) {
+    _cancelAutoTimer(); // cancel any existing timer first
+    final timeoutMinutes = int.tryParse(dotenv.env['RIDE_MODAL_EXPIRE_TIME'] ?? '') ?? 2;
+    _autoCancelTimer = Timer(Duration(minutes:  timeoutMinutes ), () {
+      // Only fire if the dialog is still open (not yet accepted/cancelled)
+      if (_isWaitingDialogOpen && mounted) {
+        print('====== AUTO CANCEL FIRED AFTER 2 MIN ======');
+
+        cnt.cancelRequest(rideId, driverId); // ✅ hits cancelRequest once
+
+        _isWaitingDialogOpen = false;
+
+        // Close the waiting dialog if still showing
+        if (Navigator.of(context).canPop()) {
+          Navigator.of(context).pop();
+        }
+
+        // ✅ Show a snackbar so driver knows it was auto-cancelled
+        Get.snackbar(
+          'Request Expired',
+          'No driver accepted your request. Please try again.',
+          backgroundColor: Colors.redAccent,
+          colorText: Colors.white,
+          duration: const Duration(seconds: 3),
+        );
+      }
+    });
+  }
+
+  void _showWaitingDialog(String rideId, String cardDetails, RideController cnt) {
     _isWaitingDialogOpen = true;
+
+    // ✅ Start the 2-minute auto-cancel timer when dialog opens
+    _startAutoCancelTimer(rideId, cardDetails, cnt);
+
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -95,6 +143,8 @@ class _RequestRideHandlerState extends State<RequestRideHandler> {
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: () {
+                    // ✅ Manual cancel — stop the auto-cancel timer too
+                    _cancelAutoTimer();
                     cnt.cancelRequest(rideId, cardDetails);
                     _isWaitingDialogOpen = false;
                     Navigator.of(dialogContext).pop();
@@ -106,17 +156,21 @@ class _RequestRideHandlerState extends State<RequestRideHandler> {
                       borderRadius: BorderRadius.circular(10),
                     ),
                   ),
-                  child: Text('Cancel Request'),
+                  child: const Text('Cancel Request'),
                 ),
               ),
             ],
           ),
         );
       },
-    ).then((_) => _isWaitingDialogOpen = false);
+    ).then((_) {
+      // ✅ Dialog closed by any means — cancel timer and reset flag
+      _isWaitingDialogOpen = false;
+      _cancelAutoTimer();
+    });
   }
 
-  void _showAcceptedDialog( String name) {
+  void _showAcceptedDialog(String name) {
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -134,7 +188,7 @@ class _RequestRideHandlerState extends State<RequestRideHandler> {
               Image.asset(
                 Assets.images.congratulations.path,
                 fit: BoxFit.contain,
-                height: 150.h, // ✅ Fix overflow
+                height: 150.h,
               ),
               SizedBox(height: 12.h),
               Text(
@@ -167,7 +221,7 @@ class _RequestRideHandlerState extends State<RequestRideHandler> {
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: (){
+                  onPressed: () {
                     Navigator.of(dialogContext).pop();
 
                     final cnt = Get.find<CustomBottomNavBarController>();
@@ -187,7 +241,7 @@ class _RequestRideHandlerState extends State<RequestRideHandler> {
                       borderRadius: BorderRadius.circular(10),
                     ),
                   ),
-                  child: Text('Okay'),
+                  child: const Text('Okay'),
                 ),
               ),
             ],
@@ -205,18 +259,18 @@ class _RequestRideHandlerState extends State<RequestRideHandler> {
         onPressed: () {
           widget.cnt.fetchSendPickUpRequest(
               widget.cnt.rideId.value, widget.cardDetails.sId!);
-          _showWaitingDialog( widget.cnt.rideId.value, widget.cardDetails.sId!,widget!.cnt );
+          _showWaitingDialog(
+              widget.cnt.rideId.value, widget.cardDetails.sId!, widget.cnt);
         },
         style: ElevatedButton.styleFrom(
-          backgroundColor: Color(0xFF34A853),
+          backgroundColor: const Color(0xFF34A853),
           foregroundColor: Colors.white,
-          // padding: EdgeInsets.symmetric(horizontal: 24, vertical: 14),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
           ),
           elevation: 0,
         ),
-        child: Text(
+        child: const Text(
           'Request Ride',
           style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
         ),
