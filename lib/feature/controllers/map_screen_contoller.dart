@@ -137,13 +137,14 @@ class MapScreenController extends GetxController with WidgetsBindingObserver {
     await PrefsHelper.setString(AppConstants.fcmToken, fcmToken);
 
     // SocketServices.init() is idempotent – safe to call here.
-    await SocketServices.init();
+    // await SocketServices().init();
+    //todo: socket
 
     // Announce this user to the server.
-    SocketServices.emit('user-connected', {
-      'accessToken': accessToken,
-      'fcmToken': fcmToken,
-    });
+    // SocketServices.emit('user-connected', {
+    //   'accessToken': accessToken,
+    //   'fcmToken': fcmToken,
+    // });
 
     _registerSocketListeners();
   }

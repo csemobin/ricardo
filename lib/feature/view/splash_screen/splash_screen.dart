@@ -66,7 +66,8 @@ class _SplashScreenState extends State<SplashScreen>
         );
       }
       if( accessToken.isNotEmpty ){
-        await SocketServices.init();
+        // await SocketServices().init();
+        //Todo: socket
         final UserController userController = Get.find<UserController>();
         await userController.fetchUser();
         final UserModel? user = userController.userModel.value;

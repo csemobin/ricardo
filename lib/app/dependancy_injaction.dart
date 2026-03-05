@@ -28,10 +28,12 @@ import 'package:ricardo/feature/controllers/wallet/add_money_controller.dart';
 import 'package:ricardo/feature/controllers/wallet/payment_method_controller.dart';
 import 'package:ricardo/feature/controllers/wallet/recent_history.dart';
 import 'package:ricardo/feature/controllers/wallet/withdraw_request_controller.dart';
+import 'package:ricardo/feature/view/home/link_export_file.dart';
 
 class DependencyInjection implements Bindings {
   @override
   void dependencies() {
+    Get.put(SocketServices());
     Get.put(LegalController());
     Get.put(CustomBottomNavBarController());
     Get.put(DrivingLicenseController());
@@ -46,7 +48,7 @@ class DependencyInjection implements Bindings {
     Get.put(MapOPTController());
     Get.lazyPut(() => DriverProfileController());
     Get.lazyPut(() => ChangePasswordController());
-    Get.lazyPut(() => ProfileUpdateController());
+    Get.lazyPut(() => ProfileUpdateController(),fenix: true);
     Get.lazyPut(() => SupportController());
     Get.lazyPut(() => FavouriteRidesController());
     Get.lazyPut(() => PaymentMethodController());

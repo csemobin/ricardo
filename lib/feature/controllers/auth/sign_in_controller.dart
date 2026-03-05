@@ -23,6 +23,7 @@ class SignInController extends GetxController {
     super.onInit();
     emailTextEditingController.addListener(_checkSubmit);
     passwordTextEditingController.addListener(_checkSubmit);
+
   }
 
   void _checkSubmit() {
@@ -43,6 +44,7 @@ class SignInController extends GetxController {
       final accessToken = response.body['data']['accessToken'];
       await PrefsHelper.setString(AppConstants.bearerToken, accessToken);
 
+      socketConnect();
 
       if (response.body['data']!['accessToken'].toString().isNotEmpty) {
         final userController = Get.find<UserController>();
@@ -121,6 +123,18 @@ class SignInController extends GetxController {
   void clearField() {
     emailTextEditingController.clear();
     passwordTextEditingController.clear();
+  }
+
+
+  void socketConnect() async{
+    await SocketServices.init();
+    final String? token =
+        await PrefsHelper.getString(AppConstants.bearerToken) ?? '';
+    final String? fcmToken = await PrefsHelper.getString(AppConstants.fcmToken);
+    if (token != null && token.isNotEmpty) {
+      SocketServices.socket
+          ?.emit('user-connected', {"accessToken": token, "fcmToken": fcmToken});
+    }
   }
 
   @override

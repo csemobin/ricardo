@@ -52,10 +52,10 @@ class SocketServices {
       var  token = await PrefsHelper.getString(AppConstants.bearerToken);
       var fcmToken = await PrefsHelper.getString(AppConstants.fcmToken);
 
-      SocketServices.socket?.emit('user-connected', {
-        "accessToken" : token ,
-        "fcmToken" : fcmToken
-      });
+      // SocketServices.socket?.emit('user-connected', {
+      //   "accessToken" : token ,
+      //   "fcmToken" : fcmToken
+      // });
     }));
     socket?.onConnectError((err) => print('❌ Socket connection error: $err'));
     socket?.onError((err) => print('❌ Socket error: $err'));

@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:ricardo/app/helpers/custom_location_helper.dart';
 import 'package:ricardo/feature/controllers/user_controller.dart';
+import 'package:ricardo/feature/models/socket/accept_ride_driver_model.dart';
 import 'package:ricardo/feature/models/socket/ride_details_socket_model.dart';
 import 'package:ricardo/services/api_client.dart';
 import 'package:ricardo/services/api_urls.dart';
@@ -85,6 +86,12 @@ class MapOPTController extends GetxController {
   RxBool isPassengerRequest = false.obs;
   Rx<RideDetailsSocketModel?> rideDetailsData =
   Rx<RideDetailsSocketModel?>(null);
+
+  //***************************************************
+// *** Socket Accept Ride Driver Model  Response ****
+// ***************************************************
+  RxBool acceptedRideDataStatus = false.obs;
+  Rx<AcceptRideDriverModel?>acceptedRideData = Rx<AcceptRideDriverModel?>(null);
 
   //***************************************************
   // ******* Book a Ride From the Driver  **************

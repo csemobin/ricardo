@@ -15,12 +15,13 @@ import 'package:ricardo/widgets/custom_text_field.dart';
 import 'package:ricardo/widgets/image_handler.dart';
 
 class EditProfileScreen extends StatelessWidget {
-  EditProfileScreen({super.key});
+  const EditProfileScreen({super.key});
 
-  final controller = Get.put(ProfileUpdateController());
+  // final controller = Get.put(ProfileUpdateController());
 
   @override
   Widget build(BuildContext context) {
+    final controller = Get.find<ProfileUpdateController>();
     return CustomScaffold(
       appBar: AppBar(
         title: const Text('Update Profile'),
@@ -39,18 +40,19 @@ class EditProfileScreen extends StatelessWidget {
                 children: [
                   Obx(() {
                     if (controller.selectedImage.value != null) {
-                      return _circleImage(
-                          Image.file(File(controller.selectedImage.value!.path)));
+                      return _circleImage(Image.file(
+                          File(controller.selectedImage.value!.path)));
                     } else if (controller.profileImageUrl.value.isNotEmpty) {
-                      return _circleImage(
-                          Image.network(
-                            '${ApiUrls.imageBaseUrl}${controller.profileImageUrl.value}',
-                            fit: BoxFit.cover,
-                            errorBuilder: (context, error, stackTrace) =>
-                                _circleImage(Image.asset(Assets.images.vector.path)),
-                          ));
+                      return _circleImage(Image.network(
+                        '${ApiUrls.imageBaseUrl}${controller.profileImageUrl.value}',
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) =>
+                            _circleImage(
+                                Image.asset(Assets.images.vector.path)),
+                      ));
                     } else {
-                      return _circleImage(Image.asset(Assets.images.vector.path));
+                      return _circleImage(
+                          Image.asset(Assets.images.vector.path));
                     }
                   }),
                   Positioned(
@@ -141,30 +143,30 @@ class EditProfileScreen extends StatelessWidget {
 
             /// WORD COUNT
             Obx(() => Align(
-              alignment: Alignment.centerRight,
-              child: Text(
-                '${controller.wordCount.value}/200 words',
-                style: TextStyle(
-                  color: controller.wordCount.value > 200
-                      ? Colors.red
-                      : Colors.grey,
-                  fontSize: 12.sp,
-                ),
-              ),
-            )),
+                  alignment: Alignment.centerRight,
+                  child: Text(
+                    '${controller.wordCount.value}/200 words',
+                    style: TextStyle(
+                      color: controller.wordCount.value > 200
+                          ? Colors.red
+                          : Colors.grey,
+                      fontSize: 12.sp,
+                    ),
+                  ),
+                )),
 
             SizedBox(height: 30.h),
 
             /// UPDATE BUTTON
             Obx(() => CustomPrimaryButton(
-              title: controller.isLoading.value
-                  ? 'Updating...'
-                  : 'Update Profile',
-              onHandler:
-              controller.canSubmit.value && !controller.isLoading.value
-                  ? controller.updateUserProfile
-                  : null,
-            )),
+                  title: controller.isLoading.value
+                      ? 'Updating...'
+                      : 'Update Profile',
+                  onHandler:
+                      controller.canSubmit.value && !controller.isLoading.value
+                          ? controller.updateUserProfile
+                          : null,
+                )),
           ],
         ),
       ),

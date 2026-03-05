@@ -1,6 +1,7 @@
 import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:ricardo/app/helpers/custom_location_helper.dart';
+import 'package:ricardo/feature/models/socket/accept_ride_driver_model.dart';
 import 'package:ricardo/feature/models/socket/accept_ride_model.dart';
 import 'package:ricardo/feature/view/home/map/bottom_sheet_screen.dart';
 import 'package:ricardo/feature/view/home/map/custom_header.dart';
@@ -167,20 +168,18 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
     setState(() {});
   }
 
-
-
   void connectSocket() async {
     String? getAccessToken = await PrefsHelper.getString('accessToken');
     String? fcmToken = await FirebaseNotificationService.getFCMToken();
     await PrefsHelper.setString(AppConstants.fcmToken, fcmToken);
-    await SocketServices.init();
-    SocketServices.socket?.emit(
-      'user-connected',
-      {
-        "accessToken": getAccessToken,
-        "fcmToken": fcmToken,
-      },
-    );
+    // await SocketServices().init();//Todo: socket
+    // SocketServices.socket?.emit(
+    //   'user-connected',
+    //   {
+    //     "accessToken": getAccessToken,
+    //     "fcmToken": fcmToken,
+    //   },
+    // );
     SocketServices.socket?.on('new-ride-request', (data) {
       print('==============================>>>>>>>>>>>>> New Ride Request');
       print(data);
@@ -198,10 +197,9 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
     });
     SocketServices.socket?.on(
       'ride-accepted',
-          (data) {
+      (data) {
         print('====================>>>>>>>>> $data');
         if (data is Map<String, dynamic>) {
-
           if (data['isRideAccepted'] == true) {
             rideController.isRideAccepted.value = true;
 
@@ -209,20 +207,29 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
                 data['driver']?['driverName'] ?? '';
 
             // ✅ Convert JSON to Model
-            rideController.acceptRideModel.value = AcceptRideModel.fromJson(data);
+            rideController.acceptRideModel.value =
+                AcceptRideModel.fromJson(data);
           }
         }
 
-        debugPrint('================ Socket ride accepted data ================');
+        debugPrint(
+            '================ Socket ride accepted data ================');
 
-        debugPrint('================ Socket ride accepted data ================');
+        debugPrint(
+            '================ Socket ride accepted data ================');
         debugPrint('================ String converstion ================');
-
       },
     );
-    SocketServices.socket?.on('ride-accepted-driver', (data){
+    SocketServices.socket?.on('ride-accepted-driver', (data) {
       print('=================RIDE ACCEPTED DRIVER');
       print(data);
+      if (data is Map<String, dynamic>) {
+        if (data['isRideAcceptedDriver'] == true) {
+          mapOPTController.acceptedRideDataStatus.value = true;
+          mapOPTController.acceptedRideData.value =
+              AcceptRideDriverModel.fromJson(data);
+        }
+      }
     });
   }
 
@@ -824,11 +831,24 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
                 // ),
 
                 /* Driver Toggle Switch [ Fixed ] */
-                if (userController.userModel.value?.userProfile?.role ==
-                        AppConstants.driver &&
-                    userController.userModel.value?.driverProfile?.isBusy ==
-                        false)
-                  AnimatedToggleSwitch(),
+                Obx(() {
+                  if (userController.userModel.value?.userProfile?.role ==
+                          AppConstants.driver &&
+                      mapOPTController.acceptedRideDataStatus.value == false) {
+                    return AnimatedToggleSwitch();
+                  }
+                  return const SizedBox.shrink();
+                }),
+
+                Obx(() {
+                  if (mapOPTController
+                          .acceptedRideData.value?.isRideAcceptedDriver ==
+                      true) {
+                    return Text('safdsdfasdfasdfsadfasd',
+                        style: TextStyle(color: Colors.red, fontSize: 82));
+                  }
+                  return SizedBox.shrink();
+                }),
 
                 Obx(() {
                   final cnt = Get.find<MapOPTController>();
@@ -994,11 +1014,11 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
 
                 /* Driver Waiting Passenger Request a Card */
                 Obx(() {
-                  if ( userController.userModel.value?.userProfile?.role ==
+                  if (userController.userModel.value?.userProfile?.role ==
                           AppConstants.driver &&
                       mapOPTController.isPassengerRequest.value == false &&
                       userController.userModel.value?.driverProfile?.isOnline ==
-                          true ) {
+                          true) {
                     return Container(
                       margin: EdgeInsets.only(bottom: 90.h),
                       padding: EdgeInsets.symmetric(
@@ -1007,9 +1027,10 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
                       child: _bgGlassDesign(_buildPassengerRequestCard()),
                     );
                   }
-                  if ( userController.userModel.value?.userProfile?.role ==
+                  if (userController.userModel.value?.userProfile?.role ==
                           AppConstants.driver &&
-                      mapOPTController.isPassengerRequest.value == true ) {
+                      mapOPTController.isPassengerRequest.value == true &&
+                      mapOPTController.acceptedRideDataStatus.value == false) {
                     return GlassBackgroundMultipleChildrenWidget(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       blurOne: 20,
@@ -1219,14 +1240,21 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
                         AcceptRideButton(
                           onPressed: () {
                             // mapOPTController.rideDetailsData
-                            mapOPTController.rideAcceptRide(mapOPTController.rideDetailsData.value!.rideId.toString());
+                            mapOPTController.rideAcceptRide(mapOPTController
+                                .rideDetailsData.value!.rideId
+                                .toString());
                           },
                         ),
                         SizedBox(height: 80),
                       ],
                     );
                   }
-
+                  if (mapOPTController
+                              .acceptedRideData.value?.isRideAcceptedDriver ==
+                          true &&
+                      mapOPTController.acceptedRideDataStatus.value == true) {
+                    return GlassBackgroundWidget(child: Text('marufsd'));
+                  }
                   return SizedBox.shrink();
                 }),
               ],
