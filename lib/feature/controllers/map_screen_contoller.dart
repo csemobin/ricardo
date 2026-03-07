@@ -316,9 +316,10 @@ class MapScreenController extends GetxController with WidgetsBindingObserver {
       polylines.assignAll(updatedPolylines);
 
       // Clear stale ride data after route is drawn.
-      rideController.drivers.clear();
-      rideController.acceptRideModel.close();
-      rideController.favouriteDrivers.clear();
+
+      // rideController.drivers.clear();
+      // rideController.acceptRideModel.close();
+      // rideController.favouriteDrivers.clear();
 
       // Animate camera to fit the full route.
       WidgetsBinding.instance.addPostFrameCallback((_) {

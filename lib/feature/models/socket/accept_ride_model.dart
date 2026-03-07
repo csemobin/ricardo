@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 class AcceptRideModel {
   final bool? isRideAccepted;
   final Ride? ride;
@@ -216,6 +218,9 @@ class Driver {
   final String? driverPhone;
   final String? driverEmail;
   final String? driverImage;
+  final Double? ratingAverage;
+  final int? totalRatings;
+  final int? totalCompletedRides;
 
   Driver({
     this.driverLocation,
@@ -223,6 +228,9 @@ class Driver {
     this.driverPhone,
     this.driverEmail,
     this.driverImage,
+    this.ratingAverage,
+    this.totalRatings,
+    this.totalCompletedRides,
   });
 
   factory Driver.fromJson(Map<String, dynamic> json) {
@@ -234,6 +242,9 @@ class Driver {
       driverPhone: json['driverPhone'] as String?,
       driverEmail: json['driverEmail'] as String?,
       driverImage: json['driverImage'] as String?,
+      ratingAverage: json['ratingAverage'] as Double?,
+      totalRatings: json['totalRatings'] as int?,
+      totalCompletedRides: json['totalCompletedRides'] as int?,
     );
   }
 
@@ -243,6 +254,9 @@ class Driver {
     'driverPhone': driverPhone,
     'driverEmail': driverEmail,
     'driverImage': driverImage,
+    'ratingAverage': ratingAverage,
+    'totalRatings': totalRatings,
+    'totalCompletedRides': totalCompletedRides,
   };
   @override
   String toString() {
@@ -250,7 +264,10 @@ class Driver {
         'driverName: $driverName, '
         'driverPhone: $driverPhone, '
         'driverEmail: $driverEmail, '
-        'driverLocation: $driverLocation'
+        'driverLocation: $driverLocation, '
+        'ratingAverage: $ratingAverage, '
+        'totalRatings: $totalRatings, '
+        'totalCompletedRides: $totalCompletedRides'
         ')';
   }
 }

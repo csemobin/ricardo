@@ -22,7 +22,10 @@ class GlassBackgroundWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
-      borderRadius: BorderRadius.circular(borderRadius ?? 24.r),
+      borderRadius: BorderRadius.only(
+        topLeft: Radius.circular(borderRadius ?? 24.r),
+        topRight: Radius.circular(borderRadius ?? 24.r),
+      ),
       child: BackdropFilter(
         filter: ImageFilter.blur(
           sigmaX: 16,
@@ -33,7 +36,10 @@ class GlassBackgroundWidget extends StatelessWidget {
           padding: padding ?? EdgeInsets.all(20.r),
           decoration: BoxDecoration(
             color: (backgroundColor ?? AppColors.whiteColor).withOpacity(0.3),
-            borderRadius: BorderRadius.circular(borderRadius ?? 12.r),
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(borderRadius ?? 12.r),
+              topRight: Radius.circular(borderRadius ?? 12.r),
+            ),
             border: Border.all(
               color: (borderColor ?? AppColors.whiteColor).withOpacity(0.3),
             ),
