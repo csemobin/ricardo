@@ -63,7 +63,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '21095599679',
     projectId: 'ricardo-7f01b',
     storageBucket: 'ricardo-7f01b.firebasestorage.app',
-    iosBundleId: 'com.example.ricardo',
+    iosBundleId: 'com.gogodriver.gogodriver',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
@@ -72,7 +72,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '21095599679',
     projectId: 'ricardo-7f01b',
     storageBucket: 'ricardo-7f01b.firebasestorage.app',
-    iosBundleId: 'com.example.ricardo',
+    iosBundleId: 'com.gogodriver.gogodriver',
   );
 
   static const FirebaseOptions windows = FirebaseOptions(

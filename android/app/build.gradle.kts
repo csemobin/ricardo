@@ -15,12 +15,12 @@ if (keystorePropertiesFile.exists()) {
 }
 
 android {
-    namespace = "com.example.ricardo"
+    namespace = "com.gogodriver.gogodriver"
     compileSdk = 36
     ndkVersion = "27.3.13750724"
 
     defaultConfig {
-        applicationId = "com.example.ricardo"
+        applicationId = "com.gogodriver.gogodriver"
         minSdk = 23
         targetSdk = 36
         versionCode = 1 // replace with flutter.versionCode if needed

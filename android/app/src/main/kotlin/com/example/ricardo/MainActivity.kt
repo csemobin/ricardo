@@ -1,4 +1,4 @@
-package com.example.ricardo
+package com.gogodriver.gogodriver
 
 import io.flutter.embedding.android.FlutterActivity
 
