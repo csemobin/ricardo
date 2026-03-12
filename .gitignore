@@ -43,8 +43,13 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
-android/app/src/main/AndroidManifest.xml
+
 # FVM Version Cache
 .fvm/
-env
+
+# ──────────────────────────────────────
+# ENV — secret keys, never commit these
+# ──────────────────────────────────────
 .env
+.env.*
+*.env

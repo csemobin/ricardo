@@ -217,8 +217,10 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
       },
     );
     SocketServices.socket?.on('ride-accepted-driver', (data) {
+
       print('=================RIDE ACCEPTED DRIVER');
       print(data);
+
       if (data is Map<String, dynamic>) {
         if (data['isRideAcceptedDriver'] == true) {
           mapOPTController.acceptedRideDataStatus.value = true;
@@ -271,7 +273,7 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
 
   // LatLng initialLocation = const LatLng(23.780696475817816, 90.40761484102724) ;
 
-  LatLng destination = const LatLng(23.83655877786759, 90.36862693085972);
+  // LatLng destination = const LatLng(23.83655877786759, 90.36862693085972);
 
   List<LatLng> polylineCoordinates = [];
   double currentZoom = 18.5746;
@@ -282,9 +284,6 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
 
   /********** MAP Polyline Related Start  here *************/
   Set<Polyline> _polylines = {};
-
-  // Set<Marker> _mapMarkers = {};
-
   Future<void> _loadRoute() async {
     try {
       final acceptedRide = rideController.acceptRideModel.value;
@@ -405,6 +404,15 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
 
         // Set polylines
         _polylines = {
+          Polyline(
+            polylineId: const PolylineId('Driver-To-Pickup'),
+            points: [],
+            color: Colors.blue,
+            width: 8,
+            startCap: Cap.roundCap,
+            endCap: Cap.roundCap,
+            patterns: [PatternItem.dot, PatternItem.gap(12)],
+          ),
           Polyline(
             polylineId: const PolylineId('Pick-Up-Location'),
             points: points,
@@ -584,7 +592,8 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
                   circleId: CircleId('currentPassenger'),
                   center: LatLng(
                       mapOPTController.currentLatitudePosition!.value,
-                      mapOPTController.currentLongitudePosition!.value),
+                      mapOPTController.currentLongitudePosition!.value,
+                  ),
                   radius: 10,
                   strokeColor: Colors.white,
                   strokeWidth: 1,
@@ -593,7 +602,7 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
                 ),
                 Circle(
                   circleId: const CircleId('destination'),
-                  center: destination,
+                  // center: destination,
                   radius: 10,
                   strokeColor: Colors.white,
                   strokeWidth: 1,
@@ -848,17 +857,20 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
                       child: GlassBackgroundWidget(
                         borderLeftRightRadius: 24,
                         child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             Icon(
                               Icons.location_pin,
-                              size: 18.sp,
+                              size: 24.sp,
                             ),
+                            SizedBox(width: 10.w),
                             Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
                                   '128 Ward AveHamilton, ON',
                                   style: TextStyle(
-                                    fontSize: 18.sp,
+                                    fontSize: 14.sp,
                                     fontWeight: FontWeight.w500,
                                     fontFamily: FontFamily.poppins,
                                     color: Color(0xff171717),
@@ -867,7 +879,7 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
                                 Text(
                                   'Hamilton, ON',
                                   style: TextStyle(
-                                    fontSize: 18.sp,
+                                    fontSize: 14.sp,
                                     fontWeight: FontWeight.w500,
                                     fontFamily: FontFamily.poppins,
                                     color: Color(0xffA3A3A3),
@@ -1282,6 +1294,8 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
                       ],
                     );
                   }
+
+
                   if (mapOPTController
                               .acceptedRideData.value?.isRideAcceptedDriver ==
                           true &&
