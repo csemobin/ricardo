@@ -6,9 +6,9 @@ class ApiUrls{
   // static const String imageBaseUrl = "https://api.gogodriver.us/images/";
   // static const String socketUrl = "https://api.gogodriver.us";
 
-  static const String baseUrl = "https://tomorrow-pty-riding-beast.trycloudflare.com/api/v1";
-  static const String imageBaseUrl = "https://tomorrow-pty-riding-beast.trycloudflare.com/images/";
-  static const String socketUrl = "https://tomorrow-pty-riding-beast.trycloudflare.com";
+  static const String baseUrl = "https://treasure-plasma-reaches-talented.trycloudflare.com/api/v1";
+  static const String imageBaseUrl = "https://treasure-plasma-reaches-talented.trycloudflare.com/images/";
+  static const String socketUrl = "https://treasure-plasma-reaches-talented.trycloudflare.com";
 
   // User Registration Related work
   static const String registration = '/user/register';

@@ -123,7 +123,7 @@ flutter:
   # see https://flutter.dev/to/font-from-package
 
 
-    #===========>>>>>>>>>> Flutter Gen Code ==============>>>>>>>>>>>
-    # fvm dart pub global activate flutter_gen
-    # fvm flutter pub run build_runner build --delete-conflicting-outputs
-    # fvm flutter pub run build_runner build
+        #===========>>>>>>>>>> Flutter Gen Code ==============>>>>>>>>>>>
+    #    # fvm dart pub global activate flutter_gen
+    #    # fvm flutter pub run build_runner build --delete-conflicting-outputs
+    #    # fvm flutter pub run build_runner build

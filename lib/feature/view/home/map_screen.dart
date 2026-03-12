@@ -29,8 +29,6 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
   final mapOPTController = Get.find<MapOPTController>();
   GoogleMapController? _mapController;
   late final RideDetailsSocketModel? rideRelatedInfo;
-
-  // LatLng initialLocation = const LatLng(23.780696475817816, 90.40761484102724);
   Set<Marker> markers = {};
 
   @override
@@ -42,18 +40,12 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
     setCustomCarMarkers();
     getMyLocation();
     userController.fetchUser();
-    ever(rideController.isRideAccepted, (bool should) {
-      if (should) {
+    _loadRoute();
+    ever(rideController.isRideAccepted, (bool accepted) {
+      if (accepted == true) {
         _loadRoute();
       }
     });
-    // _loadRoute(); // ← ADD THIS
-
-    // ever(rideController.isRideAccepted, (bool accepted) {
-    //   if (accepted == true) {
-    //     _loadRoute();
-    //   }
-    // });
     WidgetsBinding.instance.addPostFrameCallback((_) => _loadRoute());
   }
 
@@ -69,194 +61,6 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
       ),
     );
   }*/
-
-  Future<void> _loadRoute() async {
-    try {
-      final acceptedRide = rideController.acceptRideModel.value;
-
-      final LatLng origin;
-      final LatLng dest;
-
-      final pickupCoords = acceptedRide?.ride?.pickupLocation?.coordinates;
-      final destCoords = acceptedRide?.ride?.destinationLocation?.coordinates;
-
-      origin = (pickupCoords != null && pickupCoords.length == 2)
-          ? LatLng(pickupCoords[1], pickupCoords[0])
-          : LatLng(
-              googleSearchLocationController.selectedPickup.value?.lat ?? 0.0,
-              googleSearchLocationController.selectedPickup.value?.lng ?? 0.0,
-            );
-
-      dest = (destCoords != null && destCoords.length == 2)
-          ? LatLng(destCoords[1], destCoords[0])
-          : LatLng(
-              googleSearchLocationController.selectedDrop.value?.lat ?? 0.0,
-              googleSearchLocationController.selectedDrop.value?.lng ?? 0.0,
-            );
-
-      if (origin.latitude == 0.0 || dest.latitude == 0.0) {
-        debugPrint('Skipping route — coords not ready');
-        return;
-      }
-
-      // ✅ CHECK: Should we draw driver → pickup → destination route?
-      if (rideController.isRideAccepted.value && acceptedRide != null) {
-        await _loadDriverToPickupRoute(acceptedRide, origin, dest);
-        return;
-      }
-
-      final points = await DirectionsService.getPolyline(origin, dest);
-
-      if (points.isEmpty) {
-        Get.snackbar(
-            'Error', 'Could not load route. Please check your API key.');
-        return;
-      }
-
-      setState(() {
-        markers.clear();
-        _polylines = {
-          Polyline(
-            polylineId: const PolylineId('Pick-Up-Location'),
-            points: points,
-            color: Colors.red,
-            width: 6,
-            startCap: Cap.roundCap,
-            endCap: Cap.roundCap,
-          ),
-        };
-
-        markers = {
-          Marker(
-            markerId: const MarkerId('Pick-Up-Location'),
-            position: origin,
-            icon: customCarMarker ?? BitmapDescriptor.defaultMarker,
-          ),
-          Marker(
-            markerId: const MarkerId('Destination'),
-            position: dest,
-            icon: BitmapDescriptor.defaultMarker,
-          ),
-        };
-      });
-
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        final bounds = _boundsFromLatLng(points);
-        _mapController?.animateCamera(CameraUpdate.newLatLngBounds(bounds, 80));
-      });
-    } catch (e) {
-      debugPrint(e.toString());
-    }
-  }
-
-  Future<void> _loadDriverToPickupRoute(
-    AcceptRideModel acceptedRide,
-    LatLng pickupLatLng,
-    LatLng destLatLng,
-  ) async {
-    try {
-      // ✅ Get driver's current accepted location
-      final driverAcceptedCoords =
-          acceptedRide.ride?.driverAcceptedLocation?.coordinates;
-
-      LatLng driverLocation;
-
-      if (driverAcceptedCoords != null && driverAcceptedCoords.length == 2) {
-        driverLocation =
-            LatLng(driverAcceptedCoords[1], driverAcceptedCoords[0]);
-      } else {
-        // Fallback: use driver's location from driver object
-        final driverLocationCoords =
-            acceptedRide.driver?.driverLocation?.coordinates;
-        if (driverLocationCoords != null && driverLocationCoords.length == 2) {
-          driverLocation =
-              LatLng(driverLocationCoords[1], driverLocationCoords[0]);
-        } else {
-          debugPrint('Driver location not available');
-          return;
-        }
-      }
-
-      debugPrint('Driver location: $driverLocation');
-      debugPrint('Pickup: $pickupLatLng');
-      debugPrint('Destination: $destLatLng');
-
-      // ✅ Get two polylines: driver→pickup and pickup→destination
-      final driverToPickupPoints =
-          await DirectionsService.getPolyline(driverLocation, pickupLatLng);
-      final pickupToDestPoints =
-          await DirectionsService.getPolyline(pickupLatLng, destLatLng);
-
-      if (driverToPickupPoints.isEmpty) {
-        debugPrint('Could not get driver → pickup route');
-        return;
-      }
-
-      setState(() {
-        // ✅ Clear everything first
-        markers.clear();
-        _polylines.clear();
-
-        // ✅ Polyline: driver → pickup (blue dashed)
-        _polylines.add(
-          Polyline(
-            polylineId: const PolylineId('driver-to-pickup'),
-            points: driverToPickupPoints,
-            color: Colors.blue,
-            width: 5,
-            startCap: Cap.roundCap,
-            endCap: Cap.roundCap,
-            patterns: [PatternItem.dash(20), PatternItem.gap(10)],
-          ),
-        );
-
-        // ✅ Polyline: pickup → destination (red solid)
-        if (pickupToDestPoints.isNotEmpty) {
-          _polylines.add(
-            Polyline(
-              polylineId: const PolylineId('pickup-to-destination'),
-              points: pickupToDestPoints,
-              color: Colors.red,
-              width: 5,
-              startCap: Cap.roundCap,
-              endCap: Cap.roundCap,
-            ),
-          );
-        }
-
-        // ✅ ONLY these two markers — nothing else
-        markers = {
-          Marker(
-            markerId: const MarkerId('driver-location'),
-            position: driverLocation,
-            icon: customCarMarker ?? BitmapDescriptor.defaultMarker,
-            infoWindow: const InfoWindow(title: 'Driver'),
-          ),
-          Marker(
-            markerId: const MarkerId('destination-location'),
-            position: destLatLng,
-            icon: BitmapDescriptor.defaultMarker,
-            infoWindow: const InfoWindow(title: 'Destination'),
-          ),
-        };
-      });
-
-      // ✅ Fit camera to show all 3 points
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        final allPoints = [
-          driverLocation,
-          ...driverToPickupPoints,
-          ...pickupToDestPoints,
-        ];
-        final bounds = _boundsFromLatLng(allPoints);
-        _mapController?.animateCamera(
-          CameraUpdate.newLatLngBounds(bounds, 80),
-        );
-      });
-    } catch (e) {
-      debugPrint('_loadDriverToPickupRoute error: $e');
-    }
-  }
 
   Future<BitmapDescriptor> getCustomMarker() async {
     return await BitmapDescriptor.fromAssetImage(
@@ -481,7 +285,7 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
 
   // Set<Marker> _mapMarkers = {};
 
-  /*Future<void> _loadRoute() async {
+  Future<void> _loadRoute() async {
     try {
       final acceptedRide = rideController.acceptRideModel.value;
 
@@ -505,9 +309,7 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
               googleSearchLocationController.selectedDrop.value?.lng ?? 0.0,
             );
 
-      */
-  /*
-      if (rideController.isRideAccepted.value && acceptedRide != null) {
+      /*if (rideController.isRideAccepted.value && acceptedRide != null) {
         print('============================ _mapMarkers');
         print('+++++++++++++++++++++++++++++++++++++++++');
         print('============================ _mapMarkers');
@@ -542,7 +344,6 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
           googleSearchLocationController.selectedDrop.value?.lng ?? 0.0,
         );
       }*/
-  /*
 
       // Guard: don't draw if coords are 0,0
       if (origin.latitude == 0.0 || dest.latitude == 0.0) {
@@ -559,10 +360,8 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
       }
 
       setState(() {
-        markers.clear();
         // Initialize markers with current passenger marker
-        */
-  /* _mapMarkers = {
+        /* _mapMarkers = {
           Marker(
             markerId: const MarkerId('currentPassenger'),
             position: LatLng(
@@ -603,7 +402,6 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
             }
           }
         }*/
-  /*
 
         // Set polylines
         _polylines = {
@@ -624,22 +422,23 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
           ),
         };
 
-        rideController.drivers.clear();
-        rideController.acceptRideModel.close();
-        rideController.favouriteDrivers.clear();
+        markers.removeWhere((m) =>
+            m.markerId.value == 'Pick-Up-Location' ||
+            m.markerId.value == 'Destination');
 
-        markers = {
+        markers.addAll({
           Marker(
-            markerId: MarkerId('Pick-Up-Location'),
+            markerId: const MarkerId('Pick-Up-Location'),
             position: origin,
             icon: customCarMarker ?? BitmapDescriptor.defaultMarker,
           ),
           Marker(
-            markerId: MarkerId('Destination'),
+            markerId: const MarkerId('Destination'),
             position: dest,
             icon: BitmapDescriptor.defaultMarker,
           ),
-        };
+        });
+
         print('+++++++++++++++++++++++++>>> $origin $dest');
       });
 
@@ -660,6 +459,7 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
       //     ),
       //   );
       // });
+
       WidgetsBinding.instance.addPostFrameCallback((_) {
         final bounds = _boundsFromLatLng(points);
         _mapController?.animateCamera(CameraUpdate.newLatLngBounds(bounds, 80));
@@ -667,7 +467,7 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
     } catch (e) {
       debugPrint(e.toString());
     }
-  }*/
+  }
 
   LatLngBounds _boundsFromLatLng(List<LatLng> points) {
     double? minLat, minLng, maxLat, maxLng;
@@ -807,9 +607,7 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
           if (userController.userModel.value?.userProfile?.role ==
                   AppConstants.passenger &&
               rideController.acceptRideModel.value?.isRideAccepted == true)
-            DraggableBottomSheet(
-              acceptRideModel: rideController.acceptRideModel.value,
-            ),
+            DraggableBottomSheet(),
           /*
 
           if( userController.userModel.value?.userProfile?.role == 'passenger')
@@ -1020,73 +818,107 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
           }),*/
 
           // if(rideController.isSwippedButtonShow.value == true)
-          Column(
-            // crossAxisAlignment: CrossAxisAlignment.end,
-            // mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              // SizedBox(
-              //   height: 10,
-              // ),
+          SafeArea(
+            child: Column(
+              // crossAxisAlignment: CrossAxisAlignment.end,
+              // mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                // SizedBox(
+                //   height: 10,
+                // ),
 
-              /* Driver Toggle Switch [ Fixed ] */
-              Obx(() {
-                if (userController.userModel.value?.userProfile?.role ==
-                        AppConstants.driver &&
-                    mapOPTController.acceptedRideDataStatus.value == false) {
-                  return AnimatedToggleSwitch();
-                }
-                return const SizedBox.shrink();
-              }),
+                /* Driver Toggle Switch [ Fixed ] */
+                Obx(() {
+                  if (userController.userModel.value?.userProfile?.role ==
+                          AppConstants.driver &&
+                      mapOPTController.acceptedRideDataStatus.value == false) {
+                    return AnimatedToggleSwitch();
+                  }
+                  return const SizedBox.shrink();
+                }),
 
-              Obx(() {
-                if (mapOPTController
-                        .acceptedRideData.value?.isRideAcceptedDriver ==
-                    true) {
-                  return Column(
-                    children: [
-                      Text('safdsdfasdfasdfsadfasd',
-                          style: TextStyle(color: Colors.red, fontSize: 82)),
-                    ],
-                  );
-                }
-                return SizedBox.shrink();
-              }),
-
-              Obx(() {
-                final cnt = Get.find<MapOPTController>();
-                if (userController.userModel.value?.userProfile?.role ==
-                        AppConstants.driver &&
-                    cnt.userController.userModel.value?.driverProfile
-                            ?.isOnline ==
-                        false) {
-                  return NoInternetMessageMap();
-                }
-                return SizedBox.shrink();
-              }),
-
-              Spacer(),
-
-              /* Passenger Swipped Button [ Fixed ] */
-              // Passenger Swipped Button - Only shows when ALL conditions are false
-              Obx(() {
-                final role = userController.userModel.value?.userProfile?.role;
-                if (role == AppConstants.passenger &&
-                    googleSearchLocationController.isModalOn.value == false &&
-                    rideController.isSwippedButtonShow.value == false &&
-                    rideController.viewInMap.value == true) {
-                  return Column(
-                    children: [
-                      _buildSwippedButton(),
-                      SizedBox(
-                        height: 100,
+                Obx(() {
+                  if (mapOPTController
+                          .acceptedRideData.value?.isRideAcceptedDriver ==
+                      true) {
+                    return Padding(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 25.w,
                       ),
-                    ],
-                  );
-                }
-                return SizedBox.shrink();
-              }),
+                      child: GlassBackgroundWidget(
+                        borderLeftRightRadius: 24,
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.location_pin,
+                              size: 18.sp,
+                            ),
+                            Column(
+                              children: [
+                                Text(
+                                  '128 Ward AveHamilton, ON',
+                                  style: TextStyle(
+                                    fontSize: 18.sp,
+                                    fontWeight: FontWeight.w500,
+                                    fontFamily: FontFamily.poppins,
+                                    color: Color(0xff171717),
+                                  ),
+                                ),
+                                Text(
+                                  'Hamilton, ON',
+                                  style: TextStyle(
+                                    fontSize: 18.sp,
+                                    fontWeight: FontWeight.w500,
+                                    fontFamily: FontFamily.poppins,
+                                    color: Color(0xffA3A3A3),
+                                  ),
+                                )
+                              ],
+                            )
+                          ],
+                        ),
+                      ),
+                    );
+                  }
+                  return SizedBox.shrink();
+                }),
 
-              /*if (rideController.isSwippedButtonShow.value == true)
+                Obx(() {
+                  final cnt = Get.find<MapOPTController>();
+                  if (userController.userModel.value?.userProfile?.role ==
+                          AppConstants.driver &&
+                      cnt.userController.userModel.value?.driverProfile
+                              ?.isOnline ==
+                          false) {
+                    return NoInternetMessageMap();
+                  }
+                  return SizedBox.shrink();
+                }),
+
+                Spacer(),
+
+                /* Passenger Swipped Button [ Fixed ] */
+                // Passenger Swipped Button - Only shows when ALL conditions are false
+                Obx(() {
+                  final role =
+                      userController.userModel.value?.userProfile?.role;
+                  if (role == AppConstants.passenger &&
+                      googleSearchLocationController.isModalOn.value == false &&
+                      rideController.isSwippedButtonShow.value == false &&
+                      rideController.viewInMap.value == true) {
+                    return Column(
+                      children: [
+                        _buildSwippedButton(),
+                        SizedBox(
+                          height: 100,
+                        ),
+                      ],
+                    );
+                  }
+                  return SizedBox.shrink();
+                }),
+
+                /*if (rideController.isSwippedButtonShow.value == true)
                     RideTrackingBottomSheet(
                       status: RideStatus.driverOnWay,
                       driverName: 'Maruf',
@@ -1106,40 +938,40 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
                     ),
                   */
 
-              // Padding(
-              //   padding: EdgeInsets.symmetric(horizontal: 25),
-              //   child: ClipRRect(
-              //     borderRadius: BorderRadius.circular(12.r),
-              //     child: BackdropFilter(
-              //       filter: ui.ImageFilter.blur(
-              //         sigmaX: 4,
-              //         sigmaY: 4,
-              //       ),
-              //       child: Container(
-              //         width: double.infinity,
-              //         padding: EdgeInsets.all(20.r),
-              //         decoration: BoxDecoration(
-              //           color: AppColors.whiteColor.withOpacity(0.3),
-              //           borderRadius: BorderRadius.circular(12.r),
-              //           border: Border.all(
-              //             color: AppColors.whiteColor,
-              //           ),
-              //           boxShadow: [
-              //             BoxShadow(
-              //               color: Colors.black.withOpacity(0.1),
-              //               offset: Offset(0, -4),
-              //               blurRadius: 4,
-              //               spreadRadius: 0,
-              //             ),
-              //           ],
-              //         ),
-              //         child: _buildPassengerRequestCard(),
-              //       ),
-              //     ),
-              //   ),
-              // ),
+                // Padding(
+                //   padding: EdgeInsets.symmetric(horizontal: 25),
+                //   child: ClipRRect(
+                //     borderRadius: BorderRadius.circular(12.r),
+                //     child: BackdropFilter(
+                //       filter: ui.ImageFilter.blur(
+                //         sigmaX: 4,
+                //         sigmaY: 4,
+                //       ),
+                //       child: Container(
+                //         width: double.infinity,
+                //         padding: EdgeInsets.all(20.r),
+                //         decoration: BoxDecoration(
+                //           color: AppColors.whiteColor.withOpacity(0.3),
+                //           borderRadius: BorderRadius.circular(12.r),
+                //           border: Border.all(
+                //             color: AppColors.whiteColor,
+                //           ),
+                //           boxShadow: [
+                //             BoxShadow(
+                //               color: Colors.black.withOpacity(0.1),
+                //               offset: Offset(0, -4),
+                //               blurRadius: 4,
+                //               spreadRadius: 0,
+                //             ),
+                //           ],
+                //         ),
+                //         child: _buildPassengerRequestCard(),
+                //       ),
+                //     ),
+                //   ),
+                // ),
 
-              /* ElevatedButton(
+                /* ElevatedButton(
                   onPressed: () => showDialog(
                     barrierDismissible: true,
                     context: context,
@@ -1153,321 +985,327 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
                   child: Text('Show Modal'),
                 ),*/
 
-              // AnimatedToggleSwitch(
-              //   value: isOnline,
-              //   onChanged: (newValue) {
-              //     // When toggle is clicked, show dialog first
-              //     showDialog(
-              //       barrierDismissible: true,
-              //       context: context,
-              //       builder: (context) {
-              //         return Dialog(
-              //           backgroundColor: Colors.transparent,
-              //           child: GlassBackgroundWidget(
-              //             child: Column(
-              //               mainAxisSize: MainAxisSize.min,
-              //               children: [
-              //                 Text(
-              //                   newValue
-              //                       ? 'Are you sure you want to go Online?'
-              //                       : 'Are you sure you want to go Offline?',
-              //                   style: TextStyle(fontSize: 16.sp),
-              //                   textAlign: TextAlign.center,
-              //                 ),
-              //                 SizedBox(height: 20.h),
-              //                 Row(
-              //                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              //                   children: [
-              //                     TextButton(
-              //                       onPressed: () {
-              //                         Navigator.pop(context);
-              //                         // Don't change status, keep old value
-              //                       },
-              //                       child: Text('No'),
-              //                     ),
-              //                     ElevatedButton(
-              //                       onPressed: () {
-              //                         setState(() {
-              //                           isOnline = newValue; // Change status
-              //                         });
-              //                         Navigator.pop(context);
-              //                       },
-              //                       child: Text('Yes'),
-              //                     ),
-              //                   ],
-              //                 ),
-              //               ],
-              //             ),
-              //           ),
-              //         );
-              //       },
-              //     );
-              //   },
-              // ),
+                // AnimatedToggleSwitch(
+                //   value: isOnline,
+                //   onChanged: (newValue) {
+                //     // When toggle is clicked, show dialog first
+                //     showDialog(
+                //       barrierDismissible: true,
+                //       context: context,
+                //       builder: (context) {
+                //         return Dialog(
+                //           backgroundColor: Colors.transparent,
+                //           child: GlassBackgroundWidget(
+                //             child: Column(
+                //               mainAxisSize: MainAxisSize.min,
+                //               children: [
+                //                 Text(
+                //                   newValue
+                //                       ? 'Are you sure you want to go Online?'
+                //                       : 'Are you sure you want to go Offline?',
+                //                   style: TextStyle(fontSize: 16.sp),
+                //                   textAlign: TextAlign.center,
+                //                 ),
+                //                 SizedBox(height: 20.h),
+                //                 Row(
+                //                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                //                   children: [
+                //                     TextButton(
+                //                       onPressed: () {
+                //                         Navigator.pop(context);
+                //                         // Don't change status, keep old value
+                //                       },
+                //                       child: Text('No'),
+                //                     ),
+                //                     ElevatedButton(
+                //                       onPressed: () {
+                //                         setState(() {
+                //                           isOnline = newValue; // Change status
+                //                         });
+                //                         Navigator.pop(context);
+                //                       },
+                //                       child: Text('Yes'),
+                //                     ),
+                //                   ],
+                //                 ),
+                //               ],
+                //             ),
+                //           ),
+                //         );
+                //       },
+                //     );
+                //   },
+                // ),
 
-              // GlassBackgroundWidget(
-              //   child: Text('Maruf'),
-              // ),
+                // GlassBackgroundWidget(
+                //   child: Text('Maruf'),
+                // ),
 
-              // AcceptRideButton(onPressed: (){
-              //   print('yessss');
-              // })
+                // AcceptRideButton(onPressed: (){
+                //   print('yessss');
+                // })
 
-              /* Driver Waiting Passenger Request a Card */
-              Obx(() {
-                if (userController.userModel.value?.userProfile?.role ==
-                        AppConstants.driver &&
-                    mapOPTController.isPassengerRequest.value == false &&
-                    userController.userModel.value?.driverProfile?.isOnline ==
-                        true) {
-                  return Container(
-                    margin: EdgeInsets.only(bottom: 90.h),
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 25.w,
-                    ),
-                    child: _bgGlassDesign(_buildPassengerRequestCard()),
-                  );
-                }
-                if (userController.userModel.value?.userProfile?.role ==
-                        AppConstants.driver &&
-                    mapOPTController.isPassengerRequest.value == true &&
-                    mapOPTController.acceptedRideDataStatus.value == false) {
-                  return GlassBackgroundMultipleChildrenWidget(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    blurOne: 20,
-                    blurTwo: 20,
-                    children: [
-                      Center(
-                        child: Container(
-                          width: 50,
-                          height: 5.h,
-                          padding: EdgeInsets.all(2),
-                          decoration: BoxDecoration(
-                              color: Color(0xFFB9C0C9),
-                              borderRadius: BorderRadius.circular(50)),
+                /* Driver Waiting Passenger Request a Card */
+                Obx(() {
+                  if (userController.userModel.value?.userProfile?.role ==
+                          AppConstants.driver &&
+                      mapOPTController.isPassengerRequest.value == false &&
+                      userController.userModel.value?.driverProfile?.isOnline ==
+                          true) {
+                    return Container(
+                      margin: EdgeInsets.only(bottom: 90.h),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 25.w,
+                      ),
+                      child: _bgGlassDesign(_buildPassengerRequestCard()),
+                    );
+                  }
+                  if (userController.userModel.value?.userProfile?.role ==
+                          AppConstants.driver &&
+                      mapOPTController.isPassengerRequest.value == true &&
+                      mapOPTController.acceptedRideDataStatus.value == false) {
+                    return GlassBackgroundMultipleChildrenWidget(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      blurOne: 20,
+                      blurTwo: 20,
+                      children: [
+                        Center(
+                          child: Container(
+                            width: 50,
+                            height: 5.h,
+                            padding: EdgeInsets.all(2),
+                            decoration: BoxDecoration(
+                                color: Color(0xFFB9C0C9),
+                                borderRadius: BorderRadius.circular(50)),
+                          ),
                         ),
-                      ),
-                      SizedBox(
-                        height: 50.h,
-                      ),
-                      Row(
-                        children: [
-                          ClipRRect(
-                            borderRadius: BorderRadius.all(Radius.circular(50)),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(12),
-                              child: Image.network(
-                                (mapOPTController.rideDetailsData.value
-                                                ?.passengerImage !=
-                                            null &&
-                                        mapOPTController.rideDetailsData.value!
-                                            .passengerImage!.isNotEmpty)
-                                    ? '${ApiUrls.imageBaseUrl}${mapOPTController.rideDetailsData.value?.passengerImage}'
-                                    : '',
-                                height: 50.h,
-                                width: 50.w,
-                                fit: BoxFit.cover,
-                                errorBuilder: (context, error, stackTrace) {
-                                  return Image.asset(
-                                    Assets.images.defaultImage.path,
-                                    height: 50.h,
-                                    width: 50.w,
-                                    fit: BoxFit.cover,
-                                  );
-                                },
-                              ),
-                            ),
-                          ),
-                          SizedBox(
-                            width: 10.w,
-                          ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                mapOPTController
-                                        .rideDetailsData.value?.passengerName ??
-                                    '',
-                                style: TextStyle(
-                                  color: Color(0xff171717),
-                                  fontSize: 14.sp,
-                                  fontWeight: FontWeight.w500,
-                                  fontFamily: FontFamily.poppins,
+                        SizedBox(
+                          height: 50.h,
+                        ),
+                        Row(
+                          children: [
+                            ClipRRect(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(50)),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(12),
+                                child: Image.network(
+                                  (mapOPTController.rideDetailsData.value
+                                                  ?.passengerImage !=
+                                              null &&
+                                          mapOPTController
+                                              .rideDetailsData
+                                              .value!
+                                              .passengerImage!
+                                              .isNotEmpty)
+                                      ? '${ApiUrls.imageBaseUrl}${mapOPTController.rideDetailsData.value?.passengerImage}'
+                                      : '',
+                                  height: 50.h,
+                                  width: 50.w,
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (context, error, stackTrace) {
+                                    return Image.asset(
+                                      Assets.images.defaultImage.path,
+                                      height: 50.h,
+                                      width: 50.w,
+                                      fit: BoxFit.cover,
+                                    );
+                                  },
                                 ),
                               ),
-                              Row(
-                                children: [
-                                  Text(
-                                    '\$${mapOPTController.rideDetailsData.value?.fare ?? 0.0} ',
-                                    style: TextStyle(
-                                      fontSize: 16.sp,
-                                      fontWeight: FontWeight.w600,
-                                    ),
+                            ),
+                            SizedBox(
+                              width: 10.w,
+                            ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  mapOPTController.rideDetailsData.value
+                                          ?.passengerName ??
+                                      '',
+                                  style: TextStyle(
+                                    color: Color(0xff171717),
+                                    fontSize: 14.sp,
+                                    fontWeight: FontWeight.w500,
+                                    fontFamily: FontFamily.poppins,
                                   ),
-                                  Text(
-                                      '(${((mapOPTController.rideDetailsData.value?.destinationMeters ?? 0) * 0.000621371).toStringAsFixed(2)} Miles)')
-                                ],
-                              ),
-                            ],
-                          )
-                        ],
-                      ),
-                      SizedBox(
-                        height: 20.h,
-                      ),
-                      Divider(
-                        height: 1,
-                        color: Colors.black.withOpacity(0.2),
-                      ),
-                      SizedBox(
-                        height: 6.h,
-                      ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              Image.asset(Assets.images.directRight.path),
-                              SizedBox(
-                                width: 8.w,
-                              ),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                ),
+                                Row(
                                   children: [
                                     Text(
-                                      'PICK UP',
+                                      '\$${mapOPTController.rideDetailsData.value?.fare ?? 0.0} ',
                                       style: TextStyle(
-                                        color: AppColors.labelTextColor,
-                                        fontSize: 12.sp,
-                                        fontWeight: FontWeight.w500,
-                                        fontFamily: FontFamily.poppins,
+                                        fontSize: 16.sp,
+                                        fontWeight: FontWeight.w600,
                                       ),
                                     ),
                                     Text(
-                                      mapOPTController.rideDetailsData.value
-                                              ?.pickupAddress ??
-                                          'Pickup location not specified',
-                                      // 'Pickup location not specified',
-                                      style: textStyle(),
-                                      maxLines: 2,
-                                      overflow: TextOverflow.ellipsis,
-                                    )
+                                        '(${((mapOPTController.rideDetailsData.value?.destinationMeters ?? 0) * 0.000621371).toStringAsFixed(2)} Miles)')
                                   ],
                                 ),
-                              )
-                            ],
-                          ),
-                          Padding(
-                            padding: EdgeInsets.only(
-                              left: 4.w,
-                              top: 4.h,
-                              bottom: 4.h,
-                            ),
-                            child: Container(
-                              width: 4.w,
-                              height: 40.h,
-                              decoration: BoxDecoration(color: Colors.white
-                                  // color: Color(0xffD9D9D9),
-                                  ),
-                            ),
-                          ),
-                          Row(
-                            children: [
-                              Image.asset(Assets.images.location.path),
-                              SizedBox(
-                                width: 8.w,
-                              ),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      'DROP OFF',
-                                      style: TextStyle(
-                                        color: AppColors.labelTextColor,
-                                        fontSize: 12.sp,
-                                        fontWeight: FontWeight.w500,
-                                        fontFamily: FontFamily.poppins,
-                                      ),
-                                    ),
-                                    Text(
-                                      mapOPTController.rideDetailsData.value
-                                              ?.destinationAddress ??
-                                          'Destination not specified',
-                                      // 'Destination not specified',
-                                      style: textStyle(),
-                                      maxLines: 2,
-                                      overflow: TextOverflow.ellipsis,
-                                    )
-                                  ],
-                                ),
-                              )
-                            ],
-                          ),
-                        ],
-                      ),
-                      SizedBox(
-                        height: 6.h,
-                      ),
-                      Divider(
-                        height: 1,
-                        color: Colors.black.withOpacity(0.2),
-                      ),
-                      SizedBox(
-                        height: 8.h,
-                      ),
-                      Text(
-                        'Passengers Note',
-                        style: TextStyle(
-                          color: Color(0xff5E5E5E).withOpacity(0.7),
+                              ],
+                            )
+                          ],
                         ),
-                      ),
-                      SizedBox(
-                        height: 10.h,
-                      ),
-                      Text(mapOPTController
-                              .rideDetailsData.value?.destinationAddress ??
-                          ''),
-                      SizedBox(
-                        height: 18.h,
-                      ),
-                      AcceptRideButton(
-                        onPressed: () {
-                          // mapOPTController.rideDetailsData
-                          mapOPTController.rideAcceptRide(mapOPTController
-                              .rideDetailsData.value!.rideId
-                              .toString());
-                        },
-                      ),
-                      SizedBox(height: 80),
-                    ],
-                  );
-                }
-                if (mapOPTController
-                            .acceptedRideData.value?.isRideAcceptedDriver ==
-                        true &&
-                    mapOPTController.acceptedRideDataStatus.value == true) {
-                  return GlassBackgroundWidget(
-                      child: Column(
-                    children: [
-                      Text('marufsd'),
-                      Text('marufsd'),
-                      Text('marufsd'),
-                      Text('marufsd'),
-                      Text('marufsd'),
-                      Text('marufsd'),
-                      Text('marufsd'),
-                      Text('marufsd'),
-                      Text('marufsd'),
-                      Text('marufsd'),
-                      Text('marufsd'),
-                    ],
-                  ));
-                }
-                return SizedBox.shrink();
-              }),
-            ],
+                        SizedBox(
+                          height: 20.h,
+                        ),
+                        Divider(
+                          height: 1,
+                          color: Colors.black.withOpacity(0.2),
+                        ),
+                        SizedBox(
+                          height: 6.h,
+                        ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                Image.asset(Assets.images.directRight.path),
+                                SizedBox(
+                                  width: 8.w,
+                                ),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        'PICK UP',
+                                        style: TextStyle(
+                                          color: AppColors.labelTextColor,
+                                          fontSize: 12.sp,
+                                          fontWeight: FontWeight.w500,
+                                          fontFamily: FontFamily.poppins,
+                                        ),
+                                      ),
+                                      Text(
+                                        mapOPTController.rideDetailsData.value
+                                                ?.pickupAddress ??
+                                            'Pickup location not specified',
+                                        // 'Pickup location not specified',
+                                        style: textStyle(),
+                                        maxLines: 2,
+                                        overflow: TextOverflow.ellipsis,
+                                      )
+                                    ],
+                                  ),
+                                )
+                              ],
+                            ),
+                            Padding(
+                              padding: EdgeInsets.only(
+                                left: 4.w,
+                                top: 4.h,
+                                bottom: 4.h,
+                              ),
+                              child: Container(
+                                width: 4.w,
+                                height: 40.h,
+                                decoration: BoxDecoration(color: Colors.white
+                                    // color: Color(0xffD9D9D9),
+                                    ),
+                              ),
+                            ),
+                            Row(
+                              children: [
+                                Image.asset(Assets.images.location.path),
+                                SizedBox(
+                                  width: 8.w,
+                                ),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        'DROP OFF',
+                                        style: TextStyle(
+                                          color: AppColors.labelTextColor,
+                                          fontSize: 12.sp,
+                                          fontWeight: FontWeight.w500,
+                                          fontFamily: FontFamily.poppins,
+                                        ),
+                                      ),
+                                      Text(
+                                        mapOPTController.rideDetailsData.value
+                                                ?.destinationAddress ??
+                                            'Destination not specified',
+                                        // 'Destination not specified',
+                                        style: textStyle(),
+                                        maxLines: 2,
+                                        overflow: TextOverflow.ellipsis,
+                                      )
+                                    ],
+                                  ),
+                                )
+                              ],
+                            ),
+                          ],
+                        ),
+                        SizedBox(
+                          height: 6.h,
+                        ),
+                        Divider(
+                          height: 1,
+                          color: Colors.black.withOpacity(0.2),
+                        ),
+                        SizedBox(
+                          height: 8.h,
+                        ),
+                        Text(
+                          'Passengers Note',
+                          style: TextStyle(
+                            color: Color(0xff5E5E5E).withOpacity(0.7),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 10.h,
+                        ),
+                        Text(mapOPTController
+                                .rideDetailsData.value?.destinationAddress ??
+                            ''),
+                        SizedBox(
+                          height: 18.h,
+                        ),
+                        AcceptRideButton(
+                          onPressed: () {
+                            // mapOPTController.rideDetailsData
+                            mapOPTController.rideAcceptRide(mapOPTController
+                                .rideDetailsData.value!.rideId
+                                .toString());
+                          },
+                        ),
+                        SizedBox(height: 80),
+                      ],
+                    );
+                  }
+                  if (mapOPTController
+                              .acceptedRideData.value?.isRideAcceptedDriver ==
+                          true &&
+                      mapOPTController.acceptedRideDataStatus.value == true) {
+                    return GlassBackgroundWidget(
+                        child: Column(
+                      children: [
+                        Text('marufsd'),
+                        Text('marufsd'),
+                        Text('marufsd'),
+                        Text('marufsd'),
+                        Text('marufsd'),
+                        Text('marufsd'),
+                        Text('marufsd'),
+                        Text('marufsd'),
+                        Text('marufsd'),
+                        Text('marufsd'),
+                      ],
+                    ));
+                  }
+                  return SizedBox.shrink();
+                }),
+              ],
+            ),
           ),
 
           // ✅ Location disabled banner
@@ -1536,42 +1374,68 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
   }
 
   Set<Marker> _buildMarkers() {
-    // ✅ If driver route is active, return only the route markers (don't add anything extra)
-    if (rideController.viewInMap.value) {
-      return markers;
-    }
+    // Build fresh — never touch class-level `markers` here
+    final Set<Marker> result = {};
 
-    // ✅ Current passenger marker
-    markers.add(
+    // ── 1. Always add current passenger / driver position pin ──────────────
+    result.add(
       Marker(
         markerId: const MarkerId('currentPassenger'),
         position: LatLng(
           mapOPTController.currentLatitudePosition!.value,
           mapOPTController.currentLongitudePosition!.value,
         ),
-        icon: customMarker ?? BitmapDescriptor.defaultMarker,
+        icon: userController.userModel.value?.userProfile?.role ==
+                AppConstants.passenger
+            ? customMarker ?? BitmapDescriptor.defaultMarker
+            : customCarMarker ?? BitmapDescriptor.defaultMarker,
       ),
     );
 
-    // ✅ Nearby driver pins (only when no route active)
-    final drivers = rideController.drivers;
-    if (drivers.isNotEmpty) {
+    // ── 2. Add route markers (Pick-Up-Location + Destination) if they exist ──
+    // These are stored in class-level `markers` by _loadRoute()
+    for (final m in markers) {
+      if (m.markerId.value == 'Pick-Up-Location' ||
+          m.markerId.value == 'Destination') {
+        result.add(m);
+      }
+    }
+
+    // ── 3. Decide whether to show driver car icons ─────────────────────────
+    // A route is "active" when _loadRoute() has added route markers
+    final bool isRouteActive = markers.any(
+      (m) =>
+          m.markerId.value == 'Pick-Up-Location' ||
+          m.markerId.value == 'Destination',
+    );
+
+    // Show driver car icons when:
+    //   a) User pressed back from NearByDriverScreen (viewInMapReturn == true), OR
+    //   b) No route is active yet and drivers list has entries
+    // Hide driver car icons when:
+    //   - viewInMap == false (bottom sheet / nearby screen is showing) AND
+    //     viewInMapReturn == false (user has NOT pressed back yet)
+    final bool showDriverIcons =
+        rideController.viewInMapReturn.value || !isRouteActive;
+
+    if (showDriverIcons) {
+      final drivers = rideController.drivers;
       for (var driver in drivers) {
         final coords = driver.location?.coordinates;
         if (coords != null && coords.length == 2) {
-          markers.add(
-            Marker(
-              markerId: MarkerId(driver.sId ?? UniqueKey().toString()),
-              position: LatLng(coords[1], coords[0]),
-              icon: customCarMarker ?? BitmapDescriptor.defaultMarker,
-              onTap: () => _showDriverDialog(driver),
-            ),
-          );
+          final double longitude = coords[0];
+          final double latitude = coords[1];
+          result.add(Marker(
+            markerId: MarkerId(driver.sId ?? UniqueKey().toString()),
+            position: LatLng(latitude, longitude),
+            icon: customCarMarker ?? BitmapDescriptor.defaultMarker,
+            onTap: () => _showDriverDialog(driver),
+          ));
         }
       }
     }
 
-    return markers;
+    return result;
   }
 
   void _showDriverDialog(driver) {

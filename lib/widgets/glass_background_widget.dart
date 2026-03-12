@@ -7,6 +7,7 @@ class GlassBackgroundWidget extends StatelessWidget {
   final Widget child;
   final EdgeInsetsGeometry? padding;
   final double? borderRadius;
+  final double? borderLeftRightRadius;
   final Color? backgroundColor;
   final Color? borderColor;
 
@@ -17,6 +18,7 @@ class GlassBackgroundWidget extends StatelessWidget {
     this.borderRadius,
     this.backgroundColor,
     this.borderColor,
+    this.borderLeftRightRadius,
   });
 
   @override
@@ -25,6 +27,8 @@ class GlassBackgroundWidget extends StatelessWidget {
       borderRadius: BorderRadius.only(
         topLeft: Radius.circular(borderRadius ?? 24.r),
         topRight: Radius.circular(borderRadius ?? 24.r),
+        bottomLeft: Radius.circular(borderLeftRightRadius ?? 0.r),
+        bottomRight: Radius.circular(borderLeftRightRadius ?? 0.r),
       ),
       child: BackdropFilter(
         filter: ImageFilter.blur(

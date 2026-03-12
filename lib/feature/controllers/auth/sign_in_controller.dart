@@ -23,7 +23,6 @@ class SignInController extends GetxController {
     super.onInit();
     emailTextEditingController.addListener(_checkSubmit);
     passwordTextEditingController.addListener(_checkSubmit);
-
   }
 
   void _checkSubmit() {
