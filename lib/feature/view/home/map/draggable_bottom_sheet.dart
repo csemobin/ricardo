@@ -142,7 +142,8 @@ class _DraggableBottomSheetState extends State<DraggableBottomSheet> {
                                   fit: BoxFit.cover,
                                   errorBuilder: (context, error, stackTrace) {
                                     return Image.asset(
-                                      'assets/images/default_driver.png',
+                                      // 'assets/images/default_driver.png',
+                                      Assets.images.defaultImage.path,
                                       // fallback image
                                       height: 62.h,
                                       width: 62.w,
