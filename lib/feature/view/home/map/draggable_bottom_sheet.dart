@@ -6,6 +6,7 @@ import 'package:ricardo/feature/models/socket/accept_ride_model.dart';
 import 'package:ricardo/feature/view/home/link_export_file.dart';
 import 'package:ricardo/gen/assets.gen.dart';
 import 'package:ricardo/gen/fonts.gen.dart';
+import 'package:ricardo/widgets/custom_primary_button.dart';
 import 'package:ricardo/widgets/glass_background_widget.dart';
 
 class DraggableBottomSheet extends StatefulWidget {
@@ -28,10 +29,10 @@ class _DraggableBottomSheetState extends State<DraggableBottomSheet> {
       // ✅ FIX 1: Required when used inside showModalBottomSheet
       builder: (context, scrollController) {
         return GlassBackgroundWidget(
+          blurNumber: 25,
           padding: EdgeInsets.zero,
           child: SingleChildScrollView(
-            controller: scrollController, // ✅ FIX 3: Attach controller here
-            // physics: const ClampingScrollPhysics(),
+            controller: scrollController,
             physics: AlwaysScrollableScrollPhysics(),
             child: Column(
               children: [
@@ -94,6 +95,22 @@ class _DraggableBottomSheetState extends State<DraggableBottomSheet> {
                               ),
                             ],
                           ),
+                          /*Container(
+                            padding: const EdgeInsets.all(5),
+                            decoration: BoxDecoration(
+                              color: AppColors.darkColor,
+                              borderRadius: BorderRadius.circular(3),
+                            ),
+                            child: Text(
+                              '1 min',
+                              style: TextStyle(
+                                fontWeight: FontWeight.w500,
+                                fontSize: 12.sp,
+                                fontFamily: FontFamily.poppins,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),*/
                           Container(
                             padding: const EdgeInsets.all(5),
                             decoration: BoxDecoration(
@@ -235,14 +252,14 @@ class _DraggableBottomSheetState extends State<DraggableBottomSheet> {
                                 border: Border.all(color: Colors.grey.shade200),
                               ),
                               child: SvgPicture.asset(
-                                  Assets.icons.driverCardPhone),
+                                  Assets.icons.driverCardPhone,
+                              ),
                             ),
                           ),
                         ],
                       ),
 
-                      SizedBox(height: 10.h),
-                      SizedBox(height: 8.h),
+                      SizedBox(height: 20.h),
 
                       // ── Car info row ──
                       Row(
@@ -300,7 +317,8 @@ class _DraggableBottomSheetState extends State<DraggableBottomSheet> {
                           ),
                         ],
                       ),
-                      SizedBox(height: 36.h),
+                     /*
+                     SizedBox(height: 36.h),
                       Column(
                         children: [
                           // ── Waiting time badge ──
@@ -348,6 +366,36 @@ class _DraggableBottomSheetState extends State<DraggableBottomSheet> {
                           ),
                         ],
                       )
+                      */
+                      SizedBox(height: 32.h),
+                      CustomPrimaryButton(title: 'Provide a review', onHandler: (){}),
+                      SizedBox(height: 14.h,),
+                      GestureDetector(
+                        onTap: (){} ,
+                        child: AnimatedContainer(
+                          duration: Duration(milliseconds: 200),
+                          alignment: Alignment.center,
+                          width: double.maxFinite,
+                          height: 56.h,
+                          decoration: BoxDecoration(
+
+                            borderRadius: BorderRadius.circular(50.r),
+                            border: Border.all(
+                              color: Colors.green,
+                              width: 1,
+                            ),
+                          ),
+                          child: Text(
+                            'Provide a Tip',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color:  Colors.green,
+                              fontSize: 16.sp,
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
+                        ),
+                      ),
                     ],
                   ),
                 ),

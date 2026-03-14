@@ -488,7 +488,7 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
           if (userController.userModel.value?.userProfile?.role ==
                   AppConstants.passenger &&
               rideController.acceptRideModel.value?.isRideAccepted == true)
-            DraggableBottomSheet(),
+            DraggableBottomSheet(acceptRideModel: rideController.acceptRideModel.value,),
           /*
 
           if( userController.userModel.value?.userProfile?.role == 'passenger')

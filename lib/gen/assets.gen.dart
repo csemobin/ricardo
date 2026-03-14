@@ -330,6 +330,10 @@ class $AssetsImagesGen {
   AssetGenImage get rattingStar =>
       const AssetGenImage('assets/images/ratting-star.png');
 
+  /// File path: assets/images/red-bell.png
+  AssetGenImage get redBell =>
+      const AssetGenImage('assets/images/red-bell.png');
+
   /// File path: assets/images/remove_busket.png
   AssetGenImage get removeBusket =>
       const AssetGenImage('assets/images/remove_busket.png');
@@ -483,6 +487,7 @@ class $AssetsImagesGen {
     proflieIcon,
     rafiki,
     rattingStar,
+    redBell,
     removeBusket,
     reviewImage,
     rightArrow,
