@@ -199,6 +199,7 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
           mapOPTController.acceptedRideDataStatus.value = true;
           mapOPTController.acceptedRideData.value =
               AcceptRideDriverModel.fromJson(data);
+          _loadAcceptedRideRoute();
         }
       }
     });
@@ -1382,6 +1383,114 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
       return await LocationPermissionService.isLocationEnabled();
     }).asyncMap((event) => event);
   }
+  Future<void> _loadAcceptedRideRoute() async {
+    try {
+      final acceptedRide = mapOPTController.acceptedRideData.value;
+      if (acceptedRide == null) return;
+
+      // ── 1. Driver Current Location ──────────────────────────
+      final Position currentPosition = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high,
+      );
+      final LatLng driverLocation = LatLng(
+        currentPosition.latitude,
+        currentPosition.longitude,
+      );
+
+      // ── 2. Pickup Location ✅ use ride?.pickupLocation ──────
+      final pickupCoords = acceptedRide.ride?.pickupLocation?.coordinates;
+      if (pickupCoords == null || pickupCoords.length < 2) return;
+      final LatLng pickupLocation = LatLng(pickupCoords[1], pickupCoords[0]);
+
+      // ── 3. Destination Location ─────────────────────────────
+      final destCoords = acceptedRide.ride?.destinationLocation?.coordinates;
+      if (destCoords == null || destCoords.length < 2) return;
+      final LatLng destinationLocation = LatLng(destCoords[1], destCoords[0]);
+
+      // ── 4. Guard: skip if coords are 0,0 ───────────────────
+      if (driverLocation.latitude == 0.0 ||
+          pickupLocation.latitude == 0.0 ||
+          destinationLocation.latitude == 0.0) {
+        debugPrint('Skipping — coords not ready');
+        return;
+      }
+
+      // ── 5. Get Polylines ────────────────────────────────────
+      final List<LatLng> driverToPickup = await DirectionsService.getPolyline(
+        driverLocation,
+        pickupLocation,
+      );
+      final List<LatLng> pickupToDestination = await DirectionsService.getPolyline(
+        pickupLocation,
+        destinationLocation,
+      );
+
+      if (driverToPickup.isEmpty || pickupToDestination.isEmpty) return;
+
+      setState(() {
+        _polylines = {
+          // 🔴 Driver → Pickup
+          Polyline(
+            polylineId: const PolylineId('driver_to_pickup'),
+            points: driverToPickup,
+            color: Colors.black87,
+            width: 6,
+            startCap: Cap.roundCap,
+            endCap: Cap.roundCap,
+          ),
+          // 🟢 Pickup → Destination
+          Polyline(
+            polylineId: const PolylineId('pickup_to_destination'),
+            points: pickupToDestination,
+            color: Colors.green,
+            width: 6,
+            startCap: Cap.roundCap,
+            endCap: Cap.roundCap,
+          ),
+        };
+
+        markers
+          ..removeWhere((m) =>
+          m.markerId.value == 'driver_location' ||
+              m.markerId.value == 'pickup_location' ||
+              m.markerId.value == 'destination_location')
+          ..addAll({
+            // 🚗 Driver (Car icon)
+            Marker(
+              markerId: const MarkerId('driver_location'),
+              position: driverLocation,
+              icon: customCarMarker ?? BitmapDescriptor.defaultMarker,
+            ),
+            // 📍 Pickup (Red pin)
+            Marker(
+              markerId: const MarkerId('pickup_location'),
+              position: pickupLocation,
+              icon: BitmapDescriptor.defaultMarkerWithHue(
+                BitmapDescriptor.hueRed,
+              ),
+            ),
+            // 📍 Destination (Green pin)
+            Marker(
+              markerId: const MarkerId('destination_location'),
+              position: destinationLocation,
+              icon: BitmapDescriptor.defaultMarkerWithHue(
+                BitmapDescriptor.hueGreen,
+              ),
+            ),
+          });
+      });
+
+      // ── 6. Camera fits all 3 points ─────────────────────────
+      final allPoints = [...driverToPickup, ...pickupToDestination];
+      final bounds = _boundsFromLatLng(allPoints);
+      _mapController?.animateCamera(
+        CameraUpdate.newLatLngBounds(bounds, 80),
+      );
+    } catch (e) {
+      debugPrint('_loadAcceptedRideRoute error: $e');
+    }
+  }
+
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
