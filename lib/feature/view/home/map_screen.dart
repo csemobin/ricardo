@@ -1,11 +1,12 @@
 import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
-import 'package:ricardo/app/helpers/custom_location_helper.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:ricardo/feature/models/socket/accept_ride_driver_model.dart';
 import 'package:ricardo/feature/models/socket/accept_ride_model.dart';
 import 'package:ricardo/feature/view/home/map/custom_header.dart';
 import 'package:ricardo/feature/view/home/map/draggable_bottom_sheet.dart';
 import 'package:ricardo/widgets/accepted_ride_button.dart';
+import 'package:ricardo/widgets/custom_primary_button.dart';
 import 'package:ricardo/widgets/glass_background_multiple_children_widget.dart';
 import 'package:ricardo/widgets/glass_background_widget.dart';
 import 'package:ricardo/widgets/map_custom_header_back.dart';
@@ -58,12 +59,6 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
           ? 'assets/images/marker.png'
           : '',
     );
-  }
-
-  Future<void> _initForegroundTask() async {
-    ForegroundLocationService.initForegroundTask();
-    FlutterForegroundTask.addTaskDataCallback(_onReceiveTaskData);
-    await _startLocationTracking();
   }
 
   void _onReceiveTaskData(Object data) {
@@ -172,11 +167,7 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
     SocketServices.socket?.on(
       'ride-accepted',
       (data) {
-        print('204 NO LINE Ride Accepted');
-        print('=================RIDE ACCEPTED $data');
-        print(data);
-
-        if (data is Map<String, dynamic>) {
+         if (data is Map<String, dynamic>) {
           if (data['isRideAccepted'] == true) {
             rideController.isRideAccepted.value = true;
 
@@ -238,8 +229,6 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
     });
   }
 
-
-
   List<LatLng> polylineCoordinates = [];
   double currentZoom = 18.5746;
   double markerSize = 40;
@@ -260,7 +249,8 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
 
       final pickupCoords = acceptedRide?.ride?.pickupLocation?.coordinates;
       final destCoords = acceptedRide?.ride?.destinationLocation?.coordinates;
-      final driverAcceptedLocationCoords = acceptedRide?.ride?.driverAcceptedLocation?.coordinates;
+      final driverAcceptedLocationCoords =
+          acceptedRide?.ride?.driverAcceptedLocation?.coordinates;
 
       origin = (pickupCoords != null && pickupCoords.length == 2)
           ? LatLng(pickupCoords[1], pickupCoords[0])
@@ -276,20 +266,25 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
               googleSearchLocationController.selectedDrop.value?.lng ?? 0.0,
             );
 
-      acceptedLocation = (driverAcceptedLocationCoords != null && driverAcceptedLocationCoords.length == 2)
-          ? LatLng(driverAcceptedLocationCoords[1], driverAcceptedLocationCoords[0])
+      acceptedLocation = (driverAcceptedLocationCoords != null &&
+              driverAcceptedLocationCoords.length == 2)
+          ? LatLng(
+              driverAcceptedLocationCoords[1], driverAcceptedLocationCoords[0])
           : LatLng(
               googleSearchLocationController.selectedDrop.value?.lat ?? 0.0,
               googleSearchLocationController.selectedDrop.value?.lng ?? 0.0,
             );
 
       // Guard: don't draw if coords are 0,0
-      if (origin.latitude == 0.0 || dest.latitude == 0.0 || acceptedLocation.latitude == 0.0 ) {
+      if (origin.latitude == 0.0 ||
+          dest.latitude == 0.0 ||
+          acceptedLocation.latitude == 0.0) {
         debugPrint('Skipping route — coords not ready');
         return;
       }
 
-      final point = await DirectionsService.getPolyline(acceptedLocation, origin);
+      final point =
+          await DirectionsService.getPolyline(acceptedLocation, origin);
       final points = await DirectionsService.getPolyline(origin, dest);
 
       if (points.isEmpty) {
@@ -299,7 +294,6 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
       }
 
       setState(() {
-
         // Set polylines
         _polylines = {
           Polyline(
@@ -398,19 +392,7 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
           // Passenger
           Obx(
             () => GoogleMap(
-              // onCameraMove: (CameraPosition position) {
-              //   LatLng center = position.target;
-              //   print("Map center: ${center.latitude}, ${center.longitude}");
-              // },
-              // onCameraMove: (CameraPosition position) {
-              //   currentZoom = position.zoom;
-              //
-              //   double newSize = (currentZoom * 3).clamp(20, 100);
-              //   if ((newSize - markerSize).abs() > 2) {
-              //     markerSize = newSize;
-              //     setCustomMarker();
-              //   }
-              // },
+
               mapType: MapType.normal,
               // zoomGesturesEnabled: true,
               // zoomControlsEnabled: true,
@@ -427,38 +409,7 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
                 _mapController = controller;
                 _loadRoute(); // ← also call here so map is ready
               },
-              // markers: mapOPTController.isFirstStep == false
-              //     ? _singleMarkers
-              //     : _markers,
-              // myLocationButtonEnabled: true,
-              // myLocationEnabled: true,
-              // onMapCreated: (controller) {
-              //   _mapController = controller;
-              //   // _loadRoute();
-              // },
-              // markers: {
-              //   Marker(
-              //       markerId: const MarkerId('marker'),
-              //       position: initialLocation,
-              //       draggable: true,
-              //       icon: customMarker ?? BitmapDescriptor.defaultMarker,
-              //       onDragEnd: (updateLanLng) {
-              //         setState(() {
-              //           initialLocation = updateLanLng;
-              //         });
-              //       },
-              //       anchor: Offset(0.5, 0.5)),
-              //   Marker(
-              //     markerId: const MarkerId('destination'),
-              //     position: destination,
-              //     draggable: true,
-              //     onDragEnd: (updatedLatLng) {
-              //       setState(() {
-              //         destination = updatedLatLng;
-              //       });
-              //     },
-              //   )
-              // },
+
               circles: {
                 Circle(
                   circleId: CircleId('currentPassenger'),
@@ -488,132 +439,9 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
           if (userController.userModel.value?.userProfile?.role ==
                   AppConstants.passenger &&
               rideController.acceptRideModel.value?.isRideAccepted == true)
-            DraggableBottomSheet(acceptRideModel: rideController.acceptRideModel.value,),
-          /*
-
-          if( userController.userModel.value?.userProfile?.role == 'passenger')
-
-
-          if( userController.userModel.value?.userProfile?.role == 'driver')
-            GoogleMap(
-              // onCameraMove: (CameraPosition position) {
-              //   LatLng center = position.target;
-              //   print("Map center: ${center.latitude}, ${center.longitude}");
-              // },
-              // onCameraMove: (CameraPosition position) {
-              //   currentZoom = position.zoom;
-              //
-              //   double newSize = (currentZoom * 3).clamp(20, 100);
-              //   if ((newSize - markerSize).abs() > 2) {
-              //     markerSize = newSize;
-              //     setCustomMarker();
-              //   }
-              // },
-              mapType: MapType.normal,
-              // zoomGesturesEnabled: true,
-              // zoomControlsEnabled: true,
-              //initialCameraPosition: _mapCtrl.kGooglePlex,
-
-              initialCameraPosition: CameraPosition(
-                target: destination,
-                // target: LatLng(mapOPTController.currentLatitudePosition!.value,
-                //     mapOPTController.currentLongitudePosition!.value),
-                zoom: currentZoom,
-              ),
-              markers: {
-                Marker(
-                  markerId: MarkerId('asjdfklajsdkl'),
-                  icon: BitmapDescriptor.defaultMarker,
-                )
-              },
-              polylines: _polylines,
-              // onMapCreated: (controller) {
-              //   _mapController = controller;
-              //   _loadRoute(); // ← also call here so map is ready
-              // },
-              // markers: mapOPTController.isFirstStep == false
-              //     ? _singleMarkers
-              //     : _markers,
-              // myLocationButtonEnabled: true,
-              // myLocationEnabled: true,
-              // onMapCreated: (controller) {
-              //   _mapController = controller;
-              //   // _loadRoute();
-              // },
-              // markers: {
-              //   Marker(
-              //       markerId: const MarkerId('marker'),
-              //       position: initialLocation,
-              //       draggable: true,
-              //       icon: customMarker ?? BitmapDescriptor.defaultMarker,
-              //       onDragEnd: (updateLanLng) {
-              //         setState(() {
-              //           initialLocation = updateLanLng;
-              //         });
-              //       },
-              //       anchor: Offset(0.5, 0.5)),
-              //   Marker(
-              //     markerId: const MarkerId('destination'),
-              //     position: destination,
-              //     draggable: true,
-              //     onDragEnd: (updatedLatLng) {
-              //       setState(() {
-              //         destination = updatedLatLng;
-              //       });
-              //     },
-              //   )
-              // },
-              circles: {
-                Circle(
-                  circleId: CircleId('currentPassenger'),
-                  center: LatLng(
-                      mapOPTController.currentLatitudePosition!.value,
-                      mapOPTController.currentLongitudePosition!.value),
-                  radius: 10,
-                  strokeColor: Colors.white,
-                  strokeWidth: 1,
-                  fillColor: Color(0xFF006491).withOpacity(0.2),
-                  consumeTapEvents: true,
-                ),
-                Circle(
-                  circleId: const CircleId('destination'),
-                  center: destination,
-                  radius: 10,
-                  strokeColor: Colors.white,
-                  strokeWidth: 1,
-                  fillColor: const Color(0xFF006491).withOpacity(0.2),
-                ),
-              },
+            DraggableBottomSheet(
+              acceptRideModel: rideController.acceptRideModel.value,
             ),
-
-
-          */
-
-          /* Single Bottom Modal Sheet [ Fixed ]  */
-          /*if ( googleSearchLocationController.isModalOn.value )
-            Positioned(
-              top: 0,
-              bottom: 0,
-              left: 0,
-              right: 0,
-              child: BottomSheet(
-                onClosing: () {},
-                backgroundColor: Colors.transparent,
-                enableDrag: false,
-                builder: (context) {
-                  return RideRequestBottomSheet(
-                    pickupLocation:
-                        googleSearchLocationController.pickupController.text,
-                    dropLocation:
-                        googleSearchLocationController.dropController.text,
-                    distance: googleSearchLocationController.distance.value,
-                    rideFare:
-                        googleSearchLocationController.fare.value.toString(),
-                  );
-                },
-              ),
-            ),*/
-
           // Bottom Sheet - Only shows when ALL conditions are true
           Obx(() {
             if (googleSearchLocationController.isModalOn.value &&
@@ -678,43 +506,62 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
                           .acceptedRideData.value?.isRideAcceptedDriver ==
                       true) {
                     return Padding(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 25.w,
-                      ),
-                      child: GlassBackgroundWidget(
-                        borderLeftRightRadius: 24,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Icon(
-                              Icons.location_pin,
-                              size: 24.sp,
-                            ),
-                            SizedBox(width: 10.w),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  '128 Ward AveHamilton, ON',
-                                  style: TextStyle(
-                                    fontSize: 14.sp,
-                                    fontWeight: FontWeight.w500,
-                                    fontFamily: FontFamily.poppins,
-                                    color: Color(0xff171717),
-                                  ),
+                      padding: EdgeInsets.symmetric(horizontal: 25.w),
+                      child: SizedBox(                              // ← ADD THIS
+                        width: double.infinity,                     // ← FORCES BOUNDED WIDTH
+                        child: GlassBackgroundWidget(
+                          borderLeftRightRadius: 24,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.max,         // ← ADD THIS
+                            children: [
+                              Icon(
+                                Icons.location_pin,
+                                size: 24.sp,
+                              ),
+                              SizedBox(width: 10.w),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      '${mapOPTController.acceptedRideData.value?.passenger?.passengerAddress}',
+                                      style: TextStyle(
+                                        fontSize: 14.sp,
+                                        fontWeight: FontWeight.w500,
+                                        fontFamily: FontFamily.poppins,
+                                        color: Color(0xff171717),
+                                      ),
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 1,
+                                    ),
+                                    FutureBuilder<String>(
+                                      future: DirectionsService().getCurrentAddress(),
+                                      builder: (context, snapshot) {
+                                        if (snapshot.connectionState == ConnectionState.waiting) {
+                                          return Text('Loading...');
+                                        }
+                                        if (snapshot.hasError) {
+                                          return Text('Error getting address');
+                                        }
+                                        return Text(
+                                          snapshot.data ?? 'No address found',
+                                          style: TextStyle(
+                                            fontSize: 14.sp,
+                                            fontWeight: FontWeight.w500,
+                                            fontFamily: FontFamily.poppins,
+                                            color: Color(0xffA3A3A3),
+                                          ),
+                                          overflow: TextOverflow.ellipsis,
+                                          maxLines: 1,
+                                        );
+                                      },
+                                    ),
+                                  ],
                                 ),
-                                Text(
-                                  'Hamilton, ON',
-                                  style: TextStyle(
-                                    fontSize: 14.sp,
-                                    fontWeight: FontWeight.w500,
-                                    fontFamily: FontFamily.poppins,
-                                    color: Color(0xffA3A3A3),
-                                  ),
-                                )
-                              ],
-                            )
-                          ],
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     );
@@ -1000,20 +847,121 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
                           true &&
                       mapOPTController.acceptedRideDataStatus.value == true) {
                     return GlassBackgroundWidget(
-                        child: Column(
-                      children: [
-                        Text('marufsd'),
-                        Text('marufsd'),
-                        Text('marufsd'),
-                        Text('marufsd'),
-                        Text('marufsd'),
-                        Text('marufsd'),
-                        Text('marufsd'),
-                        Text('marufsd'),
-                        Text('marufsd'),
-                        Text('marufsd'),
-                      ],
-                    ));
+                      child: Column(
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              SizedBox(
+                                height: 40.h,
+                              ),
+                              Text(
+                                '(4 min) ${((mapOPTController.acceptedRideData.value?.ride?.destinationMeters ?? 0) * 0.000621371).toStringAsFixed(2)} Miles',style: TextStyle(
+                                color: Color(0xff171717),
+                                fontSize: 20.sp,
+                                fontWeight: FontWeight.w500,
+                              ),),
+                              SizedBox(
+                                height: 28.h,
+                              ),
+                              Divider(
+                                height: 1,
+                                color: Colors.black.withOpacity(0.2),
+                              ),
+                              SizedBox(height: 16.h,),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Row(
+                                    children: [
+                                      ClipRRect(
+                                        borderRadius:
+                                        BorderRadius.all(Radius.circular(50)),
+                                        child: ClipRRect(
+                                          borderRadius: BorderRadius.circular(12),
+                                          child: Image.network(
+                                            (mapOPTController.rideDetailsData.value
+                                                ?.passengerImage !=
+                                                null &&
+                                                mapOPTController
+                                                    .rideDetailsData
+                                                    .value!
+                                                    .passengerImage!
+                                                    .isNotEmpty)
+                                                ? '${ApiUrls.imageBaseUrl}${mapOPTController.rideDetailsData.value?.passengerImage}'
+                                                : '',
+                                            height: 50.h,
+                                            width: 50.w,
+                                            fit: BoxFit.cover,
+                                            errorBuilder: (context, error, stackTrace) {
+                                              return Image.asset(
+                                                Assets.images.defaultImage.path,
+                                                height: 50.h,
+                                                width: 50.w,
+                                                fit: BoxFit.cover,
+                                              );
+                                            },
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        width: 10.w,
+                                      ),
+                                      Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            mapOPTController.rideDetailsData.value
+                                                ?.passengerName ??
+                                                '',
+                                            style: TextStyle(
+                                              color: Color(0xff171717),
+                                              fontSize: 14.sp,
+                                              fontWeight: FontWeight.w500,
+                                              fontFamily: FontFamily.poppins,
+                                            ),
+                                          ),
+                                          Row(
+                                            children: [
+                                              Text(
+                                                '\$${mapOPTController.rideDetailsData.value?.fare ?? 0.0} ',
+                                                style: TextStyle(
+                                                  fontSize: 16.sp,
+                                                  fontWeight: FontWeight.w600,
+                                                ),
+                                              ),
+                                              Text(
+                                                  '(${((mapOPTController.rideDetailsData.value?.destinationMeters ?? 0) * 0.000621371).toStringAsFixed(2)} Miles)')
+                                            ],
+                                          ),
+                                        ],
+                                      )
+                                    ],
+                                  ),
+                                  GestureDetector(
+                                    onTap: () {},
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        color: AppColors.whiteColor,
+                                        borderRadius: BorderRadius.circular(50),
+                                        border: Border.all(
+                                            color: Colors.grey.shade200),
+                                      ),
+                                      child: SvgPicture.asset(
+                                          Assets.icons.driverCardPhone),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 40.h,),
+                          CustomPrimaryButton(title: 'On the way', onHandler: (){}),
+                          SizedBox(height: MediaQuery.of(context).size.height * 0.05),
+                          SizedBox(height: MediaQuery.of(context).size.height * 0.05),
+                        ],
+                      ),
+                    );
                   }
                   return SizedBox.shrink();
                 }),
@@ -1404,11 +1352,8 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
       ),
       child: SlideAction(
         sliderButtonYOffset: 0,
-        // onSubmit: () => Get.toNamed(AppRoutes.setHomeLocation),
         onSubmit: () => Get.toNamed(AppRoutes.searchLocationScreen,
             arguments: {'back_disable': true}),
-        // onSubmit: () => Get.toNamed(AppRoutes.rateReviewDriver),
-        // onSubmit: () => Get.toNamed(AppRoutes.reportScreen),
         text: 'Lets Go...',
         textStyle: TextStyle(
           fontSize: 20.sp,
@@ -1437,12 +1382,8 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
       return await LocationPermissionService.isLocationEnabled();
     }).asyncMap((event) => event);
   }
-
   @override
   void dispose() {
-    // ✅ Stop service and remove listener - FIXED
-    // ForegroundLocationService.stopLocationTracking();
-    // FlutterForegroundTask.removeTaskDataCallback(_onR eceiveTaskData);
     WidgetsBinding.instance.removeObserver(this);
     positionStream?.cancel();
 

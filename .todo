@@ -1,110 +1,284 @@
-{
-    "isRideAccepted": true,
-    "ride": {
-        "_id": "699942c32353042b9941302e",
-        "passenger": "69734654e521faf2febce658",
-        "driver": "696f2a250c440e726d3e0017",
-        "pickupAddress": "43 Mohakhali C/A, Dhaka 1212, Bangladesh",
-        "destinationAddress": "House - 94, 4 Road - 03, Dhaka 1216, Bangladesh",
-        "pickupLocation": {
-            "type": "Point",
-            "coordinates": [
-                90.3773286,
-                23.8231815
-            ]
-        },
-        "destinationLocation": {
-            "type": "Point",
-            "coordinates": [
-                90.4076056,
-                23.7807517
-            ]
-        },
-        "destinationMeters": 8073,
-        "fare": 5.02,
-        "note": null,
-        "status": "accepted",
-        "waitingTime": 0,
-        "waitingTimeFare": 0,
-        "cancelledBy": null,
-        "cancellationReason": null,
-        "cancellationFine": 0,
-        "reviewId": null,
-        "totalPayAmount": 0,
-        "acceptedAt": "2026-02-21T05:30:17.663Z",
-        "completeAt": null,
-        "cancelledAt": null,
-        "searchStartedAt": "2026-02-21T05:29:39.895Z",
-        "searchRadiusIndex": 1,
-        "lastSearchAt": "2026-02-21T05:29:40.056Z",
-        "notifiedDriverIds": [
-            "696f2a250c440e726d3e0017"
-        ],
-        "createdAt": "2026-02-21T05:29:39.609Z",
-        "updatedAt": "2026-02-21T05:30:17.663Z",
-        "driverAcceptedLocation": {
-            "type": "Point",
-            "coordinates": [
-                90.38,
-                23.82
-            ]
-        }
-    },
-    "driver": {
-        "driverLocation": {
-            "type": "Point",
-            "coordinates": [
-                90.3773286,
-                23.8231815
-            ]
-        },
-        "driverName": "Maruf",
-        "driverPhone": "+880888855555",
-        "driverEmail": "kinoco4540@naprb.com",
-        "driverImage": "scaled_1000012295.jpg"
-    },
-    "driverCar": {
-        "_id": "6971f97ea52990722b14852c",
-        "driverId": "696f2a250c440e726d3e0017",
-        "carName": "maruf",
-        "carPlateNumber": "LMN-H-264",
-        "carImage": {
-            "publicFolderPath": "public/images/scaled_1000012655.jpg",
-            "filename": "scaled_1000012655.jpg",
-            "createdAt": "2026-01-22T10:18:38.233Z",
-            "updatedAt": "2026-01-22T10:18:38.233Z"
-        },
-        "registrationCardImage": {
-            "publicFolderPath": "public/images/scaled_03adf73e-b907-4cdd-803f-2d1efe35e0701661665219536859274.jpg",
-            "filename": "scaled_03adf73e-b907-4cdd-803f-2d1efe35e0701661665219536859274.jpg",
-            "createdAt": "2026-01-22T10:18:38.233Z",
-            "updatedAt": "2026-01-22T10:18:38.233Z"
-        },
-        "numberPlateImage": {
-            "publicFolderPath": "public/images/scaled_c35d47a5-f6e7-499b-abd0-bce418897d5a4741053082114281646.jpg",
-            "filename": "scaled_c35d47a5-f6e7-499b-abd0-bce418897d5a4741053082114281646.jpg",
-            "createdAt": "2026-01-22T10:18:38.233Z",
-            "updatedAt": "2026-01-22T10:18:38.233Z"
-        },
-        "carRegistrationDate": "2026-01-22T00:00:00.000Z",
-        "numberOfSeat": 4,
-        "vehicleType": "car",
-        "isReviewed": false,
-        "isUploaded": true,
-        "isDeleted": false,
-        "createdAt": "2026-01-22T10:18:38.233Z",
-        "updatedAt": "2026-01-22T10:18:38.233Z"
+  Future<void> _loadDriverRoute() async {
+    try {
+      final acceptedRide = mapOPTController.acceptedRideData.value;
+      if (acceptedRide?.isRideAcceptedDriver != true) return;
+
+      // ✅ Driver's current location
+      final LatLng driverCurrentLocation = LatLng(
+        mapOPTController.currentLatitudePosition!.value,
+        mapOPTController.currentLongitudePosition!.value,
+      );
+
+      // ✅ Pickup location from accepted ride data
+      final pickupCoords = mapOPTController
+          .rideDetailsData.value?.passengerLocation?.coordinates;
+
+      if (pickupCoords == null || pickupCoords.length < 2) {
+        debugPrint('Driver route: pickup coords not ready');
+        return;
+      }
+
+      final LatLng pickupLocation = LatLng(pickupCoords[1], pickupCoords[0]);
+
+      // Guard against 0,0 coords
+      if (driverCurrentLocation.latitude == 0.0 ||
+          pickupLocation.latitude == 0.0) {
+        debugPrint('Driver route: coords are 0,0 — skipping');
+        return;
+      }
+
+      // ✅ Get polyline from driver → pickup
+      final List<LatLng> driverToPickupPoints =
+          await DirectionsService.getPolyline(
+        driverCurrentLocation,
+        pickupLocation,
+      );
+
+      if (driverToPickupPoints.isEmpty) {
+        debugPrint('Driver route: no points returned');
+        return;
+      }
+
+      setState(() {
+        // ✅ Add driver → pickup polyline (blue dashed)
+        _polylines.add(
+          Polyline(
+            polylineId: const PolylineId('driver-to-pickup'),
+            points: driverToPickupPoints,
+            color: Colors.blue,
+            width: 6,
+            startCap: Cap.roundCap,
+            endCap: Cap.roundCap,
+            patterns: [
+              PatternItem.dash(20),
+              PatternItem.gap(10),
+            ],
+          ),
+        );
+
+        // ✅ Add driver current location marker
+        markers.removeWhere(
+          (m) => m.markerId.value == 'driver-current-location',
+        );
+        markers.add(
+          Marker(
+            markerId: const MarkerId('driver-current-location'),
+            position: driverCurrentLocation,
+            icon: customCarMarker ?? BitmapDescriptor.defaultMarker,
+            infoWindow: const InfoWindow(title: 'Your Location'),
+          ),
+        );
+
+        // ✅ Add pickup marker
+        markers.removeWhere(
+          (m) => m.markerId.value == 'driver-pickup-target',
+        );
+        markers.add(
+          Marker(
+            markerId: const MarkerId('driver-pickup-target'),
+            position: pickupLocation,
+            icon: customMarker ?? BitmapDescriptor.defaultMarker,
+            infoWindow: const InfoWindow(title: 'Pickup Location'),
+          ),
+        );
+      });
+
+      // ✅ Animate camera to fit both points
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        final bounds = _boundsFromLatLng(driverToPickupPoints);
+        _mapController?.animateCamera(
+          CameraUpdate.newLatLngBounds(bounds, 80),
+        );
+      });
+    } catch (e) {
+      debugPrint('Driver route error: $e');
     }
-}
-
-
-Unable to acquire a buffer item, very likely client tried to acquire more than maxImages buffers
-I/flutter (30180): {isRideAccepted: true, ride: {_id: 699c1ffab5b464d1c298a28b, passenger: 69734654e521faf2febce658, driver: 696f2a250c440e726d3e0017, pickupAddress: Mohakhali, Dhaka 1212, Bangladesh, destinationAddress: House - 94, 4 Road - 03, Dhaka 1216, Bangladesh, pickupLocation: {type: Point, coordinates: [90.3773286, 23.8231815]}, destinationLocation: {type: Point, coordinates: [90.40574079999999, 23.7777571]}, destinationMeters: 9902, fare: 6.15, note: null, status: accepted, waitingTime: 0, waitingTimeFare: 0, cancelledBy: null, cancellationReason: null, cancellationFine: 0, reviewId: null, totalPayAmount: 0, acceptedAt: 2026-02-23T09:39:31.253Z, completeAt: null, cancelledAt: null, searchStartedAt: 2026-02-23T09:38:03.131Z, searchRadiusIndex: 1, lastSearchAt: 2026-02-23T09:38:03.295Z, notifiedDriverIds: [696f2a250c440e726d3e0017], createdAt: 2026-02-23T09:38:02.831Z, updatedAt: 2026-02-23T09:39:31.253Z, driverAcceptedLocation: {type: Point, coordinates: [90.38, 23.82]}}, driver: {driverLocation: {type: Point, coordin
-I/flutter (30180): {isRideAccepted: true, ride: {_id: 699c1ffab5b464d1c298a28b, passenger: 69734654e521faf2febce658, driver: 696f2a250c440e726d3e0017, pickupAddress: Mohakhali, Dhaka 1212, Bangladesh, destinationAddress: House - 94, 4 Road - 03, Dhaka 1216, Bangladesh, pickupLocation: {type: Point, coordinates: [90.3773286, 23.8231815]}, destinationLocation: {type: Point, coordinates: [90.40574079999999, 23.7777571]}, destinationMeters: 9902, fare: 6.15, note: null, status: accepted, waitingTime: 0, waitingTimeFare: 0, cancelledBy: null, cancellationReason: null, cancellationFine: 0, reviewId: null, totalPayAmount: 0, acceptedAt: 2026-02-23T09:39:31.253Z, completeAt: null, cancelledAt: null, searchStartedAt: 2026-02-23T09:38:03.131Z, searchRadiusIndex: 1, lastSearchAt: 2026-02-23T09:38:03.295Z, notifiedDriverIds: [696f2a250c440e726d3e0017], createdAt: 2026-02-23T09:38:02.831Z, updatedAt: 2026-02-23T09:39:31.253Z, driverAcceptedLocation: {type: Point, coordinates: [90.38, 23.82]}}, driver: {driverLocation: {type: Point, coordin
-D/FLTFireMsgReceiver(30180): broadcast received for message
+  }
 
 
 
-IIIIIISSSSSUUUUU 2 / 25 / 26
-when location off then show the issue enable are come from top and size small
-permission popup very big
+ /*
+
+          if( userController.userModel.value?.userProfile?.role == 'passenger')
+
+
+          if( userController.userModel.value?.userProfile?.role == 'driver')
+            GoogleMap(
+              // onCameraMove: (CameraPosition position) {
+              //   LatLng center = position.target;
+              //   print("Map center: ${center.latitude}, ${center.longitude}");
+              // },
+              // onCameraMove: (CameraPosition position) {
+              //   currentZoom = position.zoom;
+              //
+              //   double newSize = (currentZoom * 3).clamp(20, 100);
+              //   if ((newSize - markerSize).abs() > 2) {
+              //     markerSize = newSize;
+              //     setCustomMarker();
+              //   }
+              // },
+              mapType: MapType.normal,
+              // zoomGesturesEnabled: true,
+              // zoomControlsEnabled: true,
+              //initialCameraPosition: _mapCtrl.kGooglePlex,
+
+              initialCameraPosition: CameraPosition(
+                target: destination,
+                // target: LatLng(mapOPTController.currentLatitudePosition!.value,
+                //     mapOPTController.currentLongitudePosition!.value),
+                zoom: currentZoom,
+              ),
+              markers: {
+                Marker(
+                  markerId: MarkerId('asjdfklajsdkl'),
+                  icon: BitmapDescriptor.defaultMarker,
+                )
+              },
+              polylines: _polylines,
+              // onMapCreated: (controller) {
+              //   _mapController = controller;
+              //   _loadRoute(); // ← also call here so map is ready
+              // },
+              // markers: mapOPTController.isFirstStep == false
+              //     ? _singleMarkers
+              //     : _markers,
+              // myLocationButtonEnabled: true,
+              // myLocationEnabled: true,
+              // onMapCreated: (controller) {
+              //   _mapController = controller;
+              //   // _loadRoute();
+              // },
+              // markers: {
+              //   Marker(
+              //       markerId: const MarkerId('marker'),
+              //       position: initialLocation,
+              //       draggable: true,
+              //       icon: customMarker ?? BitmapDescriptor.defaultMarker,
+              //       onDragEnd: (updateLanLng) {
+              //         setState(() {
+              //           initialLocation = updateLanLng;
+              //         });
+              //       },
+              //       anchor: Offset(0.5, 0.5)),
+              //   Marker(
+              //     markerId: const MarkerId('destination'),
+              //     position: destination,
+              //     draggable: true,
+              //     onDragEnd: (updatedLatLng) {
+              //       setState(() {
+              //         destination = updatedLatLng;
+              //       });
+              //     },
+              //   )
+              // },
+              circles: {
+                Circle(
+                  circleId: CircleId('currentPassenger'),
+                  center: LatLng(
+                      mapOPTController.currentLatitudePosition!.value,
+                      mapOPTController.currentLongitudePosition!.value),
+                  radius: 10,
+                  strokeColor: Colors.white,
+                  strokeWidth: 1,
+                  fillColor: Color(0xFF006491).withOpacity(0.2),
+                  consumeTapEvents: true,
+                ),
+                Circle(
+                  circleId: const CircleId('destination'),
+                  center: destination,
+                  radius: 10,
+                  strokeColor: Colors.white,
+                  strokeWidth: 1,
+                  fillColor: const Color(0xFF006491).withOpacity(0.2),
+                ),
+              },
+            ),
+
+
+          */
+
+          /* Single Bottom Modal Sheet [ Fixed ]  */
+          /*if ( googleSearchLocationController.isModalOn.value )
+            Positioned(
+              top: 0,
+              bottom: 0,
+              left: 0,
+              right: 0,
+              child: BottomSheet(
+                onClosing: () {},
+                backgroundColor: Colors.transparent,
+                enableDrag: false,
+                builder: (context) {
+                  return RideRequestBottomSheet(
+                    pickupLocation:
+                        googleSearchLocationController.pickupController.text,
+                    dropLocation:
+                        googleSearchLocationController.dropController.text,
+                    distance: googleSearchLocationController.distance.value,
+                    rideFare:
+                        googleSearchLocationController.fare.value.toString(),
+                  );
+                },
+              ),
+            ),*/
+
+
+
+ // markers: mapOPTController.isFirstStep == false
+              //     ? _singleMarkers
+              //     : _markers,
+              // myLocationButtonEnabled: true,
+              // myLocationEnabled: true,
+              // onMapCreated: (controller) {
+              //   _mapController = controller;
+              //   // _loadRoute();
+              // },
+              // markers: {
+              //   Marker(
+              //       markerId: const MarkerId('marker'),
+              //       position: initialLocation,
+              //       draggable: true,
+              //       icon: customMarker ?? BitmapDescriptor.defaultMarker,
+              //       onDragEnd: (updateLanLng) {
+              //         setState(() {
+              //           initialLocation = updateLanLng;
+              //         });
+              //       },
+              //       anchor: Offset(0.5, 0.5)),
+              //   Marker(
+              //     markerId: const MarkerId('destination'),
+              //     position: destination,
+              //     draggable: true,
+              //     onDragEnd: (updatedLatLng) {
+              //       setState(() {
+              //         destination = updatedLatLng;
+              //       });
+              //     },
+              //   )
+              // },
+
+
+               // onCameraMove: (CameraPosition position) {
+                            //   LatLng center = position.target;
+                            //   print("Map center: ${center.latitude}, ${center.longitude}");
+                            // },
+                            // onCameraMove: (CameraPosition position) {
+                            //   currentZoom = position.zoom;
+                            //
+                            //   double newSize = (currentZoom * 3).clamp(20, 100);
+                            //   if ((newSize - markerSize).abs() > 2) {
+                            //     markerSize = newSize;
+                            //     setCustomMarker();
+                            //   }
+                            // },
+
+
+
+    // ✅ Watch for driver ride acceptance
+    ever(mapOPTController.acceptedRideDataStatus, (bool accepted) {
+      if (accepted == true &&
+          userController.userModel.value?.userProfile?.role ==
+              AppConstants.driver) {
+        _loadDriverRoute();
+      }
+    });
