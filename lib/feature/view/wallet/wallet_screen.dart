@@ -263,6 +263,8 @@ class _WalletScreenState extends State<WalletScreen> {
 
   // History List Item
   Widget _buildListTile(int index, RecentHistory data) {
+    final transaction = getTransactionDisplay(data);   // ← just call this
+
     return ListTile(
       title: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -286,15 +288,13 @@ class _WalletScreenState extends State<WalletScreen> {
                   fontWeight: FontWeight.w400,
                   color: AppColors.recentHistoryListTileSubtitleColor,
                 ),
-              )
+              ),
             ],
           ),
           Text(
-            "",
+            transaction.amountText,   // ← auto text
             style: TextStyle(
-              color: (index % 2 != 0)
-                  ? AppColors.greenColor
-                  : AppColors.errorColor,
+              color: transaction.color,  // ← auto color
               fontSize: 18.sp,
               fontWeight: FontWeight.w500,
             ),
@@ -303,4 +303,60 @@ class _WalletScreenState extends State<WalletScreen> {
       ),
     );
   }
+
+  // Helper Function
+  TransactionDisplay getTransactionDisplay(RecentHistory data) {
+    final type = data.type ?? '';
+    final amount = data.amount?.toStringAsFixed(0) ?? '0';
+
+    switch (type) {
+      case 'add_money':
+      case 'ride_earning':
+      case 'refund':
+        return TransactionDisplay(
+          amountText: '+ \$$amount',
+          color: AppColors.greenColor,
+        );
+
+      case 'ride_fee':
+      case 'cancel_penalty':
+      case 'withdraw_approved':
+        return TransactionDisplay(
+          amountText: '- \$$amount',
+          color: AppColors.errorColor,
+        );
+
+      case 'withdraw_request':
+        return TransactionDisplay(
+          amountText: '~ \$$amount',
+          color: Colors.orange,
+        );
+
+      case 'withdraw_rejected':
+        return TransactionDisplay(
+          amountText: '+ \$$amount',
+          color: AppColors.greenColor,
+        );
+
+      case 'adjustment':
+        final isCredit = (data.amount ?? 0) >= 0;
+        return TransactionDisplay(
+          amountText: isCredit ? '+ \$$amount' : '- \$$amount',
+          color: isCredit ? AppColors.greenColor : AppColors.errorColor,
+        );
+
+      default:
+        return TransactionDisplay(
+          amountText: '\$$amount',
+          color: Colors.grey,
+        );
+    }
+  }
+}
+
+class TransactionDisplay {
+  final String amountText;
+  final Color color;
+
+  TransactionDisplay({required this.amountText, required this.color});
 }
