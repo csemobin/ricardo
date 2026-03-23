@@ -222,7 +222,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return CustomScaffold(
       appBar: AppBar(
         backgroundColor: AppColors.bgColor,
-        forceMaterialTransparency: true,
         centerTitle: true,
         title: Text(
           'Profile',
@@ -231,7 +230,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
             fontWeight: FontWeight.w700,
           ),
         ),
+        elevation: 0,
+        iconTheme: IconThemeData(
+          color: Colors.red
+        ),
+        actionsIconTheme: IconThemeData(
+          color: Colors.red
+        ),
+        automaticallyImplyLeading: true,
       ),
+
       body: SingleChildScrollView(
         child: Obx(
           () {

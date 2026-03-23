@@ -18,7 +18,7 @@ class CustomButtonNavBar extends GetView<CustomBottomNavBarController> {
     const HomeScreen(),
     const WalletScreen(),
     const HistoryScreen(),
-    ProfileScreen(),
+    const ProfileScreen(),
   ];
 
   final List<Map<String, dynamic>> _navItems = [

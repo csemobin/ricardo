@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:ricardo/app/utils/app_colors.dart';
@@ -57,7 +58,9 @@ class _LegalPolicyScreenState extends State<LegalPolicyScreen> {
         child: SingleChildScrollView(
           child: Obx(
             () {
-              return controller.isLoading.value == true ? LegalContentSimmer()  : Text(controller.legalContent.value);
+              return controller.isLoading.value == true ? LegalContentSimmer()  : Html(
+                data: controller.legalContent.value,
+              );
             },
           ),
         ),

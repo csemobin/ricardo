@@ -79,7 +79,11 @@ class EditProfileSettingScreen extends StatelessWidget {
                         Get.to(screen[index]['route'],
                             arguments: {'title': route, 'route': 'privacy'});
                       }
-                    } else {
+                    }
+                    else if(route == "Change Password" ){
+                      Get.to(screen[index]['route']);
+                    }
+                    else {
                       showDialog(
                         context: context,
                         builder: (context) {

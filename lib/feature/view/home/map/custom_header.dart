@@ -1,6 +1,7 @@
 import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:ricardo/feature/view/home/link_export_file.dart';
+import 'package:ricardo/feature/view/profile/profile_screen.dart';
 
 class CustomHeader extends StatelessWidget {
   const CustomHeader({
@@ -62,7 +63,7 @@ class CustomHeader extends StatelessWidget {
                               ),
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(50),
-                                child: Image.network(
+                               /* child: Image.network(
                                   '${ApiUrls.imageBaseUrl}$profileImage',
                                   fit: BoxFit.cover,
                                   width: 50,
@@ -75,13 +76,14 @@ class CustomHeader extends StatelessWidget {
                                       height: 50,
                                     );
                                   },
-                                ),
-                                /*child: GestureDetector(
+                                ),*/
+                                child: GestureDetector(
                                   onTap: () {
-                                    final cnt = Get.find<
-                                        CustomBottomNavBarController>();
-                                    cnt.selectedIndex.value = 3;
-                                    Get.toNamed(AppRoutes.customBottomNavBar);
+                                    Get.to(ProfileScreen());
+                                    // final cnt = Get.find<
+                                    //     CustomBottomNavBarController>();
+                                    // cnt.selectedIndex.value = 3;
+                                    // Get.toNamed(AppRoutes.customBottomNavBar);
                                   },
                                   child: Image.network(
                                     '${ApiUrls.imageBaseUrl}$profileImage',
@@ -97,7 +99,7 @@ class CustomHeader extends StatelessWidget {
                                       );
                                     },
                                   ),
-                                ),*/
+                                ),
                               ),
                             ),
                             GestureDetector(
