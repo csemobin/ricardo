@@ -112,8 +112,8 @@ class _OnBoardScreenState extends State<OnBoardScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Image.asset(
-                      Assets.images.applogo.path,
+                    SvgPicture.asset(
+                      Assets.images.applogo,
                       width: 100.w,
                       height: 100.h,
                     ),

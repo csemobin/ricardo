@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:ricardo/app/utils/app_colors.dart';
 import 'package:ricardo/app/utils/app_custom_design.dart';
@@ -460,8 +461,8 @@ class _WithdrawRequestScreenState extends State<WithdrawRequestScreen> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       SizedBox(height: 32.h),
-                      Image.asset(
-                        Assets.images.glassmorphismLogo.path,
+                      SvgPicture.asset(
+                        Assets.images.glassmorphismLogo,
                         height: 80.h,
                       ),
                       SizedBox(height: 30.h),

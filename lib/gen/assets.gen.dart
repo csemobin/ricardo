@@ -130,27 +130,23 @@ class $AssetsImagesGen {
   /// File path: assets/images/Vector.png
   AssetGenImage get vector => const AssetGenImage('assets/images/Vector.png');
 
-  /// File path: assets/images/active-history.png
-  AssetGenImage get activeHistory =>
-      const AssetGenImage('assets/images/active-history.png');
+  /// File path: assets/images/active-history.svg
+  String get activeHistory => 'assets/images/active-history.svg';
 
-  /// File path: assets/images/active-home.png
-  AssetGenImage get activeHome =>
-      const AssetGenImage('assets/images/active-home.png');
+  /// File path: assets/images/active-home.svg
+  String get activeHome => 'assets/images/active-home.svg';
 
-  /// File path: assets/images/active-profile.png
-  AssetGenImage get activeProfile =>
-      const AssetGenImage('assets/images/active-profile.png');
+  /// File path: assets/images/active-profile.svg
+  String get activeProfile => 'assets/images/active-profile.svg';
 
-  /// File path: assets/images/active-wallet.png
-  AssetGenImage get activeWallet =>
-      const AssetGenImage('assets/images/active-wallet.png');
+  /// File path: assets/images/active-wallet.svg
+  String get activeWallet => 'assets/images/active-wallet.svg';
 
   /// File path: assets/images/amico.png
   AssetGenImage get amico => const AssetGenImage('assets/images/amico.png');
 
-  /// File path: assets/images/applogo.png
-  AssetGenImage get applogo => const AssetGenImage('assets/images/applogo.png');
+  /// File path: assets/images/applogo.svg
+  String get applogo => 'assets/images/applogo.svg';
 
   /// File path: assets/images/arrow_drop_down.png
   AssetGenImage get arrowDropDown =>
@@ -190,8 +186,8 @@ class $AssetsImagesGen {
   AssetGenImage get documentIcon =>
       const AssetGenImage('assets/images/document_icon.png');
 
-  /// File path: assets/images/driver.png
-  AssetGenImage get driver => const AssetGenImage('assets/images/driver.png');
+  /// File path: assets/images/driver.svg
+  String get driver => 'assets/images/driver.svg';
 
   /// File path: assets/images/edit-profile-profile-screen.png
   AssetGenImage get editProfileProfileScreen =>
@@ -217,9 +213,8 @@ class $AssetsImagesGen {
   AssetGenImage get favoritesProfileImage =>
       const AssetGenImage('assets/images/favorites_profile_image.jpg');
 
-  /// File path: assets/images/glassmorphism_logo.png
-  AssetGenImage get glassmorphismLogo =>
-      const AssetGenImage('assets/images/glassmorphism_logo.png');
+  /// File path: assets/images/glassmorphism_logo.svg
+  String get glassmorphismLogo => 'assets/images/glassmorphism_logo.svg';
 
   /// File path: assets/images/green_pin.png
   AssetGenImage get greenPin =>
@@ -299,9 +294,8 @@ class $AssetsImagesGen {
   AssetGenImage get originHumanLogo =>
       const AssetGenImage('assets/images/origin-human-logo.png');
 
-  /// File path: assets/images/passenger.png
-  AssetGenImage get passenger =>
-      const AssetGenImage('assets/images/passenger.png');
+  /// File path: assets/images/passenger.svg
+  String get passenger => 'assets/images/passenger.svg';
 
   /// File path: assets/images/payment_icon.png
   AssetGenImage get paymentIcon =>
@@ -374,10 +368,6 @@ class $AssetsImagesGen {
   AssetGenImage get splashBackground =>
       const AssetGenImage('assets/images/splash_background.jpg');
 
-  /// File path: assets/images/splash_screen_background.jpg
-  AssetGenImage get splashScreenBackground =>
-      const AssetGenImage('assets/images/splash_screen_background.jpg');
-
   /// File path: assets/images/support-car-image.png
   AssetGenImage get supportCarImage =>
       const AssetGenImage('assets/images/support-car-image.png');
@@ -433,7 +423,7 @@ class $AssetsImagesGen {
       const AssetGenImage('assets/images/widraw_icon.png');
 
   /// List of all assets
-  List<AssetGenImage> get values => [
+  List<dynamic> get values => [
     vector,
     activeHistory,
     activeHome,
@@ -498,7 +488,6 @@ class $AssetsImagesGen {
     settingTermsAndConditionIcon,
     settingsProfileScreen,
     splashBackground,
-    splashScreenBackground,
     supportCarImage,
     supportEmailImage,
     supportPhoneImage,

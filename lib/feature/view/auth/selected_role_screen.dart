@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:ricardo/app/utils/app_colors.dart';
 import 'package:ricardo/feature/controllers/auth/sign_up_controller.dart';
@@ -60,28 +61,31 @@ class _SelectedRoleScreenState extends State<SelectedRoleScreen> {
                                 borderRadius: BorderRadius.circular(10.r),
                                 color: AppColors.whiteColor,
                                 border: Border.all(
-                                  color: controller.selectedRole.value == 'driver'
-                                      ? AppColors.primaryColor
-                                      : Color(0Xff0F0F0D).withAlpha(9),
+                                  color:
+                                      controller.selectedRole.value == 'driver'
+                                          ? AppColors.primaryColor
+                                          : Color(0Xff0F0F0D).withAlpha(9),
                                   width: 2,
                                 ),
                               ),
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   Expanded(
                                     child: Row(
                                       children: [
-                                        Image.asset(
-                                          Assets.images.driver.path,
-                                          width: 60.w,
-                                          height: 60.h,
+                                        SvgPicture.asset(
+                                          Assets.images.driver,
+                                          width: 36.w,
+                                          height: 36.h,
                                           fit: BoxFit.contain,
                                         ),
                                         SizedBox(width: 8.w),
                                         Flexible(
                                           child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
                                             children: [
                                               Text(
                                                 'Driver',
@@ -133,28 +137,31 @@ class _SelectedRoleScreenState extends State<SelectedRoleScreen> {
                                 borderRadius: BorderRadius.circular(10.r),
                                 color: AppColors.whiteColor,
                                 border: Border.all(
-                                  color: controller.selectedRole.value == 'passenger'
+                                  color: controller.selectedRole.value ==
+                                          'passenger'
                                       ? AppColors.primaryColor
                                       : Color(0Xff0F0F0D).withAlpha(9),
                                   width: 2,
                                 ),
                               ),
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   Expanded(
                                     child: Row(
                                       children: [
-                                        Image.asset(
-                                          Assets.images.passenger.path,
-                                          width: 60.w,
-                                          height: 60.h,
+                                        SvgPicture.asset(
+                                          Assets.images.passenger,
+                                          width: 36.w,
+                                          height: 36.h,
                                           fit: BoxFit.contain,
                                         ),
                                         SizedBox(width: 8.w),
                                         Flexible(
                                           child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
                                             children: [
                                               Text(
                                                 'Passenger',

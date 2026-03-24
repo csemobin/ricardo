@@ -4,9 +4,9 @@ import 'package:get/get.dart';
 import 'package:ricardo/app/helpers/time_format.dart';
 import 'package:ricardo/app/utils/app_colors.dart';
 import 'package:ricardo/app/utils/app_custom_design.dart';
-import 'package:ricardo/feature/controllers/wallet/add_money_controller.dart';
 import 'package:ricardo/feature/controllers/wallet/recent_history.dart';
 import 'package:ricardo/feature/models/wallet/wallet_history_model.dart' hide Image;
+import 'package:ricardo/feature/simmer/wallet_history_shimmer.dart';
 import 'package:ricardo/gen/assets.gen.dart';
 import 'package:ricardo/gen/fonts.gen.dart';
 import 'package:ricardo/routes/app_routes.dart';
@@ -21,11 +21,16 @@ class WalletScreen extends StatefulWidget {
 
 class _WalletScreenState extends State<WalletScreen> {
   final controller = Get.put(RecentHistoryController());
+
   @override
   void initState() {
     super.initState();
-    controller.fetchRecentHistory(isLoadMore: false);
+    // ✅ Fixed: initState is void — just call fetch, never return a widget
+    if (controller.recentHistoryList.isEmpty) {
+      controller.fetchRecentHistory(isLoadMore: false);
+    }
   }
+
   @override
   Widget build(BuildContext context) {
     return CustomScaffold(
@@ -41,54 +46,63 @@ class _WalletScreenState extends State<WalletScreen> {
           ),
         ),
       ),
-      body: RefreshIndicator( onRefresh: ()async{
-        await controller.fetchRecentHistory(isLoadMore: false);
-      }, child: Obx((){
-        return Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            if( controller.userRole == 'driver')
-              _buildTodayEarningsContainer(),
-            SizedBox(height: 10.h),
-            _buildBalanceContainer(),
-            SizedBox(height: 20.h),
-            if( controller.userRole == 'driver')
-              _buildActionButtons(),
+      body: RefreshIndicator(
+        onRefresh: () async {
+          await controller.fetchRecentHistory(isLoadMore: false);
+        },
+        child: Obx(() {
+          // ✅ Show full-page shimmer while loading
+          if (controller.isWalletLoadingStatus.value) {
+            return WalletScreenShimmer(userRole: controller.userRole.value);
+          }
 
-            if( controller.userRole == 'passenger')
-              GestureDetector(
-                onTap: (){
-                  Get.toNamed(AppRoutes.addAmountScreen);
-                },
-                child: Container(
-                  width: double.maxFinite,
-                  height: 44.h,
-                  alignment: Alignment.center,
-                  decoration: AppCustomDesign.linearButtonBoxDecorationDesign,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Image.asset(Assets.images.widrawIcon.path),
-                      SizedBox(width: 6.w),
-                      Text(
-                        'Add Money',
-                        style: TextStyle(
-                          color: true ? Colors.white : AppColors.greenColor,
-                          fontSize: 14.sp,
-                          fontWeight: FontWeight.w400,
-                        ),
+          return SingleChildScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (controller.userRole == 'driver')
+                  _buildTodayEarningsContainer(),
+                SizedBox(height: 10.h),
+                _buildBalanceContainer(),
+                SizedBox(height: 20.h),
+                if (controller.userRole == 'driver') _buildActionButtons(),
+                if (controller.userRole == 'passenger')
+                  GestureDetector(
+                    onTap: () => Get.toNamed(AppRoutes.addAmountScreen),
+                    child: Container(
+                      width: double.maxFinite,
+                      height: 44.h,
+                      alignment: Alignment.center,
+                      decoration:
+                      AppCustomDesign.linearButtonBoxDecorationDesign,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Image.asset(Assets.images.widrawIcon.path),
+                          SizedBox(width: 6.w),
+                          Text(
+                            'Add Money',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 14.sp,
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
+                        ],
                       ),
-                    ],
+                    ),
                   ),
-                ),
-              ),
-            SizedBox(height: 20.h),
-            Text('Recent History', style: AppCustomDesign.walletScreenTextStyle),
-            Expanded(child: _buildHistoryList()),
-          ],
-        );
-      }),),
+                SizedBox(height: 20.h),
+                Text('Recent History',
+                    style: AppCustomDesign.walletScreenTextStyle),
+                _buildHistoryList(),
+              ],
+            ),
+          );
+        }),
+      ),
     );
   }
 
@@ -118,13 +132,13 @@ class _WalletScreenState extends State<WalletScreen> {
             ),
             SizedBox(height: 4.h),
             Text(
-              '\$ ${controller.todayEarnings.value.toString()  }',
+              '\$ ${controller.todayEarnings.value.toString()}',
               style: TextStyle(
                 fontSize: 16.sp,
                 fontWeight: FontWeight.w500,
                 color: AppColors.appBarTitleColor,
               ),
-            )
+            ),
           ],
         ),
       ),
@@ -165,10 +179,11 @@ class _WalletScreenState extends State<WalletScreen> {
                 fontWeight: FontWeight.w500,
                 color: AppColors.whiteColor,
               ),
-            )
+            ),
           ],
         ),
-      ),    );
+      ),
+    );
   }
 
   // Action Buttons (Payment & Withdraw)
@@ -192,7 +207,7 @@ class _WalletScreenState extends State<WalletScreen> {
     );
   }
 
-  // Custom Button Builder Method
+  // Custom Button Builder
   Widget _buildCustomButton({
     required String iconPath,
     required String label,
@@ -208,12 +223,9 @@ class _WalletScreenState extends State<WalletScreen> {
         decoration: isFilledButton
             ? AppCustomDesign.linearButtonBoxDecorationDesign
             : BoxDecoration(
-                border: Border.all(
-                  color: AppColors.greenColor,
-                  width: 1.w,
-                ),
-                borderRadius: BorderRadius.circular(50.r),
-              ),
+          border: Border.all(color: AppColors.greenColor, width: 1.w),
+          borderRadius: BorderRadius.circular(50.r),
+        ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -235,35 +247,34 @@ class _WalletScreenState extends State<WalletScreen> {
 
   // History List Builder
   Widget _buildHistoryList() {
-    return Obx(() {
-      if (controller.isWalletLoadingStatus.value) {
-        return const Center(child: CircularProgressIndicator());
-      }
-
-      if (controller.recentHistoryList.isEmpty) {
-        return const Center(child: Text("No recent history found"));
-      }
-
-      return ListView.separated(
-        itemBuilder: (context, index) {
-          final data = controller.recentHistoryList[index];
-          return _buildListTile(index, data);
-        },
-        separatorBuilder: (context, index) => Divider(
-          color: AppColors.dividerLineColor,
-          height: 1.h,
+    if (controller.recentHistoryList.isEmpty) {
+      return Center(
+        child: Padding(
+          padding: EdgeInsets.only(top: 40.h),
+          child: const Text("No recent history found"),
         ),
-        itemCount: controller.recentHistoryList.length,
-        padding: const EdgeInsets.only(bottom: 80),
       );
-    });
+    }
+
+    return ListView.separated(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemBuilder: (context, index) {
+        final data = controller.recentHistoryList[index];
+        return _buildListTile(index, data);
+      },
+      separatorBuilder: (context, index) => Divider(
+        color: AppColors.dividerLineColor,
+        height: 1.h,
+      ),
+      itemCount: controller.recentHistoryList.length,
+      padding: const EdgeInsets.only(bottom: 80),
+    );
   }
-
-
 
   // History List Item
   Widget _buildListTile(int index, RecentHistory data) {
-    final transaction = getTransactionDisplay(data);   // ← just call this
+    final transaction = getTransactionDisplay(data);
 
     return ListTile(
       title: Row(
@@ -292,9 +303,9 @@ class _WalletScreenState extends State<WalletScreen> {
             ],
           ),
           Text(
-            transaction.amountText,   // ← auto text
+            transaction.amountText,
             style: TextStyle(
-              color: transaction.color,  // ← auto color
+              color: transaction.color,
               fontSize: 18.sp,
               fontWeight: FontWeight.w500,
             ),
@@ -314,42 +325,26 @@ class _WalletScreenState extends State<WalletScreen> {
       case 'ride_earning':
       case 'refund':
         return TransactionDisplay(
-          amountText: '+ \$$amount',
-          color: AppColors.greenColor,
-        );
-
+            amountText: '+ \$$amount', color: AppColors.greenColor);
       case 'ride_fee':
       case 'cancel_penalty':
       case 'withdraw_approved':
         return TransactionDisplay(
-          amountText: '- \$$amount',
-          color: AppColors.errorColor,
-        );
-
+            amountText: '- \$$amount', color: AppColors.errorColor);
       case 'withdraw_request':
         return TransactionDisplay(
-          amountText: '~ \$$amount',
-          color: Colors.orange,
-        );
-
+            amountText: '~ \$$amount', color: Colors.orange);
       case 'withdraw_rejected':
         return TransactionDisplay(
-          amountText: '+ \$$amount',
-          color: AppColors.greenColor,
-        );
-
+            amountText: '+ \$$amount', color: AppColors.greenColor);
       case 'adjustment':
         final isCredit = (data.amount ?? 0) >= 0;
         return TransactionDisplay(
           amountText: isCredit ? '+ \$$amount' : '- \$$amount',
           color: isCredit ? AppColors.greenColor : AppColors.errorColor,
         );
-
       default:
-        return TransactionDisplay(
-          amountText: '\$$amount',
-          color: Colors.grey,
-        );
+        return TransactionDisplay(amountText: '\$$amount', color: Colors.grey);
     }
   }
 }
@@ -357,6 +352,5 @@ class _WalletScreenState extends State<WalletScreen> {
 class TransactionDisplay {
   final String amountText;
   final Color color;
-
   TransactionDisplay({required this.amountText, required this.color});
 }

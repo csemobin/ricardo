@@ -4,6 +4,7 @@ import 'package:ricardo/app/helpers/prefs_helper.dart';
 import 'package:ricardo/app/utils/app_constants.dart';
 import 'package:ricardo/feature/controllers/custom_bottom_nav_bar_controller.dart';
 import 'package:ricardo/feature/controllers/user_controller.dart';
+import 'package:ricardo/feature/controllers/wallet/recent_history.dart';
 import 'package:ricardo/routes/app_routes.dart';
 import 'package:ricardo/services/api_client.dart';
 import 'package:ricardo/services/api_urls.dart';
@@ -113,6 +114,10 @@ class SignInController extends GetxController {
       SocketServices.socket?.dispose();
       PrefsHelper.remove(AppConstants.bearerToken);
       PrefsHelper.remove(AppConstants.fcmToken);
+
+      final cnt = Get.find<RecentHistoryController>();
+      cnt.recentHistoryList.value = [];
+
       Get.offAllNamed(AppRoutes.signInScreen);
     } else {
       Get.snackbar('Error', response.body['data']['message']);

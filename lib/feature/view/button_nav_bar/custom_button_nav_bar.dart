@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:ricardo/app/utils/app_colors.dart';
 import 'package:ricardo/feature/controllers/custom_bottom_nav_bar_controller.dart';
@@ -22,10 +23,10 @@ class CustomButtonNavBar extends GetView<CustomBottomNavBarController> {
   ];
 
   final List<Map<String, dynamic>> _navItems = [
-    {"icon": Assets.images.activeHome.path, "label": "Home"},
-    {"icon": Assets.images.activeWallet.path, "label": "Wallet"},
-    {"icon": Assets.images.activeHistory.path, "label": "History"},
-    {"icon": Assets.images.activeProfile.path, "label": "Profile"},
+    {"icon": Assets.images.activeHome, "label": "Home"},
+    {"icon": Assets.images.activeWallet, "label": "Wallet"},
+    {"icon": Assets.images.activeHistory, "label": "History"},
+    {"icon": Assets.images.activeProfile, "label": "Profile"},
   ];
 
   @override
@@ -102,7 +103,15 @@ class CustomButtonNavBar extends GetView<CustomBottomNavBarController> {
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Image.asset(
+                        /*Image.asset(
+                          item['icon'],
+                          width: 24.w,
+                          height: 24.h,
+                          color: isSelected
+                              ? AppColors.activeIconColor
+                              : AppColors.deActiveIconColor,
+                        ),*/
+                        SvgPicture.asset(
                           item['icon'],
                           width: 24.w,
                           height: 24.h,

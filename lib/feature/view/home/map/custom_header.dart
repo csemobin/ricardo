@@ -63,27 +63,9 @@ class CustomHeader extends StatelessWidget {
                               ),
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(50),
-                               /* child: Image.network(
-                                  '${ApiUrls.imageBaseUrl}$profileImage',
-                                  fit: BoxFit.cover,
-                                  width: 50,
-                                  height: 50,
-                                  errorBuilder: (context, error, stackTrace) {
-                                    return Image.asset(
-                                      Assets.images.profileImage.path,
-                                      fit: BoxFit.cover,
-                                      width: 50,
-                                      height: 50,
-                                    );
-                                  },
-                                ),*/
                                 child: GestureDetector(
                                   onTap: () {
                                     Get.to(ProfileScreen());
-                                    // final cnt = Get.find<
-                                    //     CustomBottomNavBarController>();
-                                    // cnt.selectedIndex.value = 3;
-                                    // Get.toNamed(AppRoutes.customBottomNavBar);
                                   },
                                   child: Image.network(
                                     '${ApiUrls.imageBaseUrl}$profileImage',
@@ -102,13 +84,42 @@ class CustomHeader extends StatelessWidget {
                                 ),
                               ),
                             ),
-                            GestureDetector(
-                              onTap: () =>
-                                  Get.toNamed(AppRoutes.notificationScreen),
-                              child: Image.asset(
-                                Assets.images.bell.path,
-                                width: 24,
-                                height: 24,
+                            ClipRRect(
+                              borderRadius: BorderRadius.all(Radius.circular(100)),
+                              child: BackdropFilter(
+                                filter: ui.ImageFilter.blur(
+                                  sigmaX: 4,
+                                  sigmaY: 4,
+                                ),
+                                child: Container(
+                                  padding: EdgeInsets.all(10.r),
+                                  decoration: BoxDecoration(
+                                    color: (AppColors.whiteColor).withOpacity(0.3),
+                                    borderRadius: BorderRadius.circular(
+                                      100
+                                    ),
+                                    border: Border.all(
+                                      color: ( AppColors.whiteColor).withOpacity(0.5),
+                                    ),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black.withOpacity(0.1),
+                                        offset: const Offset(0, -4),
+                                        blurRadius: 4,
+                                        spreadRadius: 0,
+                                      ),
+                                    ],
+                                  ),
+                                  child: GestureDetector(
+                                    onTap: () =>
+                                        Get.toNamed(AppRoutes.notificationScreen),
+                                    child: Image.asset(
+                                      Assets.images.bell.path,
+                                      width: 24,
+                                      height: 24,
+                                    ),
+                                  ),// Use the passed child here
+                                ),
                               ),
                             ),
                           ],
@@ -134,8 +145,8 @@ class CustomHeader extends StatelessWidget {
                                 overflow: TextOverflow.ellipsis,
                               ),
                             ),
-                            SizedBox(width: 8.w),
-                            Image.asset(Assets.images.rightArrow.path),
+                            // SizedBox(width: 8.w),
+                            // Image.asset(Assets.images.rightArrow.path),
                           ],
                         ),
                       ],

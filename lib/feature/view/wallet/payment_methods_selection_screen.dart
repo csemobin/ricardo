@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:ricardo/app/utils/app_colors.dart';
 import 'package:ricardo/app/utils/app_custom_design.dart';
@@ -203,7 +204,7 @@ class _PaymentMethodsSelectionScreenState
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Padding(padding: EdgeInsets.only(top: 32.h)),
-                    Image.asset(Assets.images.glassmorphismLogo.path),
+                    SvgPicture.asset(Assets.images.glassmorphismLogo),
                     SizedBox(
                       height: 30.h,
                     ),
