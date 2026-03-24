@@ -20,15 +20,15 @@ class WalletScreen extends StatefulWidget {
 }
 
 class _WalletScreenState extends State<WalletScreen> {
-  final controller = Get.put(RecentHistoryController());
+
+  // ✅ find: reuses the permanent instance from DI — never recreates
+  final controller = Get.find<RecentHistoryController>();
 
   @override
   void initState() {
     super.initState();
-    // ✅ Fixed: initState is void — just call fetch, never return a widget
-    if (controller.recentHistoryList.isEmpty) {
-      controller.fetchRecentHistory(isLoadMore: false);
-    }
+    // ✅ only hits API on first visit, skips on tab switch
+    controller.fetchIfNeeded();
   }
 
   @override
@@ -48,10 +48,10 @@ class _WalletScreenState extends State<WalletScreen> {
       ),
       body: RefreshIndicator(
         onRefresh: () async {
-          await controller.fetchRecentHistory(isLoadMore: false);
+          // ✅ always fetches fresh on pull-to-refresh
+          await controller.forceRefresh();
         },
         child: Obx(() {
-          // ✅ Show full-page shimmer while loading
           if (controller.isWalletLoadingStatus.value) {
             return WalletScreenShimmer(userRole: controller.userRole.value);
           }
@@ -62,21 +62,21 @@ class _WalletScreenState extends State<WalletScreen> {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                if (controller.userRole == 'driver')
+                if (controller.userRole.value == 'driver')
                   _buildTodayEarningsContainer(),
                 SizedBox(height: 10.h),
                 _buildBalanceContainer(),
                 SizedBox(height: 20.h),
-                if (controller.userRole == 'driver') _buildActionButtons(),
-                if (controller.userRole == 'passenger')
+                if (controller.userRole.value == 'driver')
+                  _buildActionButtons(),
+                if (controller.userRole.value == 'passenger')
                   GestureDetector(
                     onTap: () => Get.toNamed(AppRoutes.addAmountScreen),
                     child: Container(
                       width: double.maxFinite,
                       height: 44.h,
                       alignment: Alignment.center,
-                      decoration:
-                      AppCustomDesign.linearButtonBoxDecorationDesign,
+                      decoration: AppCustomDesign.linearButtonBoxDecorationDesign,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -106,7 +106,8 @@ class _WalletScreenState extends State<WalletScreen> {
     );
   }
 
-  // Today's Earnings Container
+  // ── rest of your widget methods unchanged ──────────────────────
+
   Widget _buildTodayEarningsContainer() {
     return Container(
       height: 63.h,
@@ -145,7 +146,6 @@ class _WalletScreenState extends State<WalletScreen> {
     );
   }
 
-  // Balance Container
   Widget _buildBalanceContainer() {
     return Container(
       height: 134.h,
@@ -173,7 +173,7 @@ class _WalletScreenState extends State<WalletScreen> {
             ),
             SizedBox(height: 4.h),
             Text(
-              '\$ ${controller.userWallet.value.toStringAsFixed(2)} ',
+              '\$ ${controller.userWallet.value.toStringAsFixed(2)}',
               style: TextStyle(
                 fontSize: 24.sp,
                 fontWeight: FontWeight.w500,
@@ -186,7 +186,6 @@ class _WalletScreenState extends State<WalletScreen> {
     );
   }
 
-  // Action Buttons (Payment & Withdraw)
   Widget _buildActionButtons() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -207,7 +206,6 @@ class _WalletScreenState extends State<WalletScreen> {
     );
   }
 
-  // Custom Button Builder
   Widget _buildCustomButton({
     required String iconPath,
     required String label,
@@ -245,7 +243,6 @@ class _WalletScreenState extends State<WalletScreen> {
     );
   }
 
-  // History List Builder
   Widget _buildHistoryList() {
     if (controller.recentHistoryList.isEmpty) {
       return Center(
@@ -272,10 +269,8 @@ class _WalletScreenState extends State<WalletScreen> {
     );
   }
 
-  // History List Item
   Widget _buildListTile(int index, RecentHistory data) {
     final transaction = getTransactionDisplay(data);
-
     return ListTile(
       title: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -315,28 +310,22 @@ class _WalletScreenState extends State<WalletScreen> {
     );
   }
 
-  // Helper Function
   TransactionDisplay getTransactionDisplay(RecentHistory data) {
     final type = data.type ?? '';
     final amount = data.amount?.toStringAsFixed(0) ?? '0';
-
     switch (type) {
       case 'add_money':
       case 'ride_earning':
       case 'refund':
-        return TransactionDisplay(
-            amountText: '+ \$$amount', color: AppColors.greenColor);
+        return TransactionDisplay(amountText: '+ \$$amount', color: AppColors.greenColor);
       case 'ride_fee':
       case 'cancel_penalty':
       case 'withdraw_approved':
-        return TransactionDisplay(
-            amountText: '- \$$amount', color: AppColors.errorColor);
+        return TransactionDisplay(amountText: '- \$$amount', color: AppColors.errorColor);
       case 'withdraw_request':
-        return TransactionDisplay(
-            amountText: '~ \$$amount', color: Colors.orange);
+        return TransactionDisplay(amountText: '~ \$$amount', color: Colors.orange);
       case 'withdraw_rejected':
-        return TransactionDisplay(
-            amountText: '+ \$$amount', color: AppColors.greenColor);
+        return TransactionDisplay(amountText: '+ \$$amount', color: AppColors.greenColor);
       case 'adjustment':
         final isCredit = (data.amount ?? 0) >= 0;
         return TransactionDisplay(

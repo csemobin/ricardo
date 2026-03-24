@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:ricardo/feature/models/wallet/wallet_history_model.dart';
@@ -17,25 +16,40 @@ class RecentHistoryController extends GetxController {
   RxInt len = 200.obs;
   RxList<RecentHistory> recentHistoryList = <RecentHistory>[].obs;
 
+  // ✅ Guard — prevents redundant API calls on tab switch
+  bool _hasFetchedOnce = false;
+
+  /// Called from initState — skips if data already loaded
+  Future<void> fetchIfNeeded() async {
+    if (_hasFetchedOnce && recentHistoryList.isNotEmpty) return;
+    await fetchRecentHistory(isLoadMore: false);
+  }
+
+  /// Called from RefreshIndicator — always hits API
+  Future<void> forceRefresh() async {
+    await fetchRecentHistory(isLoadMore: false);
+  }
 
   Future<void> fetchRecentHistory({bool isLoadMore = false}) async {
     try {
       isWalletLoadingStatus.value = true;
       final response = await ApiClient.getData(
-          ApiUrls.paymentRecentHistory(currentPage.value, len.value));
+        ApiUrls.paymentRecentHistory(currentPage.value, len.value),
+      );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         final data = response.body['data'];
 
-        // Convert to double safely - handles both int and double from API
-        todayEarnings.value = (data['todayEarnings'] ?? 0).toDouble();
+        todayEarnings.value   = (data['todayEarnings']   ?? 0).toDouble();
         allTimeEarnings.value = (data['allTimeEarnings'] ?? 0).toDouble();
-        userWallet.value = (data['userWallet'] ?? 0).toDouble();
-        userRole.value = data['userRole'] ?? '';
+        userWallet.value      = (data['userWallet']      ?? 0).toDouble();
+        userRole.value        = data['userRole']         ?? '';
 
         final recentHistories = data['recentHistory'] as List;
         recentHistoryList.value =
             recentHistories.map((e) => RecentHistory.fromJson(e)).toList();
+
+        _hasFetchedOnce = true; // ✅ mark loaded
       } else {
         Get.snackbar('Error', response.body['data']['message']);
       }
