@@ -22,7 +22,9 @@ class _HistoryScreenState extends State<HistoryScreen> {
   @override
   void initState() {
     super.initState();
-    controller.fetchHistoryData();
+    if( controller.historyDatas.isEmpty ){
+      controller.fetchHistoryData();
+    }
   }
 
   @override

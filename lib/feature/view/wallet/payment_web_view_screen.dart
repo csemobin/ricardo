@@ -98,7 +98,7 @@ class _PaymentWebViewScreenState extends State<PaymentWebViewScreen> {
   void _handlePaymentSuccess() {
 
     final hstController = Get.find<RecentHistoryController>();
-    hstController.fetchRecentHistory(isLoadMore: false);
+    hstController.forceRefresh();
 
     final controller = Get.find<CustomBottomNavBarController>();
     controller.selectedIndex.value = 1;

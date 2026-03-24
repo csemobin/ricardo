@@ -20,15 +20,29 @@ class WalletScreen extends StatefulWidget {
 }
 
 class _WalletScreenState extends State<WalletScreen> {
-
-  // ✅ find: reuses the permanent instance from DI — never recreates
-  final controller = Get.find<RecentHistoryController>();
+  final controller    = Get.find<RecentHistoryController>();
+  final ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
     super.initState();
-    // ✅ only hits API on first visit, skips on tab switch
     controller.fetchIfNeeded();
+
+    // ── Infinite scroll listener ───────────────────────────────
+    // Triggers loadMore() when user scrolls within 200px of the bottom
+    _scrollController.addListener(() {
+      final position   = _scrollController.position;
+      final threshold  = position.maxScrollExtent - 200.h;
+      if (position.pixels >= threshold) {
+        controller.loadMore();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
   }
 
   @override
@@ -47,16 +61,15 @@ class _WalletScreenState extends State<WalletScreen> {
         ),
       ),
       body: RefreshIndicator(
-        onRefresh: () async {
-          // ✅ always fetches fresh on pull-to-refresh
-          await controller.forceRefresh();
-        },
+        onRefresh: () async => controller.forceRefresh(),
         child: Obx(() {
+          // Full page shimmer on first load
           if (controller.isWalletLoadingStatus.value) {
             return WalletScreenShimmer(userRole: controller.userRole.value);
           }
 
           return SingleChildScrollView(
+            controller: _scrollController, // ← attach scroll controller
             physics: const AlwaysScrollableScrollPhysics(),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
@@ -97,7 +110,36 @@ class _WalletScreenState extends State<WalletScreen> {
                 SizedBox(height: 20.h),
                 Text('Recent History',
                     style: AppCustomDesign.walletScreenTextStyle),
+                SizedBox(height: 8.h),
+
+                // ── History List ─────────────────────────────────
                 _buildHistoryList(),
+
+                // ── Load More Indicator ──────────────────────────
+                Obx(() {
+                  if (controller.isLoadingMore.value) {
+                    return Padding(
+                      padding: EdgeInsets.symmetric(vertical: 16.h),
+                      child: const Center(child: CircularProgressIndicator()),
+                    );
+                  }
+                  if (!controller.hasMoreData.value &&
+                      controller.recentHistoryList.isNotEmpty) {
+                    return Padding(
+                      padding: EdgeInsets.symmetric(vertical: 16.h),
+                      child: Center(
+                        child: Text(
+                          'No more transactions',
+                          style: TextStyle(
+                            fontSize: 13.sp,
+                            color: AppColors.recentHistoryListTileSubtitleColor,
+                          ),
+                        ),
+                      ),
+                    );
+                  }
+                  return const SizedBox.shrink();
+                }),
               ],
             ),
           );
@@ -105,8 +147,6 @@ class _WalletScreenState extends State<WalletScreen> {
       ),
     );
   }
-
-  // ── rest of your widget methods unchanged ──────────────────────
 
   Widget _buildTodayEarningsContainer() {
     return Container(
@@ -256,16 +296,16 @@ class _WalletScreenState extends State<WalletScreen> {
     return ListView.separated(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
+      itemCount: controller.recentHistoryList.length,
+      separatorBuilder: (_, __) => Divider(
+        color: AppColors.dividerLineColor,
+        height: 1.h,
+      ),
+      padding: EdgeInsets.only(bottom: 25),
       itemBuilder: (context, index) {
         final data = controller.recentHistoryList[index];
         return _buildListTile(index, data);
       },
-      separatorBuilder: (context, index) => Divider(
-        color: AppColors.dividerLineColor,
-        height: 1.h,
-      ),
-      itemCount: controller.recentHistoryList.length,
-      padding: const EdgeInsets.only(bottom: 80),
     );
   }
 
@@ -311,7 +351,7 @@ class _WalletScreenState extends State<WalletScreen> {
   }
 
   TransactionDisplay getTransactionDisplay(RecentHistory data) {
-    final type = data.type ?? '';
+    final type   = data.type   ?? '';
     final amount = data.amount?.toStringAsFixed(0) ?? '0';
     switch (type) {
       case 'add_money':

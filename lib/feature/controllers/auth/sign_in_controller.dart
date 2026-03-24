@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:ricardo/app/helpers/prefs_helper.dart';
 import 'package:ricardo/app/utils/app_constants.dart';
 import 'package:ricardo/feature/controllers/custom_bottom_nav_bar_controller.dart';
+import 'package:ricardo/feature/controllers/history/history_controller.dart';
 import 'package:ricardo/feature/controllers/user_controller.dart';
 import 'package:ricardo/feature/controllers/wallet/recent_history.dart';
 import 'package:ricardo/routes/app_routes.dart';
@@ -115,8 +116,11 @@ class SignInController extends GetxController {
       PrefsHelper.remove(AppConstants.bearerToken);
       PrefsHelper.remove(AppConstants.fcmToken);
 
-      final cnt = Get.find<RecentHistoryController>();
-      cnt.recentHistoryList.value = [];
+      final recentCnt = Get.find<RecentHistoryController>();
+      recentCnt.recentHistoryList.value = [];
+
+      final historyCnt = Get.find<HistoryController>();
+      historyCnt.historyDatas.value = [];
 
       Get.offAllNamed(AppRoutes.signInScreen);
     } else {
