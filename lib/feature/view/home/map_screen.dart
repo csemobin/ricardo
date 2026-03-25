@@ -152,6 +152,7 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
             RideDetailsSocketModel.fromJson(data['rideDetails']);
       }
     });
+
     SocketServices.socket?.on('cancel-ride-request', (data) {
       if (data['isCancelPickRequest'] == true) {
         mapOPTController.isPassengerRequest.value = false;
@@ -167,7 +168,7 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
     SocketServices.socket?.on(
       'ride-accepted',
       (data) {
-         if (data is Map<String, dynamic>) {
+        if (data is Map<String, dynamic>) {
           if (data['isRideAccepted'] == true) {
             rideController.isRideAccepted.value = true;
 
@@ -189,11 +190,6 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
      * ********************************** */
 
     SocketServices.socket?.on('ride-accepted-driver', (data) {
-      print('Ride Accepted Driver');
-      print('234 NO LINE');
-      print('=================RIDE ACCEPTED DRIVER $data');
-      print(data);
-
       if (data is Map<String, dynamic>) {
         if (data['isRideAcceptedDriver'] == true) {
           mapOPTController.acceptedRideDataStatus.value = true;
@@ -203,6 +199,16 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
         }
       }
     });
+/*
+    Timer.periodic(
+      const Duration(seconds: 3),
+          (timer) {
+        SocketServices.emit('get-driver-location', ( ){
+
+        });
+      },
+    );*/
+
   }
 
   /* ************************************
@@ -393,12 +399,7 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
           // Passenger
           Obx(
             () => GoogleMap(
-
               mapType: MapType.normal,
-              // zoomGesturesEnabled: true,
-              // zoomControlsEnabled: true,
-              //initialCameraPosition: _mapCtrl.kGooglePlex,
-
               initialCameraPosition: CameraPosition(
                 target: LatLng(mapOPTController.currentLatitudePosition!.value,
                     mapOPTController.currentLongitudePosition!.value),
@@ -508,13 +509,14 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
                       true) {
                     return Padding(
                       padding: EdgeInsets.symmetric(horizontal: 25.w),
-                      child: SizedBox(                              // ← ADD THIS
-                        width: double.infinity,                     // ← FORCES BOUNDED WIDTH
+                      child: SizedBox(
+                        // ← ADD THIS
+                        width: double.infinity, // ← FORCES BOUNDED WIDTH
                         child: GlassBackgroundWidget(
                           borderLeftRightRadius: 24,
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.start,
-                            mainAxisSize: MainAxisSize.max,         // ← ADD THIS
+                            mainAxisSize: MainAxisSize.max, // ← ADD THIS
                             children: [
                               Icon(
                                 Icons.location_pin,
@@ -537,9 +539,11 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
                                       maxLines: 1,
                                     ),
                                     FutureBuilder<String>(
-                                      future: DirectionsService().getCurrentAddress(),
+                                      future: DirectionsService()
+                                          .getCurrentAddress(),
                                       builder: (context, snapshot) {
-                                        if (snapshot.connectionState == ConnectionState.waiting) {
+                                        if (snapshot.connectionState ==
+                                            ConnectionState.waiting) {
                                           return Text('Loading...');
                                         }
                                         if (snapshot.hasError) {
@@ -723,7 +727,7 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
                           children: [
                             Row(
                               children: [
-                                Image.asset(Assets.images.directRight.path),
+                                SvgPicture.asset(Assets.images.directRight),
                                 SizedBox(
                                   width: 8.w,
                                 ),
@@ -771,7 +775,7 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
                             ),
                             Row(
                               children: [
-                                Image.asset(Assets.images.location.path),
+                                SvgPicture.asset(Assets.images.location),
                                 SizedBox(
                                   width: 8.w,
                                 ),
@@ -857,11 +861,13 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
                                 height: 40.h,
                               ),
                               Text(
-                                '(4 min) ${((mapOPTController.acceptedRideData.value?.ride?.destinationMeters ?? 0) * 0.000621371).toStringAsFixed(2)} Miles',style: TextStyle(
-                                color: Color(0xff171717),
-                                fontSize: 20.sp,
-                                fontWeight: FontWeight.w500,
-                              ),),
+                                '(4 min) ${((mapOPTController.acceptedRideData.value?.ride?.destinationMeters ?? 0) * 0.000621371).toStringAsFixed(2)} Miles',
+                                style: TextStyle(
+                                  color: Color(0xff171717),
+                                  fontSize: 20.sp,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
                               SizedBox(
                                 height: 28.h,
                               ),
@@ -869,32 +875,39 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
                                 height: 1,
                                 color: Colors.black.withOpacity(0.2),
                               ),
-                              SizedBox(height: 16.h,),
+                              SizedBox(
+                                height: 16.h,
+                              ),
                               Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   Row(
                                     children: [
                                       ClipRRect(
-                                        borderRadius:
-                                        BorderRadius.all(Radius.circular(50)),
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(50)),
                                         child: ClipRRect(
-                                          borderRadius: BorderRadius.circular(12),
+                                          borderRadius:
+                                              BorderRadius.circular(12),
                                           child: Image.network(
-                                            (mapOPTController.rideDetailsData.value
-                                                ?.passengerImage !=
-                                                null &&
-                                                mapOPTController
-                                                    .rideDetailsData
-                                                    .value!
-                                                    .passengerImage!
-                                                    .isNotEmpty)
+                                            (mapOPTController
+                                                            .rideDetailsData
+                                                            .value
+                                                            ?.passengerImage !=
+                                                        null &&
+                                                    mapOPTController
+                                                        .rideDetailsData
+                                                        .value!
+                                                        .passengerImage!
+                                                        .isNotEmpty)
                                                 ? '${ApiUrls.imageBaseUrl}${mapOPTController.rideDetailsData.value?.passengerImage}'
                                                 : '',
                                             height: 50.h,
                                             width: 50.w,
                                             fit: BoxFit.cover,
-                                            errorBuilder: (context, error, stackTrace) {
+                                            errorBuilder:
+                                                (context, error, stackTrace) {
                                               return Image.asset(
                                                 Assets.images.defaultImage.path,
                                                 height: 50.h,
@@ -909,11 +922,12 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
                                         width: 10.w,
                                       ),
                                       Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
                                         children: [
                                           Text(
-                                            mapOPTController.rideDetailsData.value
-                                                ?.passengerName ??
+                                            mapOPTController.rideDetailsData
+                                                    .value?.passengerName ??
                                                 '',
                                             style: TextStyle(
                                               color: Color(0xff171717),
@@ -956,10 +970,17 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
                               ),
                             ],
                           ),
-                          SizedBox(height: 40.h,),
-                          CustomPrimaryButton(title: 'On the way', onHandler: (){}),
-                          SizedBox(height: MediaQuery.of(context).size.height * 0.05),
-                          SizedBox(height: MediaQuery.of(context).size.height * 0.05),
+                          SizedBox(
+                            height: 40.h,
+                          ),
+                          CustomPrimaryButton(
+                              title: 'On the way', onHandler: () {}),
+                          SizedBox(
+                              height:
+                                  MediaQuery.of(context).size.height * 0.05),
+                          SizedBox(
+                              height:
+                                  MediaQuery.of(context).size.height * 0.05),
                         ],
                       ),
                     );
@@ -1383,6 +1404,7 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
       return await LocationPermissionService.isLocationEnabled();
     }).asyncMap((event) => event);
   }
+
   Future<void> _loadAcceptedRideRoute() async {
     try {
       final acceptedRide = mapOPTController.acceptedRideData.value;
@@ -1420,7 +1442,8 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
         driverLocation,
         pickupLocation,
       );
-      final List<LatLng> pickupToDestination = await DirectionsService.getPolyline(
+      final List<LatLng> pickupToDestination =
+          await DirectionsService.getPolyline(
         pickupLocation,
         destinationLocation,
       );
@@ -1451,7 +1474,7 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
 
         markers
           ..removeWhere((m) =>
-          m.markerId.value == 'driver_location' ||
+              m.markerId.value == 'driver_location' ||
               m.markerId.value == 'pickup_location' ||
               m.markerId.value == 'destination_location')
           ..addAll({
