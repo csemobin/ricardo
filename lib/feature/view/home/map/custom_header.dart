@@ -1,5 +1,6 @@
 import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:ricardo/feature/view/home/link_export_file.dart';
 import 'package:ricardo/feature/view/profile/profile_screen.dart';
 
@@ -113,8 +114,8 @@ class CustomHeader extends StatelessWidget {
                                   child: GestureDetector(
                                     onTap: () =>
                                         Get.toNamed(AppRoutes.notificationScreen),
-                                    child: Image.asset(
-                                      Assets.images.bell.path,
+                                    child: SvgPicture.asset(
+                                      Assets.images.bell,
                                       width: 24,
                                       height: 24,
                                     ),
@@ -127,8 +128,8 @@ class CustomHeader extends StatelessWidget {
                         SizedBox(height: 12.h),
                         Row(
                           children: [
-                            Image.asset(
-                              Assets.images.greenPin.path,
+                            SvgPicture.asset(
+                              Assets.images.greenPin,
                               width: 20,
                               height: 20,
                             ),

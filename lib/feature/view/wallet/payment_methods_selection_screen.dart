@@ -69,7 +69,7 @@ class _PaymentMethodsSelectionScreenState
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Image.asset(Assets.images.paymentMethodIcon.path),
+                    SvgPicture.asset(Assets.images.paymentInfoIcon),
                     SizedBox(
                       width: 20.w,
                     ),
@@ -124,8 +124,8 @@ class _PaymentMethodsSelectionScreenState
                               borderRadius: BorderRadius.circular(4.r)),
                           child: Row(
                             children: [
-                              Image.asset(
-                                Assets.images.visa.path,
+                              SvgPicture.asset(
+                                Assets.images.visaIcon,
                                 fit: BoxFit.contain,
                               ),
                               SizedBox(
@@ -161,7 +161,7 @@ class _PaymentMethodsSelectionScreenState
                         width: 10.w,
                       ),
                       InkWell(
-                        child: Image.asset(Assets.images.removeBusket.path),
+                        child: SvgPicture.asset(Assets.images.dusbinIcon),
                         onTap: () =>
                             showPopUp(bankInfo!.sId.toString(), context),
                       )

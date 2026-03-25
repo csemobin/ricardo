@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:ricardo/app/utils/app_colors.dart';
 import 'package:ricardo/feature/controllers/auth/sign_in_controller.dart';
@@ -30,27 +31,27 @@ class _ProfileScreenState extends State<ProfileScreen> {
   // Driver screens
   final List<Map<String, dynamic>> driverScreens = [
     {
-      "icon": Assets.images.editProfileProfileScreen.path,
+      "icon": Assets.images.editProfileProfileScreen,
       "screenName": "Edit Profile",
       "route": EditProfileScreen(),
     },
     {
-      "icon": Assets.images.viewReviewsProfileScreen.path,
+      "icon": Assets.images.viewReviewsProfileScreen,
       "screenName": "View Reviews",
       "route": EditProfileReviewScreen(),
     },
     {
-      "icon": Assets.images.supportProfileScreen.path,
+      "icon": Assets.images.supportProfileScreen,
       "screenName": "Support",
       "route": EditProfileSupportScreen(),
     },
     {
-      "icon": Assets.images.settingsProfileScreen.path,
+      "icon": Assets.images.settingsProfileScreen,
       "screenName": "Settings",
       "route": EditProfileSettingScreen(),
     },
     {
-      "icon": Assets.images.logoutProfileScreen.path,
+      "icon": Assets.images.logoutProfileScreen,
       "screenName": "LogOut",
       "route": 'logout',
     },
@@ -59,28 +60,27 @@ class _ProfileScreenState extends State<ProfileScreen> {
   // Passenger screens
   final List<Map<String, dynamic>> passengerScreens = [
     {
-      "icon": Assets.images.editProfileProfileScreen.path,
+      "icon": Assets.images.editProfileProfileScreen,
       "screenName": "Edit Profile",
       "route": EditProfileScreen(),
     },
     {
-      "icon": Assets.images.editProfileProfileScreen.path,
-      // You might want to change this icon for favorites
+      "icon": Assets.images.editProfileProfileScreen,
       "screenName": "Favorites Riders",
       "route": FavouritesRideScreen(),
     },
     {
-      "icon": Assets.images.supportProfileScreen.path,
+      "icon": Assets.images.supportProfileScreen,
       "screenName": "Support",
       "route": EditProfileSupportScreen(),
     },
     {
-      "icon": Assets.images.settingsProfileScreen.path,
+      "icon": Assets.images.settingsProfileScreen,
       "screenName": "Settings",
       "route": EditProfileSettingScreen(),
     },
     {
-      "icon": Assets.images.logoutProfileScreen.path,
+      "icon": Assets.images.logoutProfileScreen,
       "screenName": "LogOut",
       "route": 'logout',
     },
@@ -104,8 +104,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
               child: Container(
                 padding: EdgeInsets.all(20.r),
                 decoration: BoxDecoration(
-                    color: AppColors.whiteColor.withOpacity(0.15),
-                    border: Border.all(color: Colors.white.withOpacity(0.8))),
+                  color: AppColors.whiteColor.withOpacity(0.15),
+                  border: Border.all(color: Colors.white.withOpacity(0.8)),
+                ),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -114,9 +115,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       Assets.images.logout.path,
                       height: 50,
                     ),
-                    SizedBox(
-                      height: 30.h,
-                    ),
+                    SizedBox(height: 30.h),
                     Text(
                       'Log Out',
                       style: TextStyle(
@@ -125,9 +124,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         color: AppColors.whiteColor,
                       ),
                     ),
-                    SizedBox(
-                      height: 15.h,
-                    ),
+                    SizedBox(height: 15.h),
                     Text(
                       textAlign: TextAlign.center,
                       'Do you want to log out your account?',
@@ -137,62 +134,48 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         fontWeight: FontWeight.w400,
                       ),
                     ),
-                    SizedBox(
-                      height: 30.h,
-                    ),
+                    SizedBox(height: 30.h),
                     Row(
                       children: [
                         Expanded(
-                            child: GestureDetector(
-                          onTap: () {
-                            Navigator.pop(context);
-                          },
-                          child: AnimatedContainer(
-                            duration: Duration(milliseconds: 200),
-                            alignment: Alignment.center,
-                            width: double.maxFinite,
-                            height: 56.h,
-                            decoration: BoxDecoration(
-                              color: AppColors.greyColor500,
-                              borderRadius: BorderRadius.circular(50.r),
-                              border: Border.all(
-                                color: AppColors.whiteColor,
-                                width: 1,
+                          child: GestureDetector(
+                            onTap: () {
+                              Navigator.pop(context);
+                            },
+                            child: AnimatedContainer(
+                              duration: const Duration(milliseconds: 200),
+                              alignment: Alignment.center,
+                              width: double.maxFinite,
+                              height: 56.h,
+                              decoration: BoxDecoration(
+                                color: AppColors.greyColor500,
+                                borderRadius: BorderRadius.circular(50.r),
+                                border: Border.all(
+                                  color: AppColors.whiteColor,
+                                  width: 1,
+                                ),
                               ),
-                            ),
-                            child: Text(
-                              'Cancel',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                color: AppColors.whiteColor,
-                                fontSize: 16.sp,
-                                fontWeight: FontWeight.w400,
+                              child: Text(
+                                'Cancel',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  color: AppColors.whiteColor,
+                                  fontSize: 16.sp,
+                                  fontWeight: FontWeight.w400,
+                                ),
                               ),
                             ),
                           ),
-                        )
-                            // child: CustomPrimaryButton(
-                            //   title: 'Cancel',
-                            //   onHandler: () {
-                            //     Navigator.pop(context);
-                            //     // Get.offAllNamed(AppRoutes.customBottomNavBar);
-                            //     // Get.find<CustomBottomNavBarController>().onChange(0);
-                            //   },
-                            // ),
-                            ),
-                        SizedBox(
-                          width: 5.w,
                         ),
+                        SizedBox(width: 5.w),
                         Expanded(
                           child: CustomPrimaryButton(
                             title: 'Log Out',
                             onHandler: () {
                               SignInController().logOut();
-                              // Get.offAllNamed(AppRoutes.customBottomNavBar);
-                              // Get.find<CustomBottomNavBarController>().onChange(0);
                             },
                           ),
-                        )
+                        ),
                       ],
                     ),
                   ],
@@ -231,38 +214,39 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
         ),
         elevation: 0,
-        iconTheme: IconThemeData(
-          color: Colors.red
-        ),
-        actionsIconTheme: IconThemeData(
-          color: Colors.red
-        ),
+        iconTheme: const IconThemeData(color: Colors.red),
+        actionsIconTheme: const IconThemeData(color: Colors.red),
         automaticallyImplyLeading: true,
       ),
-
       body: SingleChildScrollView(
         child: Obx(
-          () {
-            final userData = controller.userModel.value?.userProfile;
+              () {
+            final userData   = controller.userModel.value?.userProfile;
             final driverData = controller.userModel.value?.driverProfile;
 
-            // Get the appropriate screen list based on role
             final screenList =
-                userData?.role == 'driver' ? driverScreens : passengerScreens;
+            userData?.role == 'driver' ? driverScreens : passengerScreens;
 
             return Column(
               children: [
+
+                // ── Profile Header Card ──────────────────────────
                 Container(
-                  padding:
-                      EdgeInsets.symmetric(horizontal: 12.h, vertical: 16.h),
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 12.w,
+                    vertical: 16.h,
+                  ),
                   decoration: BoxDecoration(
                     color: AppColors.whiteColor,
                     borderRadius: BorderRadius.circular(8.r),
                   ),
                   child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
+
+                      // ── Avatar ─────────────────────────────────
                       ClipRRect(
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(12.r),
                         child: Image.network(
                           (userData?.image?.filename != null &&
                               userData!.image!.filename!.isNotEmpty)
@@ -271,7 +255,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           height: 85.h,
                           width: 85.w,
                           fit: BoxFit.cover,
-
                           errorBuilder: (context, error, stackTrace) {
                             return Image.asset(
                               Assets.images.defaultImage.path,
@@ -282,87 +265,125 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           },
                         ),
                       ),
-                      SizedBox(
-                        width: 12.w,
-                      ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            userData?.name ?? '',
-                            style: TextStyle(
+
+                      SizedBox(width: 12.w),
+
+                      // ── User Info ──────────────────────────────
+                      // ✅ Expanded prevents horizontal overflow
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+
+                            // Name
+                            Text(
+                              userData?.name ?? '',
+                              style: TextStyle(
                                 fontFamily: FontFamily.poppins,
                                 fontSize: 20.sp,
                                 fontWeight: FontWeight.w700,
-                                color: AppColors.successColor),
-                          ),
-                          if (userData?.role == 'driver')
+                                color: AppColors.successColor,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+
+                            // Rating (driver only)
+                            if (userData?.role == 'driver')
+                              Row(
+                                children: [
+                                  const Icon(
+                                    Icons.star,
+                                    color: Colors.yellow,
+                                    size: 16,
+                                  ),
+                                  SizedBox(width: 4.w),
+                                  Expanded(
+                                    child: Text(
+                                      '${driverData?.ratingAverage.toString()} ( ${driverData?.totalRatings.toString()} )',
+                                      style: TextStyle(
+                                        fontFamily: FontFamily.poppins,
+                                        fontSize: 12.sp,
+                                        fontWeight: FontWeight.w500,
+                                        color: AppColors.blackBText,
+                                      ),
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                ],
+                              ),
+
+                            SizedBox(height: 2.h),
+
+                            // Phone
                             Row(
                               children: [
                                 Icon(
-                                  Icons.star,
-                                  color: Colors.yellow,
-                                  weight: 12,
+                                  Icons.call,
+                                  color: AppColors.greenColor,
+                                  size: 16,
                                 ),
-                                SizedBox(
-                                  width: 4,
-                                ),
-                                Text(
-                                  '${driverData?.ratingAverage.toString()} ( ${driverData?.totalRatings.toString()})',
-                                  style: TextStyle(
+                                SizedBox(width: 4.w),
+                                Expanded(
+                                  child: Text(
+                                    userData?.phone.toString() ?? '',
+                                    style: TextStyle(
                                       fontFamily: FontFamily.poppins,
                                       fontSize: 12.sp,
                                       fontWeight: FontWeight.w500,
-                                      color: AppColors.blackBText),
+                                      color: AppColors.labelTextColor,
+                                    ),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
                                 ),
                               ],
                             ),
-                          Row(
-                            children: [
-                              Icon(Icons.call, color: AppColors.greenColor),
-                              SizedBox(
-                                width: 4,
-                              ),
-                              Text(
-                                userData?.phone.toString() ?? '',
-                                style: TextStyle(
-                                    fontFamily: FontFamily.poppins,
-                                    fontSize: 12.sp,
-                                    fontWeight: FontWeight.w500,
-                                    color: AppColors.labelTextColor),
-                              ),
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              Icon(
-                                Icons.email,
-                                color: AppColors.greenColor,
-                              ),
-                              SizedBox(
-                                width: 4,
-                              ),
-                              Text(
-                                userData?.email.toString() ?? '',
-                                style: TextStyle(
-                                    fontFamily: FontFamily.poppins,
-                                    fontSize: 12.sp,
-                                    fontWeight: FontWeight.w500,
-                                    color: AppColors.labelTextColor),
-                              ),
-                            ],
-                          ),
-                        ],
-                      )
+
+                            SizedBox(height: 2.h),
+
+                            // Email
+                            Row(
+                              children: [
+                                Icon(
+                                  Icons.email,
+                                  color: AppColors.greenColor,
+                                  size: 16,
+                                ),
+                                SizedBox(width: 4.w),
+                                Expanded(
+                                  child: Text(
+                                    userData?.email.toString() ?? '',
+                                    style: TextStyle(
+                                      fontFamily: FontFamily.poppins,
+                                      fontSize: 12.sp,
+                                      fontWeight: FontWeight.w500,
+                                      color: AppColors.labelTextColor,
+                                    ),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
                     ],
                   ),
                 ),
-                SizedBox(
-                  height: 28.h,
-                ),
+
+                SizedBox(height: 28.h),
+
+                // ── Menu List ────────────────────────────────────
                 ListView.separated(
                   shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: screenList.length,
+                  padding: EdgeInsets.only(bottom: 90.h),
+                  separatorBuilder: (context, index) =>
+                      SizedBox(height: 16.h),
                   itemBuilder: (context, index) {
                     return GestureDetector(
                       onTap: () {
@@ -374,7 +395,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       },
                       child: Container(
                         padding: EdgeInsets.symmetric(
-                            vertical: 20.h, horizontal: 20.w),
+                          vertical: 20.h,
+                          horizontal: 20.w,
+                        ),
                         decoration: BoxDecoration(
                           color: AppColors.whiteColor,
                           borderRadius: BorderRadius.circular(8.r),
@@ -384,7 +407,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           children: [
                             Row(
                               children: [
-                                Image.asset(screenList[index]['icon']),
+                                SvgPicture.asset(screenList[index]['icon']),
                                 SizedBox(width: 16.w),
                                 Text(
                                   screenList[index]['screenName'],
@@ -397,17 +420,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 ),
                               ],
                             ),
-                            Image.asset(Assets.images.arrowDropDown.path),
+                            SvgPicture.asset(Assets.images.arrowDropDown),
                           ],
                         ),
                       ),
                     );
                   },
-                  separatorBuilder: (context, index) => SizedBox(
-                    height: 16.h,
-                  ),
-                  itemCount: screenList.length,
-                  padding: EdgeInsets.only(bottom: 90.h),
                 ),
               ],
             );

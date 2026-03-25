@@ -124,7 +124,7 @@ class _WithdrawRequestScreenState extends State<WithdrawRequestScreen> {
                           ),
                           child: Row(
                             children: [
-                              Image.asset(Assets.images.visa.path),
+                              SvgPicture.asset(Assets.images.visaIcon),
                               SizedBox(width: 13.w),
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -179,7 +179,7 @@ class _WithdrawRequestScreenState extends State<WithdrawRequestScreen> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Image.asset(Assets.images.paymentMethodIcon.path),
+                        SvgPicture.asset(Assets.images.paymentInfoIcon),
                         SizedBox(width: 20.w),
                         Text(
                           'Add Payment Info',

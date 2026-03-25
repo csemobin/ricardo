@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:ricardo/app/utils/app_colors.dart';
 import 'package:ricardo/feature/controllers/home/google_search_location_controller.dart';
@@ -76,8 +77,8 @@ class SearchLocationScreen extends StatelessWidget {
           controller: controller.pickupController,
           labelText: 'Pick-up Location',
           hintText: 'Enter pick-up location',
-          prefixIcon: Image.asset(
-            Assets.images.greenPin.path,
+          prefixIcon: SvgPicture.asset(
+            Assets.images.greenPin,
             width: 20.w,
             height: 20.h,
           ),

@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:ricardo/app/utils/app_colors.dart';
 import 'package:ricardo/feature/view/profile/screens/settings/change_password_screen.dart';
@@ -15,27 +16,27 @@ class EditProfileSettingScreen extends StatelessWidget {
 
   final List<Map<String, dynamic>> screen = [
     {
-      "icon": Assets.images.settingLockIcon.path,
+      "icon": Assets.images.settingLockIcon,
       "screenName": "Change Password",
       "route": ChangePasswordScreen(),
     },
     {
-      "icon": Assets.images.settingAboutIcon.path,
+      "icon": Assets.images.settingAboutIcon,
       "screenName": "About Us",
       "route": LegalPolicyScreen(),
     },
     {
-      "icon": Assets.images.settingTermsAndConditionIcon.path,
+      "icon": Assets.images.settingTermsAndConditionIcon,
       "screenName": "Terms & Conditions",
       "route": LegalPolicyScreen(),
     },
     {
-      "icon": Assets.images.settingPrivacyPolicyIcon.path,
+      "icon": Assets.images.settingPrivacyPolicyIcon,
       "screenName": "Privacy Policy",
       "route": LegalPolicyScreen(),
     },
     {
-      "icon": Assets.images.settingDeleteIcon.path,
+      "icon": Assets.images.settingDeleteIcon,
       "screenName": 'Delete Account',
       "route": PrivacyPolicyScreen(),
     },
@@ -209,7 +210,7 @@ class EditProfileSettingScreen extends StatelessWidget {
                       children: [
                         Row(
                           children: [
-                            Image.asset(screen[index]['icon']),
+                            SvgPicture.asset(screen[index]['icon']),
                             SizedBox(width: 16.w),
                             Text(
                               screen[index]['screenName'],
@@ -222,7 +223,7 @@ class EditProfileSettingScreen extends StatelessWidget {
                             ),
                           ],
                         ),
-                        Image.asset(Assets.images.arrowDropDown.path),
+                        SvgPicture.asset(Assets.images.arrowDropDown),
                       ],
                     ),
                   ),

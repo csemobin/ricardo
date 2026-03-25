@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:ricardo/app/utils/app_colors.dart';
 import 'package:ricardo/gen/assets.gen.dart';
 import 'package:ricardo/gen/fonts.gen.dart';
@@ -22,7 +23,7 @@ class NoInternetMessageMap extends StatelessWidget {
             padding: EdgeInsetsGeometry.only(
               left: 30,
             ),
-            child: Image.asset(Assets.images.offline.path),
+            child: Image.asset(Assets.images.offlineIconPng.path),
           ),
           SizedBox(
             width: 10,

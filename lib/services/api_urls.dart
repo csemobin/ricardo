@@ -6,9 +6,9 @@ class ApiUrls{
   // static const String imageBaseUrl = "https://api.gogodriver.us/images/";
   // static const String socketUrl = "https://api.gogodriver.us";
 
-  static const String baseUrl = "https://rk78xcdz-8080.asse.devtunnels.ms/api/v1";
-  static const String imageBaseUrl = "https://rk78xcdz-8080.asse.devtunnels.ms/images/";
-  static const String socketUrl = "https://rk78xcdz-8080.asse.devtunnels.ms";
+  static const String baseUrl = "https://withdrawal-berry-everything-spring.trycloudflare.com/api/v1";
+  static const String imageBaseUrl = "https://withdrawal-berry-everything-spring.trycloudflare.com/images/";
+  static const String socketUrl = "https://withdrawal-berry-everything-spring.trycloudflare.com";
 
   // User Registration Related work
   static const String registration = '/user/register';

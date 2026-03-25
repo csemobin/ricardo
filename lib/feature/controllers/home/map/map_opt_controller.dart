@@ -99,6 +99,9 @@ class MapOPTController extends GetxController {
 
   Future<void>rideAcceptRide( String rideId ) async{
     LatLng currentLatLun = await CustomLocationHelper.getCurrentLocation();
+
+    print('===================>>>>>>>>>>>>>>> check $currentLatLun ${currentLatLun.latitude} ${currentLatLun.longitude}');
+
     final response = await ApiClient.postData(ApiUrls.rideAcceptRideByRideId(rideId),{
       "coordinates": [
         currentLatLun.longitude,

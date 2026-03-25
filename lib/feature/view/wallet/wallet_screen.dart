@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:ricardo/app/helpers/time_format.dart';
 import 'package:ricardo/app/utils/app_colors.dart';
@@ -93,7 +94,7 @@ class _WalletScreenState extends State<WalletScreen> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Image.asset(Assets.images.widrawIcon.path),
+                          SvgPicture.asset(Assets.images.withdrawIcon),
                           SizedBox(width: 6.w),
                           Text(
                             'Add Money',
@@ -202,14 +203,20 @@ class _WalletScreenState extends State<WalletScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              'BALANCE',
-              style: TextStyle(
-                color: AppColors.whiteColor,
-                fontWeight: FontWeight.bold,
-                fontFamily: FontFamily.poppins,
-                fontSize: 24.sp,
-              ),
+            Row(
+              children: [
+                 Image.asset(Assets.images.balenceIcon.path, width: 24.h,height: 24.h,),
+                SizedBox(width: 5.w,),
+                Text(
+                  'BALANCE',
+                  style: TextStyle(
+                    color: AppColors.whiteColor,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: FontFamily.poppins,
+                    fontSize: 24.sp,
+                  ),
+                ),
+              ],
             ),
             SizedBox(height: 4.h),
             Text(
@@ -231,13 +238,13 @@ class _WalletScreenState extends State<WalletScreen> {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         _buildCustomButton(
-          iconPath: Assets.images.paymentIcon.path,
+          iconPath: Assets.images.paymentIcon,
           label: 'Payment Method',
           isFilledButton: false,
           onTap: () => Get.toNamed(AppRoutes.paymentMethodsSelectionScreen),
         ),
         _buildCustomButton(
-          iconPath: Assets.images.widrawIcon.path,
+          iconPath: Assets.images.withdrawIcon,
           label: 'Withdraw',
           isFilledButton: true,
           onTap: () => Get.toNamed(AppRoutes.withdrawRequestScreen),
@@ -267,7 +274,7 @@ class _WalletScreenState extends State<WalletScreen> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Image.asset(iconPath),
+            SvgPicture.asset(iconPath),
             SizedBox(width: 6.w),
             Text(
               label,
