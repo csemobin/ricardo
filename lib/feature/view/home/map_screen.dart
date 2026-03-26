@@ -1398,6 +1398,40 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
     );
   }
 
+  /*
+  *  Widget _buildSwippedButton() {
+    return Padding(
+      padding: EdgeInsets.only(
+        left: 20,
+        right: 20,
+      ),
+      child: SlideAction(
+        sliderButtonYOffset: 0,
+        onSubmit: () => Get.toNamed(AppRoutes.searchLocationScreen,
+            arguments: {'back_disable': true}),
+        text: 'Lets Go...',
+        textStyle: TextStyle(
+          fontSize: 20.sp,
+          color: AppColors.whiteColor,
+          fontWeight: FontWeight.w500,
+          fontFamily: FontFamily.poppins,
+        ),
+        innerColor: AppColors.greenColor,
+        outerColor: AppColors.blackButton,
+        sliderButtonIcon: const Icon(
+          Icons.arrow_right_alt,
+          color: Color(0XFFF6F6F6),
+          size: 24,
+          weight: 900,
+        ),
+        sliderRotate: false,
+        height: 56.h,
+        sliderButtonIconPadding: 8,
+      ),
+    );
+  }
+
+  * */
   // ✅ Stream to monitor location status
   Stream<bool> _locationStatusStream() {
     return Stream.periodic(Duration(seconds: 5), (_) async {

@@ -157,13 +157,12 @@ class $AssetsImagesGen {
   /// File path: assets/images/green-pin.svg
   String get greenPin => 'assets/images/green-pin.svg';
 
+  /// File path: assets/images/grey-map.svg
+  String get greyMap => 'assets/images/grey-map.svg';
+
   /// File path: assets/images/grey_bookmark.png
   AssetGenImage get greyBookmark =>
       const AssetGenImage('assets/images/grey_bookmark.png');
-
-  /// File path: assets/images/grey_map.png
-  AssetGenImage get greyMap =>
-      const AssetGenImage('assets/images/grey_map.png');
 
   /// File path: assets/images/grey_search.png
   AssetGenImage get greySearch =>
@@ -387,8 +386,8 @@ class $AssetsImagesGen {
     favoritesProfileImage,
     glassmorphismLogo,
     greenPin,
-    greyBookmark,
     greyMap,
+    greyBookmark,
     greySearch,
     historyIcon,
     homeIcon,

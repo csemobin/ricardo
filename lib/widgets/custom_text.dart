@@ -40,14 +40,13 @@ class CustomText extends StatelessWidget {
 
   final double? fontSize;
   final double? textHeight;
-  final FontWeight fontWeight;
+  final FontWeight? fontWeight;
   final Color? color;
   final VoidCallback? onTap;
   final TextDecoration? decoration;
   final Color? decorationColor;
   final double? letterSpacing;
   final double? lineheight;
-
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -70,7 +69,7 @@ class CustomText extends StatelessWidget {
             height: textHeight,
             letterSpacing: letterSpacing,
             fontFamily: fontName ?? FontFamily.poppins,
-            fontWeight: fontWeight,
+            fontWeight: fontWeight ?? FontWeight.normal,
             color: color ?? AppColors.darkColor,
             decoration: decoration,
             decorationColor: decorationColor,

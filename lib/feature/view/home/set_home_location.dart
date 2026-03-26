@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:ricardo/app/utils/app_colors.dart';
 import 'package:ricardo/gen/assets.gen.dart';
 import 'package:ricardo/gen/fonts.gen.dart';
@@ -84,8 +85,8 @@ class _SetHomeLocationState extends State<SetHomeLocation> {
                       color: AppColors.locationBgColor,
                       borderRadius: BorderRadius.circular(50.r),
                     ),
-                    child: Image.asset(
-                      Assets.images.greyMap.path,
+                    child: SvgPicture.asset(
+                      Assets.images.greyMap,
                       height: 19.h,
                       width: 19.h,
                     ),

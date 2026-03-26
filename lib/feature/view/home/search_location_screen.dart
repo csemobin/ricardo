@@ -8,6 +8,7 @@ import 'package:get/get.dart';
 import 'package:ricardo/app/utils/app_colors.dart';
 import 'package:ricardo/feature/controllers/home/google_search_location_controller.dart';
 import 'package:ricardo/feature/models/home/place_suggestion.dart';
+import 'package:ricardo/feature/view/home/link_export_file.dart';
 import 'package:ricardo/gen/assets.gen.dart';
 import 'package:ricardo/services/location_permission_service.dart';
 import 'package:ricardo/widgets/custom_loader.dart';
@@ -42,8 +43,9 @@ class SearchLocationScreen extends StatelessWidget {
           "Let's Go...",
           style: TextStyle(
             color: AppColors.blackColor,
-            fontSize: 16.sp,
-            fontWeight: FontWeight.w700,
+            fontSize: 18.sp,
+            fontWeight: FontWeight.w600,
+            fontFamily: FontFamily.poppins
           ),
         ),
         forceMaterialTransparency: true,
@@ -109,8 +111,8 @@ class SearchLocationScreen extends StatelessWidget {
           controller: controller.dropController,
           labelText: 'Drop-off Location',
           hintText: 'Enter drop-off location',
-          prefixIcon: Image.asset(
-            Assets.images.greyMap.path,
+          prefixIcon: SvgPicture.asset(
+            Assets.images.greyMap,
             width: 20.w,
             height: 20.h,
           ),

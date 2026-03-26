@@ -10,6 +10,7 @@ class AppColors {
   static const Color secondaryHeadingTextColor = Color(0xff007635);
   static const Color richTextColor = Color(0Xff787878);
   static const Color labelTextColor = Color(0Xff5E5E5E);
+  static const Color labelTextPrimaryColor = Color(0xff1E1E1E);
   static const Color navBarBackgroundColor = Color(0xffEBEBEB);
   static const Color activeIconBackgroundColor = Color(0xffEBEBEB);
   static const Color  activeIconColor = Color(0xff007635);

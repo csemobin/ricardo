@@ -214,8 +214,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
         ),
         elevation: 0,
-        iconTheme: const IconThemeData(color: Colors.red),
-        actionsIconTheme: const IconThemeData(color: Colors.red),
+        iconTheme: const IconThemeData(color: AppColors.darkColor),
+        actionsIconTheme: const IconThemeData(color: AppColors.darkColor),
         automaticallyImplyLeading: true,
       ),
       body: SingleChildScrollView(
