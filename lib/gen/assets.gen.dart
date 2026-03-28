@@ -451,8 +451,11 @@ class $AssetsLottiesGen {
   /// File path: assets/lotties/crypto_phone.json
   String get cryptoPhone => 'assets/lotties/crypto_phone.json';
 
+  /// File path: assets/lotties/timer.json
+  String get timer => 'assets/lotties/timer.json';
+
   /// List of all assets
-  List<String> get values => [carpool, cryptoPhone];
+  List<String> get values => [carpool, cryptoPhone, timer];
 }
 
 class Assets {

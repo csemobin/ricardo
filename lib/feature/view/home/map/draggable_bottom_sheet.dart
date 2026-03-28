@@ -317,56 +317,6 @@ class _DraggableBottomSheetState extends State<DraggableBottomSheet> {
                           ),
                         ],
                       ),
-                     /*
-                     SizedBox(height: 36.h),
-                      Column(
-                        children: [
-                          // ── Waiting time badge ──
-                          Container(
-                            height: 35,
-                            width: 156,
-                            padding: EdgeInsets.symmetric(
-                                vertical: 10.w, horizontal: 12.h),
-                            decoration: BoxDecoration(
-                              color: const Color(0xff1BB600).withOpacity(0.2),
-                              borderRadius: BorderRadius.circular(9.r),
-                            ),
-                            child: Row(
-                              children: [
-                                Text(
-                                  'Waiting Time ',
-                                  style: TextStyle(fontSize: 12.sp),
-                                ),
-                                Text(
-                                  '(min)',
-                                  style: TextStyle(fontSize: 8.sp),
-                                ),
-                                Text(
-                                  ': 00:07',
-                                  style: TextStyle(
-                                    fontSize: 12.sp,
-                                    color: AppColors.greenColor,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-
-                          SizedBox(height: 17.h),
-
-                          // ── Bottom instruction text ──
-                          Text(
-                            'If you have entered the car, please confirm with your\n driver to start the ride in the app.',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontSize: 12.sp,
-                              color: AppColors.greenColor,
-                              fontWeight: FontWeight.w400,
-                            ),
-                          ),
-                        ],
-                      )
-                      */
                       SizedBox(height: 32.h),
                       CustomPrimaryButton(
                           title: 'Provide a review',
@@ -401,10 +351,10 @@ class _DraggableBottomSheetState extends State<DraggableBottomSheet> {
                             ),
                             borderRadius: BorderRadius.circular(50.r),
                           ),
-                          child: Container(  // ✅ Inner container background
-                            margin: EdgeInsets.all(1.5),  // ← border width
+                          child: Container(
+                            margin: EdgeInsets.all(1.5),
                             decoration: BoxDecoration(
-                              color: Colors.white,  // ← তোমার background color
+                              color: Colors.transparent,
                               borderRadius: BorderRadius.circular(50.r),
                             ),
                             alignment: Alignment.center,
