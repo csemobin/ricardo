@@ -368,30 +368,54 @@ class _DraggableBottomSheetState extends State<DraggableBottomSheet> {
                       )
                       */
                       SizedBox(height: 32.h),
-                      CustomPrimaryButton(title: 'Provide a review', onHandler: (){}),
+                      CustomPrimaryButton(
+                          title: 'Provide a review',
+                          onHandler: (){
+                            Get.toNamed(AppRoutes.rateReviewDriver);
+                          }
+                      ),
                       SizedBox(height: 14.h,),
                       GestureDetector(
-                        onTap: (){} ,
+                        onTap: () {
+                          showDialog(context: context, builder: (context) {
+                            return AboutDialog(
+                              children: [
+                                GlassBackgroundWidget(child: Text('maruf'))
+                              ],
+                            );
+                          });
+                        },
                         child: AnimatedContainer(
                           duration: Duration(milliseconds: 200),
-                          alignment: Alignment.center,
                           width: double.maxFinite,
                           height: 56.h,
                           decoration: BoxDecoration(
-
-                            borderRadius: BorderRadius.circular(50.r),
-                            border: Border.all(
-                              color: Colors.green,
-                              width: 1,
+                            gradient: LinearGradient(  // ✅ Gradient border
+                              colors: [
+                                Color(0xff1BB600),
+                                Color(0xff007635),
+                                Color(0xff01AF44),
+                              ],
+                              begin: Alignment.centerLeft,
+                              end: Alignment.centerRight,
                             ),
+                            borderRadius: BorderRadius.circular(50.r),
                           ),
-                          child: Text(
-                            'Provide a Tip',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              color:  Colors.green,
-                              fontSize: 16.sp,
-                              fontWeight: FontWeight.w400,
+                          child: Container(  // ✅ Inner container background
+                            margin: EdgeInsets.all(1.5),  // ← border width
+                            decoration: BoxDecoration(
+                              color: Colors.white,  // ← তোমার background color
+                              borderRadius: BorderRadius.circular(50.r),
+                            ),
+                            alignment: Alignment.center,
+                            child: Text(
+                              'Provide a Tip',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color: Colors.green,
+                                fontSize: 16.sp,
+                                fontWeight: FontWeight.w400,
+                              ),
                             ),
                           ),
                         ),

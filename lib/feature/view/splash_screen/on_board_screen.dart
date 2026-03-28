@@ -94,6 +94,7 @@ class _OnBoardScreenState extends State<OnBoardScreen> {
                                 textHeight: 1.5,
                                 color: AppColors.secondaryTextColor,
                                 fontName: FontFamily.inter,
+                                fontWeight: FontWeight.w500,
                               ),
                               SizedBox(height: constraints.maxHeight * 0.15),
                             ],
