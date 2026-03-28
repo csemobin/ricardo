@@ -262,25 +262,25 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
       origin = (pickupCoords != null && pickupCoords.length == 2)
           ? LatLng(pickupCoords[1], pickupCoords[0])
           : LatLng(
-              googleSearchLocationController.selectedPickup.value?.lat ?? 0.0,
-              googleSearchLocationController.selectedPickup.value?.lng ?? 0.0,
-            );
+        googleSearchLocationController.selectedPickup.value?.lat ?? 0.0,
+        googleSearchLocationController.selectedPickup.value?.lng ?? 0.0,
+      );
 
       dest = (destCoords != null && destCoords.length == 2)
           ? LatLng(destCoords[1], destCoords[0])
           : LatLng(
-              googleSearchLocationController.selectedDrop.value?.lat ?? 0.0,
-              googleSearchLocationController.selectedDrop.value?.lng ?? 0.0,
-            );
+        googleSearchLocationController.selectedDrop.value?.lat ?? 0.0,
+        googleSearchLocationController.selectedDrop.value?.lng ?? 0.0,
+      );
 
       acceptedLocation = (driverAcceptedLocationCoords != null &&
-              driverAcceptedLocationCoords.length == 2)
+          driverAcceptedLocationCoords.length == 2)
           ? LatLng(
-              driverAcceptedLocationCoords[1], driverAcceptedLocationCoords[0])
+          driverAcceptedLocationCoords[1], driverAcceptedLocationCoords[0])
           : LatLng(
-              googleSearchLocationController.selectedDrop.value?.lat ?? 0.0,
-              googleSearchLocationController.selectedDrop.value?.lng ?? 0.0,
-            );
+        googleSearchLocationController.selectedDrop.value?.lat ?? 0.0,
+        googleSearchLocationController.selectedDrop.value?.lng ?? 0.0,
+      );
 
       // Guard: don't draw if coords are 0,0
       if (origin.latitude == 0.0 ||
@@ -291,7 +291,7 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
       }
 
       final point =
-          await DirectionsService.getPolyline(acceptedLocation, origin);
+      await DirectionsService.getPolyline(acceptedLocation, origin);
       final points = await DirectionsService.getPolyline(origin, dest);
 
       if (points.isEmpty) {
@@ -330,14 +330,19 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
         };
 
         markers.removeWhere((m) =>
-            m.markerId.value == 'Pick-Up-Location' ||
-            m.markerId.value == 'Destination');
+        m.markerId.value == 'current-location' ||
+            m.markerId.value == 'Pick-Up-Location' || m.markerId.value == 'Destination' );
 
         markers.addAll({
           Marker(
-            markerId: const MarkerId('Pick-Up-Location'),
+            markerId: const MarkerId('current-location'),
             position: acceptedLocation,
             icon: customCarMarker ?? BitmapDescriptor.defaultMarker,
+          ),
+          Marker(
+            markerId: const MarkerId('Pick-Up-Location'),
+            position: origin,
+            icon: BitmapDescriptor.defaultMarker,
           ),
           Marker(
             markerId: const MarkerId('Destination'),
@@ -363,23 +368,23 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
       minLat = minLat == null
           ? point.latitude
           : minLat < point.latitude
-              ? minLat
-              : point.latitude;
+          ? minLat
+          : point.latitude;
       minLng = minLng == null
           ? point.longitude
           : minLng < point.longitude
-              ? minLng
-              : point.longitude;
+          ? minLng
+          : point.longitude;
       maxLat = maxLat == null
           ? point.latitude
           : maxLat > point.latitude
-              ? maxLat
-              : point.latitude;
+          ? maxLat
+          : point.latitude;
       maxLng = maxLng == null
           ? point.longitude
           : maxLng > point.longitude
-              ? maxLng
-              : point.longitude;
+          ? maxLng
+          : point.longitude;
     }
 
     return LatLngBounds(
@@ -528,10 +533,10 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      '${mapOPTController.acceptedRideData.value?.passenger?.passengerAddress}',
+                                      '${mapOPTController.acceptedRideData.value?.ride?.destinationAddress}',
                                       style: TextStyle(
                                         fontSize: 14.sp,
-                                        fontWeight: FontWeight.w500,
+                                        fontWeight: FontWeight.w700,
                                         fontFamily: FontFamily.poppins,
                                         color: Color(0xff171717),
                                       ),
@@ -1057,10 +1062,9 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
   }
 
   Set<Marker> _buildMarkers() {
-    // Build fresh — never touch class-level `markers` here
     final Set<Marker> result = {};
 
-    // ── 1. Always add current passenger / driver position pin ──────────────
+    // ── 1. Current position marker ──
     result.add(
       Marker(
         markerId: const MarkerId('currentPassenger'),
@@ -1069,35 +1073,28 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
           mapOPTController.currentLongitudePosition!.value,
         ),
         icon: userController.userModel.value?.userProfile?.role ==
-                AppConstants.passenger
+            AppConstants.passenger
             ? customMarker ?? BitmapDescriptor.defaultMarker
             : customCarMarker ?? BitmapDescriptor.defaultMarker,
       ),
     );
 
-    // ── 2. Add route markers (Pick-Up-Location + Destination) if they exist ──
-    // These are stored in class-level `markers` by _loadRoute()
+    // ── 2. Add ALL markers from class-level markers set ── ✅ FIX
     for (final m in markers) {
-      if (m.markerId.value == 'Pick-Up-Location' ||
-          m.markerId.value == 'Destination') {
+      if (m.markerId.value != 'currentPassenger') {
         result.add(m);
       }
     }
 
-    // ── 3. Decide whether to show driver car icons ─────────────────────────
-    // A route is "active" when _loadRoute() has added route markers
+    // ── 3. Driver car icons logic ──
     final bool isRouteActive = markers.any(
-      (m) =>
-          m.markerId.value == 'Pick-Up-Location' ||
-          m.markerId.value == 'Destination',
+          (m) =>
+      m.markerId.value == 'Pick-Up-Location' ||
+          m.markerId.value == 'Destination' ||
+          m.markerId.value == 'pickup_location' ||      // ✅ ADD
+          m.markerId.value == 'destination_location',   // ✅ ADD
     );
 
-    // Show driver car icons when:
-    //   a) User pressed back from NearByDriverScreen (viewInMapReturn == true), OR
-    //   b) No route is active yet and drivers list has entries
-    // Hide driver car icons when:
-    //   - viewInMap == false (bottom sheet / nearby screen is showing) AND
-    //     viewInMapReturn == false (user has NOT pressed back yet)
     final bool showDriverIcons =
         rideController.viewInMapReturn.value || !isRouteActive;
 
@@ -1106,11 +1103,9 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
       for (var driver in drivers) {
         final coords = driver.location?.coordinates;
         if (coords != null && coords.length == 2) {
-          final double longitude = coords[0];
-          final double latitude = coords[1];
           result.add(Marker(
             markerId: MarkerId(driver.sId ?? UniqueKey().toString()),
-            position: LatLng(latitude, longitude),
+            position: LatLng(coords[1], coords[0]),
             icon: customCarMarker ?? BitmapDescriptor.defaultMarker,
             onTap: () => _showDriverDialog(driver),
           ));
@@ -1442,6 +1437,7 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
   Future<void> _loadAcceptedRideRoute() async {
     try {
       final acceptedRide = mapOPTController.acceptedRideData.value;
+      print('this is the accepted ride full value $acceptedRide');
       if (acceptedRide == null) return;
 
       // ── 1. Driver Current Location ──────────────────────────
@@ -1522,17 +1518,13 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
             Marker(
               markerId: const MarkerId('pickup_location'),
               position: pickupLocation,
-              icon: BitmapDescriptor.defaultMarkerWithHue(
-                BitmapDescriptor.hueRed,
-              ),
+              icon: BitmapDescriptor.defaultMarker
             ),
             // 📍 Destination (Green pin)
             Marker(
               markerId: const MarkerId('destination_location'),
               position: destinationLocation,
-              icon: BitmapDescriptor.defaultMarkerWithHue(
-                BitmapDescriptor.hueGreen,
-              ),
+              icon:  BitmapDescriptor.defaultMarker
             ),
           });
       });

@@ -62,8 +62,8 @@ class RideController extends GetxController {
       final response = await ApiClient.getData(ApiUrls.requestAreaRider(id));
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        Get.snackbar('Success', response.body['message'],
-            snackPosition: SnackPosition.BOTTOM);
+        // Get.snackbar('Success', response.body['message'],
+        //     snackPosition: SnackPosition.BOTTOM);
 
         final List driversList = response.body['data']['drivers'];
 
@@ -103,39 +103,7 @@ class RideController extends GetxController {
   Future<void> fetchSendPickUpRequest(String riderId, String driverId) async {
     try {
       isRequestBookRide.value = true;
-
-      final response =
-          await ApiClient.getData(ApiUrls.sendPickUpRequest(riderId, driverId));
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        Get.snackbar('success', response.body['message']);
-        // SocketServices.socket?.on(
-        //   'ride-accepted',
-        //       (data) {
-        //     if (data is Map<String, dynamic>) {
-        //
-        //       if (data['isRideAccepted'] == true) {
-        //         isRideAccepted.value = true;
-        //
-        //         acceptedRideDriverName.value =
-        //             data['driver']?['driverName'] ?? '';
-        //
-        //         // ✅ Convert JSON to Model
-        //         acceptRideModel.value = AcceptRideModel.fromJson(data);
-        //       }
-        //     }
-        //
-        //     debugPrint('================ Socket ride accepted data ================');
-        //     Logger().e(data);
-        //
-        //     debugPrint('================ Socket ride accepted data ================');
-        //     debugPrint('================ String converstion ================');
-        //
-        //     print(acceptRideModel.value);
-        //   },
-        // );
-      }else{
-        Get.snackbar('Error', response.body['message']);
-      }
+      await ApiClient.getData(ApiUrls.sendPickUpRequest(riderId, driverId));
     } catch (e) {
       Get.snackbar('Error', e.toString());
       debugPrint(e.toString());
@@ -145,12 +113,10 @@ class RideController extends GetxController {
   }
 
   Future<void> cancelRequest(String riderId, String driverId) async {
-    print('=============maruf maruf maruf maruf maruf $riderId, $driverId');
+    // print('=============maruf maruf maruf maruf maruf $riderId, $driverId');
     final response =
         await ApiClient.getData(ApiUrls.cancelRequest(riderId, driverId));
-    if (response.statusCode == 200 || response.statusCode == 201) {
-      Get.snackbar('Error', response.body['message']);
-    } else {
+    if (response.statusCode != 200 || response.statusCode != 201) {
       Get.snackbar('Error', response.body['message']);
     }
   }

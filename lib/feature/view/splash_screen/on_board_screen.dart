@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:ricardo/app/helpers/helper_data.dart';
 import 'package:ricardo/app/utils/app_colors.dart';
+import 'package:ricardo/feature/view/home/link_export_file.dart';
 import 'package:ricardo/gen/assets.gen.dart';
 import 'package:ricardo/routes/app_routes.dart';
 import 'package:ricardo/widgets/custom_button.dart';
@@ -79,9 +80,10 @@ class _OnBoardScreenState extends State<OnBoardScreen> {
                                 top: 32.h,
                                 text: data['title'],
                                 fontSize: 20.sp,
-                                fontWeight: FontWeight.w600,
+                                fontWeight: FontWeight.w700,
                                 color: AppColors.primaryColor,
-                                letterSpacing: 1.2,
+                                letterSpacing: 1,
+                                fontName: FontFamily.inter,
                               ),
                               CustomText(
                                 right: 30.w,
@@ -89,8 +91,9 @@ class _OnBoardScreenState extends State<OnBoardScreen> {
                                 top: 16.h,
                                 text: data['subtitle'],
                                 fontSize: 14.sp,
-                                textHeight: 2.1,
+                                textHeight: 1.5,
                                 color: AppColors.secondaryTextColor,
+                                fontName: FontFamily.inter,
                               ),
                               SizedBox(height: constraints.maxHeight * 0.15),
                             ],

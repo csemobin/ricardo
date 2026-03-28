@@ -202,8 +202,9 @@ class _NearByDriverScreenState extends State<NearByDriverScreen> {
                                         : AppColors.swippedButtonColor,
                                     fontWeight: cnt.selectedTab.value == 0
                                         ? FontWeight.w600
-                                        : FontWeight.w400,
-                                    fontSize: 16.sp,
+                                        : FontWeight.w600,
+                                    fontFamily: FontFamily.poppins,
+                                    fontSize: 18.sp,
                                   ),
                                 ),
                               ),

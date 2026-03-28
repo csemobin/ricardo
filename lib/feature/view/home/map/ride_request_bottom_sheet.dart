@@ -258,7 +258,7 @@ class _RideRequestBottomSheetState extends State<RideRequestBottomSheet> {
                             style: TextStyle(
                               color: AppColors.blackColor,
                               fontSize: 16.sp,
-                              fontWeight: FontWeight.w500,
+                              fontWeight: FontWeight.w600,
                               fontFamily: FontFamily.poppins,
                             ),
                           ),
@@ -275,7 +275,7 @@ class _RideRequestBottomSheetState extends State<RideRequestBottomSheet> {
                               'See All',
                               style: TextStyle(
                                 fontSize: 16.sp,
-                                fontWeight: FontWeight.w500,
+                                fontWeight: FontWeight.w600,
                                 fontFamily: FontFamily.poppins,
                                 color: AppColors.blackColor,
                               ),
@@ -338,7 +338,7 @@ class _RideRequestBottomSheetState extends State<RideRequestBottomSheet> {
                                                 fontFamily: FontFamily.poppins,
                                                 fontSize: 12.sp,
                                                 fontWeight: FontWeight.w500,
-                                                color: AppColors.blackBText,
+                                                color: AppColors.darkColor,
                                               ),
                                             ),
                                             SizedBox(width: 8.w),
@@ -357,7 +357,7 @@ class _RideRequestBottomSheetState extends State<RideRequestBottomSheet> {
                                                 fontFamily: FontFamily.poppins,
                                                 fontSize: 12.sp,
                                                 fontWeight: FontWeight.w500,
-                                                color: AppColors.blackBText,
+                                                color: AppColors.darkColor,
                                               ),
                                             ),
                                           ],
@@ -375,7 +375,7 @@ class _RideRequestBottomSheetState extends State<RideRequestBottomSheet> {
                                                 fontFamily: FontFamily.poppins,
                                                 fontSize: 12.sp,
                                                 fontWeight: FontWeight.w500,
-                                                color: AppColors.blackBText,
+                                                color: AppColors.secondaryTextColor,
                                               ),
                                             ),
                                           ],
@@ -408,7 +408,7 @@ class _RideRequestBottomSheetState extends State<RideRequestBottomSheet> {
                             Text(
                               'Car info.',
                               style: TextStyle(
-                                fontSize: 14.sp,
+                                fontSize: 16.sp,
                                 fontWeight: FontWeight.w500,
                                 fontFamily: FontFamily.poppins,
                                 color: Colors.black.withOpacity(0.8),
@@ -422,20 +422,23 @@ class _RideRequestBottomSheetState extends State<RideRequestBottomSheet> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      '${cardDetails.vehicle?.carName}',
+                            '${cardDetails.vehicle?.carName}'.split(' ').map((word) =>
+                            word.isNotEmpty ? word[0].toUpperCase() + word.substring(1).toLowerCase() : ''
+                            ).join(' '),
                                       style: TextStyle(
-                                        fontWeight: FontWeight.w500,
+                                        fontWeight: FontWeight.w600,
                                         fontFamily: FontFamily.poppins,
-                                        fontSize: 14.sp,
+                                        fontSize: 18.sp,
                                         color: AppColors.favoriteRitesCarText,
                                       ),
+
                                     ),
                                     Text(
                                       '${cardDetails.vehicle?.numberOfSeat} Seat',
                                       style: TextStyle(
                                         fontWeight: FontWeight.w500,
                                         fontFamily: FontFamily.poppins,
-                                        fontSize: 14.sp,
+                                        fontSize: 16.sp,
                                         color: AppColors.favoriteRitesCarText,
                                       ),
                                     ),
@@ -444,7 +447,7 @@ class _RideRequestBottomSheetState extends State<RideRequestBottomSheet> {
                                       style: TextStyle(
                                         fontWeight: FontWeight.w500,
                                         fontFamily: FontFamily.poppins,
-                                        fontSize: 14.sp,
+                                        fontSize: 16.sp,
                                         color: AppColors.favoriteRitesCarText,
                                       ),
                                     ),
@@ -453,8 +456,8 @@ class _RideRequestBottomSheetState extends State<RideRequestBottomSheet> {
                                       style: TextStyle(
                                         fontWeight: FontWeight.w500,
                                         fontFamily: FontFamily.poppins,
-                                        fontSize: 14.sp,
-                                        color: AppColors.successColor,
+                                        fontSize: 16.sp,
+                                        color: AppColors.dottedBorderColor,
                                       ),
                                     ),
                                   ],

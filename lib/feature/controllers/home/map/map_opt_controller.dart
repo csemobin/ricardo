@@ -108,9 +108,7 @@ class MapOPTController extends GetxController {
         currentLatLun.latitude
       ]
     });
-    if( response.statusCode == 200 || response.statusCode == 201 ){
-
-    }else{
+    if( response.statusCode != 200 || response.statusCode != 201 ){
       Get.snackbar('Error', response.body['message']);
     }
   }
