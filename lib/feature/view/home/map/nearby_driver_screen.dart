@@ -8,6 +8,7 @@ import 'package:ricardo/feature/controllers/home/map/ride_controller.dart';
 import 'package:ricardo/gen/assets.gen.dart';
 import 'package:ricardo/gen/fonts.gen.dart';
 import 'package:ricardo/services/api_urls.dart';
+import 'package:ricardo/services/direction_services.dart';
 import 'package:ricardo/widgets/custom_scaffold.dart';
 import 'package:ricardo/widgets/request_ride_handler.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -433,47 +434,59 @@ class _NearByDriverScreenState extends State<NearByDriverScreen> {
                             mainAxisAlignment:
                             MainAxisAlignment.spaceBetween,
                             children: [
-                              Column(
-                                crossAxisAlignment:
-                                CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    '${cardDetails.vehicle?.carName}',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.w500,
-                                      fontFamily: FontFamily.poppins,
-                                      fontSize: 14.sp,
-                                      color: AppColors.favoriteRitesCarText,
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment:
+                                  CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      '${cardDetails.vehicle?.carName}',
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.w500,
+                                        fontFamily: FontFamily.poppins,
+                                        fontSize: 14.sp,
+                                        color: AppColors.favoriteRitesCarText,
+                                      ),
                                     ),
-                                  ),
-                                  Text(
-                                    '${cardDetails.vehicle?.numberOfSeat} Seat',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.w500,
-                                      fontFamily: FontFamily.poppins,
-                                      fontSize: 14.sp,
-                                      color: AppColors.favoriteRitesCarText,
+                                    Text(
+                                      '${cardDetails.vehicle?.numberOfSeat} Seat',
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.w500,
+                                        fontFamily: FontFamily.poppins,
+                                        fontSize: 14.sp,
+                                        color: AppColors.favoriteRitesCarText,
+                                      ),
                                     ),
-                                  ),
-                                  Text(
-                                    '${cardDetails.vehicle?.carPlateNumber}',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.w500,
-                                      fontFamily: FontFamily.poppins,
-                                      fontSize: 14.sp,
-                                      color: AppColors.favoriteRitesCarText,
+                                    Text(
+                                      '${cardDetails.vehicle?.carPlateNumber}',
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.w500,
+                                        fontFamily: FontFamily.poppins,
+                                        fontSize: 14.sp,
+                                        color: AppColors.favoriteRitesCarText,
+                                      ),
                                     ),
-                                  ),
-                                  Text(
-                                    '5 km away from you.',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.w500,
-                                      fontFamily: FontFamily.poppins,
-                                      fontSize: 14.sp,
-                                      color: AppColors.successColor,
+                                    FutureBuilder<String>(
+                                      future: DirectionsService.calculateDistance(
+                                        cardDetails.location?.coordinates?[0],
+                                        cardDetails.location?.coordinates?[1],
+                                      ),
+                                      builder: (context, snapshot) {
+                                        final distanceText = snapshot.data ?? 'Calculating...';
+                                        return Text(
+                                          '$distanceText away from you.',
+                                          overflow: TextOverflow.ellipsis, // ✅ safety for long text
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.w500,
+                                            fontFamily: FontFamily.poppins,
+                                            fontSize: 16.sp,
+                                            color: AppColors.dottedBorderColor,
+                                          ),
+                                        );
+                                      },
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
                               ClipRRect(
                                 borderRadius: BorderRadius.circular(15),
@@ -495,63 +508,6 @@ class _NearByDriverScreenState extends State<NearByDriverScreen> {
                           SizedBox(height: 15.h),
                           // Request Ride
                           RequestRideHandler(cnt: cnt, cardDetails: cardDetails),
-                          // Request Ride
-                          // ElevatedButton(
-                          //   onPressed: (){
-                          //     cnt.fetchSendPickUpRequest(cnt.rideId.value, cardDetails.sId!);
-                          //     showDialog(
-                          //       context: context,
-                          //       builder: (context) {
-                          //         return  Dialog(
-                          //             backgroundColor: Colors.transparent,
-                          //             child: GlassBackgroundMultipleChildrenWidget(
-                          //               mainAxisSize: MainAxisSize.min,
-                          //               mainAxisAlignment:MainAxisAlignment.center,
-                          //               crossAxisAlignment: CrossAxisAlignment.center,
-                          //               children: [
-                          //                 Image.asset(
-                          //                   Assets.images.waiting.path,
-                          //                   fit: BoxFit.cover,
-                          //                 ),
-                          //                 Text('Sending your ride request…'),
-                          //                 Text('Waiting for driver to accept.'),
-                          //                 ElevatedButton(onPressed: (){}, child: Text('YES')),
-                          //                 ElevatedButton(
-                          //                   onPressed: () {
-                          //
-                          //                     Navigator.pop(context);
-                          //                   },
-                          //                   child: Text('Cancel Request'),
-                          //                 ),
-                          //               ],
-                          //             )
-                          //         );
-                          //       },
-                          //     );
-                          //   },
-                          //   /* onPressed: () {
-                          //           GlassBackgroundWidget(children: [Text('maruf')]);
-                          //           // ConfirmPopUpModal(child: Text('maruf'));
-                          //           // cnt.fetchSendPickUpRequest(cnt.rideId.value, cardDetails.sId!);
-                          //         },*/
-                          //   style: ElevatedButton.styleFrom(
-                          //     backgroundColor: Color(0xFF34A853),
-                          //     foregroundColor: Colors.white,
-                          //     padding: EdgeInsets.symmetric(
-                          //         horizontal: 24, vertical: 14),
-                          //     shape: RoundedRectangleBorder(
-                          //       borderRadius: BorderRadius.circular(10),
-                          //     ),
-                          //     elevation: 0,
-                          //   ),
-                          //   child: Text(
-                          //     'Request Ride',
-                          //     style: TextStyle(
-                          //       fontSize: 15,
-                          //       fontWeight: FontWeight.w500,
-                          //     ),
-                          //   ),
-                          // ),
                         ],
                       ),
                     );
@@ -714,46 +670,58 @@ class _NearByDriverScreenState extends State<NearByDriverScreen> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    '${cardDetails.vehicle?.carName}',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.w500,
-                                      fontFamily: FontFamily.poppins,
-                                      fontSize: 14.sp,
-                                      color: AppColors.favoriteRitesCarText,
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      '${cardDetails.vehicle?.carName}',
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.w500,
+                                        fontFamily: FontFamily.poppins,
+                                        fontSize: 14.sp,
+                                        color: AppColors.favoriteRitesCarText,
+                                      ),
                                     ),
-                                  ),
-                                  Text(
-                                    '${cardDetails.vehicle?.numberOfSeat} Seat',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.w500,
-                                      fontFamily: FontFamily.poppins,
-                                      fontSize: 14.sp,
-                                      color: AppColors.favoriteRitesCarText,
+                                    Text(
+                                      '${cardDetails.vehicle?.numberOfSeat} Seat',
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.w500,
+                                        fontFamily: FontFamily.poppins,
+                                        fontSize: 14.sp,
+                                        color: AppColors.favoriteRitesCarText,
+                                      ),
                                     ),
-                                  ),
-                                  Text(
-                                    '${cardDetails.vehicle?.carPlateNumber}',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.w500,
-                                      fontFamily: FontFamily.poppins,
-                                      fontSize: 14.sp,
-                                      color: AppColors.favoriteRitesCarText,
+                                    Text(
+                                      '${cardDetails.vehicle?.carPlateNumber}',
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.w500,
+                                        fontFamily: FontFamily.poppins,
+                                        fontSize: 14.sp,
+                                        color: AppColors.favoriteRitesCarText,
+                                      ),
                                     ),
-                                  ),
-                                  Text(
-                                    '5 km away from you.',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.w500,
-                                      fontFamily: FontFamily.poppins,
-                                      fontSize: 14.sp,
-                                      color: AppColors.successColor,
+                                    FutureBuilder<String>(
+                                      future: DirectionsService.calculateDistance(
+                                        cardDetails.location?.coordinates?[0],
+                                        cardDetails.location?.coordinates?[1],
+                                      ),
+                                      builder: (context, snapshot) {
+                                        final distanceText = snapshot.data ?? 'Calculating...';
+                                        return Text(
+                                          '$distanceText away from you.',
+                                          overflow: TextOverflow.ellipsis, // ✅ safety for long text
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.w500,
+                                            fontFamily: FontFamily.poppins,
+                                            fontSize: 16.sp,
+                                            color: AppColors.dottedBorderColor,
+                                          ),
+                                        );
+                                      },
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
                               ClipRRect(
                                 borderRadius: BorderRadius.circular(15),
@@ -777,30 +745,6 @@ class _NearByDriverScreenState extends State<NearByDriverScreen> {
                           SizedBox(height: 15.h),
                           // Request Ride
                           RequestRideHandler(cnt: cnt, cardDetails: cardDetails),
-                          // ElevatedButton(
-                          //   onPressed: () {
-                          //     GlassBackgroundMultipleChildrenWidget(
-                          //         children: [Text('maruf')]);
-                          //     // cnt.fetchSendPickUpRequest(cnt.rideId.value, cardDetails.sId!);
-                          //   },
-                          //   style: ElevatedButton.styleFrom(
-                          //     backgroundColor: Color(0xFF34A853),
-                          //     foregroundColor: Colors.white,
-                          //     padding: EdgeInsets.symmetric(
-                          //         horizontal: 24, vertical: 14),
-                          //     shape: RoundedRectangleBorder(
-                          //       borderRadius: BorderRadius.circular(10),
-                          //     ),
-                          //     elevation: 0,
-                          //   ),
-                          //   child: Text(
-                          //     'Request Ride',
-                          //     style: TextStyle(
-                          //       fontSize: 15,
-                          //       fontWeight: FontWeight.w500,
-                          //     ),
-                          //   ),
-                          // ),
                         ],
                       ),
                     );

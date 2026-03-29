@@ -6,6 +6,7 @@ import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
+import 'package:ricardo/app/helpers/custom_location_helper.dart';
 
 class DirectionsService {
   // Make sure to enable these APIs in Google Cloud Console:
@@ -57,4 +58,27 @@ class DirectionsService {
 
     return '${place.street}, ${place.subLocality}, ${place.locality}, ${place.country}';
   }
+
+  static Future<String> calculateDistance(double? lng, double? lat) async {
+    if (lat == null || lng == null) return 'N/A';
+
+    final LatLng currentLocation = await CustomLocationHelper.getCurrentLocation();
+
+    if (currentLocation.latitude.isNaN || currentLocation.longitude.isNaN) return 'N/A';
+
+    // ⚠️ GeoJSON coordinates are [longitude, latitude] — note the order!
+    double distanceInMeters = Geolocator.distanceBetween(
+      currentLocation.latitude,
+      currentLocation.longitude,
+      lat,   // ✅ latitude is index [1]
+      lng,   // ✅ longitude is index [0]
+    );
+
+    if (distanceInMeters < 1000) {
+      return '${distanceInMeters.toStringAsFixed(0)} m';
+    } else {
+      return '${(distanceInMeters / 1000).toStringAsFixed(1)} km';
+    }
+  }
+
 }

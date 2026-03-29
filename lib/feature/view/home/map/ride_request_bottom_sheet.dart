@@ -7,6 +7,7 @@ import 'package:ricardo/feature/controllers/home/google_search_location_controll
 import 'package:ricardo/feature/controllers/home/map/map_opt_controller.dart';
 import 'package:ricardo/feature/controllers/home/map/ride_controller.dart';
 import 'package:ricardo/feature/simmer/ride_sharing_shimmer.dart';
+import 'package:ricardo/feature/view/home/link_export_file.dart';
 import 'package:ricardo/gen/assets.gen.dart';
 import 'package:ricardo/gen/fonts.gen.dart';
 import 'package:ricardo/routes/app_routes.dart';
@@ -423,50 +424,62 @@ class _RideRequestBottomSheetState extends State<RideRequestBottomSheet> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                            '${cardDetails.vehicle?.carName}'.split(' ').map((word) =>
-                            word.isNotEmpty ? word[0].toUpperCase() + word.substring(1).toLowerCase() : ''
-                            ).join(' '),
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.w600,
-                                        fontFamily: FontFamily.poppins,
-                                        fontSize: 18.sp,
-                                        color: AppColors.favoriteRitesCarText,
+                                Expanded(  // ✅ ADD THIS
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        '${cardDetails.vehicle?.carName}'.split(' ').map((word) =>
+                                        word.isNotEmpty ? word[0].toUpperCase() + word.substring(1).toLowerCase() : ''
+                                        ).join(' '),
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.w600,
+                                          fontFamily: FontFamily.poppins,
+                                          fontSize: 18.sp,
+                                          color: AppColors.favoriteRitesCarText,
+                                        ),
                                       ),
-
-                                    ),
-                                    Text(
-                                      '${cardDetails.vehicle?.numberOfSeat} Seat',
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.w500,
-                                        fontFamily: FontFamily.poppins,
-                                        fontSize: 16.sp,
-                                        color: AppColors.favoriteRitesCarText,
+                                      Text(
+                                        '${cardDetails.vehicle?.numberOfSeat} Seat',
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.w500,
+                                          fontFamily: FontFamily.poppins,
+                                          fontSize: 16.sp,
+                                          color: AppColors.favoriteRitesCarText,
+                                        ),
                                       ),
-                                    ),
-                                    Text(
-                                      '${cardDetails.vehicle?.carPlateNumber}',
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.w500,
-                                        fontFamily: FontFamily.poppins,
-                                        fontSize: 16.sp,
-                                        color: AppColors.favoriteRitesCarText,
+                                      Text(
+                                        '${cardDetails.vehicle?.carPlateNumber}',
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.w500,
+                                          fontFamily: FontFamily.poppins,
+                                          fontSize: 16.sp,
+                                          color: AppColors.favoriteRitesCarText,
+                                        ),
                                       ),
-                                    ),
-                                    Text(
-                                      '5 km away from you.',
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.w500,
-                                        fontFamily: FontFamily.poppins,
-                                        fontSize: 16.sp,
-                                        color: AppColors.dottedBorderColor,
+                                      FutureBuilder<String>(
+                                        future: DirectionsService.calculateDistance(
+                                          cardDetails.location?.coordinates?[0],
+                                          cardDetails.location?.coordinates?[1],
+                                        ),
+                                        builder: (context, snapshot) {
+                                          final distanceText = snapshot.data ?? 'Calculating...';
+                                          return Text(
+                                            '$distanceText away from you.',
+                                            overflow: TextOverflow.ellipsis, // ✅ safety for long text
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.w500,
+                                              fontFamily: FontFamily.poppins,
+                                              fontSize: 16.sp,
+                                              color: AppColors.dottedBorderColor,
+                                            ),
+                                          );
+                                        },
                                       ),
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
+                                SizedBox(width: 12.w), // ✅ gap between text and image
                                 ClipRRect(
                                   borderRadius: BorderRadius.circular(15),
                                   child: Image.network(
@@ -474,8 +487,7 @@ class _RideRequestBottomSheetState extends State<RideRequestBottomSheet> {
                                     width: 92.w,
                                     height: 92.h,
                                     fit: BoxFit.cover,
-                                    errorBuilder: (context, error,
-                                            stackTrace) =>
+                                    errorBuilder: (context, error, stackTrace) =>
                                         Icon(Icons.directions_car, size: 92.h),
                                   ),
                                 ),
