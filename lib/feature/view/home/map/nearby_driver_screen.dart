@@ -10,6 +10,7 @@ import 'package:ricardo/gen/fonts.gen.dart';
 import 'package:ricardo/services/api_urls.dart';
 import 'package:ricardo/widgets/custom_scaffold.dart';
 import 'package:ricardo/widgets/request_ride_handler.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class NearByDriverScreen extends StatefulWidget {
   const NearByDriverScreen({super.key});
@@ -394,16 +395,20 @@ class _NearByDriverScreenState extends State<NearByDriverScreen> {
                                 ],
                               ),
                               GestureDetector(
-                                onTap: () {},
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    color: AppColors.whiteColor,
-                                    borderRadius: BorderRadius.circular(50),
-                                    border: Border.all(
-                                        color: Colors.grey.shade200),
+                                onTap: () {
+                                  launchUrl(Uri.parse("tel:${cardDetails.phone}"));
+                                },
+                                child: RepaintBoundary(           // ✅ isolates rendering
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color: AppColors.whiteColor,
+                                      borderRadius: BorderRadius.circular(50),
+                                      border: Border.all(color: Colors.grey.shade200),
+                                    ),
+                                    child: SvgPicture.asset(
+                                      Assets.icons.driverCardPhone,
+                                    ),
                                   ),
-                                  child: SvgPicture.asset(
-                                      Assets.icons.driverCardPhone),
                                 ),
                               ),
                             ],
@@ -673,16 +678,19 @@ class _NearByDriverScreenState extends State<NearByDriverScreen> {
                                 ],
                               ),
                               GestureDetector(
-                                onTap: () {},
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    color: AppColors.whiteColor,
-                                    borderRadius: BorderRadius.circular(50),
-                                    border: Border.all(
-                                        color: Colors.grey.shade200),
+                                onTap: () {
+                                },
+                                child: RepaintBoundary(           // ✅ isolates rendering
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color: AppColors.whiteColor,
+                                      borderRadius: BorderRadius.circular(50),
+                                      border: Border.all(color: Colors.grey.shade200),
+                                    ),
+                                    child: SvgPicture.asset(
+                                      Assets.icons.driverCardPhone,
+                                    ),
                                   ),
-                                  child: SvgPicture.asset(
-                                      Assets.icons.driverCardPhone),
                                 ),
                               ),
                             ],
@@ -756,6 +764,7 @@ class _NearByDriverScreenState extends State<NearByDriverScreen> {
                                   width: 92.w,
                                   height: 92.h,
                                   errorBuilder: (context, error, stackTrace) {
+                                    launchUrl(Uri.parse("tel:${cardDetails.phone}"));
                                     return Image.asset(
                                       'assets/images/driver.png',
                                       fit: BoxFit.cover,

@@ -7,7 +7,9 @@ import 'package:ricardo/feature/view/home/link_export_file.dart';
 import 'package:ricardo/gen/assets.gen.dart';
 import 'package:ricardo/gen/fonts.gen.dart';
 import 'package:ricardo/widgets/custom_primary_button.dart';
+import 'package:ricardo/widgets/custom_text_field.dart';
 import 'package:ricardo/widgets/glass_background_widget.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class DraggableBottomSheet extends StatefulWidget {
   final AcceptRideModel? acceptRideModel;
@@ -244,15 +246,19 @@ class _DraggableBottomSheetState extends State<DraggableBottomSheet> {
 
                           // Phone call button (SVG icon)
                           GestureDetector(
-                            onTap: () {},
-                            child: Container(
-                              decoration: BoxDecoration(
-                                color: AppColors.whiteColor,
-                                borderRadius: BorderRadius.circular(50),
-                                border: Border.all(color: Colors.grey.shade200),
-                              ),
-                              child: SvgPicture.asset(
+                            onTap: () {
+                              launchUrl(Uri.parse("tel:${widget.acceptRideModel?.driver?.driverPhone}"));
+                            },
+                            child: RepaintBoundary(           // ✅ isolates rendering
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: AppColors.whiteColor,
+                                  borderRadius: BorderRadius.circular(50),
+                                  border: Border.all(color: Colors.grey.shade200),
+                                ),
+                                child: SvgPicture.asset(
                                   Assets.icons.driverCardPhone,
+                                ),
                               ),
                             ),
                           ),
@@ -320,52 +326,117 @@ class _DraggableBottomSheetState extends State<DraggableBottomSheet> {
                       SizedBox(height: 32.h),
                       CustomPrimaryButton(
                           title: 'Provide a review',
-                          onHandler: (){
-                            Get.toNamed(AppRoutes.rateReviewDriver);
-                          }
+                          onHandler: () {
+                            Get.toNamed(AppRoutes.rateReviewDriver, arguments: {
+                              'name':
+                                  widget.acceptRideModel?.driver?.driverName,
+                            });
+                          }),
+                      SizedBox(
+                        height: 14.h,
                       ),
-                      SizedBox(height: 14.h,),
                       GestureDetector(
                         onTap: () {
-                          showDialog(context: context, builder: (context) {
-                            return AboutDialog(
-                              children: [
-                                GlassBackgroundWidget(child: Text('maruf'))
-                              ],
-                            );
-                          });
+                          showDialog(
+                            useSafeArea: false,
+                            barrierDismissible: false,
+                            barrierColor: Colors.white.withOpacity(0.1),
+                            context: context,
+                            builder: (context) => Dialog(
+                              backgroundColor: Colors.transparent,
+                              insetPadding: EdgeInsets.symmetric(
+                                  horizontal: 24.w,
+                              ), // ✅ side padding only
+                              child: GlassBackgroundWidget(
+                                borderLeftRightRadius: 24,
+                                padding: EdgeInsets.all(20.r),
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  // ✅ wrap content height
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: [
+                                        InkWell(
+                                          child: Icon(
+                                            Icons.close,
+                                            color: AppColors.secondaryTextColor,
+                                            size: 22,
+                                          ),
+                                          onTap: () {
+                                            Navigator.pop(context);
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                    Text(
+                                      'Tips',
+                                      style: TextStyle(
+                                        fontSize: 22.sp,
+                                        fontWeight: FontWeight.w700,
+                                        fontFamily: FontFamily.poppins,
+                                        color: AppColors.primaryColor,
+                                      ),
+                                    ),
+                                    Text(
+                                      'Enjoyed your ride?',
+                                      style: TextStyle(
+                                          fontSize: 14.sp,
+                                          fontWeight: FontWeight.w400,
+                                          fontFamily: FontFamily.poppins,
+                                          color: AppColors.secondaryTextColor),
+                                    ),
+                                    SizedBox(
+                                      height: 34.h,
+                                    ),
+                                    CustomTextField(
+                                      labelText: 'Enter Amount',
+                                      hintText: 'Enter Amount',
+                                      filColor: AppColors.whiteColor,
+                                      controller: TextEditingController(),
+                                    ),
+                                    Text(
+                                      'Tips will go completely to driver',
+                                      style: TextStyle(
+                                        fontFamily: FontFamily.poppins,
+                                        fontSize: 14.sp,
+                                        fontWeight: FontWeight.w400,
+                                        color: AppColors.secondaryTextColor,
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      height: 26.h,
+                                    ),
+                                    CustomPrimaryButton(
+                                        title: 'Submit',
+                                        onHandler: () {
+                                          Navigator.pop(context);
+                                        })
+                                  ],
+                                ),
+                              ),
+                            ),
+                          );
                         },
                         child: AnimatedContainer(
                           duration: Duration(milliseconds: 200),
+                          alignment: Alignment.center,
                           width: double.maxFinite,
                           height: 56.h,
                           decoration: BoxDecoration(
-                            gradient: LinearGradient(  // ✅ Gradient border
-                              colors: [
-                                Color(0xff1BB600),
-                                Color(0xff007635),
-                                Color(0xff01AF44),
-                              ],
-                              begin: Alignment.centerLeft,
-                              end: Alignment.centerRight,
-                            ),
                             borderRadius: BorderRadius.circular(50.r),
-                          ),
-                          child: Container(
-                            margin: EdgeInsets.all(1.5),
-                            decoration: BoxDecoration(
-                              color: Colors.transparent,
-                              borderRadius: BorderRadius.circular(50.r),
+                            border: Border.all(
+                              color: Colors.green,
+                              width: 1,
                             ),
-                            alignment: Alignment.center,
-                            child: Text(
-                              'Provide a Tip',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                color: Colors.green,
-                                fontSize: 16.sp,
-                                fontWeight: FontWeight.w400,
-                              ),
+                          ),
+                          child: Text(
+                            'Provide a Tip',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: AppColors.primaryColor,
+                              fontSize: 16.sp,
+                              fontWeight: FontWeight.w400,
                             ),
                           ),
                         ),

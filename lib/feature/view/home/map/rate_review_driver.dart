@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get.dart';
-import 'package:ricardo/app/utils/app_colors.dart';
 import 'package:ricardo/feature/controllers/home/map/rate_review_controller.dart';
-import 'package:ricardo/gen/fonts.gen.dart';
+import 'package:ricardo/feature/view/home/link_export_file.dart';
 import 'package:ricardo/widgets/custom_heading_text.dart';
 import 'package:ricardo/widgets/custom_primary_button.dart';
 import 'package:ricardo/widgets/custom_scaffold.dart';
 import 'package:ricardo/widgets/custom_text_field.dart';
+import 'package:ricardo/widgets/glass_background_multiple_children_widget.dart';
+import 'package:ricardo/widgets/glass_background_widget.dart';
 
 class RateReviewDriver extends StatelessWidget {
   RateReviewDriver({super.key});
 
   final controller = Get.put(RateAndReviewController());
   final TextEditingController txController = TextEditingController();
+  final String? name = Get.arguments?['name'];
 
   @override
   Widget build(BuildContext context) {
@@ -73,14 +73,67 @@ class RateReviewDriver extends StatelessWidget {
                 height: 110.h,
               ),
               GestureDetector(
-                onTap: (){} ,
+                onTap: () {
+                  showDialog(
+                    barrierColor: Colors.white.withOpacity(0.1),
+                    context: context,
+                    builder: (context) => Dialog(
+                      backgroundColor: Colors.transparent,
+                      insetPadding: EdgeInsets.symmetric(horizontal: 24.w), // ✅ side padding only
+                      child: GlassBackgroundWidget(
+                        borderLeftRightRadius: 24,
+                        padding: EdgeInsets.all(20.r),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min, // ✅ wrap content height
+                          children: [
+                            Image.asset(Assets.images.congratulations.path),
+                            Text('Congratulations!',style: TextStyle(
+                              fontSize: 22.sp,
+                              fontWeight: FontWeight.w700,
+                              fontFamily: FontFamily.poppins,
+                              color: AppColors.primaryColor
+                            ),),
+                            RichText(
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 2,
+                              textAlign: TextAlign.center,
+                              text: TextSpan(
+                                text: '${name ?? 'N/A'} ',
+                                style: TextStyle(
+                                  color: AppColors.successColor,
+                                  fontSize: 16.sp,
+                                  fontFamily: FontFamily.poppins,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                                children: [
+                                  TextSpan(
+                                    text: 'is now your favorite rider! ',
+                                    style: TextStyle(
+                                      color: AppColors.primaryTextColor,
+                                      fontFamily: FontFamily.poppins,
+                                      fontSize: 16.sp,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            SizedBox(height: 26.h,),
+                            CustomPrimaryButton(title: 'Okay', onHandler: (){
+                              Navigator.pop(context);
+                            })
+                          ],
+                        ),
+                      ),
+                    ),
+                  );
+                },
                 child: AnimatedContainer(
                   duration: Duration(milliseconds: 200),
                   alignment: Alignment.center,
                   width: double.maxFinite,
                   height: 56.h,
                   decoration: BoxDecoration(
-
                     borderRadius: BorderRadius.circular(50.r),
                     border: Border.all(
                       color: Colors.green,
@@ -91,15 +144,22 @@ class RateReviewDriver extends StatelessWidget {
                     'Add to Favourite',
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                      color:  Colors.green,
+                      color: Colors.green,
                       fontSize: 16.sp,
                       fontWeight: FontWeight.w400,
                     ),
                   ),
                 ),
               ),
-              SizedBox(height: 21.h,),
-              CustomPrimaryButton(title: 'Submit Review', onHandler: () {}),
+              SizedBox(
+                height: 21.h,
+              ),
+              CustomPrimaryButton(
+                  title: 'Submit Review',
+                  onHandler: () {
+
+                  }
+              ),
             ],
           ),
         ));

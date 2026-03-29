@@ -13,6 +13,7 @@ import 'package:ricardo/routes/app_routes.dart';
 import 'package:ricardo/services/api_urls.dart';
 import 'package:ricardo/widgets/glass_background_widget.dart' as Glass;
 import 'package:ricardo/widgets/request_ride_handler.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class RideRequestBottomSheet extends StatefulWidget {
   final String pickupLocation;
@@ -385,16 +386,20 @@ class _RideRequestBottomSheetState extends State<RideRequestBottomSheet> {
                                   ],
                                 ),
                                 GestureDetector(
-                                  onTap: () {},
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      color: AppColors.whiteColor,
-                                      borderRadius: BorderRadius.circular(50),
-                                      border: Border.all(
-                                          color: Colors.grey.shade200),
+                                  onTap: () {
+                                    launchUrl(Uri.parse("tel:${cardDetails.phone}"));
+                                  },
+                                  child: RepaintBoundary(           // ✅ isolates rendering
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        color: AppColors.whiteColor,
+                                        borderRadius: BorderRadius.circular(50),
+                                        border: Border.all(color: Colors.grey.shade200),
+                                      ),
+                                      child: SvgPicture.asset(
+                                        Assets.icons.driverCardPhone,
+                                      ),
                                     ),
-                                    child: SvgPicture.asset(
-                                        Assets.icons.driverCardPhone),
                                   ),
                                 ),
                               ],
