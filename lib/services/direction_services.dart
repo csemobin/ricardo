@@ -4,11 +4,15 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:ricardo/app/helpers/custom_location_helper.dart';
+import 'package:ricardo/feature/controllers/home/google_search_location_controller.dart';
+import 'package:ricardo/feature/controllers/home/map/map_opt_controller.dart';
 
 class DirectionsService {
+
   // Make sure to enable these APIs in Google Cloud Console:
   // - Maps SDK for Android
   // - Directions API
@@ -62,22 +66,22 @@ class DirectionsService {
   static Future<String> calculateDistance(double? lng, double? lat) async {
     if (lat == null || lng == null) return 'N/A';
 
-    final LatLng currentLocation = await CustomLocationHelper.getCurrentLocation();
+    final googleController = Get.find<GoogleSearchLocationController>(); // ✅ gets existing instance
 
-    if (currentLocation.latitude.isNaN || currentLocation.longitude.isNaN) return 'N/A';
+    final pickup = googleController.selectedPickup.value;
+    if (pickup == null) return 'N/A'; // ✅ null safety
 
-    // ⚠️ GeoJSON coordinates are [longitude, latitude] — note the order!
     double distanceInMeters = Geolocator.distanceBetween(
-      currentLocation.latitude,
-      currentLocation.longitude,
-      lat,   // ✅ latitude is index [1]
-      lng,   // ✅ longitude is index [0]
+      pickup.lat,
+      pickup.lng,
+      lat,
+      lng,
     );
 
     if (distanceInMeters < 1000) {
-      return '${distanceInMeters.toStringAsFixed(0)} m';
+      return '${distanceInMeters.toStringAsFixed(0)} Meter';
     } else {
-      return '${(distanceInMeters / 1000).toStringAsFixed(1)} km';
+      return '${(distanceInMeters / 1000).toStringAsFixed(1)} Kilometer';
     }
   }
 

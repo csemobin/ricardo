@@ -14,6 +14,7 @@ import 'package:ricardo/widgets/glass_background_widget.dart';
 import 'package:ricardo/widgets/map_custom_header_back.dart';
 import 'package:ricardo/widgets/no_internet_message_map.dart';
 import 'package:ricardo/widgets/request_ride_handler.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'link_export_file.dart';
 
 class MapScreen extends StatefulWidget {
@@ -1344,16 +1345,20 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
                                     ],
                                   ),
                                   GestureDetector(
-                                    onTap: () {},
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        color: AppColors.whiteColor,
-                                        borderRadius: BorderRadius.circular(50),
-                                        border: Border.all(
-                                            color: Colors.grey.shade200),
+                                    onTap: () {
+                                      launchUrl(Uri.parse("tel:${mapOPTController.rideDetailsData.value?.passengerPhone}"));
+                                    },
+                                    child: RepaintBoundary(           // ✅ isolates rendering
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          color: AppColors.whiteColor,
+                                          borderRadius: BorderRadius.circular(50),
+                                          border: Border.all(color: Colors.grey.shade200),
+                                        ),
+                                        child: SvgPicture.asset(
+                                          Assets.icons.driverCardPhone,
+                                        ),
                                       ),
-                                      child: SvgPicture.asset(
-                                          'assets/icons/driver_card_phone.svg'),
                                     ),
                                   ),
                                 ],

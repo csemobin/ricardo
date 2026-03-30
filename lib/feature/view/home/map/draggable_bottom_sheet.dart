@@ -90,29 +90,13 @@ class _DraggableBottomSheetState extends State<DraggableBottomSheet> {
                                 'Rider is on the way to pickup',
                                 style: TextStyle(
                                   fontSize: 14.sp,
-                                  fontWeight: FontWeight.w500,
-                                  color: AppColors.blackColor,
+                                  fontWeight: FontWeight.w600,
+                                  color: AppColors.darkColor,
                                   fontFamily: FontFamily.poppins,
                                 ),
                               ),
                             ],
                           ),
-                          /*Container(
-                            padding: const EdgeInsets.all(5),
-                            decoration: BoxDecoration(
-                              color: AppColors.darkColor,
-                              borderRadius: BorderRadius.circular(3),
-                            ),
-                            child: Text(
-                              '1 min',
-                              style: TextStyle(
-                                fontWeight: FontWeight.w500,
-                                fontSize: 12.sp,
-                                fontFamily: FontFamily.poppins,
-                                color: Colors.white,
-                              ),
-                            ),
-                          ),*/
                           Container(
                             padding: const EdgeInsets.all(5),
                             decoration: BoxDecoration(
@@ -120,7 +104,7 @@ class _DraggableBottomSheetState extends State<DraggableBottomSheet> {
                               borderRadius: BorderRadius.circular(3),
                             ),
                             child: Text(
-                              '1 min',
+                              '100 min',
                               style: TextStyle(
                                 fontWeight: FontWeight.w500,
                                 fontSize: 12.sp,
@@ -161,9 +145,7 @@ class _DraggableBottomSheetState extends State<DraggableBottomSheet> {
                                   fit: BoxFit.cover,
                                   errorBuilder: (context, error, stackTrace) {
                                     return Image.asset(
-                                      // 'assets/images/default_driver.png',
                                       Assets.images.defaultImage.path,
-                                      // fallback image
                                       height: 62.h,
                                       width: 62.w,
                                       fit: BoxFit.cover,
@@ -173,7 +155,7 @@ class _DraggableBottomSheetState extends State<DraggableBottomSheet> {
                               ),
                               SizedBox(width: 12.w),
 
-                              // Driver name, rating, trips, phone
+                              // ── Driver name, rating, trips, phone
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
@@ -181,58 +163,66 @@ class _DraggableBottomSheetState extends State<DraggableBottomSheet> {
                                     '${widget.acceptRideModel?.driver?.driverName}',
                                     style: TextStyle(
                                       fontFamily: FontFamily.poppins,
-                                      fontSize: 14.sp,
+                                      fontSize: 16.sp,
                                       fontWeight: FontWeight.w600,
                                       color: AppColors.successColor,
                                     ),
                                   ),
+
+                                  // ✅ Extract variables once instead of repeating null checks
+                                  Builder(builder: (context) {
+                                    final totalRatings = widget.acceptRideModel?.driver?.totalRatings ?? 0;
+                                    final ratingAverage = widget.acceptRideModel?.driver?.ratingAverage ?? 0.0;
+                                    final totalRides = widget.acceptRideModel?.driver?.totalCompletedRides ?? 0;
+
+                                    return Row(
+                                      children: [
+                                        if (totalRatings > 0) ...[
+                                          Icon(Icons.star, color: AppColors.orangeColor, size: 16),
+                                          const SizedBox(width: 4),
+                                          Text(
+                                            '$totalRatings ( $ratingAverage )',
+                                            style: TextStyle(
+                                              fontFamily: FontFamily.poppins,
+                                              fontSize: 14.sp,
+                                              fontWeight: FontWeight.w600,
+                                              color: AppColors.blackBText,
+                                            ),
+                                          ),
+                                        ],
+                                        if (totalRides > 0) ...[
+                                          SizedBox(width: 8.w),
+                                          Container(
+                                            width: 2.w,
+                                            height: 15.h,
+                                            decoration: BoxDecoration(
+                                              color: Colors.black.withOpacity(0.30),
+                                            ),
+                                          ),
+                                          SizedBox(width: 8.w),
+                                          Text(
+                                            '$totalRides Trips',
+                                            style: TextStyle(
+                                              fontFamily: FontFamily.poppins,
+                                              fontSize: 14.sp,
+                                              fontWeight: FontWeight.w500,
+                                              color: AppColors.blackBText,
+                                            ),
+                                          ),
+                                        ],
+                                      ],
+                                    );
+                                  }),
+
                                   Row(
                                     children: [
-                                      Icon(
-                                        Icons.star,
-                                        color: AppColors.orangeColor,
-                                        size: 16,
-                                      ),
-                                      const SizedBox(width: 4),
-                                      Text(
-                                        '${widget.acceptRideModel?.driver?.totalRatings ?? 0} ( ${widget.acceptRideModel?.driver?.ratingAverage ?? 0.0} )',
-                                        style: TextStyle(
-                                          fontFamily: FontFamily.poppins,
-                                          fontSize: 12.sp,
-                                          fontWeight: FontWeight.w500,
-                                          color: AppColors.blackBText,
-                                        ),
-                                      ),
-                                      SizedBox(width: 8.w),
-                                      Container(
-                                        width: 2.w,
-                                        height: 15.h,
-                                        decoration: BoxDecoration(
-                                          color: Colors.black.withOpacity(0.30),
-                                        ),
-                                      ),
-                                      SizedBox(width: 8.w),
-                                      Text(
-                                        '${widget.acceptRideModel?.driver?.totalCompletedRides ?? 0} Trips',
-                                        style: TextStyle(
-                                          fontFamily: FontFamily.poppins,
-                                          fontSize: 12.sp,
-                                          fontWeight: FontWeight.w500,
-                                          color: AppColors.blackBText,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  Row(
-                                    children: [
-                                      Icon(Icons.call,
-                                          color: AppColors.greenColor),
+                                      Icon(Icons.call, color: AppColors.greenColor),
                                       const SizedBox(width: 4),
                                       Text(
                                         '${widget.acceptRideModel?.driver?.driverPhone}',
                                         style: TextStyle(
                                           fontFamily: FontFamily.poppins,
-                                          fontSize: 12.sp,
+                                          fontSize: 14.sp,
                                           fontWeight: FontWeight.w500,
                                           color: AppColors.blackBText,
                                         ),
@@ -301,14 +291,24 @@ class _DraggableBottomSheetState extends State<DraggableBottomSheet> {
                                   color: AppColors.favoriteRitesCarText,
                                 ),
                               ),
-                              Text(
-                                '5 km away from you.',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.w500,
-                                  fontFamily: FontFamily.poppins,
-                                  fontSize: 14.sp,
-                                  color: AppColors.successColor,
+                              FutureBuilder<String>(
+                                future: DirectionsService.calculateDistance(
+                                  widget.acceptRideModel?.driver?.driverLocation?.coordinates?[0],
+                                  widget.acceptRideModel?.driver?.driverLocation?.coordinates?[1],
                                 ),
+                                builder: (context, snapshot) {
+                                  final distanceText = snapshot.data ?? 'Calculating...';
+                                  return Text(
+                                    '$distanceText away from you.',
+                                    overflow: TextOverflow.ellipsis, // ✅ safety for long text
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w500,
+                                      fontFamily: FontFamily.poppins,
+                                      fontSize: 16.sp,
+                                      color: AppColors.dottedBorderColor,
+                                    ),
+                                  );
+                                },
                               ),
                             ],
                           ),
