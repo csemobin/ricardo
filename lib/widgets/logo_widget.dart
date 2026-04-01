@@ -5,7 +5,7 @@ import 'package:ricardo/gen/assets.gen.dart';
 
 class LogoWidget extends StatelessWidget {
   final double? height, width;
-  const LogoWidget({super.key, this.width = 200, this.height = 200});
+  const LogoWidget({super.key, this.width = 60, this.height = 60});
 
   @override
   Widget build(BuildContext context) {

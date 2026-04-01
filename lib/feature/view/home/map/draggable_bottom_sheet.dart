@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -13,8 +15,10 @@ import 'package:url_launcher/url_launcher.dart';
 
 class DraggableBottomSheet extends StatefulWidget {
   final AcceptRideModel? acceptRideModel;
+  final MapOPTController? controller;
 
-  const DraggableBottomSheet({super.key, this.acceptRideModel});
+  const DraggableBottomSheet(
+      {super.key, this.acceptRideModel, this.controller});
 
   @override
   State<DraggableBottomSheet> createState() => _DraggableBottomSheetState();
@@ -171,14 +175,22 @@ class _DraggableBottomSheetState extends State<DraggableBottomSheet> {
 
                                   // ✅ Extract variables once instead of repeating null checks
                                   Builder(builder: (context) {
-                                    final totalRatings = widget.acceptRideModel?.driver?.totalRatings ?? 0;
-                                    final ratingAverage = widget.acceptRideModel?.driver?.ratingAverage ?? 0.0;
-                                    final totalRides = widget.acceptRideModel?.driver?.totalCompletedRides ?? 0;
+                                    final totalRatings = widget.acceptRideModel
+                                            ?.driver?.totalRatings ??
+                                        0;
+                                    final ratingAverage = widget.acceptRideModel
+                                            ?.driver?.ratingAverage ??
+                                        0.0;
+                                    final totalRides = widget.acceptRideModel
+                                            ?.driver?.totalCompletedRides ??
+                                        0;
 
                                     return Row(
                                       children: [
                                         if (totalRatings > 0) ...[
-                                          Icon(Icons.star, color: AppColors.orangeColor, size: 16),
+                                          Icon(Icons.star,
+                                              color: AppColors.orangeColor,
+                                              size: 16),
                                           const SizedBox(width: 4),
                                           Text(
                                             '$totalRatings ( $ratingAverage )',
@@ -196,7 +208,8 @@ class _DraggableBottomSheetState extends State<DraggableBottomSheet> {
                                             width: 2.w,
                                             height: 15.h,
                                             decoration: BoxDecoration(
-                                              color: Colors.black.withOpacity(0.30),
+                                              color: Colors.black
+                                                  .withOpacity(0.30),
                                             ),
                                           ),
                                           SizedBox(width: 8.w),
@@ -216,7 +229,8 @@ class _DraggableBottomSheetState extends State<DraggableBottomSheet> {
 
                                   Row(
                                     children: [
-                                      Icon(Icons.call, color: AppColors.greenColor),
+                                      Icon(Icons.call,
+                                          color: AppColors.greenColor),
                                       const SizedBox(width: 4),
                                       Text(
                                         '${widget.acceptRideModel?.driver?.driverPhone}',
@@ -237,14 +251,17 @@ class _DraggableBottomSheetState extends State<DraggableBottomSheet> {
                           // Phone call button (SVG icon)
                           GestureDetector(
                             onTap: () {
-                              launchUrl(Uri.parse("tel:${widget.acceptRideModel?.driver?.driverPhone}"));
+                              launchUrl(Uri.parse(
+                                  "tel:${widget.acceptRideModel?.driver?.driverPhone}"));
                             },
-                            child: RepaintBoundary(           // ✅ isolates rendering
+                            child: RepaintBoundary(
+                              // ✅ isolates rendering
                               child: Container(
                                 decoration: BoxDecoration(
                                   color: AppColors.whiteColor,
                                   borderRadius: BorderRadius.circular(50),
-                                  border: Border.all(color: Colors.grey.shade200),
+                                  border:
+                                      Border.all(color: Colors.grey.shade200),
                                 ),
                                 child: SvgPicture.asset(
                                   Assets.icons.driverCardPhone,
@@ -293,14 +310,18 @@ class _DraggableBottomSheetState extends State<DraggableBottomSheet> {
                               ),
                               FutureBuilder<String>(
                                 future: DirectionsService.calculateDistance(
-                                  widget.acceptRideModel?.driver?.driverLocation?.coordinates?[0],
-                                  widget.acceptRideModel?.driver?.driverLocation?.coordinates?[1],
+                                  widget.acceptRideModel?.driver?.driverLocation
+                                      ?.coordinates?[0],
+                                  widget.acceptRideModel?.driver?.driverLocation
+                                      ?.coordinates?[1],
                                 ),
                                 builder: (context, snapshot) {
-                                  final distanceText = snapshot.data ?? 'Calculating...';
+                                  final distanceText =
+                                      snapshot.data ?? 'Calculating...';
                                   return Text(
                                     '$distanceText away from you.',
-                                    overflow: TextOverflow.ellipsis, // ✅ safety for long text
+                                    overflow: TextOverflow.ellipsis,
+                                    // ✅ safety for long text
                                     style: TextStyle(
                                       fontWeight: FontWeight.w500,
                                       fontFamily: FontFamily.poppins,
@@ -327,10 +348,15 @@ class _DraggableBottomSheetState extends State<DraggableBottomSheet> {
                       CustomPrimaryButton(
                           title: 'Provide a review',
                           onHandler: () {
-                            Get.toNamed(AppRoutes.rateReviewDriver, arguments: {
-                              'name':
-                                  widget.acceptRideModel?.driver?.driverName,
-                            });
+                            Get.toNamed(
+                              AppRoutes.rateReviewDriver,
+                              arguments: {
+                                'name':
+                                    widget.acceptRideModel?.driver?.driverName,
+                                'driverId' : widget.acceptRideModel?.driverCar?.driverId,
+                                'rideId' : widget.acceptRideModel?.ride?.id
+                              },
+                            );
                           }),
                       SizedBox(
                         height: 14.h,
@@ -345,7 +371,7 @@ class _DraggableBottomSheetState extends State<DraggableBottomSheet> {
                             builder: (context) => Dialog(
                               backgroundColor: Colors.transparent,
                               insetPadding: EdgeInsets.symmetric(
-                                  horizontal: 24.w,
+                                horizontal: 24.w,
                               ), // ✅ side padding only
                               child: GlassBackgroundWidget(
                                 borderLeftRightRadius: 24,
@@ -393,7 +419,8 @@ class _DraggableBottomSheetState extends State<DraggableBottomSheet> {
                                       labelText: 'Enter Amount',
                                       hintText: 'Enter Amount',
                                       filColor: AppColors.whiteColor,
-                                      controller: TextEditingController(),
+                                      controller:
+                                          widget.controller!.provideTips,
                                     ),
                                     Text(
                                       'Tips will go completely to driver',
@@ -407,11 +434,58 @@ class _DraggableBottomSheetState extends State<DraggableBottomSheet> {
                                     SizedBox(
                                       height: 26.h,
                                     ),
-                                    CustomPrimaryButton(
-                                        title: 'Submit',
-                                        onHandler: () {
-                                          Navigator.pop(context);
-                                        })
+                                    Obx(
+                                      () {
+                                        if (widget
+                                            .controller!.isLoading.value) {
+                                          return CircularProgressIndicator();
+                                        }
+                                        return CustomPrimaryButton(
+                                          title: 'Submit',
+                                          onHandler: () async {
+                                            String? rideId = widget
+                                                .acceptRideModel?.ride?.id;
+
+                                            if (rideId == null ||
+                                                rideId.isEmpty) {
+                                              final dataString =
+                                                  PrefsHelper.getString(
+                                                      'ride-accepted-data');
+
+                                              if (dataString != null) {
+                                                final Map<String, dynamic>
+                                                    dataMap = jsonDecode(
+                                                        await dataString);
+                                                rideId =
+                                                    dataMap['ride']?['_id'];
+                                              }
+                                            }
+
+                                            if (rideId == null ||
+                                                rideId.isEmpty) {
+                                              debugPrint(
+                                                  "Ride ID still null ❌");
+                                              Get.snackbar(
+                                                  "Error", "Ride ID not found");
+                                              return;
+                                            }
+
+                                            final success = await widget
+                                                .controller!
+                                                .provideTipsHandler(rideId);
+
+                                            if (success) {
+                                              Navigator.pop(context);
+                                              Get.snackbar("Success",
+                                                  "Tip sent successfully");
+                                            } else {
+                                              Get.snackbar("Error",
+                                                  "Failed to send tip");
+                                            }
+                                          },
+                                        );
+                                      },
+                                    ),
                                   ],
                                 ),
                               ),

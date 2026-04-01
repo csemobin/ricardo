@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
@@ -58,6 +59,7 @@ class MapOPTController extends GetxController {
 // ***************************************************
 
   RxBool isDriverSwitchAvailabilityStatus = false.obs;
+
   Future<void> driverSwitchAvailabilityStatus() async {
     isDriverSwitchAvailabilityStatus.value = true;
     final response = await ApiClient.patch(
@@ -85,32 +87,119 @@ class MapOPTController extends GetxController {
   // ***************************************************
   RxBool isPassengerRequest = false.obs;
   Rx<RideDetailsSocketModel?> rideDetailsData =
-  Rx<RideDetailsSocketModel?>(null);
+      Rx<RideDetailsSocketModel?>(null);
 
   //***************************************************
 // *** Socket Accept Ride Driver Model  Response ****
 // ***************************************************
   RxBool acceptedRideDataStatus = false.obs;
-  Rx<AcceptRideDriverModel?>acceptedRideData = Rx<AcceptRideDriverModel?>(null);
+  Rx<AcceptRideDriverModel?> acceptedRideData =
+      Rx<AcceptRideDriverModel?>(null);
 
   //***************************************************
   // ******* Book a Ride From the Driver  **************
   // ***************************************************
 
-  Future<void>rideAcceptRide( String rideId ) async{
+  Future<void> rideAcceptRide(String rideId) async {
     LatLng currentLatLun = await CustomLocationHelper.getCurrentLocation();
 
-    print('===================>>>>>>>>>>>>>>> check $currentLatLun ${currentLatLun.latitude} ${currentLatLun.longitude}');
+    print(
+        '===================>>>>>>>>>>>>>>> check $currentLatLun ${currentLatLun.latitude} ${currentLatLun.longitude}');
 
-    final response = await ApiClient.postData(ApiUrls.rideAcceptRideByRideId(rideId),{
-      "coordinates": [
-        currentLatLun.longitude,
-        currentLatLun.latitude
-      ]
+    final response =
+        await ApiClient.postData(ApiUrls.rideAcceptRideByRideId(rideId), {
+      "coordinates": [currentLatLun.longitude, currentLatLun.latitude]
     });
-    if( response.statusCode != 200 || response.statusCode != 201 ){
+    if (response.statusCode != 200 || response.statusCode != 201) {
       Get.snackbar('Error', response.body['message']);
     }
   }
 
+  // ---------------- Tips related work are here
+  // -------------------------------------------
+  final TextEditingController provideTips = TextEditingController();
+  RxBool isLoading = false.obs;
+  RxBool isTipsSuccess = false.obs;
+
+  Future<bool> provideTipsHandler(String rideId) async {
+    if (provideTips.text.trim().isEmpty) {
+      isTipsSuccess.value = false;
+      return false;
+    }
+
+    try {
+      isLoading.value = true;
+
+      final response = await ApiClient.postData(
+        ApiUrls.sendTips,
+        {
+          "amount": provideTips.text.trim(),
+          "rideId": rideId,
+        },
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        isTipsSuccess.value = true;
+        provideTips.clear();
+        return true;
+      } else {
+        provideTips.clear();
+        isTipsSuccess.value = false;
+        return false;
+      }
+    } catch (e) {
+      debugPrint(e.toString());
+      isTipsSuccess.value = false;
+      return false;
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  // ------------- Review related work are here
+  // -------------------------------------------
+
+  final isAddedFavouriteRiderStatus = false.obs;
+  final addedFavourite = false.obs;
+
+  Future<bool> addedFavouriteRide(String driverId) async {
+    try {
+      isAddedFavouriteRiderStatus.value = true; // ✅ start loading
+
+      final response = await ApiClient.postData(
+        ApiUrls.favoriteRider,
+        {"driver": driverId},
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        addedFavourite.value = true;
+        return true;
+      } else if (response.statusCode == 400 && response.body['message'] == 'Driver already added to favorites') {
+        Get.snackbar("Info", "Already added to favorites");
+        addedFavourite.value = false;
+        return true;
+      } else {
+        addedFavourite.value = false;
+        final message = response.body is Map
+            ? response.body['message'] ?? 'Something went wrong'
+            : 'Something went wrong';
+
+        Get.snackbar('Error', message);
+        return false;
+      }
+    } catch (e) {
+      addedFavourite.value = false;
+      Get.snackbar('Error', e.toString());
+      debugPrint(e.toString());
+      return false; // ✅ FIXED
+    } finally {
+      isAddedFavouriteRiderStatus.value = false; // ✅ stop loading
+    }
+  }
+
+  @override
+  void dispose() {
+    provideTips.dispose();
+    super.dispose();
+  }
 }

@@ -35,10 +35,13 @@ class _SelectedRoleScreenState extends State<SelectedRoleScreen> {
                 child: IntrinsicHeight(
                   child: Column(
                     children: [
-                      SizedBox(height: 20.h),
+                      SizedBox(height: 60.h),
                       Center(
-                        child: LogoWidget(),
+                        child: LogoWidget(
+                          height: 80.h,
+                        ),
                       ),
+                      SizedBox(height: 42.h),
                       CustomHeadingText(
                         firstText: 'Welcome!',
                         secondText: 'Are you a...',

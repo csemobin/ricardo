@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -93,6 +94,59 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
       _errorMessage = '';
     });
 
+    // ✅ Restore ride state if app was closed mid-ride
+    await _restoreRideState();
+
+    bool hasPermission = await _requestLocationPermission();
+    if (!hasPermission) {
+      setState(() {
+        _isLoading = false;
+        _errorMessage = 'Location permission is required to use this app';
+      });
+      return;
+    }
+
+    await _getCurrentLocation();
+    await connectSocket();
+    await userController.fetchUser();
+    await _loadRoute();
+
+    setState(() {
+      _isLoading = false;
+    });
+  }
+
+  Future<void> _restoreRideState() async {
+    final status = await PrefsHelper.getString('status');
+    if (status != 'ride-accepted') return;
+
+    final savedData = await PrefsHelper.getString('ride-accepted-data');
+    if (savedData == null || savedData.isEmpty) return;
+
+    try {
+      final Map<String, dynamic> data = jsonDecode(savedData);
+      final driver = data['driver'];
+
+      rideController.isRideAccepted.value = true;
+      rideController.acceptedRideDriverName.value =
+          (driver is Map ? driver['driverName'] : null) ?? '';
+      rideController.acceptRideModel.value = AcceptRideModel.fromJson(data);
+
+      debugPrint('✅ Ride state restored from prefs');
+    } catch (e) {
+      debugPrint('Restore ride state error: $e');
+      // Clear corrupted data
+      await PrefsHelper.setString('status', '');
+      await PrefsHelper.setString('ride-accepted-data', '');
+    }
+  }
+
+  /*Future<void> _initializeMap() async {
+    setState(() {
+      _isLoading = true;
+      _errorMessage = '';
+    });
+
     // Request location permission
     bool hasPermission = await _requestLocationPermission();
     if (!hasPermission) {
@@ -118,7 +172,7 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
     setState(() {
       _isLoading = false;
     });
-  }
+  }*/
 
   Future<bool> _requestLocationPermission() async {
     LocationPermission permission = await Geolocator.checkPermission();
@@ -291,19 +345,44 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
       }
     });
 
-    // Ride accepted (passenger side)
     SocketServices.socket?.on('ride-accepted', (data) {
-      if (data is Map<String, dynamic>) {
-        if (data['isRideAccepted'] == true) {
-          rideController.isRideAccepted.value = true;
-          rideController.acceptedRideDriverName.value =
-              data['driver']?['driverName'] ?? '';
-          rideController.acceptRideModel.value =
-              AcceptRideModel.fromJson(data);
-          _loadRoute();
-        }
+      if (data is! Map<String, dynamic>) return;
+      if (data['isRideAccepted'] != true) return;
+
+      final driver = data['driver'];
+      rideController.isRideAccepted.value = true;
+      rideController.acceptedRideDriverName.value =
+          (driver is Map ? driver['driverName'] : null) ?? '';
+
+      try {
+        rideController.acceptRideModel.value = AcceptRideModel.fromJson(data);
+        _loadRoute();
+        // ✅ Save status AND full ride data
+        PrefsHelper.setString('status', 'ride-accepted');
+        PrefsHelper.setString('ride-accepted-data', jsonEncode(data)); // save full data
+      } catch (e) {
+        debugPrint('ride-accepted parse error: $e');
       }
     });
+
+    /*// Ride accepted (passenger side)
+    SocketServices.socket?.on('ride-accepted', (data) {
+      if (data is! Map<String, dynamic>) return;
+      if (data['isRideAccepted'] != true) return;
+
+      final driver = data['driver'];
+      rideController.isRideAccepted.value = true;
+      rideController.acceptedRideDriverName.value =
+          (driver is Map ? driver['driverName'] : null) ?? '';
+
+      try {
+        rideController.acceptRideModel.value = AcceptRideModel.fromJson(data);
+        _loadRoute();
+        PrefsHelper.setString('status', 'ride-accepted');
+      } catch (e) {
+        debugPrint('ride-accepted parse error: $e');
+      }
+    });*/
 
     // Ride accepted (driver side)
     SocketServices.socket?.on('ride-accepted-driver', (data) {
@@ -908,10 +987,16 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
             ),
 
           // Bottom Sheet for passenger
-          if (userController.userModel.value?.userProfile?.role == AppConstants.passenger &&
-              rideController.acceptRideModel.value?.isRideAccepted == true)
+          if (
+          userController.userModel.value?.userProfile?.role == AppConstants.passenger &&
+              (
+                  rideController.acceptRideModel.value?.isRideAccepted == true ||
+                      PrefsHelper.getString('status') == 'ride-accepted'
+              )
+          )
             DraggableBottomSheet(
               acceptRideModel: rideController.acceptRideModel.value,
+              controller: mapOPTController,
             ),
 
           // Ride request bottom sheet
@@ -1058,7 +1143,7 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
                   if (role == AppConstants.passenger &&
                       googleSearchLocationController.isModalOn.value == false &&
                       rideController.isSwippedButtonShow.value == false &&
-                      rideController.viewInMap.value == true) {
+                      rideController.viewInMap.value == true && PrefsHelper.getString('status') == '' ) {
                     return Column(
                       children: [
                         _buildSwippedButton(),

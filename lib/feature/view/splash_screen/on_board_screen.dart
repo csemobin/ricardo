@@ -107,7 +107,7 @@ class _OnBoardScreenState extends State<OnBoardScreen> {
               },
             ),
             Positioned(
-              top: 0.h,
+              top: 24.h,
               left: 24.w,
               right: 24.w,
               child: SafeArea(
@@ -118,8 +118,8 @@ class _OnBoardScreenState extends State<OnBoardScreen> {
                   children: [
                     SvgPicture.asset(
                       Assets.images.applogo,
-                      width: 100.w,
-                      height: 100.h,
+                      width: 60.w,
+                      height: 60.h,
                     ),
                     GestureDetector(
                       onTap: () {
@@ -176,7 +176,7 @@ class _OnBoardScreenState extends State<OnBoardScreen> {
                       if (currentIndex ==
                           HelperData.onboardingData.length - 1)
                         CustomButton(
-                          width: 160.w,
+                          width: 170.w,
                           height: 60.h,
                           radius: 100.r,
                           onPressed: () =>
@@ -195,6 +195,7 @@ class _OnBoardScreenState extends State<OnBoardScreen> {
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
+                                  SizedBox(width: 10,),
                                   Text(
                                     'Get Started',
                                     style: TextStyle(

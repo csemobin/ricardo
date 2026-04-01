@@ -35,6 +35,7 @@ class CustomButtonNavBar extends GetView<CustomBottomNavBarController> {
       // Get controllers
       final googleSLController = Get.find<GoogleSearchLocationController>();
       final rideCnt = Get.find<RideController>();
+      final isRideAccepted = rideCnt.isRideAccepted.value;
 
       // Determine if navigation bar should be visible
       bool showNavBar = true;
@@ -51,6 +52,10 @@ class CustomButtonNavBar extends GetView<CustomBottomNavBarController> {
 
       // Also hide when viewInMap is false (map fullscreen mode)
       if (rideCnt.viewInMap.value == false) {
+        showNavBar = false;
+      }
+
+      if (isRideAccepted) {
         showNavBar = false;
       }
 

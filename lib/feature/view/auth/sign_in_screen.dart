@@ -32,25 +32,22 @@ class SignInScreen extends StatelessWidget {
               child: IntrinsicHeight(
                 child: Column(
                   children: [
-                    SizedBox(height: 25.h),
-
+                    SizedBox(height: 40.h),
                     LogoWidget(
                       width: 200.w,
                       height: 100.h,
                     ),
-
+                    SizedBox(height: 32.h),
                     CustomHeadingText(
                       firstText: "Let’s",
                       secondText: ' Sign In.',
                     ),
-
-                    SizedBox(height: 10.h),
-
+                    SizedBox(height: 8.h,),
                     const CustomSecondaryText(
                       text: 'Fill in your information.',
                     ),
 
-                    SizedBox(height: 32.h),
+                    SizedBox(height: 72.h),
 
                     Form(
                       key: _formKey,

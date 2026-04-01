@@ -67,4 +67,7 @@ class ApiUrls{
 
   static String driverSwitchAvailabilityStatus = '/driver/switch-availability-status';
   static String rideAcceptRideByRideId( String rideId ) => '/ride/accept-ride?rideId=$rideId';
+  static const String sendTips = '/payment/send-tips';
+  static const String favoriteRider = '/favorite-rider';
+  static const String ratingCreate = '/rating/create';
 }

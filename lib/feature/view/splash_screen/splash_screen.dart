@@ -107,8 +107,8 @@ class _SplashScreenState extends State<SplashScreen>
             ),
           ),
           LogoWidget(
-            width: 205.w,
-            height: 205.h,
+            width: 100.w,
+            height: 100.h,
           )
         ],
       ),

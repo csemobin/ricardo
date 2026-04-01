@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:ricardo/app/utils/app_colors.dart';
 import 'package:ricardo/feature/controllers/profile/support_controller.dart';
@@ -7,6 +8,7 @@ import 'package:ricardo/feature/simmer/edit_profile_simmer.dart';
 import 'package:ricardo/gen/assets.gen.dart';
 import 'package:ricardo/gen/fonts.gen.dart';
 import 'package:ricardo/widgets/custom_scaffold.dart';
+import 'package:ricardo/widgets/logo_widget.dart';
 
 class EditProfileSupportScreen extends GetView<SupportController> {
   EditProfileSupportScreen({super.key});
@@ -39,6 +41,12 @@ class EditProfileSupportScreen extends GetView<SupportController> {
             ),
             child: IntrinsicHeight(
               child: Column(children: [
+                Center(
+                  child: LogoWidget(
+                    width: 150.w,
+                    height: 150.h,
+                  ),
+                ),
                 SizedBox(height: 73.h),
                 Image.asset(Assets.images.supportCarImage.path),
                 SizedBox(height: 68.h),

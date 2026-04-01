@@ -5,9 +5,8 @@ class HelperData {
 
   static final List<Map<String, dynamic>> onboardingData = [
     {
-      // "image": Assets.images.secondonbaordimagePng.path,
       "image": Assets.images.onboardOne.path,
-      "title": "Welcome to the GO GO DRIVER.",
+      "title": "Welcome to the Lyfuber.",
       "subtitle": "Seamless, affordable, and reliable ride-sharing at your fingertips."
     },
     {
