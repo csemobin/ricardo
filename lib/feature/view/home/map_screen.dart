@@ -27,7 +27,8 @@ class MapScreen extends StatefulWidget {
 
 class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
   final userController = Get.find<UserController>();
-  final googleSearchLocationController = Get.find<GoogleSearchLocationController>();
+  final googleSearchLocationController =
+      Get.find<GoogleSearchLocationController>();
   final rideController = Get.find<RideController>();
   final mapOPTController = Get.find<MapOPTController>();
 
@@ -96,6 +97,7 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
 
     // ✅ Restore ride state if app was closed mid-ride
     await _restoreRideState();
+    await _restoreDriverRideState();
 
     bool hasPermission = await _requestLocationPermission();
     if (!hasPermission) {
@@ -116,6 +118,7 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
     });
   }
 
+  // Local Storage data are here
   Future<void> _restoreRideState() async {
     final status = await PrefsHelper.getString('status');
     if (status != 'ride-accepted') return;
@@ -141,38 +144,30 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
     }
   }
 
-  /*Future<void> _initializeMap() async {
-    setState(() {
-      _isLoading = true;
-      _errorMessage = '';
-    });
+  Future<void> _restoreDriverRideState() async {
+    final status = await PrefsHelper.getString('driver-status');
+    if (status != 'ride-accepted-driver') return;
 
-    // Request location permission
-    bool hasPermission = await _requestLocationPermission();
-    if (!hasPermission) {
-      setState(() {
-        _isLoading = false;
-        _errorMessage = 'Location permission is required to use this app';
-      });
-      return;
+    final savedData = await PrefsHelper.getString('ride-accepted-driver-data');
+    if (savedData == null || savedData.isEmpty) return;
+
+    try {
+      final Map<String, dynamic> data = jsonDecode(savedData);
+
+      mapOPTController.acceptedRideDriverDataStatus.value = true;
+      mapOPTController.acceptedRideDriverData.value =
+          AcceptRideDriverModel.fromJson(data);
+
+      debugPrint('✅ Driver ride state restored from prefs');
+
+      // Reload the route after restoring
+      await _loadAcceptedRideRoute();
+    } catch (e) {
+      debugPrint('Restore driver ride state error: $e');
+      await PrefsHelper.setString('status', '');
+      await PrefsHelper.setString('ride-accepted-driver-data', '');
     }
-
-    // Get location
-    await _getCurrentLocation();
-
-    // Connect to socket
-    await connectSocket();
-
-    // Fetch user data
-    await userController.fetchUser();
-
-    // Load routes if needed
-    await _loadRoute();
-
-    setState(() {
-      _isLoading = false;
-    });
-  }*/
+  }
 
   Future<bool> _requestLocationPermission() async {
     LocationPermission permission = await Geolocator.checkPermission();
@@ -359,39 +354,23 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
         _loadRoute();
         // ✅ Save status AND full ride data
         PrefsHelper.setString('status', 'ride-accepted');
-        PrefsHelper.setString('ride-accepted-data', jsonEncode(data)); // save full data
+        PrefsHelper.setString(
+            'ride-accepted-data', jsonEncode(data)); // save full data
       } catch (e) {
         debugPrint('ride-accepted parse error: $e');
       }
     });
 
-    /*// Ride accepted (passenger side)
-    SocketServices.socket?.on('ride-accepted', (data) {
-      if (data is! Map<String, dynamic>) return;
-      if (data['isRideAccepted'] != true) return;
-
-      final driver = data['driver'];
-      rideController.isRideAccepted.value = true;
-      rideController.acceptedRideDriverName.value =
-          (driver is Map ? driver['driverName'] : null) ?? '';
-
-      try {
-        rideController.acceptRideModel.value = AcceptRideModel.fromJson(data);
-        _loadRoute();
-        PrefsHelper.setString('status', 'ride-accepted');
-      } catch (e) {
-        debugPrint('ride-accepted parse error: $e');
-      }
-    });*/
-
     // Ride accepted (driver side)
     SocketServices.socket?.on('ride-accepted-driver', (data) {
       if (data is Map<String, dynamic>) {
         if (data['isRideAcceptedDriver'] == true) {
-          mapOPTController.acceptedRideDataStatus.value = true;
-          mapOPTController.acceptedRideData.value =
+          mapOPTController.acceptedRideDriverDataStatus.value = true;
+          mapOPTController.acceptedRideDriverData.value =
               AcceptRideDriverModel.fromJson(data);
           _loadAcceptedRideRoute();
+          PrefsHelper.setString('driver-status', 'ride-accepted-driver');
+          PrefsHelper.setString('ride-accepted-driver-data', jsonEncode(data));
         }
       }
     });
@@ -411,35 +390,39 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
       final LatLng origin = (pickupCoords != null && pickupCoords.length == 2)
           ? LatLng(pickupCoords[1], pickupCoords[0])
           : LatLng(
-        googleSearchLocationController.selectedPickup.value?.lat ?? 0.0,
-        googleSearchLocationController.selectedPickup.value?.lng ?? 0.0,
-      );
+              googleSearchLocationController.selectedPickup.value?.lat ?? 0.0,
+              googleSearchLocationController.selectedPickup.value?.lng ?? 0.0,
+            );
 
       final LatLng dest = (destCoords != null && destCoords.length == 2)
           ? LatLng(destCoords[1], destCoords[0])
           : LatLng(
-        googleSearchLocationController.selectedDrop.value?.lat ?? 0.0,
-        googleSearchLocationController.selectedDrop.value?.lng ?? 0.0,
-      );
+              googleSearchLocationController.selectedDrop.value?.lat ?? 0.0,
+              googleSearchLocationController.selectedDrop.value?.lng ?? 0.0,
+            );
 
       final LatLng acceptedLocation = (driverAcceptedLocationCoords != null &&
-          driverAcceptedLocationCoords.length == 2)
-          ? LatLng(driverAcceptedLocationCoords[1], driverAcceptedLocationCoords[0])
+              driverAcceptedLocationCoords.length == 2)
+          ? LatLng(
+              driverAcceptedLocationCoords[1], driverAcceptedLocationCoords[0])
           : LatLng(
-        googleSearchLocationController.selectedDrop.value?.lat ?? 0.0,
-        googleSearchLocationController.selectedDrop.value?.lng ?? 0.0,
-      );
+              googleSearchLocationController.selectedDrop.value?.lat ?? 0.0,
+              googleSearchLocationController.selectedDrop.value?.lng ?? 0.0,
+            );
 
       if (origin.latitude == 0.0 || dest.latitude == 0.0) {
         debugPrint('Skipping route — coords not ready');
         return;
       }
 
-      final List<LatLng> point = await DirectionsService.getPolyline(acceptedLocation, origin);
-      final List<LatLng> points = await DirectionsService.getPolyline(origin, dest);
+      final List<LatLng> point =
+          await DirectionsService.getPolyline(acceptedLocation, origin);
+      final List<LatLng> points =
+          await DirectionsService.getPolyline(origin, dest);
 
       if (points.isEmpty) {
-        Get.snackbar('Error', 'Could not load route. Please check your API key.');
+        Get.snackbar(
+            'Error', 'Could not load route. Please check your API key.');
         return;
       }
 
@@ -465,7 +448,7 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
         };
 
         markers.removeWhere((m) =>
-        m.markerId.value == 'current-location' ||
+            m.markerId.value == 'current-location' ||
             m.markerId.value == 'Pick-Up-Location' ||
             m.markerId.value == 'Destination');
 
@@ -499,7 +482,7 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
 
   Future<void> _loadAcceptedRideRoute() async {
     try {
-      final acceptedRide = mapOPTController.acceptedRideData.value;
+      final acceptedRide = mapOPTController.acceptedRideDriverData.value;
       if (acceptedRide == null) return;
 
       final Position currentPosition = await Geolocator.getCurrentPosition(
@@ -529,7 +512,8 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
         driverLocation,
         pickupLocation,
       );
-      final List<LatLng> pickupToDestination = await DirectionsService.getPolyline(
+      final List<LatLng> pickupToDestination =
+          await DirectionsService.getPolyline(
         pickupLocation,
         destinationLocation,
       );
@@ -557,7 +541,7 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
         };
 
         markers.removeWhere((m) =>
-        m.markerId.value == 'driver_location' ||
+            m.markerId.value == 'driver_location' ||
             m.markerId.value == 'pickup_location' ||
             m.markerId.value == 'destination_location');
 
@@ -596,16 +580,24 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
     for (var point in points) {
       minLat = minLat == null
           ? point.latitude
-          : minLat < point.latitude ? minLat : point.latitude;
+          : minLat < point.latitude
+              ? minLat
+              : point.latitude;
       minLng = minLng == null
           ? point.longitude
-          : minLng < point.longitude ? minLng : point.longitude;
+          : minLng < point.longitude
+              ? minLng
+              : point.longitude;
       maxLat = maxLat == null
           ? point.latitude
-          : maxLat > point.latitude ? maxLat : point.latitude;
+          : maxLat > point.latitude
+              ? maxLat
+              : point.latitude;
       maxLng = maxLng == null
           ? point.longitude
-          : maxLng > point.longitude ? maxLng : point.longitude;
+          : maxLng > point.longitude
+              ? maxLng
+              : point.longitude;
     }
 
     return LatLngBounds(
@@ -626,7 +618,8 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
         Marker(
           markerId: const MarkerId('currentPassenger'),
           position: LatLng(currentLat, currentLng),
-          icon: userController.userModel.value?.userProfile?.role == AppConstants.passenger
+          icon: userController.userModel.value?.userProfile?.role ==
+                  AppConstants.passenger
               ? customMarker ?? BitmapDescriptor.defaultMarker
               : customCarMarker ?? BitmapDescriptor.defaultMarker,
         ),
@@ -642,14 +635,15 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
 
     // Driver markers
     final bool isRouteActive = markers.any(
-          (m) =>
-      m.markerId.value == 'Pick-Up-Location' ||
+      (m) =>
+          m.markerId.value == 'Pick-Up-Location' ||
           m.markerId.value == 'Destination' ||
           m.markerId.value == 'pickup_location' ||
           m.markerId.value == 'destination_location',
     );
 
-    final bool showDriverIcons = rideController.viewInMapReturn.value || !isRouteActive;
+    final bool showDriverIcons =
+        rideController.viewInMapReturn.value || !isRouteActive;
 
     if (showDriverIcons) {
       final drivers = rideController.drivers;
@@ -699,31 +693,31 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
                     children: [
                       driver.image != null && driver.image!.isNotEmpty
                           ? ClipRRect(
-                        clipBehavior: Clip.antiAlias,
-                        borderRadius: BorderRadius.circular(50),
-                        child: Image.network(
-                          '${ApiUrls.imageBaseUrl}${driver.image}',
-                          fit: BoxFit.cover,
-                          height: 60,
-                          width: 60,
-                          errorBuilder: (context, error, stackTrace) =>
-                              Image.asset(
+                              clipBehavior: Clip.antiAlias,
+                              borderRadius: BorderRadius.circular(50),
+                              child: Image.network(
+                                '${ApiUrls.imageBaseUrl}${driver.image}',
+                                fit: BoxFit.cover,
+                                height: 60,
+                                width: 60,
+                                errorBuilder: (context, error, stackTrace) =>
+                                    Image.asset(
+                                  'assets/images/driver.png',
+                                  height: 60,
+                                  width: 60,
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                            )
+                          : CircleAvatar(
+                              radius: 30,
+                              child: Image.asset(
                                 'assets/images/driver.png',
                                 height: 60,
                                 width: 60,
                                 fit: BoxFit.cover,
                               ),
-                        ),
-                      )
-                          : CircleAvatar(
-                        radius: 30,
-                        child: Image.asset(
-                          'assets/images/driver.png',
-                          height: 60,
-                          width: 60,
-                          fit: BoxFit.cover,
-                        ),
-                      ),
+                            ),
                       const SizedBox(width: 12),
                       Expanded(
                         child: Column(
@@ -817,24 +811,24 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
                         borderRadius: BorderRadius.circular(15),
                         child: driver.image != null && driver.image!.isNotEmpty
                             ? Image.network(
-                          '${ApiUrls.imageBaseUrl}${driver.image}',
-                          width: 92,
-                          height: 92,
-                          fit: BoxFit.cover,
-                          errorBuilder: (context, error, stackTrace) =>
-                              Image.asset(
+                                '${ApiUrls.imageBaseUrl}${driver.image}',
+                                width: 92,
+                                height: 92,
+                                fit: BoxFit.cover,
+                                errorBuilder: (context, error, stackTrace) =>
+                                    Image.asset(
+                                  'assets/images/driver.png',
+                                  width: 92,
+                                  height: 92,
+                                  fit: BoxFit.cover,
+                                ),
+                              )
+                            : Image.asset(
                                 'assets/images/driver.png',
                                 width: 92,
                                 height: 92,
                                 fit: BoxFit.cover,
                               ),
-                        )
-                            : Image.asset(
-                          'assets/images/driver.png',
-                          width: 92,
-                          height: 92,
-                          fit: BoxFit.cover,
-                        ),
                       ),
                     ],
                   ),
@@ -880,7 +874,6 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
       ),
     );
   }
-
 
   Widget _bgGlassDesign(Widget child) {
     return ClipRRect(
@@ -934,12 +927,14 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
             )
           else if (_hasLocation)
             Obx(
-                  () => GoogleMap(
+              () => GoogleMap(
                 mapType: MapType.normal,
                 initialCameraPosition: CameraPosition(
                   target: LatLng(
-                    mapOPTController.currentLatitudePosition?.value ?? _defaultLocation.latitude,
-                    mapOPTController.currentLongitudePosition?.value ?? _defaultLocation.longitude,
+                    mapOPTController.currentLatitudePosition?.value ??
+                        _defaultLocation.latitude,
+                    mapOPTController.currentLongitudePosition?.value ??
+                        _defaultLocation.longitude,
                   ),
                   zoom: currentZoom,
                 ),
@@ -976,7 +971,9 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
                 children: [
                   const Icon(Icons.location_off, size: 50),
                   const SizedBox(height: 20),
-                  Text(_errorMessage.isNotEmpty ? _errorMessage : 'Unable to get your location'),
+                  Text(_errorMessage.isNotEmpty
+                      ? _errorMessage
+                      : 'Unable to get your location'),
                   const SizedBox(height: 20),
                   ElevatedButton(
                     onPressed: () => _initializeMap(),
@@ -987,13 +984,10 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
             ),
 
           // Bottom Sheet for passenger
-          if (
-          userController.userModel.value?.userProfile?.role == AppConstants.passenger &&
-              (
-                  rideController.acceptRideModel.value?.isRideAccepted == true ||
-                      PrefsHelper.getString('status') == 'ride-accepted'
-              )
-          )
+          if (userController.userModel.value?.userProfile?.role ==
+                  AppConstants.passenger &&
+              (rideController.acceptRideModel.value?.isRideAccepted == true ||
+                  PrefsHelper.getString('status') == 'ride-accepted'))
             DraggableBottomSheet(
               acceptRideModel: rideController.acceptRideModel.value,
               controller: mapOPTController,
@@ -1016,13 +1010,13 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
                   builder: (context) {
                     return RideRequestBottomSheet(
                       pickupLocation:
-                      googleSearchLocationController.pickupController.text,
+                          googleSearchLocationController.pickupController.text,
                       dropLocation:
-                      googleSearchLocationController.dropController.text,
+                          googleSearchLocationController.dropController.text,
                       distance: googleSearchLocationController.distance.value
                           .toString(),
                       rideFare:
-                      googleSearchLocationController.fare.value.toString(),
+                          googleSearchLocationController.fare.value.toString(),
                     );
                   },
                 ),
@@ -1032,7 +1026,8 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
           }),
 
           // Custom Header
-          if (userController.userModel.value?.userProfile?.role == AppConstants.passenger)
+          if (userController.userModel.value?.userProfile?.role ==
+              AppConstants.passenger)
             Obx(() {
               if (rideController.viewInMap.value &&
                   rideController.viewInMapReturn.value == false) {
@@ -1047,10 +1042,25 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
           SafeArea(
             child: Column(
               children: [
+                Obx(() {
+                  if (mapOPTController
+                          .acceptedRideDriverData.value?.isRideAcceptedDriver ==
+                      true) {
+                    return SizedBox(
+                      height: 20.h,
+                    );
+                  }
+                  return SizedBox.shrink();
+                }),
+                SizedBox(
+                  height: 20,
+                ),
                 // Driver toggle switch
                 Obx(() {
-                  if (userController.userModel.value?.userProfile?.role == AppConstants.driver &&
-                      mapOPTController.acceptedRideDataStatus.value == false) {
+                  if (userController.userModel.value?.userProfile?.role ==
+                          AppConstants.driver &&
+                      mapOPTController.acceptedRideDriverDataStatus.value ==
+                          false) {
                     return AnimatedToggleSwitch();
                   }
                   return const SizedBox.shrink();
@@ -1058,7 +1068,9 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
 
                 // Accepted ride info for driver
                 Obx(() {
-                  if (mapOPTController.acceptedRideData.value?.isRideAcceptedDriver == true) {
+                  if (mapOPTController
+                          .acceptedRideDriverData.value?.isRideAcceptedDriver ==
+                      true) {
                     return Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 25),
                       child: SizedBox(
@@ -1079,7 +1091,7 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      '${mapOPTController.acceptedRideData.value?.ride?.destinationAddress}',
+                                      '${mapOPTController.acceptedRideDriverData.value?.ride?.destinationAddress}',
                                       style: TextStyle(
                                         fontSize: 14,
                                         fontWeight: FontWeight.w700,
@@ -1098,7 +1110,8 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
                                           return const Text('Loading...');
                                         }
                                         if (snapshot.hasError) {
-                                          return const Text('Error getting address');
+                                          return const Text(
+                                              'Error getting address');
                                         }
                                         return Text(
                                           snapshot.data ?? 'No address found',
@@ -1128,8 +1141,11 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
                 // No internet message
                 Obx(() {
                   final cnt = Get.find<MapOPTController>();
-                  if (userController.userModel.value?.userProfile?.role == AppConstants.driver &&
-                      cnt.userController.userModel.value?.driverProfile?.isOnline == false) {
+                  if (userController.userModel.value?.userProfile?.role ==
+                          AppConstants.driver &&
+                      cnt.userController.userModel.value?.driverProfile
+                              ?.isOnline ==
+                          false) {
                     return const NoInternetMessageMap();
                   }
                   return const SizedBox.shrink();
@@ -1139,11 +1155,13 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
 
                 // Swipped button for passenger
                 Obx(() {
-                  final role = userController.userModel.value?.userProfile?.role;
+                  final role =
+                      userController.userModel.value?.userProfile?.role;
                   if (role == AppConstants.passenger &&
                       googleSearchLocationController.isModalOn.value == false &&
                       rideController.isSwippedButtonShow.value == false &&
-                      rideController.viewInMap.value == true && PrefsHelper.getString('status') == '' ) {
+                      rideController.viewInMap.value == true &&
+                      rideController.isRideAccepted.value == false) {
                     return Column(
                       children: [
                         _buildSwippedButton(),
@@ -1156,9 +1174,13 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
 
                 // Driver waiting for passenger
                 Obx(() {
-                  if (userController.userModel.value?.userProfile?.role == AppConstants.driver &&
+                  if (userController.userModel.value?.userProfile?.role ==
+                          AppConstants.driver &&
                       mapOPTController.isPassengerRequest.value == false &&
-                      userController.userModel.value?.driverProfile?.isOnline == true) {
+                      userController.userModel.value?.driverProfile?.isOnline ==
+                          true &&
+                      mapOPTController.acceptedRideDriverDataStatus.value ==
+                          false) {
                     return Container(
                       margin: const EdgeInsets.only(bottom: 90),
                       padding: const EdgeInsets.symmetric(horizontal: 25),
@@ -1166,9 +1188,11 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
                     );
                   }
 
-                  if (userController.userModel.value?.userProfile?.role == AppConstants.driver &&
+                  if (userController.userModel.value?.userProfile?.role ==
+                          AppConstants.driver &&
                       mapOPTController.isPassengerRequest.value == true &&
-                      mapOPTController.acceptedRideDataStatus.value == false) {
+                      mapOPTController.acceptedRideDriverDataStatus.value ==
+                          false) {
                     return GlassBackgroundMultipleChildrenWidget(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       blurOne: 20,
@@ -1192,8 +1216,14 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(12),
                                 child: Image.network(
-                                  (mapOPTController.rideDetailsData.value?.passengerImage != null &&
-                                      mapOPTController.rideDetailsData.value!.passengerImage!.isNotEmpty)
+                                  (mapOPTController.rideDetailsData.value
+                                                  ?.passengerImage !=
+                                              null &&
+                                          mapOPTController
+                                              .rideDetailsData
+                                              .value!
+                                              .passengerImage!
+                                              .isNotEmpty)
                                       ? '${ApiUrls.imageBaseUrl}${mapOPTController.rideDetailsData.value?.passengerImage}'
                                       : '',
                                   height: 50,
@@ -1215,7 +1245,9 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  mapOPTController.rideDetailsData.value?.passengerName ?? '',
+                                  mapOPTController.rideDetailsData.value
+                                          ?.passengerName ??
+                                      '',
                                   style: TextStyle(
                                     color: const Color(0xff171717),
                                     fontSize: 14,
@@ -1251,11 +1283,13 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
                           children: [
                             Row(
                               children: [
-                                SvgPicture.asset('assets/images/direct_right.svg'),
+                                SvgPicture.asset(
+                                    'assets/images/direct_right.svg'),
                                 const SizedBox(width: 8),
                                 Expanded(
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Text(
                                         'PICK UP',
@@ -1267,7 +1301,8 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
                                         ),
                                       ),
                                       Text(
-                                        mapOPTController.rideDetailsData.value?.pickupAddress ??
+                                        mapOPTController.rideDetailsData.value
+                                                ?.pickupAddress ??
                                             'Pickup location not specified',
                                         style: _textStyle(),
                                         maxLines: 2,
@@ -1287,7 +1322,8 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
                               child: Container(
                                 width: 4,
                                 height: 40,
-                                decoration: const BoxDecoration(color: Colors.white),
+                                decoration:
+                                    const BoxDecoration(color: Colors.white),
                               ),
                             ),
                             Row(
@@ -1296,7 +1332,8 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
                                 const SizedBox(width: 8),
                                 Expanded(
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Text(
                                         'DROP OFF',
@@ -1308,7 +1345,8 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
                                         ),
                                       ),
                                       Text(
-                                        mapOPTController.rideDetailsData.value?.destinationAddress ??
+                                        mapOPTController.rideDetailsData.value
+                                                ?.destinationAddress ??
                                             'Destination not specified',
                                         style: _textStyle(),
                                         maxLines: 2,
@@ -1334,7 +1372,9 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
                           ),
                         ),
                         const SizedBox(height: 10),
-                        Text(mapOPTController.rideDetailsData.value?.destinationAddress ?? ''),
+                        Text(mapOPTController
+                                .rideDetailsData.value?.destinationAddress ??
+                            ''),
                         const SizedBox(height: 18),
                         AcceptRideButton(
                           onPressed: () {
@@ -1348,8 +1388,11 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
                     );
                   }
 
-                  if (mapOPTController.acceptedRideData.value?.isRideAcceptedDriver == true &&
-                      mapOPTController.acceptedRideDataStatus.value == true) {
+                  if (mapOPTController.acceptedRideDriverData.value
+                              ?.isRideAcceptedDriver ==
+                          true &&
+                      mapOPTController.acceptedRideDriverDataStatus.value ==
+                          true) {
                     return GlassBackgroundWidget(
                       child: Column(
                         children: [
@@ -1358,7 +1401,7 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
                             children: [
                               const SizedBox(height: 40),
                               Text(
-                                '(4 min) ${((mapOPTController.acceptedRideData.value?.ride?.destinationMeters ?? 0) * 0.000621371).toStringAsFixed(2)} Miles',
+                                '(4 min) ${((mapOPTController.acceptedRideDriverData.value?.ride?.destinationMeters ?? 0) * 0.000621371).toStringAsFixed(2)} Miles',
                                 style: TextStyle(
                                   color: const Color(0xff171717),
                                   fontSize: 20,
@@ -1372,25 +1415,36 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
                               ),
                               const SizedBox(height: 16),
                               Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   Row(
                                     children: [
                                       ClipRRect(
                                         borderRadius: BorderRadius.circular(50),
                                         child: ClipRRect(
-                                          borderRadius: BorderRadius.circular(12),
+                                          borderRadius:
+                                              BorderRadius.circular(12),
                                           child: Image.network(
-                                            (mapOPTController.rideDetailsData.value?.passengerImage != null &&
-                                                mapOPTController.rideDetailsData.value!.passengerImage!.isNotEmpty)
+                                            (mapOPTController
+                                                            .rideDetailsData
+                                                            .value
+                                                            ?.passengerImage !=
+                                                        null &&
+                                                    mapOPTController
+                                                        .rideDetailsData
+                                                        .value!
+                                                        .passengerImage!
+                                                        .isNotEmpty)
                                                 ? '${ApiUrls.imageBaseUrl}${mapOPTController.rideDetailsData.value?.passengerImage}'
                                                 : '',
                                             height: 50,
                                             width: 50,
                                             fit: BoxFit.cover,
-                                            errorBuilder: (context, error, stackTrace) {
+                                            errorBuilder:
+                                                (context, error, stackTrace) {
                                               return Image.asset(
-                                                'assets/images/default_image.png',
+                                                'assets/images/default_image.jpg',
                                                 height: 50,
                                                 width: 50,
                                                 fit: BoxFit.cover,
@@ -1401,10 +1455,13 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
                                       ),
                                       const SizedBox(width: 10),
                                       Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
                                         children: [
                                           Text(
-                                            mapOPTController.rideDetailsData.value?.passengerName ?? '',
+                                            mapOPTController.rideDetailsData
+                                                    .value?.passengerName ??
+                                                '',
                                             style: TextStyle(
                                               color: const Color(0xff171717),
                                               fontSize: 14,
@@ -1431,14 +1488,18 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
                                   ),
                                   GestureDetector(
                                     onTap: () {
-                                      launchUrl(Uri.parse("tel:${mapOPTController.rideDetailsData.value?.passengerPhone}"));
+                                      launchUrl(Uri.parse(
+                                          "tel:${mapOPTController.rideDetailsData.value?.passengerPhone}"));
                                     },
-                                    child: RepaintBoundary(           // ✅ isolates rendering
+                                    child: RepaintBoundary(
+                                      // ✅ isolates rendering
                                       child: Container(
                                         decoration: BoxDecoration(
                                           color: AppColors.whiteColor,
-                                          borderRadius: BorderRadius.circular(50),
-                                          border: Border.all(color: Colors.grey.shade200),
+                                          borderRadius:
+                                              BorderRadius.circular(50),
+                                          border: Border.all(
+                                              color: Colors.grey.shade200),
                                         ),
                                         child: SvgPicture.asset(
                                           Assets.icons.driverCardPhone,

@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
@@ -21,15 +20,9 @@ class GoogleSearchLocationController extends GetxController {
   final pickupPlaces = <PlaceSuggestion>[].obs;
   final dropPlaces = <PlaceSuggestion>[].obs;
 
-  // Add this method to hide modal
-  void hideModal() {
-    isModalOn.value = false;
-  }
-
-  // Add this method to show modal
-  void showModal() {
-    isModalOn.value = true;
-  }
+  // ✅ Explicit visibility flags
+  RxBool showPickupSuggestions = false.obs;
+  RxBool showDropSuggestions = false.obs;
 
   // Loading states
   final isLoadingPickup = false.obs;
@@ -49,9 +42,18 @@ class GoogleSearchLocationController extends GetxController {
   final duration = ''.obs;
   final fare = 0.0.obs;
   final sendingMetersValue = 0.0.obs;
+
+  // Modal state
+  RxBool isModalOn = false.obs;
+  RxBool showPopUpStatus = false.obs;
+  RxBool isBookRideState = false.obs;
+
   // Timers for search delay
   Timer? _pickupTimer;
   Timer? _dropTimer;
+
+  bool _isSelectingPickup = false;
+  bool _isSelectingDrop = false;
 
   @override
   void onInit() {
@@ -59,41 +61,38 @@ class GoogleSearchLocationController extends GetxController {
     _setupListeners();
   }
 
-  void _setupListeners() {
-    // Listen to pickup text changes
-    pickupController.addListener(() {
-      final hasText = pickupController.text.isNotEmpty;
-      if (showClearPickup.value != hasText) showClearPickup.value = hasText;
-
-      if (!_isSelectingPickup) {
-        _startPickupSearch();
-      }
-    });
-
-    // Listen to drop text changes
-    dropController.addListener(() {
-      final hasText = dropController.text.isNotEmpty;
-      if (showClearDrop.value != hasText) showClearDrop.value = hasText;
-
-      if (!_isSelectingDrop) {
-        _startDropSearch();
-      }
-    });
+  // ✅ Named listeners so they can be removed/added
+  void _pickupListener() {
+    final hasText = pickupController.text.isNotEmpty;
+    if (showClearPickup.value != hasText) showClearPickup.value = hasText;
+    if (!_isSelectingPickup) {
+      _startPickupSearch();
+    }
   }
 
-  bool _isSelectingPickup = false;
-  bool _isSelectingDrop = false;
+  void _dropListener() {
+    final hasText = dropController.text.isNotEmpty;
+    if (showClearDrop.value != hasText) showClearDrop.value = hasText;
+    if (!_isSelectingDrop) {
+      _startDropSearch();
+    }
+  }
+
+  void _setupListeners() {
+    pickupController.addListener(_pickupListener);
+    dropController.addListener(_dropListener);
+  }
 
   void _startPickupSearch() {
     _pickupTimer?.cancel();
-    _pickupTimer = Timer(Duration(milliseconds: 500), () {
+    _pickupTimer = Timer(const Duration(milliseconds: 500), () {
       _searchPickup(pickupController.text);
     });
   }
 
   void _startDropSearch() {
     _dropTimer?.cancel();
-    _dropTimer = Timer(Duration(milliseconds: 500), () {
+    _dropTimer = Timer(const Duration(milliseconds: 500), () {
       _searchDrop(dropController.text);
     });
   }
@@ -101,6 +100,7 @@ class GoogleSearchLocationController extends GetxController {
   Future<void> _searchPickup(String query) async {
     if (query.isEmpty) {
       pickupPlaces.clear();
+      showPickupSuggestions.value = false; // ✅
       isLoadingPickup.value = false;
       return;
     }
@@ -109,6 +109,7 @@ class GoogleSearchLocationController extends GetxController {
     try {
       final results = await PlacesService.getPlaceSuggestions(query);
       pickupPlaces.value = results;
+      showPickupSuggestions.value = results.isNotEmpty; // ✅
     } finally {
       isLoadingPickup.value = false;
     }
@@ -117,6 +118,7 @@ class GoogleSearchLocationController extends GetxController {
   Future<void> _searchDrop(String query) async {
     if (query.isEmpty) {
       dropPlaces.clear();
+      showDropSuggestions.value = false; // ✅
       isLoadingDrop.value = false;
       return;
     }
@@ -125,6 +127,7 @@ class GoogleSearchLocationController extends GetxController {
     try {
       final results = await PlacesService.getPlaceSuggestions(query);
       dropPlaces.value = results;
+      showDropSuggestions.value = results.isNotEmpty; // ✅
     } finally {
       isLoadingDrop.value = false;
     }
@@ -132,12 +135,18 @@ class GoogleSearchLocationController extends GetxController {
 
   Future<void> selectPickup(PlaceSuggestion place) async {
     _isSelectingPickup = true;
+    _pickupTimer?.cancel();
 
-    pickupController.text = place.description;
-    showClearPickup.value = true;
+    // ✅ Hide suggestions immediately
     pickupPlaces.clear();
+    showPickupSuggestions.value = false;
 
-    await Future.delayed(Duration(milliseconds: 100));
+    // ✅ Remove listener before setting text
+    pickupController.removeListener(_pickupListener);
+    pickupController.text = place.description;
+    pickupController.addListener(_pickupListener);
+
+    showClearPickup.value = true;
     _isSelectingPickup = false;
 
     final details = await PlacesService.getPlaceDetails(place.placeId);
@@ -146,12 +155,18 @@ class GoogleSearchLocationController extends GetxController {
 
   Future<void> selectDrop(PlaceSuggestion place) async {
     _isSelectingDrop = true;
+    _dropTimer?.cancel();
 
-    dropController.text = place.description;
-    showClearDrop.value = true;
+    // ✅ Hide suggestions immediately
     dropPlaces.clear();
+    showDropSuggestions.value = false;
 
-    await Future.delayed(Duration(milliseconds: 100));
+    // ✅ Remove listener before setting text
+    dropController.removeListener(_dropListener);
+    dropController.text = place.description;
+    dropController.addListener(_dropListener);
+
+    showClearDrop.value = true;
     _isSelectingDrop = false;
 
     final details = await PlacesService.getPlaceDetails(place.placeId);
@@ -159,17 +174,23 @@ class GoogleSearchLocationController extends GetxController {
   }
 
   void clearPickup() {
+    pickupController.removeListener(_pickupListener);
     pickupController.clear();
+    pickupController.addListener(_pickupListener);
     showClearPickup.value = false;
     pickupPlaces.clear();
+    showPickupSuggestions.value = false; // ✅
     selectedPickup.value = null;
     _clearFare();
   }
 
   void clearDrop() {
+    dropController.removeListener(_dropListener);
     dropController.clear();
+    dropController.addListener(_dropListener);
     showClearDrop.value = false;
     dropPlaces.clear();
+    showDropSuggestions.value = false; // ✅
     selectedDrop.value = null;
     _clearFare();
   }
@@ -184,14 +205,14 @@ class GoogleSearchLocationController extends GetxController {
     fare.value = 0.0;
   }
 
-  bool get canCalculateFare {
-    return selectedPickup.value != null && selectedDrop.value != null;
-  }
+  bool get canCalculateFare =>
+      selectedPickup.value != null && selectedDrop.value != null;
 
-  bool get hasFare {
-    return fare.value > 0;
-  }
-  RxBool showPopUpStatus = false.obs;
+  bool get hasFare => fare.value > 0;
+
+  void hideModal() => isModalOn.value = false;
+  void showModal() => isModalOn.value = true;
+
   Future<void> calculateFare() async {
     if (!canCalculateFare) {
       Get.snackbar('Error', 'Please select both locations');
@@ -204,16 +225,6 @@ class GoogleSearchLocationController extends GetxController {
       final pickup = selectedPickup.value!;
       final drop = selectedDrop.value!;
 
-      print('Calculating fare...');
-      print('Pickup: ${pickup.address}');
-      print('Pickup: ${pickup.lat}');
-      print('Pickup: ${pickup.lng}');
-      print('Drop: ${drop.address}');
-      print('Drop: ${drop.lat}');
-      print('Drop: ${drop.lng}');
-      print('Note: ${noteController.text}');
-
-      // Call Google Distance API
       final apiResponse = await _getDistanceFromGoogle(
         pickupLat: pickup.lat,
         pickupLng: pickup.lng,
@@ -224,14 +235,6 @@ class GoogleSearchLocationController extends GetxController {
       if (apiResponse != null) {
         showPopUpStatus.value = true;
         _updateFareFromResponse(apiResponse);
-
-        // ✅ REMOVED: No need for Snackbar since popup will show
-        // Get.snackbar(
-        //   'Success',
-        //   'Fare calculated!',
-        //   backgroundColor: Colors.green,
-        //   colorText: Colors.white,
-        // );
       }
     } finally {
       isLoadingFare.value = false;
@@ -248,7 +251,6 @@ class GoogleSearchLocationController extends GetxController {
     final origin = '$pickupLat,$pickupLng';
     final destination = '$dropLat,$dropLng';
 
-    // https://maps.googleapis.com/maps/api/distancematrix/json?origins=${origin}&destinations=${destination}&key=${apiKey}
     final url = 'https://maps.googleapis.com/maps/api/distancematrix/json'
         '?origins=$origin'
         '&destinations=$destination'
@@ -257,12 +259,11 @@ class GoogleSearchLocationController extends GetxController {
 
     try {
       final response = await GetConnect().get(url);
-
       if (response.statusCode == 200) {
         return response.body;
       }
     } catch (e) {
-      print('API Error: $e');
+      debugPrint('API Error: $e');
     }
 
     return null;
@@ -273,51 +274,36 @@ class GoogleSearchLocationController extends GetxController {
       final data = response['rows']?[0]?['elements']?[0];
 
       if (data == null || data['status'] != 'OK') {
-        print('No valid distance data');
+        debugPrint('No valid distance data');
         return;
       }
 
-      // Get distance and duration
       distance.value = data['distance']?['text'] ?? '';
       duration.value = data['duration']?['text'] ?? '';
 
-      // Calculate fare (simplified formula)
       final distanceInMeters = (data['distance']?['value'] ?? 0).toDouble();
-      final durationInSeconds = (data['duration']?['value'] ?? 0).toDouble();
 
       sendingMetersValue.value = distanceInMeters;
 
-      final distanceInKm = distanceInMeters / 1000;
       final distanceInMiles = distanceInMeters / 1609.34;
-      final durationInMinutes = durationInSeconds / 60;
-
-      // ✅ Fixed: Proper null handling for environment variable
       final milesRateStr = dotenv.env['MILES_FARE'];
-      final milesRate = double.tryParse(milesRateStr ?? '') ?? 1; // Default rate if not set
+      final milesRate = double.tryParse(milesRateStr ?? '') ?? 1;
 
-      print('Distance (km): $distanceInKm');
-      print('Distance (miles): $distanceInMiles');
-      print('Miles Rate: \$$milesRate');
+      fare.value = double.parse(
+        (distanceInMiles * milesRate).toStringAsFixed(2),
+      );
 
-      // Calculate fare based on miles
-      fare.value = distanceInMiles * milesRate;
-
-      // Round to 2 decimal places
-      fare.value = double.parse(fare.value.toStringAsFixed(2));
-
-      print('Distance: ${distance.value}');
-      print('Duration: ${duration.value}');
-      print('Fare: \$${fare.value}');
+      debugPrint('Distance: ${distance.value}');
+      debugPrint('Duration: ${duration.value}');
+      debugPrint('Fare: \$${fare.value}');
     } catch (e) {
-      print('Error updating fare: $e');
+      debugPrint('Error updating fare: $e');
       fare.value = 0.0;
     }
   }
 
-  RxBool isBookRideState = false.obs;
-  RxBool isModalOn = false.obs;
-  Future<void>bookRideHandler() async{
-    try{
+  Future<void> bookRideHandler() async {
+    try {
       isBookRideState.value = true;
 
       final data = {
@@ -327,73 +313,64 @@ class GoogleSearchLocationController extends GetxController {
         "destinationMeters": sendingMetersValue.value,
         "pickupLocation": {
           "type": "Point",
-          "coordinates": [selectedPickup.value?.lng, selectedPickup.value?.lat]
+          "coordinates": [
+            selectedPickup.value?.lng,
+            selectedPickup.value?.lat,
+          ],
         },
         "destinationLocation": {
           "type": "Point",
-          "coordinates": [selectedDrop.value?.lng, selectedDrop.value?.lat]
-        }
+          "coordinates": [
+            selectedDrop.value?.lng,
+            selectedDrop.value?.lat,
+          ],
+        },
       };
 
       final response = await ApiClient.postData(ApiUrls.rideBookRide, data);
-      if( response.statusCode == 200 || response.statusCode == 201 ){
-          final cnt = Get.find<UserController>();
-          cnt.isBottomModalSheetStatus.value = true;
-          Get.toNamed(AppRoutes.customBottomNavBar);
-          final id = response.body['data']['_id'];
 
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final cnt = Get.find<UserController>();
+        cnt.isBottomModalSheetStatus.value = true;
+        Get.toNamed(AppRoutes.customBottomNavBar);
+        final id = response.body['data']['_id'];
 
-          final cntTwo = Get.find<RideController>();
-          cntTwo.rideId.value = id;
-          cntTwo.fetchRiderData(id);
-
-      }else{
+        final cntTwo = Get.find<RideController>();
+        cntTwo.rideId.value = id;
+        cntTwo.fetchRiderData(id);
+      } else {
         Get.snackbar('Error', response.body['message']);
       }
-    }catch(e){
+    } catch (e) {
       debugPrint(e.toString());
-    }finally{
+    } finally {
       isBookRideState.value = false;
     }
-
-    // print('selected Drop Destination ============>>>  ${selectedDrop.value?.lng}');
-    // print('selected Drop Destination ============>>>  ${selectedDrop.value?.lat}');
-    // print('selected Drop Destination ============>>>   ${selectedDrop.value?.address}');
-    //
-    // print('============================      $data', );
-    //
-    // print('selected Drop Destination ============>>>  ${selectedPickup.value?.lat}');
-    // print('selected Drop Destination ============>>>  ${selectedPickup.value?.lng}');
-    // print('selected Drop Destination ============>>>  ${selectedPickup.value?.address}');
-
-    // debugPrint('================>>>>>>>>>>>>yessssssssssssss');
-    // Get.offAllNamed(AppRoutes.customBottomNavBar);
-
-    // bool status = false;
-    // isBookRideState.value = true;
-    // try{
-    //   final response = await ApiClient.postData(AppRoutes.setHomeLocation,
-    //       {}
-    //   );
-    //   if( response.statusCode == 200 || response.statusCode == 201 ){
-    //     status = true;
-    //   }else{
-    //     status = false;
-    //   }
-    // }catch(e){
-    //   debugPrint(e.toString());
-    // }finally{
-    //   isBookRideState.value = false;
-    // }
-
   }
-  void cleanField(){
+
+  void cleanField() {
+    pickupController.removeListener(_pickupListener);
+    dropController.removeListener(_dropListener);
+
     pickupController.clear();
     dropController.clear();
     noteController.clear();
+    pickupPlaces.clear();
+    dropPlaces.clear();
+    showPickupSuggestions.value = false;
+    showDropSuggestions.value = false;
+    selectedPickup.value = null;
+    selectedDrop.value = null;
+    _clearFare();
+
+    pickupController.addListener(_pickupListener);
+    dropController.addListener(_dropListener);
   }
+
   @override
   void onClose() {
+    pickupController.removeListener(_pickupListener);
+    dropController.removeListener(_dropListener);
     pickupController.dispose();
     dropController.dispose();
     noteController.dispose();
