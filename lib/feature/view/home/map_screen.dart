@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:ricardo/feature/models/home/ride_status_model.dart' as rideModel;
 import 'package:ricardo/feature/models/socket/accept_ride_driver_model.dart';
 import 'package:ricardo/feature/models/socket/accept_ride_model.dart';
 import 'package:ricardo/feature/models/socket/ride_details_socket_model.dart';
@@ -32,6 +33,7 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
   final rideController = Get.find<RideController>();
   final mapOPTController = Get.find<MapOPTController>();
 
+
   GoogleMapController? _mapController;
   Set<Marker> markers = {};
   Set<Polyline> _polylines = {};
@@ -58,8 +60,8 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
     _initMarkers();
 
     // Initialize location and map
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await _initializeMap();
+    WidgetsBinding.instance.addPostFrameCallback((_)  {
+       _initializeMap();
     });
 
     // Listen to ride accepted changes
@@ -68,6 +70,7 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
         _loadRoute();
       }
     });
+
   }
 
   Future<void> _initMarkers() async {
@@ -96,8 +99,8 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
     });
 
     // ✅ Restore ride state if app was closed mid-ride
-    await _restoreRideState();
-    await _restoreDriverRideState();
+    // await _restoreRideState();
+    // await _restoreDriverRideState();
 
     bool hasPermission = await _requestLocationPermission();
     if (!hasPermission) {
@@ -327,6 +330,7 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
     // New ride request
     SocketServices.socket?.on('new-ride-request', (data) {
       if (data['newRideRequest'] == true) {
+        mapOPTController.startRideRequestTimer(); // ✅ add this line
         mapOPTController.isPassengerRequest.value = true;
         mapOPTController.rideDetailsData.value =
             RideDetailsSocketModel.fromJson(data['rideDetails']);
@@ -337,6 +341,7 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
     SocketServices.socket?.on('cancel-ride-request', (data) {
       if (data['isCancelPickRequest'] == true) {
         mapOPTController.isPassengerRequest.value = false;
+        mapOPTController.cancelRideRequestTimer(); // ✅ add this line
       }
     });
 
@@ -374,6 +379,77 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
         }
       }
     });
+
+    SocketServices.socket?.on('get-ride-driver-location', (data){
+      print('===================================>>> GET RIDE DRIVER $data');
+
+    });
+
+    SocketServices.socket?.on('ride-status', (data) {
+      try {
+        Map<String, dynamic> jsonData;
+
+        if (data is List) {
+          jsonData = Map<String, dynamic>.from(data[0]);
+        } else if (data is String) {
+          jsonData = jsonDecode(data);
+        } else if (data is Map) {
+          jsonData = Map<String, dynamic>.from(data);
+        } else {
+          return;
+        }
+
+        final rideModel.RideStatusModel rideStatus =
+        rideModel.RideStatusModel.fromJson(jsonData);
+
+        // ✅ Store in controller so UI can react
+        mapOPTController.rideStatusData.value = rideStatus;
+
+        if (rideStatus.acceptRide == true) {
+          // Driver accepted — already handled by 'ride-accepted' event
+          debugPrint('✅ ride-status: Ride accepted');
+        } else if (rideStatus.arrivingRide == true) {
+          debugPrint('🚗 ride-status: Driver arriving');
+        } else if (rideStatus.ongoingRide == true) {
+          debugPrint('🛣️ ride-status: Ride ongoing');
+        } else if (rideStatus.completeRide == true) {
+          // ✅ Ride done — clear all state and stop listening
+          debugPrint('🏁 ride-status: Ride complete');
+          rideController.isRideAccepted.value = false;
+          rideController.acceptRideModel.value = null;
+          mapOPTController.acceptedRideDriverDataStatus.value = false;
+          mapOPTController.acceptedRideDriverData.value = null;
+          mapOPTController.isPassengerRequest.value = false;
+          mapOPTController.rideStatusData.value = null;
+          mapOPTController.rideRequestReceivedAt.value = null;
+          PrefsHelper.setString('status', '');
+          PrefsHelper.setString('ride-accepted-data', '');
+          PrefsHelper.setString('driver-status', '');
+          PrefsHelper.setString('ride-accepted-driver-data', '');
+          SocketServices.socket?.off('ride-status'); // ✅ Stop listening after complete
+        } else if (rideStatus.driverCancel == true ||
+            rideStatus.passengerCancel == true) {
+          // ✅ Cancelled — clear all state and stop listening
+          debugPrint('❌ ride-status: Ride cancelled');
+          rideController.isRideAccepted.value = false;
+          rideController.acceptRideModel.value = null;
+          mapOPTController.acceptedRideDriverDataStatus.value = false;
+          mapOPTController.acceptedRideDriverData.value = null;
+          mapOPTController.isPassengerRequest.value = false;
+          mapOPTController.rideStatusData.value = null;
+          mapOPTController.rideRequestReceivedAt.value = null;
+          PrefsHelper.setString('status', '');
+          PrefsHelper.setString('ride-accepted-data', '');
+          PrefsHelper.setString('driver-status', '');
+          PrefsHelper.setString('ride-accepted-driver-data', '');
+          SocketServices.socket?.off('ride-status'); // ✅ Stop listening after cancel
+        }
+      } catch (e, stackTrace) {
+        print('ride-status ERROR: $e');
+        print('STACK: $stackTrace');
+      }
+    });
+
   }
 
   Future<void> _loadRoute() async {
@@ -928,6 +1004,12 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
           else if (_hasLocation)
             Obx(
               () => GoogleMap(
+                scrollGesturesEnabled: true,
+                rotateGesturesEnabled: true,
+                trafficEnabled: true,
+                zoomGesturesEnabled: true,
+                fortyFiveDegreeImageryEnabled: true,
+                indoorViewEnabled: true,
                 mapType: MapType.normal,
                 initialCameraPosition: CameraPosition(
                   target: LatLng(
@@ -1605,6 +1687,7 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
     SocketServices.socket?.off('cancel-ride-request');
     SocketServices.socket?.off('ride-accepted');
     SocketServices.socket?.off('ride-accepted-driver');
+    SocketServices.socket?.off('ride-status');
     super.dispose();
   }
 }

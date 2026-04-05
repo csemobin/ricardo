@@ -1,12 +1,16 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:ricardo/app/helpers/custom_location_helper.dart';
 import 'package:ricardo/feature/controllers/user_controller.dart';
+import 'package:ricardo/feature/models/home/ride_status_model.dart';
 import 'package:ricardo/feature/models/socket/accept_ride_driver_model.dart';
 import 'package:ricardo/feature/models/socket/ride_details_socket_model.dart';
+import 'package:ricardo/feature/view/home/link_export_file.dart';
+import 'package:ricardo/feature/view/home/map/driver_location_service.dart';
 import 'package:ricardo/services/api_client.dart';
 import 'package:ricardo/services/api_urls.dart';
 
@@ -19,7 +23,44 @@ class MapOPTController extends GetxController {
     getLocation();
     super.onInit();
   }
+  Timer? _rideRequestTimer;
+  RxDouble timerProgress = 1.0.obs;
+  RxBool isRideRequestExpired = false.obs;
 
+  void startRideRequestTimer() {
+    _rideRequestTimer?.cancel();
+
+    final timeoutMinutes =
+        int.tryParse(dotenv.env['RIDE_MODAL_EXPIRE_TIME'] ?? '') ?? 2;
+    final totalMillis = timeoutMinutes * 60 * 1000;
+    final startTime = DateTime.now();
+
+    timerProgress.value = 1.0;
+    isRideRequestExpired.value = false;
+
+    _rideRequestTimer = Timer.periodic(
+      const Duration(milliseconds: 100),
+          (timer) {
+        final elapsed = DateTime.now().difference(startTime).inMilliseconds;
+        final remaining = totalMillis - elapsed;
+
+        if (remaining <= 0) {
+          timerProgress.value = 0.0;
+          isRideRequestExpired.value = true;
+          timer.cancel();
+        } else {
+          timerProgress.value = remaining / totalMillis;
+        }
+      },
+    );
+  }
+
+  void cancelRideRequestTimer() {
+    _rideRequestTimer?.cancel();
+    _rideRequestTimer = null;
+    timerProgress.value = 1.0;
+    isRideRequestExpired.value = false;
+  }
   //***************************************************
   // ******* Current Location Related work are here****
   // ***************************************************
@@ -89,6 +130,9 @@ class MapOPTController extends GetxController {
   Rx<RideDetailsSocketModel?> rideDetailsData =
       Rx<RideDetailsSocketModel?>(null);
 
+  Rx<DateTime?> rideRequestReceivedAt = Rx<DateTime?>(null);  // tracks when request arrived
+  Rx<RideStatusModel?> rideStatusData = Rx<RideStatusModel?>(null); // ride-status socket data
+
   //***************************************************
 // *** Socket Accept Ride Driver Model  Response ****
 // ***************************************************
@@ -99,18 +143,32 @@ class MapOPTController extends GetxController {
   //***************************************************
   // ******* Book a Ride From the Driver  **************
   // ***************************************************
-
   Future<void> rideAcceptRide(String rideId) async {
     LatLng currentLatLun = await CustomLocationHelper.getCurrentLocation();
 
-    print(
-        '===================>>>>>>>>>>>>>>> check $currentLatLun ${currentLatLun.latitude} ${currentLatLun.longitude}');
-
     final response =
-        await ApiClient.postData(ApiUrls.rideAcceptRideByRideId(rideId), {
+    await ApiClient.postData(ApiUrls.rideAcceptRideByRideId(rideId), {
       "coordinates": [currentLatLun.longitude, currentLatLun.latitude]
     });
-    if (response.statusCode != 200 || response.statusCode != 201) {
+
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      print('✅ Ride accepted');
+      DriverLocationService().startEmitting(rideId);
+      DriverLocationService().listenResponse((data) {
+        print(data);
+      },);
+
+      // SocketServices.socket?.emit('get-driver-location', {
+      //   'rideId': rideId
+      // });
+      //
+      // SocketServices.socket?.on("get-ride-driver-location", (data) {
+      //   print('📍 Driver location: $data');
+      // });
+      // SocketServices.socket?.onAny((event, data) {
+      //   print('📡 $event => $data');
+      // });
+    } else {
       Get.snackbar('Error', response.body['message']);
     }
   }
@@ -200,6 +258,8 @@ class MapOPTController extends GetxController {
   @override
   void dispose() {
     provideTips.dispose();
+    _rideRequestTimer?.cancel(); // ✅ add this
+    DriverLocationService().stop();
     super.dispose();
   }
 }
