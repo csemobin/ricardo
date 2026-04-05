@@ -50,6 +50,10 @@ class _MapCustomHeaderBackState extends State<MapCustomHeaderBack> {
                     children: [
                       IconButton(
                         onPressed: () {
+                          // Custom Marker Show related work are here
+                          final mOTPCnt= Get.find<MapOPTController>();
+                          mOTPCnt.isCurrentMarkerShow.value = true;
+
                           // Get all controllers
                           final rideController = Get.find<RideController>();
                           final googleSearchController =

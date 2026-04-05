@@ -29,14 +29,23 @@ class RideStatusModel {
     driverCancel = json['driverCancel'];
     passengerCancel = json['passengerCancel'];
     completeRide = json['completeRide'];
-    ride = json['ride'] != null ? new Ride.fromJson(json['ride']) : null;
-    passenger = json['passenger'] != null
-        ? new Passenger.fromJson(json['passenger'])
+
+    // ✅ ride might have nested fields as strings
+    ride = json['ride'] != null && json['ride'] is Map
+        ? Ride.fromJson(json['ride'])
         : null;
-    driver =
-    json['driver'] != null ? new Driver.fromJson(json['driver']) : null;
-    driverCar = json['driverCar'] != null
-        ? new DriverCar.fromJson(json['driverCar'])
+
+    // ✅ passenger/driver at root level
+    passenger = json['passenger'] != null && json['passenger'] is Map
+        ? Passenger.fromJson(json['passenger'])
+        : null;
+
+    driver = json['driver'] != null && json['driver'] is Map
+        ? Driver.fromJson(json['driver'])
+        : null;
+
+    driverCar = json['driverCar'] != null && json['driverCar'] is Map
+        ? DriverCar.fromJson(json['driverCar'])
         : null;
   }
 
@@ -126,21 +135,32 @@ class Ride {
 
   Ride.fromJson(Map<String, dynamic> json) {
     sId = json['_id'];
-    passenger = json['passenger'] != null
-        ? new Passenger.fromJson(json['passenger'])
+
+    // ✅ passenger & driver inside Ride may come as String IDs — handle both
+    passenger = json['passenger'] != null && json['passenger'] is Map
+        ? Passenger.fromJson(json['passenger'])
         : null;
-    driver =
-    json['driver'] != null ? new Driver.fromJson(json['driver']) : null;
+
+    driver = json['driver'] != null && json['driver'] is Map
+        ? Driver.fromJson(json['driver'])
+        : null;
+
     pickupAddress = json['pickupAddress'];
     destinationAddress = json['destinationAddress'];
-    pickupLocation = json['pickupLocation'] != null
-        ? new Location.fromJson(json['pickupLocation'])
+
+    pickupLocation = json['pickupLocation'] != null && json['pickupLocation'] is Map
+        ? Location.fromJson(json['pickupLocation'])
         : null;
-    destinationLocation = json['destinationLocation'] != null
-        ? new Location.fromJson(json['destinationLocation'])
+
+    destinationLocation = json['destinationLocation'] != null && json['destinationLocation'] is Map
+        ? Location.fromJson(json['destinationLocation'])
         : null;
+
     destinationMeters = json['destinationMeters'];
-    fare = json['fare'];
+
+    // ✅ fare may come as int or double
+    fare = json['fare'] != null ? (json['fare'] as num).toDouble() : null;
+
     note = json['note'];
     status = json['status'];
     waitingTime = json['waitingTime'];
@@ -156,11 +176,17 @@ class Ride {
     searchStartedAt = json['searchStartedAt'];
     searchRadiusIndex = json['searchRadiusIndex'];
     lastSearchAt = json['lastSearchAt'];
-    notifiedDriverIds = json['notifiedDriverIds'].cast<String>();
+
+    // ✅ notifiedDriverIds may be null or empty
+    notifiedDriverIds = json['notifiedDriverIds'] != null
+        ? List<String>.from(json['notifiedDriverIds'])
+        : [];
+
     createdAt = json['createdAt'];
     updatedAt = json['updatedAt'];
-    driverAcceptedLocation = json['driverAcceptedLocation'] != null
-        ? new Location.fromJson(json['driverAcceptedLocation'])
+
+    driverAcceptedLocation = json['driverAcceptedLocation'] != null && json['driverAcceptedLocation'] is Map
+        ? Location.fromJson(json['driverAcceptedLocation'])
         : null;
   }
 

@@ -2,16 +2,16 @@ import 'dart:convert';
 import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:ricardo/feature/models/home/ride_status_model.dart' as rideModel;
+import 'package:ricardo/feature/models/home/ride_status_model.dart'
+    as rideModel;
 import 'package:ricardo/feature/models/socket/accept_ride_driver_model.dart';
 import 'package:ricardo/feature/models/socket/accept_ride_model.dart';
 import 'package:ricardo/feature/models/socket/ride_details_socket_model.dart';
 import 'package:ricardo/feature/view/home/map/custom_header.dart';
 import 'package:ricardo/feature/view/home/map/draggable_bottom_sheet.dart';
-import 'package:ricardo/widgets/accepted_ride_button.dart';
+import 'package:ricardo/feature/view/home/map/passenger_ride_request_sheet.dart';
 import 'package:ricardo/widgets/custom_passenger_waiting_gif.dart';
 import 'package:ricardo/widgets/custom_primary_button.dart';
-import 'package:ricardo/widgets/glass_background_multiple_children_widget.dart';
 import 'package:ricardo/widgets/glass_background_widget.dart';
 import 'package:ricardo/widgets/map_custom_header_back.dart';
 import 'package:ricardo/widgets/no_internet_message_map.dart';
@@ -33,7 +33,6 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
   final rideController = Get.find<RideController>();
   final mapOPTController = Get.find<MapOPTController>();
 
-
   GoogleMapController? _mapController;
   Set<Marker> markers = {};
   Set<Polyline> _polylines = {};
@@ -43,7 +42,7 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
   BitmapDescriptor? customMarker;
   BitmapDescriptor? customCarMarker;
 
-  double currentZoom = 14.0;
+  double currentZoom = 18.5;
   bool _isLoading = true;
   bool _hasLocation = false;
   String _errorMessage = '';
@@ -60,8 +59,8 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
     _initMarkers();
 
     // Initialize location and map
-    WidgetsBinding.instance.addPostFrameCallback((_)  {
-       _initializeMap();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _initializeMap();
     });
 
     // Listen to ride accepted changes
@@ -70,7 +69,6 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
         _loadRoute();
       }
     });
-
   }
 
   Future<void> _initMarkers() async {
@@ -380,9 +378,8 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
       }
     });
 
-    SocketServices.socket?.on('get-ride-driver-location', (data){
+    SocketServices.socket?.on('get-ride-driver-location', (data) {
       print('===================================>>> GET RIDE DRIVER $data');
-
     });
 
     SocketServices.socket?.on('ride-status', (data) {
@@ -400,7 +397,7 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
         }
 
         final rideModel.RideStatusModel rideStatus =
-        rideModel.RideStatusModel.fromJson(jsonData);
+            rideModel.RideStatusModel.fromJson(jsonData);
 
         // ✅ Store in controller so UI can react
         mapOPTController.rideStatusData.value = rideStatus;
@@ -426,7 +423,8 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
           PrefsHelper.setString('ride-accepted-data', '');
           PrefsHelper.setString('driver-status', '');
           PrefsHelper.setString('ride-accepted-driver-data', '');
-          SocketServices.socket?.off('ride-status'); // ✅ Stop listening after complete
+          SocketServices.socket
+              ?.off('ride-status'); // ✅ Stop listening after complete
         } else if (rideStatus.driverCancel == true ||
             rideStatus.passengerCancel == true) {
           // ✅ Cancelled — clear all state and stop listening
@@ -442,14 +440,14 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
           PrefsHelper.setString('ride-accepted-data', '');
           PrefsHelper.setString('driver-status', '');
           PrefsHelper.setString('ride-accepted-driver-data', '');
-          SocketServices.socket?.off('ride-status'); // ✅ Stop listening after cancel
+          SocketServices.socket
+              ?.off('ride-status'); // ✅ Stop listening after cancel
         }
       } catch (e, stackTrace) {
         print('ride-status ERROR: $e');
         print('STACK: $stackTrace');
       }
     });
-
   }
 
   Future<void> _loadRoute() async {
@@ -516,7 +514,7 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
           Polyline(
             polylineId: const PolylineId('Pick-Up-Location'),
             points: points,
-            color: Colors.red,
+            color: Colors.blue,
             width: 6,
             startCap: Cap.roundCap,
             endCap: Cap.roundCap,
@@ -609,7 +607,7 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
           Polyline(
             polylineId: const PolylineId('pickup_to_destination'),
             points: pickupToDestination,
-            color: Colors.green,
+            color: Colors.blue,
             width: 6,
             startCap: Cap.roundCap,
             endCap: Cap.roundCap,
@@ -698,6 +696,7 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
                   AppConstants.passenger
               ? customMarker ?? BitmapDescriptor.defaultMarker
               : customCarMarker ?? BitmapDescriptor.defaultMarker,
+          visible: mapOPTController.isCurrentMarkerShow.value
         ),
       );
     }
@@ -1004,9 +1003,10 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
           else if (_hasLocation)
             Obx(
               () => GoogleMap(
+                mapToolbarEnabled: false,
                 scrollGesturesEnabled: true,
                 rotateGesturesEnabled: true,
-                trafficEnabled: true,
+                trafficEnabled: false,
                 zoomGesturesEnabled: true,
                 fortyFiveDegreeImageryEnabled: true,
                 indoorViewEnabled: true,
@@ -1026,10 +1026,11 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
                   _mapController = controller;
                   _loadRoute();
                 },
-                myLocationEnabled: true,
-                myLocationButtonEnabled: true,
-                zoomControlsEnabled: true,
-                compassEnabled: true,
+                myLocationEnabled: false,
+                myLocationButtonEnabled: false,
+                zoomControlsEnabled: false,
+                compassEnabled: false,
+
                 circles: {
                   Circle(
                     circleId: const CircleId('currentPassenger'),
@@ -1037,11 +1038,11 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
                       mapOPTController.currentLatitudePosition?.value ?? 0.0,
                       mapOPTController.currentLongitudePosition?.value ?? 0.0,
                     ),
-                    radius: 10,
+                    radius: 30,
                     strokeColor: Colors.white,
-                    strokeWidth: 1,
+                    strokeWidth: 2,
                     fillColor: const Color(0xFF006491).withOpacity(0.2),
-                    consumeTapEvents: true,
+                    // consumeTapEvents: true,
                   ),
                 },
               ),
@@ -1154,7 +1155,7 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
                           .acceptedRideDriverData.value?.isRideAcceptedDriver ==
                       true) {
                     return Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 25),
+                      padding: const EdgeInsets.symmetric(horizontal: 15),
                       child: SizedBox(
                         width: double.infinity,
                         child: GlassBackgroundWidget(
@@ -1275,331 +1276,214 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
                       mapOPTController.isPassengerRequest.value == true &&
                       mapOPTController.acceptedRideDriverDataStatus.value ==
                           false) {
-                    return GlassBackgroundMultipleChildrenWidget(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      blurOne: 20,
-                      blurTwo: 20,
-                      children: [
-                        Center(
-                          child: Container(
-                            width: 50,
-                            height: 5,
-                            padding: const EdgeInsets.all(2),
-                            decoration: BoxDecoration(
-                                color: const Color(0xFFB9C0C9),
-                                borderRadius: BorderRadius.circular(50)),
-                          ),
-                        ),
-                        const SizedBox(height: 50),
-                        Row(
-                          children: [
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(50),
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(12),
-                                child: Image.network(
-                                  (mapOPTController.rideDetailsData.value
-                                                  ?.passengerImage !=
-                                              null &&
-                                          mapOPTController
-                                              .rideDetailsData
-                                              .value!
-                                              .passengerImage!
-                                              .isNotEmpty)
-                                      ? '${ApiUrls.imageBaseUrl}${mapOPTController.rideDetailsData.value?.passengerImage}'
-                                      : '',
-                                  height: 50,
-                                  width: 50,
-                                  fit: BoxFit.cover,
-                                  errorBuilder: (context, error, stackTrace) {
-                                    return Image.asset(
-                                      'assets/images/default_image.png',
-                                      height: 50,
-                                      width: 50,
-                                      fit: BoxFit.cover,
-                                    );
-                                  },
-                                ),
-                              ),
-                            ),
-                            const SizedBox(width: 10),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  mapOPTController.rideDetailsData.value
-                                          ?.passengerName ??
-                                      '',
-                                  style: TextStyle(
-                                    color: const Color(0xff171717),
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w500,
-                                    fontFamily: FontFamily.poppins,
-                                  ),
-                                ),
-                                Row(
-                                  children: [
-                                    Text(
-                                      '\$${mapOPTController.rideDetailsData.value?.fare ?? 0.0} ',
-                                      style: const TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w600,
-                                      ),
-                                    ),
-                                    Text(
-                                        '(${((mapOPTController.rideDetailsData.value?.destinationMeters ?? 0) * 0.000621371).toStringAsFixed(2)} Miles)')
-                                  ],
-                                ),
-                              ],
-                            )
-                          ],
-                        ),
-                        const SizedBox(height: 20),
-                        Divider(
-                          height: 1,
-                          color: Colors.black.withOpacity(0.2),
-                        ),
-                        const SizedBox(height: 6),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              children: [
-                                SvgPicture.asset(
-                                    'assets/images/direct_right.svg'),
-                                const SizedBox(width: 8),
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        'PICK UP',
-                                        style: TextStyle(
-                                          color: AppColors.labelTextColor,
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.w500,
-                                          fontFamily: FontFamily.poppins,
-                                        ),
-                                      ),
-                                      Text(
-                                        mapOPTController.rideDetailsData.value
-                                                ?.pickupAddress ??
-                                            'Pickup location not specified',
-                                        style: _textStyle(),
-                                        maxLines: 2,
-                                        overflow: TextOverflow.ellipsis,
-                                      )
-                                    ],
-                                  ),
-                                )
-                              ],
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                left: 4,
-                                top: 4,
-                                bottom: 4,
-                              ),
-                              child: Container(
-                                width: 4,
-                                height: 40,
-                                decoration:
-                                    const BoxDecoration(color: Colors.white),
-                              ),
-                            ),
-                            Row(
-                              children: [
-                                SvgPicture.asset('assets/images/location.svg'),
-                                const SizedBox(width: 8),
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        'DROP OFF',
-                                        style: TextStyle(
-                                          color: AppColors.labelTextColor,
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.w500,
-                                          fontFamily: FontFamily.poppins,
-                                        ),
-                                      ),
-                                      Text(
-                                        mapOPTController.rideDetailsData.value
-                                                ?.destinationAddress ??
-                                            'Destination not specified',
-                                        style: _textStyle(),
-                                        maxLines: 2,
-                                        overflow: TextOverflow.ellipsis,
-                                      )
-                                    ],
-                                  ),
-                                )
-                              ],
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 6),
-                        Divider(
-                          height: 1,
-                          color: Colors.black.withOpacity(0.2),
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          'Passengers Note',
-                          style: TextStyle(
-                            color: const Color(0xff5E5E5E).withOpacity(0.7),
-                          ),
-                        ),
-                        const SizedBox(height: 10),
-                        Text(mapOPTController
-                                .rideDetailsData.value?.destinationAddress ??
-                            ''),
-                        const SizedBox(height: 18),
-                        AcceptRideButton(
-                          onPressed: () {
-                            mapOPTController.rideAcceptRide(mapOPTController
-                                .rideDetailsData.value!.rideId
-                                .toString());
-                          },
-                        ),
-                        const SizedBox(height: 80),
-                      ],
-                    );
+                    return const PassengerRideRequestSheet();
                   }
 
                   if (mapOPTController.acceptedRideDriverData.value
-                              ?.isRideAcceptedDriver ==
-                          true &&
-                      mapOPTController.acceptedRideDriverDataStatus.value ==
-                          true) {
+                                  ?.isRideAcceptedDriver ==
+                              true &&
+                          mapOPTController.acceptedRideDriverDataStatus.value ==
+                              true ||
+                      mapOPTController.acceptedRideDriverData.value
+                                  ?.isRideAcceptedDriver ==
+                              true &&
+                          mapOPTController.acceptedRideDriverDataStatus.value ==
+                              true) {
                     return GlassBackgroundWidget(
-                      child: Column(
-                        children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const SizedBox(height: 40),
-                              Text(
-                                '(4 min) ${((mapOPTController.acceptedRideDriverData.value?.ride?.destinationMeters ?? 0) * 0.000621371).toStringAsFixed(2)} Miles',
-                                style: TextStyle(
-                                  color: const Color(0xff171717),
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                              const SizedBox(height: 28),
-                              Divider(
-                                height: 1,
-                                color: Colors.black.withOpacity(0.2),
-                              ),
-                              const SizedBox(height: 16),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Row(
-                                    children: [
-                                      ClipRRect(
-                                        borderRadius: BorderRadius.circular(50),
-                                        child: ClipRRect(
-                                          borderRadius:
-                                              BorderRadius.circular(12),
-                                          child: Image.network(
-                                            (mapOPTController
-                                                            .rideDetailsData
-                                                            .value
-                                                            ?.passengerImage !=
-                                                        null &&
-                                                    mapOPTController
-                                                        .rideDetailsData
-                                                        .value!
-                                                        .passengerImage!
-                                                        .isNotEmpty)
-                                                ? '${ApiUrls.imageBaseUrl}${mapOPTController.rideDetailsData.value?.passengerImage}'
-                                                : '',
-                                            height: 50,
-                                            width: 50,
-                                            fit: BoxFit.cover,
-                                            errorBuilder:
-                                                (context, error, stackTrace) {
-                                              return Image.asset(
-                                                'assets/images/default_image.jpg',
-                                                height: 50,
-                                                width: 50,
-                                                fit: BoxFit.cover,
-                                              );
-                                            },
-                                          ),
-                                        ),
-                                      ),
-                                      const SizedBox(width: 10),
-                                      Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            mapOPTController.rideDetailsData
-                                                    .value?.passengerName ??
-                                                '',
-                                            style: TextStyle(
-                                              color: const Color(0xff171717),
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.w500,
-                                              fontFamily: FontFamily.poppins,
-                                            ),
-                                          ),
-                                          Row(
-                                            children: [
-                                              Text(
-                                                '\$${mapOPTController.rideDetailsData.value?.fare ?? 0.0} ',
-                                                style: const TextStyle(
-                                                  fontSize: 16,
-                                                  fontWeight: FontWeight.w600,
-                                                ),
-                                              ),
-                                              Text(
-                                                  '(${((mapOPTController.rideDetailsData.value?.destinationMeters ?? 0) * 0.000621371).toStringAsFixed(2)} Miles)')
-                                            ],
-                                          ),
-                                        ],
-                                      )
-                                    ],
+                      child: Obx(() {
+                        final rideStatus =
+                            mapOPTController.rideStatusData.value;
+
+                        // ── Determine current driver state ──────────────
+                        final bool isOnTheWay =
+                            rideStatus == null || rideStatus.acceptRide == true;
+                        final bool isArriving =
+                            rideStatus?.arrivingRide == true;
+                        final bool isOngoing = rideStatus?.ongoingRide == true;
+
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const SizedBox(height: 40),
+
+                            // ── Distance / time row ─────────────────────
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    isOngoing
+                                        ? 'Ride is in progress'
+                                        : isArriving
+                                        ? 'You have arrived at pickup'
+                                        : '(4 min) ${((mapOPTController.acceptedRideDriverData.value?.ride?.destinationMeters ?? 0) * 0.000621371).toStringAsFixed(2)} Miles',
+                                    style: const TextStyle(
+                                      color: Color(0xff171717),
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                    overflow: TextOverflow.ellipsis, // ✅ moved here
+                                    maxLines: 1,
                                   ),
-                                  GestureDetector(
-                                    onTap: () {
-                                      launchUrl(Uri.parse(
-                                          "tel:${mapOPTController.rideDetailsData.value?.passengerPhone}"));
-                                    },
-                                    child: RepaintBoundary(
-                                      // ✅ isolates rendering
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                          color: AppColors.whiteColor,
-                                          borderRadius:
-                                              BorderRadius.circular(50),
-                                          border: Border.all(
-                                              color: Colors.grey.shade200),
+                                ),
+                                const SizedBox(width: 10),
+                                // ✅ Remove Expanded, use fixed size instead
+                                GestureDetector(
+                                  onTap: () => _showCancelReasonDialog(context),
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(50),
+                                      border: Border.all(color: Colors.red, width: 1),
+                                    ),
+                                    child: const Row(
+                                      mainAxisSize: MainAxisSize.min, // ✅ wrap content
+                                      children: [
+                                        Icon(Icons.block, color: Colors.red, size: 18),
+                                        SizedBox(width: 6),
+                                        Text(
+                                          'Cancel',
+                                          style: TextStyle(
+                                            color: Colors.red,
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w500,
+                                          ),
                                         ),
-                                        child: SvgPicture.asset(
-                                          Assets.icons.driverCardPhone,
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 28),
+                            Divider(
+                                height: 1,
+                                color: Colors.black.withOpacity(0.2)),
+                            const SizedBox(height: 16),
+
+                            // ── Passenger info row ──────────────────────
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Row(
+                                  children: [
+                                    ClipRRect(
+                                      borderRadius: BorderRadius.circular(50),
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(12),
+                                        child: Image.network(
+                                          (mapOPTController
+                                                          .rideDetailsData
+                                                          .value
+                                                          ?.passengerImage !=
+                                                      null &&
+                                                  mapOPTController
+                                                      .rideDetailsData
+                                                      .value!
+                                                      .passengerImage!
+                                                      .isNotEmpty)
+                                              ? '${ApiUrls.imageBaseUrl}${mapOPTController.rideDetailsData.value?.passengerImage}'
+                                              : '',
+                                          height: 50,
+                                          width: 50,
+                                          fit: BoxFit.cover,
+                                          errorBuilder:
+                                              (context, error, stackTrace) {
+                                            return Image.asset(
+                                              'assets/images/default_image.jpg',
+                                              height: 50,
+                                              width: 50,
+                                              fit: BoxFit.cover,
+                                            );
+                                          },
                                         ),
                                       ),
                                     ),
+                                    const SizedBox(width: 10),
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          mapOPTController.rideDetailsData.value
+                                                  ?.passengerName ??
+                                              '',
+                                          style: TextStyle(
+                                            color: const Color(0xff171717),
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w500,
+                                            fontFamily: FontFamily.poppins,
+                                          ),
+                                        ),
+                                        Row(
+                                          children: [
+                                            Text(
+                                              '\$${mapOPTController.rideDetailsData.value?.fare ?? 0.0} ',
+                                              style: const TextStyle(
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.w600,
+                                              ),
+                                            ),
+                                            Text(
+                                              '(${((mapOPTController.rideDetailsData.value?.destinationMeters ?? 0) * 0.000621371).toStringAsFixed(2)} Miles)',
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                                GestureDetector(
+                                  onTap: () {
+                                    launchUrl(Uri.parse(
+                                        "tel:${mapOPTController.rideDetailsData.value?.passengerPhone}"));
+                                  },
+                                  child: RepaintBoundary(
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        color: AppColors.whiteColor,
+                                        borderRadius: BorderRadius.circular(50),
+                                        border: Border.all(
+                                            color: Colors.grey.shade200),
+                                      ),
+                                      child: SvgPicture.asset(
+                                          Assets.icons.driverCardPhone),
+                                    ),
                                   ),
-                                ],
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 40),
-                          CustomPrimaryButton(
-                              title: 'On the way', onHandler: () {}),
-                          const SizedBox(height: 50),
-                          const SizedBox(height: 50),
-                        ],
-                      ),
+                                ),
+                              ],
+                            ),
+
+                            const SizedBox(height: 24),
+
+                            // ── PRIMARY ACTION BUTTON ───────────────────
+                            CustomPrimaryButton(
+                              title: isOngoing
+                                  ? 'Complete Ride'
+                                  : isArriving
+                                      ? 'Start Ride'
+                                      : 'Arrive in Place',
+                              onHandler: () async {
+                                if (isOnTheWay) {
+                                  // ✅ Driver arrived at pickup — notify server
+                                  debugPrint('📍 Driver arriving at pickup');
+                                  // TODO: emit arriving socket or call API
+                                } else if (isArriving) {
+                                  // ✅ Start the ride
+                                  debugPrint('🚗 Starting ride...');
+                                  // TODO: emit start-ride socket or call API
+                                } else if (isOngoing) {
+                                  // ✅ Complete the ride
+                                  debugPrint('🏁 Completing ride...');
+                                  // TODO: emit complete-ride socket or call API
+                                }
+                              },
+                            ),
+
+                            const SizedBox(height: 80),
+                          ],
+                        );
+                      }),
                     );
                   }
                   return const SizedBox.shrink();
@@ -1664,20 +1548,130 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
     );
   }
 
-  TextStyle _textStyle() {
-    return TextStyle(
-      color: AppColors.primaryHeadingTextColor,
-      fontSize: 14,
-      fontWeight: FontWeight.w600,
-      fontFamily: FontFamily.poppins,
-    );
-  }
-
   Stream<bool> _locationStatusStream() {
     return Stream.periodic(const Duration(seconds: 5), (_) async {
       return await Geolocator.isLocationServiceEnabled();
     }).asyncMap((event) => event);
   }
+
+  // Cancel Related work are here
+  void _showCancelReasonDialog(BuildContext context) {
+    final reasons = [
+      'Passenger no show',
+      'Difficult pickup location',
+      'Unaccompanied minor',
+      'No car seat',
+      'Too many bags',
+      'Other safety concern',
+      'Destination changed',
+    ];
+
+    String? selectedReason;
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => StatefulBuilder(
+        builder: (context, setDialogState) {
+          return Dialog(
+            backgroundColor: Colors.white,
+            insetPadding: const EdgeInsets.symmetric(horizontal: 24),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'Choose Reason for Cancelling',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+
+                  // ── Reason list ──────────────────────
+                  ...reasons.map((reason) => GestureDetector(
+                        onTap: () =>
+                            setDialogState(() => selectedReason = reason),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 8),
+                          child: Row(
+                            children: [
+                              Container(
+                                width: 20,
+                                height: 20,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  border: Border.all(
+                                    color: selectedReason == reason
+                                        ? Colors.green
+                                        : Colors.grey,
+                                    width: 2,
+                                  ),
+                                  color: selectedReason == reason
+                                      ? Colors.green
+                                      : Colors.transparent,
+                                ),
+                                child: selectedReason == reason
+                                    ? const Icon(Icons.check,
+                                        size: 12, color: Colors.white)
+                                    : null,
+                              ),
+                              const SizedBox(width: 12),
+                              Text(
+                                reason,
+                                style: const TextStyle(fontSize: 14),
+                              ),
+                            ],
+                          ),
+                        ),
+                      )),
+
+                  const SizedBox(height: 20),
+
+                  // ── Confirm cancel button ────────────
+                  SizedBox(
+                    width: double.infinity,
+                    height: 50,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.red,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(50),
+                        ),
+                      ),
+                      onPressed: selectedReason == null
+                          ? null
+                          : () {
+                              Navigator.pop(context);
+                              debugPrint('❌ Cancel reason: $selectedReason');
+                              // TODO: emit cancel-ride socket or call API with selectedReason
+                            },
+                      child: const Text(
+                        'Cancel Ride',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  // Cancel Related work are end here
 
   @override
   void dispose() {

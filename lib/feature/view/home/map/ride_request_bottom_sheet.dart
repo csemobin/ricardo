@@ -529,6 +529,7 @@ class _RideRequestBottomSheetState extends State<RideRequestBottomSheet> {
                           child: InkWell(
                             borderRadius: BorderRadius.circular(50),
                             onTap: () {
+                              mapOptController.isCurrentMarkerShow.value = false;
                               // Get all controllers
                               final rideController = Get.find<RideController>();
                               final googleSearchController =

@@ -17,6 +17,7 @@ import 'package:ricardo/services/api_urls.dart';
 class MapOPTController extends GetxController {
   // Controller are here
   final userController = Get.find<UserController>();
+  RxBool isCurrentMarkerShow = true.obs;
 
   @override
   void onInit() {
