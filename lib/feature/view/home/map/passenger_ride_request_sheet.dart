@@ -199,13 +199,22 @@ class PassengerRideRequestSheet extends StatelessWidget {
         const SizedBox(height: 18),
 
         // ── Accept Button ───────────────────────
-        AcceptRideButton(
-          onPressed: () {
-            mapOPTController.rideAcceptRide(
-              mapOPTController.rideDetailsData.value!.rideId.toString(),
+        Obx((){
+          if (mapOPTController.isRideAcceptStatus.value){
+            return Center(
+              child: CircularProgressIndicator(
+                color: AppColors.primaryColor,
+              ),
             );
-          },
-        ),
+          }
+          return AcceptRideButton(
+            onPressed: () {
+              mapOPTController.rideAcceptRide(
+                mapOPTController.rideDetailsData.value!.rideId.toString(),
+              );
+            },
+          );
+        }),
         const SizedBox(height: 80),
       ],
     );

@@ -18,6 +18,7 @@ class MapOPTController extends GetxController {
   // Controller are here
   final userController = Get.find<UserController>();
   RxBool isCurrentMarkerShow = true.obs;
+  RxBool showCancelReasonDialog = false.obs;
 
   @override
   void onInit() {
@@ -144,7 +145,10 @@ class MapOPTController extends GetxController {
   //***************************************************
   // ******* Book a Ride From the Driver  **************
   // ***************************************************
+  final isRideAcceptStatus = false.obs;
+
   Future<void> rideAcceptRide(String rideId) async {
+    isRideAcceptStatus.value = true;
     LatLng currentLatLun = await CustomLocationHelper.getCurrentLocation();
 
     final response =
@@ -158,7 +162,7 @@ class MapOPTController extends GetxController {
       DriverLocationService().listenResponse((data) {
         print(data);
       },);
-
+      isRideAcceptStatus.value = false;
       // SocketServices.socket?.emit('get-driver-location', {
       //   'rideId': rideId
       // });
@@ -170,6 +174,7 @@ class MapOPTController extends GetxController {
       //   print('📡 $event => $data');
       // });
     } else {
+      isRideAcceptStatus.value = false;
       Get.snackbar('Error', response.body['message']);
     }
   }
@@ -253,6 +258,25 @@ class MapOPTController extends GetxController {
       return false; // ✅ FIXED
     } finally {
       isAddedFavouriteRiderStatus.value = false; // ✅ stop loading
+    }
+  }
+
+  // Ride Status change are here
+  Future<void>rideStatusChange( String rideId, String status ) async {
+    try{
+      final response = await ApiClient.postData(ApiUrls.rideChangeRideStatus(rideId),
+          {
+            "status": status
+          });
+      if( response.statusCode == 200 || response.statusCode == 201 ){
+
+      }else{
+        Get.snackbar('error', response.body['message']);
+      }
+    }catch(e){
+      debugPrint(e.toString());
+    }finally{
+
     }
   }
 

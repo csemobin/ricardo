@@ -1,12 +1,8 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:ricardo/feature/models/socket/accept_ride_model.dart';
 import 'package:ricardo/feature/view/home/link_export_file.dart';
-import 'package:ricardo/widgets/custom_primary_button.dart';
 import 'package:ricardo/widgets/custom_text_field.dart';
-import 'package:ricardo/widgets/glass_background_widget.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class DraggableBottomSheet extends StatefulWidget {
   final AcceptRideModel? acceptRideModel;
