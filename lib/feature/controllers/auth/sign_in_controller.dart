@@ -6,6 +6,7 @@ import 'package:ricardo/feature/controllers/custom_bottom_nav_bar_controller.dar
 import 'package:ricardo/feature/controllers/history/history_controller.dart';
 import 'package:ricardo/feature/controllers/user_controller.dart';
 import 'package:ricardo/feature/controllers/wallet/recent_history.dart';
+import 'package:ricardo/feature/view/home/link_export_file.dart';
 import 'package:ricardo/routes/app_routes.dart';
 import 'package:ricardo/services/api_client.dart';
 import 'package:ricardo/services/api_urls.dart';
@@ -43,7 +44,9 @@ class SignInController extends GetxController {
 
     if (response.statusCode == 200 || response.statusCode == 201) {
       final accessToken = response.body['data']['accessToken'];
+      final fcmToken = await FirebaseNotificationService.getFCMToken();
       await PrefsHelper.setString(AppConstants.bearerToken, accessToken);
+      await PrefsHelper.setString(AppConstants.fcmToken, fcmToken);
 
       socketConnect();
 
