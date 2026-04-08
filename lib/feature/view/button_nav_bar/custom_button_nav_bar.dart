@@ -3,9 +3,12 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:ricardo/app/utils/app_colors.dart';
+import 'package:ricardo/app/utils/app_constants.dart';
 import 'package:ricardo/feature/controllers/custom_bottom_nav_bar_controller.dart';
 import 'package:ricardo/feature/controllers/home/google_search_location_controller.dart';
+import 'package:ricardo/feature/controllers/home/map/map_opt_controller.dart';
 import 'package:ricardo/feature/controllers/home/map/ride_controller.dart';
+import 'package:ricardo/feature/controllers/user_controller.dart';
 import 'package:ricardo/feature/view/history/history_screen.dart';
 import 'package:ricardo/feature/view/home/home_screen.dart';
 import 'package:ricardo/feature/view/profile/profile_screen.dart';
@@ -34,8 +37,23 @@ class CustomButtonNavBar extends GetView<CustomBottomNavBarController> {
     return Obx(() {
       // Get controllers
       final googleSLController = Get.find<GoogleSearchLocationController>();
+      final userCnt = Get.find<UserController>();
+      final mapOPTController = Get.find<MapOPTController>();
       final rideCnt = Get.find<RideController>();
-      final isRideAccepted = rideCnt.isRideAccepted.value;
+
+      final isRideAccepted = userCnt.userModel.value?.userProfile?.role ==
+          AppConstants.passenger &&
+          (rideCnt.acceptRideModel.value?.isRideAccepted == true ||
+              mapOPTController.rideStatusData.value?.acceptRide == true ||
+              mapOPTController.rideStatusData.value?.ongoingRide == true ||
+              mapOPTController.rideStatusData.value?.arrivingRide == true ||
+              mapOPTController.rideStatusData.value?.driverCancel == true ||
+              mapOPTController.rideStatusData.value?.passengerCancel ==
+                  true ||
+              mapOPTController.rideStatusData.value?.completeRide == true);
+
+
+      final isRideAcceptedRideCnt = rideCnt.isRideAccepted.value;
 
       // Determine if navigation bar should be visible
       bool showNavBar = true;
@@ -55,7 +73,7 @@ class CustomButtonNavBar extends GetView<CustomBottomNavBarController> {
         showNavBar = false;
       }
 
-      if (isRideAccepted) {
+      if (isRideAcceptedRideCnt || isRideAccepted) {
         showNavBar = false;
       }
 
