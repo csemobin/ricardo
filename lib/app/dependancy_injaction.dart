@@ -45,7 +45,7 @@ class DependencyInjection implements Bindings {
     Get.put(ResetPasswordController());
     Get.put(UserController());
     Get.put(CarRegistrationController());
-    Get.put(MapOPTController());
+    Get.lazyPut(()=>MapOPTController());
     Get.lazyPut(() => DriverProfileController());
     Get.lazyPut(() => ChangePasswordController());
     Get.lazyPut(() => ProfileUpdateController(),fenix: true);

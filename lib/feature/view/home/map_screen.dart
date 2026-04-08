@@ -5,6 +5,7 @@ import 'package:ricardo/feature/models/home/ride_status_model.dart'
     as rideModel;
 import 'package:ricardo/feature/models/socket/accept_ride_driver_model.dart';
 import 'package:ricardo/feature/models/socket/accept_ride_model.dart';
+import 'package:ricardo/feature/view/home/map/driver_location_service.dart';
 import 'link_export_file.dart';
 
 class MapScreen extends StatefulWidget {
@@ -57,82 +58,87 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
         _loadRoute();
       }
     });
-    // loadStatus();
+    loadStatus();
+    _setupSocketReconnection();
   }
-  // Future<void> loadStatus()async{
-  //   await _setupSocketReconnection();
-  // }
-  // Future<void> _setupSocketReconnection() async {
-  //   SocketServices.socket?.on('ride-status', (data) {
-  //     try {
-  //       Map<String, dynamic> jsonData;
-  //
-  //       if (data is List) {
-  //         jsonData = Map<String, dynamic>.from(data[0]);
-  //       } else if (data is String) {
-  //         jsonData = jsonDecode(data);
-  //       } else if (data is Map) {
-  //         jsonData = Map<String, dynamic>.from(data);
-  //       } else {
-  //         return;
-  //       }
-  //
-  //       final rideModel.RideStatusModel rideStatus =
-  //       rideModel.RideStatusModel.fromJson(jsonData);
-  //
-  //       // ✅ Store in controller so UI can react
-  //       mapOPTController.rideStatusData.value = rideStatus;
-  //
-  //       if (rideStatus.acceptRide == true) {
-  //         rideController.drivers.clear();
-  //         mapOPTController.isCurrentMarkerShow.value = true;
-  //         _loadAcceptedRideRoute();
-  //         debugPrint('🚗 ride-status: Driver Accepted');
-  //       } else if (rideStatus.ongoingRide == true) {
-  //         _loadAcceptedRideRoute();
-  //         debugPrint('🚗 ride-status: Driver arriving');
-  //       } else if (rideStatus.arrivingRide == true) {
-  //         debugPrint('🛣️ ride-status: Ride ongoing');
-  //       } else if (rideStatus.completeRide == true) {
-  //         // ✅ Ride done — clear all state and stop listening
-  //         debugPrint('🏁 ride-status: Ride complete');
-  //         rideController.isRideAccepted.value = false;
-  //         rideController.acceptRideModel.value = null;
-  //         mapOPTController.acceptedRideDriverDataStatus.value = false;
-  //         mapOPTController.acceptedRideDriverData.value = null;
-  //         mapOPTController.isPassengerRequest.value = false;
-  //         mapOPTController.rideStatusData.value = null;
-  //         mapOPTController.rideRequestReceivedAt.value = null;
-  //         PrefsHelper.setString('status', '');
-  //         PrefsHelper.setString('ride-accepted-data', '');
-  //         PrefsHelper.setString('driver-status', '');
-  //         PrefsHelper.setString('ride-accepted-driver-data', '');
-  //         SocketServices.socket
-  //             ?.off('ride-status'); // ✅ Stop listening after complete
-  //       } else if (rideStatus.driverCancel == true ||
-  //           rideStatus.passengerCancel == true) {
-  //         // ✅ Cancelled — clear all state and stop listening
-  //         debugPrint('❌ ride-status: Ride cancelled');
-  //         rideController.isRideAccepted.value = false;
-  //         rideController.acceptRideModel.value = null;
-  //         mapOPTController.acceptedRideDriverDataStatus.value = false;
-  //         mapOPTController.acceptedRideDriverData.value = null;
-  //         mapOPTController.isPassengerRequest.value = false;
-  //         mapOPTController.rideStatusData.value = null;
-  //         mapOPTController.rideRequestReceivedAt.value = null;
-  //         PrefsHelper.setString('status', '');
-  //         PrefsHelper.setString('ride-accepted-data', '');
-  //         PrefsHelper.setString('driver-status', '');
-  //         PrefsHelper.setString('ride-accepted-driver-data', '');
-  //         SocketServices.socket
-  //             ?.off('ride-status'); // ✅ Stop listening after cancel
-  //       }
-  //     } catch (e, stackTrace) {
-  //       print('ride-status ERROR: $e');
-  //       print('STACK: $stackTrace');
-  //     }
-  //   });
-  // }
+  Future<void> loadStatus()async{
+    final bool? data  = await userController.fetchActiveRideStatus();
+    if( data == true ){
+      await _setupSocketReconnection();
+    }
+  }
+  Future<void> _setupSocketReconnection() async {
+    SocketServices.socket?.on('ride-status', (data) {
+      try {
+        Map<String, dynamic> jsonData;
+
+        if (data is List) {
+          jsonData = Map<String, dynamic>.from(data[0]);
+        } else if (data is String) {
+          jsonData = jsonDecode(data);
+        } else if (data is Map) {
+          jsonData = Map<String, dynamic>.from(data);
+        } else {
+          return;
+        }
+
+        final rideModel.RideStatusModel rideStatus =
+        rideModel.RideStatusModel.fromJson(jsonData);
+
+        // ✅ Store in controller so UI can react
+        mapOPTController.rideStatusData.value = rideStatus;
+        if (rideStatus.acceptRide == true) {
+          rideController.drivers.clear();
+          mapOPTController.isCurrentMarkerShow.value = true;
+          _loadAcceptedRideRoute();
+          debugPrint('🚗 ride-status: Driver Accepted');
+        } else if (rideStatus.ongoingRide == true) {
+          _loadAcceptedRideRoute();
+          debugPrint('🚗 ride-status: Driver arriving');
+        } else if (rideStatus.arrivingRide == true) {
+          debugPrint('🛣️ ride-status: Ride ongoing');
+        } else if (rideStatus.completeRide == true) {
+          // ✅ Ride done — clear all state and stop listening
+          debugPrint('🏁 ride-status: Ride complete');
+          rideController.isRideAccepted.value = false;
+          rideController.acceptRideModel.value = null;
+          mapOPTController.acceptedRideDriverDataStatus.value = false;
+          mapOPTController.acceptedRideDriverData.value = null;
+          mapOPTController.isPassengerRequest.value = false;
+          mapOPTController.rideStatusData.value = null;
+          mapOPTController.rideRequestReceivedAt.value = null;
+          PrefsHelper.setString('status', '');
+          PrefsHelper.setString('ride-accepted-data', '');
+          PrefsHelper.setString('driver-status', '');
+          PrefsHelper.setString('ride-accepted-driver-data', '');
+          SocketServices.socket
+              ?.off('ride-status'); // ✅ Stop listening after complete
+        } else if (rideStatus.driverCancel == true ||
+            rideStatus.passengerCancel == true) {
+          // ✅ Cancelled — clear all state and stop listening
+          debugPrint('❌ ride-status: Ride cancelled');
+          rideController.isRideAccepted.value = false;
+          rideController.acceptRideModel.value = null;
+          mapOPTController.acceptedRideDriverDataStatus.value = false;
+          mapOPTController.acceptedRideDriverData.value = null;
+          mapOPTController.isPassengerRequest.value = false;
+          mapOPTController.rideStatusData.value = null;
+          mapOPTController.rideRequestReceivedAt.value = null;
+          PrefsHelper.setString('status', '');
+          PrefsHelper.setString('ride-accepted-data', '');
+          PrefsHelper.setString('driver-status', '');
+          PrefsHelper.setString('ride-accepted-driver-data', '');
+          SocketServices.socket
+              ?.off('ride-status'); // ✅ Stop listening after cancel
+        }
+      } catch (e, stackTrace) {
+        print('ride-status ERROR: $e');
+        print('STACK: $stackTrace');
+      }
+    });
+    final String? rideId = mapOPTController.rideStatusData.value?.ride?.id;
+    DriverLocationService().startEmitting(rideId!);
+  }
 
   /* Init State are end here */
   Future<void> _loadRoute() async {

@@ -71,5 +71,5 @@ class ApiUrls{
   static const String favoriteRider = '/favorite-rider';
   static const String ratingCreate = '/rating/create';
   static String rideChangeRideStatus( String rideId) => '/ride/change-ride-status?rideId=$rideId';
-  static const String getActiveRide = '/ride/active-ride';
+  static const String getActiveRide = '/ride/check-ride-status';
 }

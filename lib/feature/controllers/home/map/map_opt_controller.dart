@@ -16,7 +16,8 @@ import 'package:ricardo/services/api_urls.dart';
 
 class MapOPTController extends GetxController {
   // Controller are here
-  final userController = Get.find<UserController>();
+  UserController? _userController;
+  UserController get userController => _userController ??= Get.find<UserController>();
   RxBool isCurrentMarkerShow = true.obs;
   RxBool showCancelReasonDialog = false.obs;
 
