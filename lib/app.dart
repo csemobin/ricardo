@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:ricardo/app/dependancy_injaction.dart';
 import 'package:ricardo/feature/view/home/link_export_file.dart';
-import 'package:ricardo/routes/app_routes.dart';
 
 class RideSharingApplication extends StatelessWidget{
   const RideSharingApplication({super.key});

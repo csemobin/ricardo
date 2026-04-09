@@ -1,12 +1,8 @@
-import 'dart:convert';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:ricardo/app.dart';
 import 'package:ricardo/app/helpers/device_utils.dart';
-import 'package:ricardo/feature/controllers/user_controller.dart';
-import 'package:ricardo/feature/models/home/ride_status_model.dart';
 import 'package:ricardo/firebase_options.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:ricardo/services/get_fcm_tocken.dart';

@@ -63,6 +63,34 @@ class DirectionsService {
     return '${place.street}, ${place.subLocality}, ${place.locality}, ${place.country}';
   }
 
+  Future<Map<String, String>> getCurrentAddressParts() async {
+    Position position = await Geolocator.getCurrentPosition(
+      desiredAccuracy: LocationAccuracy.high,
+    );
+
+    List<Placemark> placemarks = await placemarkFromCoordinates(
+      position.latitude,
+      position.longitude,
+    );
+
+    Placemark place = placemarks[0];
+
+    String firstLine = [
+      place.street,
+      place.subLocality,
+    ].where((e) => e != null && e.trim().isNotEmpty).join(', ');
+
+    String secondLine = [
+      place.locality,
+      place.country,
+    ].where((e) => e != null && e.trim().isNotEmpty).join(', ');
+
+    return {
+      'firstLine': firstLine,
+      'secondLine': secondLine,
+    };
+  }
+
   static Future<String> calculateDistance(double? lng, double? lat) async {
     if (lat == null || lng == null) return 'N/A';
 
