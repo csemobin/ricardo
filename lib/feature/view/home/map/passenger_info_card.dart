@@ -70,7 +70,7 @@ class PassengerInfoCard extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      '(${((mapOPTController.rideStatusData.value?.ride?.destinationMeters ?? 0) * 0.000621371).toStringAsFixed(2)} Miles)',
+                      '(${((mapOPTController.rideStatusData.value?.ride?.destinationMeters ?? 0) * 0.000621371).toStringAsFixed(2)} KM)',
                     ),
                   ],
                 ),

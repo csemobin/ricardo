@@ -26,7 +26,7 @@ void main() async {
   final String token =
       await PrefsHelper.getString(AppConstants.bearerToken);
   final String fcmToken = await PrefsHelper.getString(AppConstants.fcmToken);
-  if (token.isNotEmpty) {
+  if ( token.isNotEmpty && fcmToken.isNotEmpty ) {
     SocketServices.socket
         ?.emit('user-connected', {"accessToken": token, "fcmToken": fcmToken});
   }

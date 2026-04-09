@@ -1,15 +1,15 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:ricardo/feature/models/socket/accept_ride_model.dart';
+import 'package:ricardo/feature/models/home/ride_status_model.dart';
 import 'package:ricardo/feature/view/home/link_export_file.dart';
 import 'package:ricardo/widgets/custom_text_field.dart';
 
 class DraggableBottomSheet extends StatefulWidget {
-  final AcceptRideModel? acceptRideModel;
+  final RideStatusModel? rideStatus;
   final MapOPTController? controller;
 
   const DraggableBottomSheet(
-      {super.key, this.acceptRideModel, this.controller});
+      {super.key, this.rideStatus, this.controller});
 
   @override
   State<DraggableBottomSheet> createState() => _DraggableBottomSheetState();
@@ -82,7 +82,7 @@ class _DraggableBottomSheetState extends State<DraggableBottomSheet> {
                               ),
                               SizedBox(width: 5.w),
                               Text(
-                                'Rider is on the way to pickup',
+                                 'Rider is on the way to pickup',
                                 style: TextStyle(
                                   fontSize: 14.sp,
                                   fontWeight: FontWeight.w600,
@@ -134,7 +134,7 @@ class _DraggableBottomSheetState extends State<DraggableBottomSheet> {
                               ClipRRect(
                                 borderRadius: BorderRadius.circular(50),
                                 child: Image.network(
-                                  '${ApiUrls.imageBaseUrl}${widget.acceptRideModel?.driver?.driverImage}',
+                                  '${ApiUrls.imageBaseUrl}${widget.rideStatus?.driver?.image?.filename}',
                                   height: 62.h,
                                   width: 62.w,
                                   fit: BoxFit.cover,
@@ -155,7 +155,7 @@ class _DraggableBottomSheetState extends State<DraggableBottomSheet> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    '${widget.acceptRideModel?.driver?.driverName}',
+                                    '${widget.rideStatus?.driver?.name}',
                                     style: TextStyle(
                                       fontFamily: FontFamily.poppins,
                                       fontSize: 16.sp,
@@ -166,13 +166,13 @@ class _DraggableBottomSheetState extends State<DraggableBottomSheet> {
 
                                   // ✅ Extract variables once instead of repeating null checks
                                   Builder(builder: (context) {
-                                    final totalRatings = widget.acceptRideModel
+                                    final totalRatings = widget.rideStatus
                                             ?.driver?.totalRatings ??
                                         0;
-                                    final ratingAverage = widget.acceptRideModel
-                                            ?.driver?.ratingAverage ??
+                                    final ratingAverage = widget.rideStatus
+                                            ?.driver?.averageRating ??
                                         0.0;
-                                    final totalRides = widget.acceptRideModel
+                                    final totalRides = widget.rideStatus
                                             ?.driver?.totalCompletedRides ??
                                         0;
 
@@ -224,7 +224,7 @@ class _DraggableBottomSheetState extends State<DraggableBottomSheet> {
                                           color: AppColors.greenColor),
                                       const SizedBox(width: 4),
                                       Text(
-                                        '${widget.acceptRideModel?.driver?.driverPhone}',
+                                        '${widget.rideStatus?.driver?.phone}',
                                         style: TextStyle(
                                           fontFamily: FontFamily.poppins,
                                           fontSize: 14.sp,
@@ -243,7 +243,7 @@ class _DraggableBottomSheetState extends State<DraggableBottomSheet> {
                           GestureDetector(
                             onTap: () {
                               launchUrl(Uri.parse(
-                                  "tel:${widget.acceptRideModel?.driver?.driverPhone}"));
+                                  "tel:${widget.rideStatus?.driver?.phone}"));
                             },
                             child: RepaintBoundary(
                               // ✅ isolates rendering
@@ -273,7 +273,7 @@ class _DraggableBottomSheetState extends State<DraggableBottomSheet> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                '${widget.acceptRideModel?.driverCar?.carName}',
+                                '${widget.rideStatus?.driverCar?.carName}',
                                 style: TextStyle(
                                   fontWeight: FontWeight.w500,
                                   fontFamily: FontFamily.poppins,
@@ -282,7 +282,7 @@ class _DraggableBottomSheetState extends State<DraggableBottomSheet> {
                                 ),
                               ),
                               Text(
-                                '${widget.acceptRideModel?.driverCar?.numberOfSeat} Seat',
+                                '${widget.rideStatus?.driverCar?.numberOfSeat} Seat',
                                 style: TextStyle(
                                   fontWeight: FontWeight.w500,
                                   fontFamily: FontFamily.poppins,
@@ -291,7 +291,7 @@ class _DraggableBottomSheetState extends State<DraggableBottomSheet> {
                                 ),
                               ),
                               Text(
-                                '${widget.acceptRideModel?.driverCar?.carPlateNumber}',
+                                '${widget.rideStatus?.driverCar?.carPlateNumber}',
                                 style: TextStyle(
                                   fontWeight: FontWeight.w500,
                                   fontFamily: FontFamily.poppins,
@@ -301,9 +301,9 @@ class _DraggableBottomSheetState extends State<DraggableBottomSheet> {
                               ),
                               FutureBuilder<String>(
                                 future: DirectionsService.calculateDistance(
-                                  widget.acceptRideModel?.driver?.driverLocation
+                                  widget.rideStatus?.driver?.location
                                       ?.coordinates?[0],
-                                  widget.acceptRideModel?.driver?.driverLocation
+                                  widget.rideStatus?.driver?.location
                                       ?.coordinates?[1],
                                 ),
                                 builder: (context, snapshot) {
@@ -343,9 +343,9 @@ class _DraggableBottomSheetState extends State<DraggableBottomSheet> {
                               AppRoutes.rateReviewDriver,
                               arguments: {
                                 'name':
-                                    widget.acceptRideModel?.driver?.driverName,
-                                'driverId' : widget.acceptRideModel?.driverCar?.driverId,
-                                'rideId' : widget.acceptRideModel?.ride?.id
+                                    widget.rideStatus?.driver?.name,
+                                'driverId' : widget.rideStatus?.driverCar?.driverId,
+                                'rideId' : widget.rideStatus?.ride?.id
                               },
                             );
                           }),
@@ -435,7 +435,7 @@ class _DraggableBottomSheetState extends State<DraggableBottomSheet> {
                                           title: 'Submit',
                                           onHandler: () async {
                                             String? rideId = widget
-                                                .acceptRideModel?.ride?.id;
+                                                .rideStatus?.ride?.id;
 
                                             if (rideId == null ||
                                                 rideId.isEmpty) {

@@ -1,18 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:geocoding/geocoding.dart';
-import 'package:geolocator/geolocator.dart';
-import 'package:get/get.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:ricardo/app/helpers/custom_location_helper.dart';
-import 'package:ricardo/feature/controllers/user_controller.dart';
 import 'package:ricardo/feature/models/home/ride_status_model.dart';
 import 'package:ricardo/feature/models/socket/accept_ride_driver_model.dart';
-import 'package:ricardo/feature/models/socket/ride_details_socket_model.dart';
+import 'package:ricardo/feature/models/socket/get_ride_driver_location.dart';
 import 'package:ricardo/feature/view/home/link_export_file.dart';
 import 'package:ricardo/feature/view/home/map/driver_location_service.dart';
 import 'package:ricardo/services/api_client.dart';
-import 'package:ricardo/services/api_urls.dart';
 
 class MapOPTController extends GetxController {
   // Controller are here
@@ -20,6 +15,7 @@ class MapOPTController extends GetxController {
   UserController get userController => _userController ??= Get.find<UserController>();
   RxBool isCurrentMarkerShow = true.obs;
   RxBool showCancelReasonDialog = false.obs;
+  final Rx<GetRideDriverLocation?> getRideDriverLocation = Rx<GetRideDriverLocation?>(null);
 
   @override
   void onInit() {
@@ -270,7 +266,8 @@ class MapOPTController extends GetxController {
             "status": status
           });
       if( response.statusCode == 200 || response.statusCode == 201 ){
-
+        print(response.body);
+          print('asdjfklajsdflkjasdl');
       }else{
         Get.snackbar('error', response.body['message']);
       }

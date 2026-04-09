@@ -37,11 +37,14 @@ class UserController extends GetxController {
   RideController? _rideController;
   RideController get rideController => _rideController ??= Get.find<RideController>();
 
+  RxString activeRideStatus = ''.obs;
   Future<bool?> fetchActiveRideStatus() async{
     try{
       final response = await ApiClient.getData(ApiUrls.getActiveRide);
       print(response.body);
       if( response.statusCode == 200 || response.statusCode == 201 ){
+        activeRideStatus.value = response.body['data']['data']!['status'];
+        print('=====================>>>>>> $activeRideStatus');
         return true;
       }else{
         return false;

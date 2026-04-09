@@ -139,10 +139,10 @@ class SignInController extends GetxController {
 
   void socketConnect() async{
     await SocketServices.init();
-    final String? token =
-        await PrefsHelper.getString(AppConstants.bearerToken) ?? '';
+    final String? token = await PrefsHelper.getString(AppConstants.bearerToken) ?? '';
     final String? fcmToken = await PrefsHelper.getString(AppConstants.fcmToken);
-    if (token != null && token.isNotEmpty) {
+
+    if (token != null && fcmToken != null ) {
       SocketServices.socket
           ?.emit('user-connected', {"accessToken": token, "fcmToken": fcmToken});
     }

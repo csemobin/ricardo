@@ -29,6 +29,7 @@ class AppColors {
 
   static const Color greyColor = Color(0XffC1C2C2);
   static const Color greyColor200 = Color(0xFFEEEEEE);
+  static const Color timeAndDurationColor = Color(0xFF171717);
   static const Color greenColor = Color(0xff007635);
   static Color greyColor500 = Colors.grey.shade500;
   static Color greyColor300 = Colors.grey.shade300;
