@@ -10,6 +10,7 @@ class GlassBackgroundWidget extends StatelessWidget {
   final double? borderLeftRightRadius;
   final Color? backgroundColor;
   final Color? borderColor;
+  final double? blurNumber;
 
   const GlassBackgroundWidget({
     super.key,
@@ -19,6 +20,7 @@ class GlassBackgroundWidget extends StatelessWidget {
     this.backgroundColor,
     this.borderColor,
     this.borderLeftRightRadius,
+    this.blurNumber,
   });
 
   @override
@@ -32,8 +34,8 @@ class GlassBackgroundWidget extends StatelessWidget {
       ),
       child: BackdropFilter(
         filter: ImageFilter.blur(
-          sigmaX: 16,
-          sigmaY: 16,
+          sigmaX: blurNumber ?? 16,
+          sigmaY: blurNumber ?? 16,
         ),
         child: Container(
           width: double.infinity,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:ricardo/app/utils/app_colors.dart';
 
 class CustomContainer extends StatelessWidget {
   const CustomContainer({
@@ -131,7 +132,7 @@ class CustomContainer extends StatelessWidget {
               (elevation
                   ? [
                       BoxShadow(
-                        color: elevationColor ?? Colors.black.withOpacity(0.06),
+                        color: elevationColor ?? AppColors.darkColor.withValues(alpha: 0.06),
                         blurRadius: 20,
                         spreadRadius: 6,
                       ),

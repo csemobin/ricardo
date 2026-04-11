@@ -3,7 +3,10 @@ import 'package:get/get.dart';
 import 'package:ricardo/app/helpers/prefs_helper.dart';
 import 'package:ricardo/app/utils/app_constants.dart';
 import 'package:ricardo/feature/controllers/custom_bottom_nav_bar_controller.dart';
+import 'package:ricardo/feature/controllers/history/history_controller.dart';
 import 'package:ricardo/feature/controllers/user_controller.dart';
+import 'package:ricardo/feature/controllers/wallet/recent_history.dart';
+import 'package:ricardo/feature/view/home/link_export_file.dart';
 import 'package:ricardo/routes/app_routes.dart';
 import 'package:ricardo/services/api_client.dart';
 import 'package:ricardo/services/api_urls.dart';
@@ -41,7 +44,9 @@ class SignInController extends GetxController {
 
     if (response.statusCode == 200 || response.statusCode == 201) {
       final accessToken = response.body['data']['accessToken'];
+      final fcmToken = await FirebaseNotificationService.getFCMToken();
       await PrefsHelper.setString(AppConstants.bearerToken, accessToken);
+      await PrefsHelper.setString(AppConstants.fcmToken, fcmToken);
 
       socketConnect();
 
@@ -113,6 +118,13 @@ class SignInController extends GetxController {
       SocketServices.socket?.dispose();
       PrefsHelper.remove(AppConstants.bearerToken);
       PrefsHelper.remove(AppConstants.fcmToken);
+
+      final recentCnt = Get.find<RecentHistoryController>();
+      recentCnt.recentHistoryList.value = [];
+
+      final historyCnt = Get.find<HistoryController>();
+      historyCnt.historyDatas.value = [];
+
       Get.offAllNamed(AppRoutes.signInScreen);
     } else {
       Get.snackbar('Error', response.body['data']['message']);
@@ -127,10 +139,10 @@ class SignInController extends GetxController {
 
   void socketConnect() async{
     await SocketServices.init();
-    final String? token =
-        await PrefsHelper.getString(AppConstants.bearerToken) ?? '';
+    final String? token = await PrefsHelper.getString(AppConstants.bearerToken) ?? '';
     final String? fcmToken = await PrefsHelper.getString(AppConstants.fcmToken);
-    if (token != null && token.isNotEmpty) {
+
+    if (token != null && fcmToken != null ) {
       SocketServices.socket
           ?.emit('user-connected', {"accessToken": token, "fcmToken": fcmToken});
     }

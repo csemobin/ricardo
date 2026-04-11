@@ -1,5 +1,10 @@
+import 'dart:convert';
+
+import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
+import 'package:ricardo/feature/models/home/ride_status_model.dart';
 import 'package:ricardo/feature/models/user_model.dart';
+import 'package:ricardo/feature/view/home/link_export_file.dart';
 import 'package:ricardo/services/api_client.dart';
 import 'package:ricardo/services/api_urls.dart';
 
@@ -21,4 +26,34 @@ class UserController extends GetxController {
     isUserDataLoadingStatus.value = false;
     update();
   }
+  /* ****************************
+  * ****** RIDE STATUS RELATED *
+  * ****************************/
+  // Fetch Ride Status related work are here
+  final RxBool isLoadingActiveRideStatus = false.obs;
+  MapOPTController? _mapOPTController;
+  MapOPTController get mapOPTController => _mapOPTController ??= Get.find<MapOPTController>();
+  
+  RideController? _rideController;
+  RideController get rideController => _rideController ??= Get.find<RideController>();
+
+  RxString activeRideStatus = ''.obs;
+  Future<bool?> fetchActiveRideStatus() async{
+    try{
+      final response = await ApiClient.getData(ApiUrls.getActiveRide);
+      print(response.body);
+      if( response.statusCode == 200 || response.statusCode == 201 ){
+        activeRideStatus.value = response.body['data']['data']!['status'];
+        print('=====================>>>>>> $activeRideStatus');
+        return true;
+      }else{
+        return false;
+      }
+    }catch(e){
+      debugPrint(e.toString());
+    }finally{
+
+    }
+  }
+
 }

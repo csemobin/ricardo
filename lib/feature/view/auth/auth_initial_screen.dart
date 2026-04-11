@@ -20,9 +20,13 @@ class AuthInitialScreen extends StatelessWidget {
       paddingSide: 0,
       body: Column(
         children: [
+          SizedBox(height: 60.h,),
           Center(
-            child: LogoWidget(),
+            child: LogoWidget(
+              height: 80,
+            ),
           ),
+          SizedBox(height: 30.h,),
           Lottie.asset(Assets.lotties.carpool, fit: BoxFit.cover),
           CustomHeadingText(
             firstText: 'WELCOME TO ',

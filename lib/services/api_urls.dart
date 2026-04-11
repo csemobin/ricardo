@@ -6,9 +6,9 @@ class ApiUrls{
   // static const String imageBaseUrl = "https://api.gogodriver.us/images/";
   // static const String socketUrl = "https://api.gogodriver.us";
 
-  static const String baseUrl = "https://treasure-plasma-reaches-talented.trycloudflare.com/api/v1";
-  static const String imageBaseUrl = "https://treasure-plasma-reaches-talented.trycloudflare.com/images/";
-  static const String socketUrl = "https://treasure-plasma-reaches-talented.trycloudflare.com";
+  static const String baseUrl = "https://silence-anticipated-trailer-continental.trycloudflare.com/api/v1";
+  static const String imageBaseUrl = "https://silence-anticipated-trailer-continental.trycloudflare.com/images/";
+  static const String socketUrl = "https://silence-anticipated-trailer-continental.trycloudflare.com";
 
   // User Registration Related work
   static const String registration = '/user/register';
@@ -67,4 +67,9 @@ class ApiUrls{
 
   static String driverSwitchAvailabilityStatus = '/driver/switch-availability-status';
   static String rideAcceptRideByRideId( String rideId ) => '/ride/accept-ride?rideId=$rideId';
+  static const String sendTips = '/payment/send-tips';
+  static const String favoriteRider = '/favorite-rider';
+  static const String ratingCreate = '/rating/create';
+  static String rideChangeRideStatus( String rideId) => '/ride/change-ride-status?rideId=$rideId';
+  static const String getActiveRide = '/ride/check-ride-status';
 }

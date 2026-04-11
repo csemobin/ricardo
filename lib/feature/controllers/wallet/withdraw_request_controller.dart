@@ -67,7 +67,7 @@ class WithdrawRequestController extends GetxController {
         selectedCard.value = null;
 
         final cnt = Get.find<RecentHistoryController>();
-        cnt.fetchRecentHistory(isLoadMore: false);
+        cnt.fetchIfNeeded();
 
         final cntTwo = Get.find<CustomBottomNavBarController>();
         cntTwo.selectedIndex(1);

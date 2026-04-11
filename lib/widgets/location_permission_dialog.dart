@@ -22,6 +22,8 @@ class LocationPermissionDialog extends StatelessWidget {
         borderRadius: BorderRadius.circular(20.r),
       ),
       child: GlassBackgroundWidget(
+        borderRadius: 24,
+        borderLeftRightRadius: 24,
         child: Padding(
         padding: EdgeInsets.all(24.r),
         child: Column(
@@ -75,12 +77,15 @@ class LocationPermissionDialog extends StatelessWidget {
                   child: OutlinedButton(
                     onPressed: () => Get.back(),
                     style: OutlinedButton.styleFrom(
+                      backgroundColor: AppColors.errorColor,
                       padding: EdgeInsets.symmetric(vertical: 12.h),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12.r),
                       ),
                     ),
-                    child: Text('Cancel'),
+                    child: Text('Cancel',style: TextStyle(
+                      color: AppColors.whiteColor,
+                    ),),
                   ),
                 ),
                 SizedBox(width: 12.w),
@@ -89,14 +94,16 @@ class LocationPermissionDialog extends StatelessWidget {
                     onPressed: _handleAction,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.greenColor,
-                      padding: EdgeInsets.symmetric(vertical: 12.h),
+                      padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 8.w),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12.r),
                       ),
                     ),
                     child: Text(
                       _getButtonText(),
-                      style: TextStyle(color: Colors.white),
+                      style: TextStyle(color: Colors.white, fontSize: 12.sp),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ),
                 ),

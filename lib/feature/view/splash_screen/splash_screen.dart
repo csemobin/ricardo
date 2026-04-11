@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:ricardo/app/helpers/prefs_helper.dart';
 import 'package:ricardo/app/utils/app_constants.dart';
@@ -59,15 +60,12 @@ class _SplashScreenState extends State<SplashScreen>
       if( accessToken.isEmpty ){
         await Get.offAll(
               () => const OnBoardScreen(),
-          // () =>  CustomButtonNavBar(),
           transition: Transition.fade,
           duration: _transitionDuration,
           curve: Curves.easeInOut,
         );
       }
       if( accessToken.isNotEmpty ){
-        // await SocketServices().init();
-        //Todo: socket
         final UserController userController = Get.find<UserController>();
         await userController.fetchUser();
         final UserModel? user = userController.userModel.value;
@@ -86,16 +84,6 @@ class _SplashScreenState extends State<SplashScreen>
           Get.offAllNamed(AppRoutes.uploadRequirementScreen);
           return;
         }
-        // SocketServices.socket?.on('connect', (_) async{
-        //
-        //   var  token = await PrefsHelper.getString(AppConstants.bearerToken);
-        //    var fcmToken = await PrefsHelper.getString(AppConstants.fcmToken);
-        //
-        //   SocketServices.socket?.emit('user-connected', {
-        //     "accessToken" : token ,
-        //     "fcmToken" : fcmToken
-        //   });
-        // });
         Get.offAllNamed(AppRoutes.customBottomNavBar);
       }
 
@@ -119,8 +107,8 @@ class _SplashScreenState extends State<SplashScreen>
             ),
           ),
           LogoWidget(
-            width: 285,
-            height: 285,
+            width: 100.w,
+            height: 100.h,
           )
         ],
       ),
@@ -133,36 +121,3 @@ class _SplashScreenState extends State<SplashScreen>
     super.dispose();
   }
 }
-//
-//
-// export const connectSocket = ({ accessToken, fcmToken }) => {
-//   socket = io(BASE_URL, {
-//     transports: ["websocket"],
-//   });
-//
-// socket.on("connect", () => {
-// socket.emit("user-connected", {
-// accessToken,
-// fcmToken,
-// });
-// });
-//
-// socket.on("notification", (data) => {
-// notificationApi.util.invalidateTags(["notification", "notificationCount"]);
-// console.log("📢 In-app notification:", data);
-// });
-//
-// return socket;
-// };
-
-/*
-* if (!data?.data?.userProfile) return;
-
-      const fcmToken = await requestFcmToken();
-
-      connectSocket({
-        accessToken: localStorage.getItem("accessToken"),
-        fcmToken: fcmToken || "",
-      });
-*
-* */

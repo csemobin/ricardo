@@ -10,6 +10,7 @@ class AppColors {
   static const Color secondaryHeadingTextColor = Color(0xff007635);
   static const Color richTextColor = Color(0Xff787878);
   static const Color labelTextColor = Color(0Xff5E5E5E);
+  static const Color labelTextPrimaryColor = Color(0xff1E1E1E);
   static const Color navBarBackgroundColor = Color(0xffEBEBEB);
   static const Color activeIconBackgroundColor = Color(0xffEBEBEB);
   static const Color  activeIconColor = Color(0xff007635);
@@ -27,6 +28,8 @@ class AppColors {
   static const Color locationBgColor = Color(0XffEEF2FC);
 
   static const Color greyColor = Color(0XffC1C2C2);
+  static const Color greyColor200 = Color(0xFFEEEEEE);
+  static const Color timeAndDurationColor = Color(0xFF171717);
   static const Color greenColor = Color(0xff007635);
   static Color greyColor500 = Colors.grey.shade500;
   static Color greyColor300 = Colors.grey.shade300;

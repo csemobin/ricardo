@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -6,7 +5,6 @@ import 'package:ricardo/gen/fonts.gen.dart';
 import '../app/utils/app_colors.dart';
 import '../app/utils/app_constants.dart';
 import '../widgets/widgets.dart';
-
 
 class CustomTextField extends StatefulWidget {
   final TextEditingController controller;
@@ -41,40 +39,46 @@ class CustomTextField extends StatefulWidget {
   final TextInputAction? textInputAction;
   final List<TextInputFormatter>? inputFormatter;
   final int? minLines;
+  final double? fontSize;
+  final FontWeight? fontWeight;
 
-  const CustomTextField(
-      {super.key,
-      this.contentPaddingHorizontal,
-      this.contentPaddingVertical,
-      this.hintText,
-      this.prefixIcon,
-      this.suffixIcon,
-      this.validator,
-      this.hintextColor,
-      this.borderColor,
-      this.isEmail = false,
-      required this.controller,
-      this.keyboardType = TextInputType.text,
-      this.isObscureText = false,
-      this.obscure = '*',
-      this.filColor,
-      this.hintextSize,
-      this.labelText,
-      this.isPassword = false,
-      this.readOnly = false,
-      this.borderRadio,
-      this.onTap,
-      this.onChanged,
-      this.cursorColor,
-      this.maxLength,
-      this.enabled,
-      this.focusNode,
-      this.autofocus = false,
-      this.isDatePicker = false,
-      this.fontFamily,
-      this.textInputAction,
-      this.inputFormatter,
-      this.minLines, this.maxLines});
+  const CustomTextField({
+    super.key,
+    this.contentPaddingHorizontal,
+    this.contentPaddingVertical,
+    this.hintText,
+    this.prefixIcon,
+    this.suffixIcon,
+    this.validator,
+    this.hintextColor,
+    this.borderColor,
+    this.isEmail = false,
+    required this.controller,
+    this.keyboardType = TextInputType.text,
+    this.isObscureText = false,
+    this.obscure = '*',
+    this.filColor,
+    this.hintextSize,
+    this.labelText,
+    this.isPassword = false,
+    this.readOnly = false,
+    this.borderRadio,
+    this.onTap,
+    this.onChanged,
+    this.cursorColor,
+    this.maxLength,
+    this.enabled,
+    this.focusNode,
+    this.autofocus = false,
+    this.isDatePicker = false,
+    this.fontFamily,
+    this.textInputAction,
+    this.inputFormatter,
+    this.minLines,
+    this.maxLines,
+    this.fontSize,
+    this.fontWeight,
+  });
 
   @override
   State<CustomTextField> createState() => _CustomTextFieldState();
@@ -89,11 +93,9 @@ class _CustomTextFieldState extends State<CustomTextField> {
     });
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Column(
-
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         if (widget.labelText != null)
@@ -101,9 +103,9 @@ class _CustomTextFieldState extends State<CustomTextField> {
             text: widget.labelText ?? '',
             fontName: FontFamily.poppins,
             bottom: 4.h,
-            color: AppColors.labelTextColor,
-            fontSize: 12.h,
-            fontWeight: FontWeight.w500,
+            color: AppColors.labelTextPrimaryColor,
+            fontSize: widget.fontSize ?? 12.h,
+            fontWeight: FontWeight.w600,
           ),
         SizedBox(
           height: 4.h,
@@ -115,10 +117,10 @@ class _CustomTextFieldState extends State<CustomTextField> {
           onChanged: widget.onChanged,
           onTap: () {
             if (widget.isDatePicker) {
-             showDatePicker(context: context, 
-                 firstDate: DateTime.utc(1950),
-                 lastDate: DateTime.now()
-             );
+              showDatePicker(
+                  context: context,
+                  firstDate: DateTime.utc(1950),
+                  lastDate: DateTime.now());
             } else {
               widget.onTap?.call();
             }
@@ -132,8 +134,6 @@ class _CustomTextFieldState extends State<CustomTextField> {
           autovalidateMode: AutovalidateMode.onUserInteraction,
           minLines: widget.isPassword ? 1 : (widget.minLines ?? 1),
           maxLines: widget.isPassword ? 1 : (widget.maxLines ?? 8),
-
-
           validator: widget.validator ??
               (value) {
                 if (widget.isEmail == false) {
@@ -156,33 +156,34 @@ class _CustomTextFieldState extends State<CustomTextField> {
                 }
                 return null;
               },
-
           cursorColor: widget.cursorColor ?? AppColors.appGreyColor,
           obscureText: widget.isPassword ? obscureText : false,
           style: TextStyle(
-              color: widget.hintextColor ?? AppColors.appGreyColor,
-              fontSize: widget.hintextSize ?? 12.h,
-              fontWeight: FontWeight.w400,
-              fontFamily: widget.fontFamily,
+            color: widget.hintextColor ?? AppColors.labelTextColor,
+            fontSize: widget.hintextSize ?? 12.h,
+            fontWeight: FontWeight.w400,
+            fontFamily: widget.fontFamily,
           ),
           decoration: InputDecoration(
-
               contentPadding: EdgeInsets.symmetric(
-                  horizontal: widget.contentPaddingHorizontal ?? 20.w,
-                  vertical: widget.contentPaddingVertical ?? 12.h,
+                horizontal: widget.contentPaddingHorizontal ?? 20.w,
+                vertical: widget.contentPaddingVertical ?? 12.h,
               ),
               fillColor: widget.filColor ?? AppColors.whiteColor,
               filled: true,
-              prefixIcon: widget.prefixIcon != null ? Padding(
-                padding:  EdgeInsets.symmetric(horizontal: 16.w),
-                child: widget.prefixIcon,
-              ) : null,
+              prefixIcon: widget.prefixIcon != null
+                  ? Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 16.w),
+                      child: widget.prefixIcon,
+                    )
+                  : null,
               suffixIcon: widget.isPassword
                   ? GestureDetector(
                       onTap: toggle,
-                      child: _suffixIcon(obscureText
-                          ? Icons.visibility_off_outlined
-                          : Icons.visibility_outlined,
+                      child: _suffixIcon(
+                        obscureText
+                            ? Icons.visibility_off_outlined
+                            : Icons.visibility_outlined,
                       ),
                     )
                   : widget.suffixIcon,
@@ -192,15 +193,16 @@ class _CustomTextFieldState extends State<CustomTextField> {
               hintStyle: TextStyle(
                   color: widget.hintextColor ?? AppColors.grayShade100,
                   fontSize: widget.hintextSize ?? 12.h,
-                  fontWeight: FontWeight.w400
-              ),
+                  fontWeight: FontWeight.w400),
               focusedBorder: focusedBorder(),
               enabledBorder: enabledBorder(),
               errorBorder: errorBorder(),
               border: focusedBorder(),
               focusedErrorBorder: errorBorder(),
-              errorStyle:
-                  TextStyle(fontSize: 12.h, fontWeight: FontWeight.w400)),
+              errorStyle: TextStyle(
+                  fontSize: 12.h,
+                  fontWeight: FontWeight.w400,
+                  fontFamily: FontFamily.poppins)),
         ),
         SizedBox(height: 8.h),
       ],
@@ -232,8 +234,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
   OutlineInputBorder errorBorder() {
     return OutlineInputBorder(
       borderRadius: BorderRadius.circular(widget.borderRadio?.r ?? 8.r),
-      borderSide:
-          BorderSide(color: widget.borderColor ?? Colors.red, width: 1),
+      borderSide: BorderSide(color: widget.borderColor ?? Colors.red, width: 1),
     );
   }
 }

@@ -27,13 +27,14 @@ class SignUpScreen extends StatelessWidget {
           key: _globalFormKey,
           child: Column(
             children: [
-              SizedBox(height: 25.h),
+              SizedBox(height: 20.h,),
               Center(
                 child: LogoWidget(
-                  width: 200.w,
-                  height: 100.h,
+                  width: 80.w,
+                  height: 80.h,
                 ),
               ),
+              SizedBox(height: 20.h,),
               Center(
                 child: CustomHeadingText(
                   firstText: 'Create An',

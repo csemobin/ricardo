@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:ricardo/app/utils/app_colors.dart';
 import 'package:ricardo/app/utils/app_custom_design.dart';
@@ -68,7 +69,7 @@ class _PaymentMethodsSelectionScreenState
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Image.asset(Assets.images.paymentMethodIcon.path),
+                    SvgPicture.asset(Assets.images.paymentInfoIcon),
                     SizedBox(
                       width: 20.w,
                     ),
@@ -123,8 +124,8 @@ class _PaymentMethodsSelectionScreenState
                               borderRadius: BorderRadius.circular(4.r)),
                           child: Row(
                             children: [
-                              Image.asset(
-                                Assets.images.visa.path,
+                              SvgPicture.asset(
+                                Assets.images.visaIcon,
                                 fit: BoxFit.contain,
                               ),
                               SizedBox(
@@ -160,7 +161,7 @@ class _PaymentMethodsSelectionScreenState
                         width: 10.w,
                       ),
                       InkWell(
-                        child: Image.asset(Assets.images.removeBusket.path),
+                        child: SvgPicture.asset(Assets.images.dusbinIcon),
                         onTap: () =>
                             showPopUp(bankInfo!.sId.toString(), context),
                       )
@@ -203,7 +204,7 @@ class _PaymentMethodsSelectionScreenState
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Padding(padding: EdgeInsets.only(top: 32.h)),
-                    Image.asset(Assets.images.glassmorphismLogo.path),
+                    SvgPicture.asset(Assets.images.glassmorphismLogo),
                     SizedBox(
                       height: 30.h,
                     ),

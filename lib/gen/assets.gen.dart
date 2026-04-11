@@ -12,87 +12,14 @@ import 'package:flutter/widgets.dart';
 class $AssetsFontsGen {
   const $AssetsFontsGen();
 
-  /// File path: assets/fonts/Poppins-Black.ttf
-  String get poppinsBlack => 'assets/fonts/Poppins-Black.ttf';
-
-  /// File path: assets/fonts/Poppins-BlackItalic.ttf
-  String get poppinsBlackItalic => 'assets/fonts/Poppins-BlackItalic.ttf';
-
-  /// File path: assets/fonts/Poppins-Bold.ttf
-  String get poppinsBold => 'assets/fonts/Poppins-Bold.ttf';
-
-  /// File path: assets/fonts/Poppins-BoldItalic.ttf
-  String get poppinsBoldItalic => 'assets/fonts/Poppins-BoldItalic.ttf';
-
-  /// File path: assets/fonts/Poppins-ExtraBold.ttf
-  String get poppinsExtraBold => 'assets/fonts/Poppins-ExtraBold.ttf';
-
-  /// File path: assets/fonts/Poppins-ExtraBoldItalic.ttf
-  String get poppinsExtraBoldItalic =>
-      'assets/fonts/Poppins-ExtraBoldItalic.ttf';
-
-  /// File path: assets/fonts/Poppins-ExtraLight.ttf
-  String get poppinsExtraLight => 'assets/fonts/Poppins-ExtraLight.ttf';
-
-  /// File path: assets/fonts/Poppins-ExtraLightItalic.ttf
-  String get poppinsExtraLightItalic =>
-      'assets/fonts/Poppins-ExtraLightItalic.ttf';
-
-  /// File path: assets/fonts/Poppins-Italic.ttf
-  String get poppinsItalic => 'assets/fonts/Poppins-Italic.ttf';
-
-  /// File path: assets/fonts/Poppins-Light.ttf
-  String get poppinsLight => 'assets/fonts/Poppins-Light.ttf';
-
-  /// File path: assets/fonts/Poppins-LightItalic.ttf
-  String get poppinsLightItalic => 'assets/fonts/Poppins-LightItalic.ttf';
-
-  /// File path: assets/fonts/Poppins-Medium.ttf
-  String get poppinsMedium => 'assets/fonts/Poppins-Medium.ttf';
-
-  /// File path: assets/fonts/Poppins-MediumItalic.ttf
-  String get poppinsMediumItalic => 'assets/fonts/Poppins-MediumItalic.ttf';
+  /// File path: assets/fonts/Inter_24pt-Regular.ttf
+  String get inter24ptRegular => 'assets/fonts/Inter_24pt-Regular.ttf';
 
   /// File path: assets/fonts/Poppins-Regular.ttf
   String get poppinsRegular => 'assets/fonts/Poppins-Regular.ttf';
 
-  /// File path: assets/fonts/Poppins-SemiBold.ttf
-  String get poppinsSemiBold => 'assets/fonts/Poppins-SemiBold.ttf';
-
-  /// File path: assets/fonts/Poppins-SemiBoldItalic.ttf
-  String get poppinsSemiBoldItalic => 'assets/fonts/Poppins-SemiBoldItalic.ttf';
-
-  /// File path: assets/fonts/Poppins-Thin.ttf
-  String get poppinsThin => 'assets/fonts/Poppins-Thin.ttf';
-
-  /// File path: assets/fonts/Poppins-ThinItalic.ttf
-  String get poppinsThinItalic => 'assets/fonts/Poppins-ThinItalic.ttf';
-
-  /// File path: assets/fonts/inter_regular.ttf
-  String get interRegular => 'assets/fonts/inter_regular.ttf';
-
   /// List of all assets
-  List<String> get values => [
-    poppinsBlack,
-    poppinsBlackItalic,
-    poppinsBold,
-    poppinsBoldItalic,
-    poppinsExtraBold,
-    poppinsExtraBoldItalic,
-    poppinsExtraLight,
-    poppinsExtraLightItalic,
-    poppinsItalic,
-    poppinsLight,
-    poppinsLightItalic,
-    poppinsMedium,
-    poppinsMediumItalic,
-    poppinsRegular,
-    poppinsSemiBold,
-    poppinsSemiBoldItalic,
-    poppinsThin,
-    poppinsThinItalic,
-    interRegular,
-  ];
+  List<String> get values => [inter24ptRegular, poppinsRegular];
 }
 
 class $AssetsIconsGen {
@@ -127,37 +54,42 @@ class $AssetsIconsGen {
 class $AssetsImagesGen {
   const $AssetsImagesGen();
 
+  /// File path: assets/images/Location.svg
+  String get location => 'assets/images/Location.svg';
+
   /// File path: assets/images/Vector.png
   AssetGenImage get vector => const AssetGenImage('assets/images/Vector.png');
 
-  /// File path: assets/images/active-history.png
-  AssetGenImage get activeHistory =>
-      const AssetGenImage('assets/images/active-history.png');
+  /// File path: assets/images/active-history.svg
+  String get activeHistory => 'assets/images/active-history.svg';
 
-  /// File path: assets/images/active-home.png
-  AssetGenImage get activeHome =>
-      const AssetGenImage('assets/images/active-home.png');
+  /// File path: assets/images/active-home.svg
+  String get activeHome => 'assets/images/active-home.svg';
 
-  /// File path: assets/images/active-profile.png
-  AssetGenImage get activeProfile =>
-      const AssetGenImage('assets/images/active-profile.png');
+  /// File path: assets/images/active-profile.svg
+  String get activeProfile => 'assets/images/active-profile.svg';
 
-  /// File path: assets/images/active-wallet.png
-  AssetGenImage get activeWallet =>
-      const AssetGenImage('assets/images/active-wallet.png');
+  /// File path: assets/images/active-wallet.svg
+  String get activeWallet => 'assets/images/active-wallet.svg';
 
   /// File path: assets/images/amico.png
   AssetGenImage get amico => const AssetGenImage('assets/images/amico.png');
 
-  /// File path: assets/images/applogo.png
-  AssetGenImage get applogo => const AssetGenImage('assets/images/applogo.png');
+  /// File path: assets/images/applogo.svg
+  String get applogo => 'assets/images/applogo.svg';
 
-  /// File path: assets/images/arrow_drop_down.png
-  AssetGenImage get arrowDropDown =>
-      const AssetGenImage('assets/images/arrow_drop_down.png');
+  /// File path: assets/images/arrow-drop-down.svg
+  String get arrowDropDown => 'assets/images/arrow-drop-down.svg';
 
-  /// File path: assets/images/bell.png
-  AssetGenImage get bell => const AssetGenImage('assets/images/bell.png');
+  /// File path: assets/images/balance.svg
+  String get balance => 'assets/images/balance.svg';
+
+  /// File path: assets/images/balence-icon.png
+  AssetGenImage get balenceIcon =>
+      const AssetGenImage('assets/images/balence-icon.png');
+
+  /// File path: assets/images/bell.svg
+  String get bell => 'assets/images/bell.svg';
 
   /// File path: assets/images/car_icon.png
   AssetGenImage get carIcon =>
@@ -182,20 +114,22 @@ class $AssetsImagesGen {
   AssetGenImage get defaultImage =>
       const AssetGenImage('assets/images/default_image.jpg');
 
-  /// File path: assets/images/direct-right.png
-  AssetGenImage get directRight =>
-      const AssetGenImage('assets/images/direct-right.png');
+  /// File path: assets/images/direct-right.svg
+  String get directRight => 'assets/images/direct-right.svg';
 
   /// File path: assets/images/document_icon.png
   AssetGenImage get documentIcon =>
       const AssetGenImage('assets/images/document_icon.png');
 
-  /// File path: assets/images/driver.png
-  AssetGenImage get driver => const AssetGenImage('assets/images/driver.png');
+  /// File path: assets/images/driver.svg
+  String get driver => 'assets/images/driver.svg';
 
-  /// File path: assets/images/edit-profile-profile-screen.png
-  AssetGenImage get editProfileProfileScreen =>
-      const AssetGenImage('assets/images/edit-profile-profile-screen.png');
+  /// File path: assets/images/dusbin-icon.svg
+  String get dusbinIcon => 'assets/images/dusbin-icon.svg';
+
+  /// File path: assets/images/edit-profile-profile-screen.svg
+  String get editProfileProfileScreen =>
+      'assets/images/edit-profile-profile-screen.svg';
 
   /// File path: assets/images/edit_pencil.png
   AssetGenImage get editPencil =>
@@ -217,21 +151,18 @@ class $AssetsImagesGen {
   AssetGenImage get favoritesProfileImage =>
       const AssetGenImage('assets/images/favorites_profile_image.jpg');
 
-  /// File path: assets/images/glassmorphism_logo.png
-  AssetGenImage get glassmorphismLogo =>
-      const AssetGenImage('assets/images/glassmorphism_logo.png');
+  /// File path: assets/images/glassmorphism_logo.svg
+  String get glassmorphismLogo => 'assets/images/glassmorphism_logo.svg';
 
-  /// File path: assets/images/green_pin.png
-  AssetGenImage get greenPin =>
-      const AssetGenImage('assets/images/green_pin.png');
+  /// File path: assets/images/green-pin.svg
+  String get greenPin => 'assets/images/green-pin.svg';
+
+  /// File path: assets/images/grey-map.svg
+  String get greyMap => 'assets/images/grey-map.svg';
 
   /// File path: assets/images/grey_bookmark.png
   AssetGenImage get greyBookmark =>
       const AssetGenImage('assets/images/grey_bookmark.png');
-
-  /// File path: assets/images/grey_map.png
-  AssetGenImage get greyMap =>
-      const AssetGenImage('assets/images/grey_map.png');
 
   /// File path: assets/images/grey_search.png
   AssetGenImage get greySearch =>
@@ -249,10 +180,6 @@ class $AssetsImagesGen {
   AssetGenImage get liveArea =>
       const AssetGenImage('assets/images/live_area.png');
 
-  /// File path: assets/images/location.png
-  AssetGenImage get location =>
-      const AssetGenImage('assets/images/location.png');
-
   /// File path: assets/images/location_black_marker.png
   AssetGenImage get locationBlackMarker =>
       const AssetGenImage('assets/images/location_black_marker.png');
@@ -265,9 +192,8 @@ class $AssetsImagesGen {
   AssetGenImage get locatioonRedMarker =>
       const AssetGenImage('assets/images/locatioon_red_marker.png');
 
-  /// File path: assets/images/logout-profile-screen.png
-  AssetGenImage get logoutProfileScreen =>
-      const AssetGenImage('assets/images/logout-profile-screen.png');
+  /// File path: assets/images/logout-profile-screen.svg
+  String get logoutProfileScreen => 'assets/images/logout-profile-screen.svg';
 
   /// File path: assets/images/logout.png
   AssetGenImage get logout => const AssetGenImage('assets/images/logout.png');
@@ -280,8 +206,12 @@ class $AssetsImagesGen {
   AssetGenImage get masterCardIcon =>
       const AssetGenImage('assets/images/master-card-icon.png');
 
-  /// File path: assets/images/offline.png
-  AssetGenImage get offline => const AssetGenImage('assets/images/offline.png');
+  /// File path: assets/images/offline-icon.png
+  AssetGenImage get offlineIconPng =>
+      const AssetGenImage('assets/images/offline-icon.png');
+
+  /// File path: assets/images/offline-icon.svg
+  String get offlineIconSvg => 'assets/images/offline-icon.svg';
 
   /// File path: assets/images/onboard_one.png
   AssetGenImage get onboardOne =>
@@ -299,17 +229,14 @@ class $AssetsImagesGen {
   AssetGenImage get originHumanLogo =>
       const AssetGenImage('assets/images/origin-human-logo.png');
 
-  /// File path: assets/images/passenger.png
-  AssetGenImage get passenger =>
-      const AssetGenImage('assets/images/passenger.png');
+  /// File path: assets/images/passenger.svg
+  String get passenger => 'assets/images/passenger.svg';
 
-  /// File path: assets/images/payment_icon.png
-  AssetGenImage get paymentIcon =>
-      const AssetGenImage('assets/images/payment_icon.png');
+  /// File path: assets/images/payment-icon.svg
+  String get paymentIcon => 'assets/images/payment-icon.svg';
 
-  /// File path: assets/images/payment_method_icon.png
-  AssetGenImage get paymentMethodIcon =>
-      const AssetGenImage('assets/images/payment_method_icon.png');
+  /// File path: assets/images/payment-info-icon.svg
+  String get paymentInfoIcon => 'assets/images/payment-info-icon.svg';
 
   /// File path: assets/images/popup_icon.png
   AssetGenImage get popupIcon =>
@@ -330,6 +257,10 @@ class $AssetsImagesGen {
   AssetGenImage get rattingStar =>
       const AssetGenImage('assets/images/ratting-star.png');
 
+  /// File path: assets/images/red-bell.png
+  AssetGenImage get redBell =>
+      const AssetGenImage('assets/images/red-bell.png');
+
   /// File path: assets/images/remove_busket.png
   AssetGenImage get removeBusket =>
       const AssetGenImage('assets/images/remove_busket.png');
@@ -342,37 +273,30 @@ class $AssetsImagesGen {
   AssetGenImage get rightArrow =>
       const AssetGenImage('assets/images/right_arrow.png');
 
-  /// File path: assets/images/setting-about-icon.png
-  AssetGenImage get settingAboutIcon =>
-      const AssetGenImage('assets/images/setting-about-icon.png');
+  /// File path: assets/images/setting-about-icon.svg
+  String get settingAboutIcon => 'assets/images/setting-about-icon.svg';
 
-  /// File path: assets/images/setting-delete-icon.png
-  AssetGenImage get settingDeleteIcon =>
-      const AssetGenImage('assets/images/setting-delete-icon.png');
+  /// File path: assets/images/setting-delete-icon.svg
+  String get settingDeleteIcon => 'assets/images/setting-delete-icon.svg';
 
-  /// File path: assets/images/setting-lock-icon.png
-  AssetGenImage get settingLockIcon =>
-      const AssetGenImage('assets/images/setting-lock-icon.png');
+  /// File path: assets/images/setting-lock-icon.svg
+  String get settingLockIcon => 'assets/images/setting-lock-icon.svg';
 
-  /// File path: assets/images/setting-privacy-policy-icon.png
-  AssetGenImage get settingPrivacyPolicyIcon =>
-      const AssetGenImage('assets/images/setting-privacy-policy-icon.png');
+  /// File path: assets/images/setting-privacy-policy-icon.svg
+  String get settingPrivacyPolicyIcon =>
+      'assets/images/setting-privacy-policy-icon.svg';
 
-  /// File path: assets/images/setting-terms-and-condition-icon.png
-  AssetGenImage get settingTermsAndConditionIcon =>
-      const AssetGenImage('assets/images/setting-terms-and-condition-icon.png');
+  /// File path: assets/images/setting-terms-and-condition-icon.svg
+  String get settingTermsAndConditionIcon =>
+      'assets/images/setting-terms-and-condition-icon.svg';
 
-  /// File path: assets/images/settings-profile-screen.png
-  AssetGenImage get settingsProfileScreen =>
-      const AssetGenImage('assets/images/settings-profile-screen.png');
+  /// File path: assets/images/settings-profile-screen.svg
+  String get settingsProfileScreen =>
+      'assets/images/settings-profile-screen.svg';
 
   /// File path: assets/images/splash_background.jpg
   AssetGenImage get splashBackground =>
       const AssetGenImage('assets/images/splash_background.jpg');
-
-  /// File path: assets/images/splash_screen_background.jpg
-  AssetGenImage get splashScreenBackground =>
-      const AssetGenImage('assets/images/splash_screen_background.jpg');
 
   /// File path: assets/images/support-car-image.png
   AssetGenImage get supportCarImage =>
@@ -386,9 +310,8 @@ class $AssetsImagesGen {
   AssetGenImage get supportPhoneImage =>
       const AssetGenImage('assets/images/support-phone-image.png');
 
-  /// File path: assets/images/support-profile-screen.png
-  AssetGenImage get supportProfileScreen =>
-      const AssetGenImage('assets/images/support-profile-screen.png');
+  /// File path: assets/images/support-profile-screen.svg
+  String get supportProfileScreen => 'assets/images/support-profile-screen.svg';
 
   /// File path: assets/images/upload_icon.png
   AssetGenImage get uploadIcon =>
@@ -398,16 +321,16 @@ class $AssetsImagesGen {
   AssetGenImage get varifyIcon =>
       const AssetGenImage('assets/images/varify_icon.png');
 
-  /// File path: assets/images/view-reviews-profile-screen.png
-  AssetGenImage get viewReviewsProfileScreen =>
-      const AssetGenImage('assets/images/view-reviews-profile-screen.png');
+  /// File path: assets/images/view-reviews-profile-screen.svg
+  String get viewReviewsProfileScreen =>
+      'assets/images/view-reviews-profile-screen.svg';
+
+  /// File path: assets/images/visa-icon.svg
+  String get visaIcon => 'assets/images/visa-icon.svg';
 
   /// File path: assets/images/visa-payment.png
   AssetGenImage get visaPayment =>
       const AssetGenImage('assets/images/visa-payment.png');
-
-  /// File path: assets/images/visa.png
-  AssetGenImage get visa => const AssetGenImage('assets/images/visa.png');
 
   /// File path: assets/images/waiting.gif
   AssetGenImage get waiting => const AssetGenImage('assets/images/waiting.gif');
@@ -428,8 +351,12 @@ class $AssetsImagesGen {
   AssetGenImage get widrawIcon =>
       const AssetGenImage('assets/images/widraw_icon.png');
 
+  /// File path: assets/images/withdraw-icon.svg
+  String get withdrawIcon => 'assets/images/withdraw-icon.svg';
+
   /// List of all assets
-  List<AssetGenImage> get values => [
+  List<dynamic> get values => [
+    location,
     vector,
     activeHistory,
     activeHome,
@@ -438,6 +365,8 @@ class $AssetsImagesGen {
     amico,
     applogo,
     arrowDropDown,
+    balance,
+    balenceIcon,
     bell,
     carIcon,
     carMarker,
@@ -448,6 +377,7 @@ class $AssetsImagesGen {
     directRight,
     documentIcon,
     driver,
+    dusbinIcon,
     editProfileProfileScreen,
     editPencil,
     favoriteRidesBookCar,
@@ -456,13 +386,12 @@ class $AssetsImagesGen {
     favoritesProfileImage,
     glassmorphismLogo,
     greenPin,
-    greyBookmark,
     greyMap,
+    greyBookmark,
     greySearch,
     historyIcon,
     homeIcon,
     liveArea,
-    location,
     locationBlackMarker,
     locationMarker,
     locatioonRedMarker,
@@ -470,19 +399,21 @@ class $AssetsImagesGen {
     logout,
     mapProfileImage,
     masterCardIcon,
-    offline,
+    offlineIconPng,
+    offlineIconSvg,
     onboardOne,
     onboardThree,
     onboardTwo,
     originHumanLogo,
     passenger,
     paymentIcon,
-    paymentMethodIcon,
+    paymentInfoIcon,
     popupIcon,
     profileImage,
     proflieIcon,
     rafiki,
     rattingStar,
+    redBell,
     removeBusket,
     reviewImage,
     rightArrow,
@@ -493,7 +424,6 @@ class $AssetsImagesGen {
     settingTermsAndConditionIcon,
     settingsProfileScreen,
     splashBackground,
-    splashScreenBackground,
     supportCarImage,
     supportEmailImage,
     supportPhoneImage,
@@ -501,13 +431,14 @@ class $AssetsImagesGen {
     uploadIcon,
     varifyIcon,
     viewReviewsProfileScreen,
+    visaIcon,
     visaPayment,
-    visa,
     waiting,
     walletIcon,
     walletCoinBackground,
     walletNarrowBackground,
     widrawIcon,
+    withdrawIcon,
   ];
 }
 
@@ -520,8 +451,11 @@ class $AssetsLottiesGen {
   /// File path: assets/lotties/crypto_phone.json
   String get cryptoPhone => 'assets/lotties/crypto_phone.json';
 
+  /// File path: assets/lotties/timer.json
+  String get timer => 'assets/lotties/timer.json';
+
   /// List of all assets
-  List<String> get values => [carpool, cryptoPhone];
+  List<String> get values => [carpool, cryptoPhone, timer];
 }
 
 class Assets {

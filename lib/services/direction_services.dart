@@ -2,10 +2,17 @@ import 'dart:convert';
 
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
+import 'package:ricardo/app/helpers/custom_location_helper.dart';
+import 'package:ricardo/feature/controllers/home/google_search_location_controller.dart';
+import 'package:ricardo/feature/controllers/home/map/map_opt_controller.dart';
 
 class DirectionsService {
+
   // Make sure to enable these APIs in Google Cloud Console:
   // - Maps SDK for Android
   // - Directions API
@@ -38,4 +45,72 @@ class DirectionsService {
       return [];
     }
   }
+
+  Future<String> getCurrentAddress() async {
+    // Get current position
+    Position position = await Geolocator.getCurrentPosition(
+      desiredAccuracy: LocationAccuracy.high,
+    );
+
+    // Convert position to address
+    List<Placemark> placemarks = await placemarkFromCoordinates(
+      position.latitude,
+      position.longitude,
+    );
+
+    Placemark place = placemarks[0];
+
+    return '${place.street}, ${place.subLocality}, ${place.locality}, ${place.country}';
+  }
+
+  Future<Map<String, String>> getCurrentAddressParts() async {
+    Position position = await Geolocator.getCurrentPosition(
+      desiredAccuracy: LocationAccuracy.high,
+    );
+
+    List<Placemark> placemarks = await placemarkFromCoordinates(
+      position.latitude,
+      position.longitude,
+    );
+
+    Placemark place = placemarks[0];
+
+    String firstLine = [
+      place.street,
+      place.subLocality,
+    ].where((e) => e != null && e.trim().isNotEmpty).join(', ');
+
+    String secondLine = [
+      place.locality,
+      place.country,
+    ].where((e) => e != null && e.trim().isNotEmpty).join(', ');
+
+    return {
+      'firstLine': firstLine,
+      'secondLine': secondLine,
+    };
+  }
+
+  static Future<String> calculateDistance(double? lng, double? lat) async {
+    if (lat == null || lng == null) return 'N/A';
+
+    final googleController = Get.find<GoogleSearchLocationController>(); // ✅ gets existing instance
+
+    final pickup = googleController.selectedPickup.value;
+    if (pickup == null) return 'N/A'; // ✅ null safety
+
+    double distanceInMeters = Geolocator.distanceBetween(
+      pickup.lat,
+      pickup.lng,
+      lat,
+      lng,
+    );
+
+    if (distanceInMeters < 1000) {
+      return '${distanceInMeters.toStringAsFixed(0)} Meter';
+    } else {
+      return '${(distanceInMeters / 1000).toStringAsFixed(1)} Kilometer';
+    }
+  }
+
 }

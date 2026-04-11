@@ -7,12 +7,14 @@ import 'package:ricardo/feature/controllers/home/google_search_location_controll
 import 'package:ricardo/feature/controllers/home/map/map_opt_controller.dart';
 import 'package:ricardo/feature/controllers/home/map/ride_controller.dart';
 import 'package:ricardo/feature/simmer/ride_sharing_shimmer.dart';
+import 'package:ricardo/feature/view/home/link_export_file.dart';
 import 'package:ricardo/gen/assets.gen.dart';
 import 'package:ricardo/gen/fonts.gen.dart';
 import 'package:ricardo/routes/app_routes.dart';
 import 'package:ricardo/services/api_urls.dart';
 import 'package:ricardo/widgets/glass_background_widget.dart' as Glass;
 import 'package:ricardo/widgets/request_ride_handler.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class RideRequestBottomSheet extends StatefulWidget {
   final String pickupLocation;
@@ -258,7 +260,7 @@ class _RideRequestBottomSheetState extends State<RideRequestBottomSheet> {
                             style: TextStyle(
                               color: AppColors.blackColor,
                               fontSize: 16.sp,
-                              fontWeight: FontWeight.w500,
+                              fontWeight: FontWeight.w600,
                               fontFamily: FontFamily.poppins,
                             ),
                           ),
@@ -275,7 +277,7 @@ class _RideRequestBottomSheetState extends State<RideRequestBottomSheet> {
                               'See All',
                               style: TextStyle(
                                 fontSize: 16.sp,
-                                fontWeight: FontWeight.w500,
+                                fontWeight: FontWeight.w600,
                                 fontFamily: FontFamily.poppins,
                                 color: AppColors.blackColor,
                               ),
@@ -338,7 +340,7 @@ class _RideRequestBottomSheetState extends State<RideRequestBottomSheet> {
                                                 fontFamily: FontFamily.poppins,
                                                 fontSize: 12.sp,
                                                 fontWeight: FontWeight.w500,
-                                                color: AppColors.blackBText,
+                                                color: AppColors.darkColor,
                                               ),
                                             ),
                                             SizedBox(width: 8.w),
@@ -357,7 +359,7 @@ class _RideRequestBottomSheetState extends State<RideRequestBottomSheet> {
                                                 fontFamily: FontFamily.poppins,
                                                 fontSize: 12.sp,
                                                 fontWeight: FontWeight.w500,
-                                                color: AppColors.blackBText,
+                                                color: AppColors.darkColor,
                                               ),
                                             ),
                                           ],
@@ -375,7 +377,7 @@ class _RideRequestBottomSheetState extends State<RideRequestBottomSheet> {
                                                 fontFamily: FontFamily.poppins,
                                                 fontSize: 12.sp,
                                                 fontWeight: FontWeight.w500,
-                                                color: AppColors.blackBText,
+                                                color: AppColors.secondaryTextColor,
                                               ),
                                             ),
                                           ],
@@ -385,16 +387,20 @@ class _RideRequestBottomSheetState extends State<RideRequestBottomSheet> {
                                   ],
                                 ),
                                 GestureDetector(
-                                  onTap: () {},
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      color: AppColors.whiteColor,
-                                      borderRadius: BorderRadius.circular(50),
-                                      border: Border.all(
-                                          color: Colors.grey.shade200),
+                                  onTap: () {
+                                    launchUrl(Uri.parse("tel:${cardDetails.phone}"));
+                                  },
+                                  child: RepaintBoundary(           // ✅ isolates rendering
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        color: AppColors.whiteColor,
+                                        borderRadius: BorderRadius.circular(50),
+                                        border: Border.all(color: Colors.grey.shade200),
+                                      ),
+                                      child: SvgPicture.asset(
+                                        Assets.icons.driverCardPhone,
+                                      ),
                                     ),
-                                    child: SvgPicture.asset(
-                                        Assets.icons.driverCardPhone),
                                   ),
                                 ),
                               ],
@@ -408,7 +414,7 @@ class _RideRequestBottomSheetState extends State<RideRequestBottomSheet> {
                             Text(
                               'Car info.',
                               style: TextStyle(
-                                fontSize: 14.sp,
+                                fontSize: 16.sp,
                                 fontWeight: FontWeight.w500,
                                 fontFamily: FontFamily.poppins,
                                 color: Colors.black.withOpacity(0.8),
@@ -418,47 +424,62 @@ class _RideRequestBottomSheetState extends State<RideRequestBottomSheet> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      '${cardDetails.vehicle?.carName}',
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.w500,
-                                        fontFamily: FontFamily.poppins,
-                                        fontSize: 14.sp,
-                                        color: AppColors.favoriteRitesCarText,
+                                Expanded(  // ✅ ADD THIS
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        '${cardDetails.vehicle?.carName}'.split(' ').map((word) =>
+                                        word.isNotEmpty ? word[0].toUpperCase() + word.substring(1).toLowerCase() : ''
+                                        ).join(' '),
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.w600,
+                                          fontFamily: FontFamily.poppins,
+                                          fontSize: 18.sp,
+                                          color: AppColors.favoriteRitesCarText,
+                                        ),
                                       ),
-                                    ),
-                                    Text(
-                                      '${cardDetails.vehicle?.numberOfSeat} Seat',
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.w500,
-                                        fontFamily: FontFamily.poppins,
-                                        fontSize: 14.sp,
-                                        color: AppColors.favoriteRitesCarText,
+                                      Text(
+                                        '${cardDetails.vehicle?.numberOfSeat} Seat',
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.w500,
+                                          fontFamily: FontFamily.poppins,
+                                          fontSize: 16.sp,
+                                          color: AppColors.favoriteRitesCarText,
+                                        ),
                                       ),
-                                    ),
-                                    Text(
-                                      '${cardDetails.vehicle?.carPlateNumber}',
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.w500,
-                                        fontFamily: FontFamily.poppins,
-                                        fontSize: 14.sp,
-                                        color: AppColors.favoriteRitesCarText,
+                                      Text(
+                                        '${cardDetails.vehicle?.carPlateNumber}',
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.w500,
+                                          fontFamily: FontFamily.poppins,
+                                          fontSize: 16.sp,
+                                          color: AppColors.favoriteRitesCarText,
+                                        ),
                                       ),
-                                    ),
-                                    Text(
-                                      '5 km away from you.',
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.w500,
-                                        fontFamily: FontFamily.poppins,
-                                        fontSize: 14.sp,
-                                        color: AppColors.successColor,
+                                      FutureBuilder<String>(
+                                        future: DirectionsService.calculateDistance(
+                                          cardDetails.location?.coordinates?[0],
+                                          cardDetails.location?.coordinates?[1],
+                                        ),
+                                        builder: (context, snapshot) {
+                                          final distanceText = snapshot.data ?? 'Calculating...';
+                                          return Text(
+                                            '$distanceText away from you.',
+                                            overflow: TextOverflow.ellipsis, // ✅ safety for long text
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.w500,
+                                              fontFamily: FontFamily.poppins,
+                                              fontSize: 16.sp,
+                                              color: AppColors.dottedBorderColor,
+                                            ),
+                                          );
+                                        },
                                       ),
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
+                                SizedBox(width: 12.w), // ✅ gap between text and image
                                 ClipRRect(
                                   borderRadius: BorderRadius.circular(15),
                                   child: Image.network(
@@ -466,8 +487,7 @@ class _RideRequestBottomSheetState extends State<RideRequestBottomSheet> {
                                     width: 92.w,
                                     height: 92.h,
                                     fit: BoxFit.cover,
-                                    errorBuilder: (context, error,
-                                            stackTrace) =>
+                                    errorBuilder: (context, error, stackTrace) =>
                                         Icon(Icons.directions_car, size: 92.h),
                                   ),
                                 ),
@@ -509,6 +529,7 @@ class _RideRequestBottomSheetState extends State<RideRequestBottomSheet> {
                           child: InkWell(
                             borderRadius: BorderRadius.circular(50),
                             onTap: () {
+                              mapOptController.isCurrentMarkerShow.value = false;
                               // Get all controllers
                               final rideController = Get.find<RideController>();
                               final googleSearchController =

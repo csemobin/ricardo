@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:ricardo/app/utils/app_colors.dart';
@@ -22,7 +23,9 @@ class _HistoryScreenState extends State<HistoryScreen> {
   @override
   void initState() {
     super.initState();
-    controller.fetchHistoryData();
+    if( controller.historyDatas.isEmpty ){
+      controller.fetchHistoryData();
+    }
   }
 
   @override
@@ -252,7 +255,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
             ),
             Row(
               children: [
-                Image.asset(Assets.images.directRight.path),
+                SvgPicture.asset(Assets.images.directRight),
                 SizedBox(
                   width: 8.w,
                 ),
@@ -296,7 +299,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
             ),
             Row(
               children: [
-                Image.asset(Assets.images.location.path),
+                SvgPicture.asset(Assets.images.location),
                 SizedBox(
                   width: 8.w,
                 ),

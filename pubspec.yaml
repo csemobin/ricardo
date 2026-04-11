@@ -48,6 +48,7 @@ dependencies:
   cupertino_icons: ^1.0.6
   shimmer: ^3.0.0
   url_launcher: ^6.3.2
+  flutter_html: ^3.0.0
 
 
 dev_dependencies:
@@ -62,6 +63,10 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^5.0.0
+
+flutter_gen:
+  output: lib/gen/ # Optional (default: lib/gen/)
+  line_length: 80 # Optional (default: 80)
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -92,38 +97,16 @@ flutter:
     - assets/lotties/
     - .env
     - assets/images/car_marker.png
-  # An image asset can refer to one or more resolution-specific "variants", see
-  # https://flutter.dev/to/resolution-aware-images
 
-  # For details regarding adding assets from package dependencies, see
-  # https://flutter.dev/to/asset-from-package
-
-  # To add custom fonts to your application, add a fonts section here,
-  # in this "flutter" section. Each entry in this list should have a
-  # "family" key with the font family name, and a "fonts" key with a
-  # list giving the asset and other descriptors for the font. For
-  # example:
   fonts:
+     - family: Inter
+       fonts:
+         - asset: assets/fonts/Inter_24pt-Regular.ttf
      - family: Poppins
        fonts:
-         - asset: assets/fonts/Poppins-Bold.ttf
-         - asset: assets/fonts/Poppins-ExtraBold.ttf
-         - asset: assets/fonts/Poppins-Light.ttf
-         - asset: assets/fonts/Poppins-Medium.ttf
          - asset: assets/fonts/Poppins-Regular.ttf
-#         - asset: fonts/Schyler-Italic.ttf
-#           style: italic
-#     - family: Trajan Pro
-  #     fonts:
-  #       - asset: fonts/TrajanPro.ttf
-  #       - asset: fonts/TrajanPro_Bold.ttf
-  #         weight: 700
-  #
-  # For details regarding fonts from package dependencies,
-  # see https://flutter.dev/to/font-from-package
 
-
-        #===========>>>>>>>>>> Flutter Gen Code ==============>>>>>>>>>>>
+          #===========>>>>>>>>>> Flutter Gen Code ==============>>>>>>>>>>>
     #    # fvm dart pub global activate flutter_gen
     #    # fvm flutter pub run build_runner build --delete-conflicting-outputs
     #    # fvm flutter pub run build_runner build

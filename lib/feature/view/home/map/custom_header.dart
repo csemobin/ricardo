@@ -1,6 +1,8 @@
 import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:ricardo/feature/view/home/link_export_file.dart';
+import 'package:ricardo/feature/view/profile/profile_screen.dart';
 
 class CustomHeader extends StatelessWidget {
   const CustomHeader({
@@ -33,7 +35,7 @@ class CustomHeader extends StatelessWidget {
           child: BackdropFilter(
             filter: ui.ImageFilter.blur(sigmaX: 8, sigmaY: 8),
             child: Container(
-              height: MediaQuery.of(context).size.height * 0.20,
+              height: MediaQuery.of(context).size.height * 0.2,
               decoration: BoxDecoration(
                 color: Color(0x80FFFFFF),
                 borderRadius: BorderRadius.only(
@@ -45,7 +47,7 @@ class CustomHeader extends StatelessWidget {
               child: SafeArea(
                 child: Padding(
                   padding:
-                  EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
+                      EdgeInsets.only(left: 16, right: 16, bottom: 0, top: 10),
                   child: SingleChildScrollView(
                     child: Column(
                       children: [
@@ -62,26 +64,9 @@ class CustomHeader extends StatelessWidget {
                               ),
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(50),
-                                child: Image.network(
-                                  '${ApiUrls.imageBaseUrl}$profileImage',
-                                  fit: BoxFit.cover,
-                                  width: 50,
-                                  height: 50,
-                                  errorBuilder: (context, error, stackTrace) {
-                                    return Image.asset(
-                                      Assets.images.profileImage.path,
-                                      fit: BoxFit.cover,
-                                      width: 50,
-                                      height: 50,
-                                    );
-                                  },
-                                ),
-                                /*child: GestureDetector(
+                                child: GestureDetector(
                                   onTap: () {
-                                    final cnt = Get.find<
-                                        CustomBottomNavBarController>();
-                                    cnt.selectedIndex.value = 3;
-                                    Get.toNamed(AppRoutes.customBottomNavBar);
+                                    Get.to(ProfileScreen());
                                   },
                                   child: Image.network(
                                     '${ApiUrls.imageBaseUrl}$profileImage',
@@ -97,43 +82,80 @@ class CustomHeader extends StatelessWidget {
                                       );
                                     },
                                   ),
-                                ),*/
+                                ),
                               ),
                             ),
-                            GestureDetector(
-                              onTap: () =>
-                                  Get.toNamed(AppRoutes.notificationScreen),
-                              child: Image.asset(
-                                Assets.images.bell.path,
-                                width: 24,
-                                height: 24,
+                            ClipRRect(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(100)),
+                              child: BackdropFilter(
+                                filter: ui.ImageFilter.blur(
+                                  sigmaX: 20,
+                                  sigmaY: 20,
+                                ),
+                                child: Container(
+                                  padding: EdgeInsets.all(10.r),
+                                  decoration: BoxDecoration(
+                                    color:
+                                        (AppColors.whiteColor).withOpacity(0.10),
+                                    borderRadius: BorderRadius.circular(100),
+                                    border: Border.all(
+                                      color: (AppColors.whiteColor)
+                                          .withOpacity(0.7),
+                                      width: 2
+                                    ),
+                                    backgroundBlendMode: BlendMode.color,
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black.withOpacity(0.1),
+                                        offset: const Offset(0, -4),
+                                        blurRadius: 5,
+                                        spreadRadius: 0,
+                                      ),
+                                    ],
+                                  ),
+                                  child: GestureDetector(
+                                    onTap: () => Get.toNamed(
+                                        AppRoutes.notificationScreen),
+                                    child: SvgPicture.asset(
+                                      Assets.images.bell,
+                                      width: 24,
+                                      height: 24,
+                                    ),
+                                  ), // Use the passed child here
+                                ),
                               ),
                             ),
                           ],
                         ),
-                        SizedBox(height: 12.h),
+                        SizedBox(height: 16.h),
                         Row(
                           children: [
-                            Image.asset(
-                              Assets.images.greenPin.path,
-                              width: 20,
-                              height: 20,
+                            Padding(
+                              padding: EdgeInsets.only(
+                                left: 6.w,
+                              ),
+                              child: SvgPicture.asset(
+                                Assets.images.greenPin,
+                                width: 20,
+                                height: 20,
+                              ),
                             ),
                             SizedBox(width: 8.w),
                             Expanded(
                               child: Text(
                                 mapOPTController.currentLocation.value,
                                 style: TextStyle(
-                                  fontSize: 14.sp,
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.w500,
-                                ),
+                                    fontSize: 14.sp,
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.w600,
+                                    fontFamily: FontFamily.poppins),
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                               ),
                             ),
-                            SizedBox(width: 8.w),
-                            Image.asset(Assets.images.rightArrow.path),
+                            // SizedBox(width: 8.w),
+                            // Image.asset(Assets.images.rightArrow.path),
                           ],
                         ),
                       ],

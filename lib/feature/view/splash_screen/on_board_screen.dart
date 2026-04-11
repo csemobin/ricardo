@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:ricardo/app/helpers/helper_data.dart';
 import 'package:ricardo/app/utils/app_colors.dart';
+import 'package:ricardo/feature/view/home/link_export_file.dart';
 import 'package:ricardo/gen/assets.gen.dart';
 import 'package:ricardo/routes/app_routes.dart';
 import 'package:ricardo/widgets/custom_button.dart';
@@ -79,9 +80,10 @@ class _OnBoardScreenState extends State<OnBoardScreen> {
                                 top: 32.h,
                                 text: data['title'],
                                 fontSize: 20.sp,
-                                fontWeight: FontWeight.w600,
+                                fontWeight: FontWeight.w700,
                                 color: AppColors.primaryColor,
-                                letterSpacing: 1.2,
+                                letterSpacing: 1,
+                                fontName: FontFamily.inter,
                               ),
                               CustomText(
                                 right: 30.w,
@@ -89,8 +91,10 @@ class _OnBoardScreenState extends State<OnBoardScreen> {
                                 top: 16.h,
                                 text: data['subtitle'],
                                 fontSize: 14.sp,
-                                textHeight: 2.1,
+                                textHeight: 1.5,
                                 color: AppColors.secondaryTextColor,
+                                fontName: FontFamily.inter,
+                                fontWeight: FontWeight.w500,
                               ),
                               SizedBox(height: constraints.maxHeight * 0.15),
                             ],
@@ -103,7 +107,7 @@ class _OnBoardScreenState extends State<OnBoardScreen> {
               },
             ),
             Positioned(
-              top: 0.h,
+              top: 24.h,
               left: 24.w,
               right: 24.w,
               child: SafeArea(
@@ -112,10 +116,10 @@ class _OnBoardScreenState extends State<OnBoardScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Image.asset(
-                      Assets.images.applogo.path,
-                      width: 100.w,
-                      height: 100.h,
+                    SvgPicture.asset(
+                      Assets.images.applogo,
+                      width: 60.w,
+                      height: 60.h,
                     ),
                     GestureDetector(
                       onTap: () {
@@ -172,7 +176,7 @@ class _OnBoardScreenState extends State<OnBoardScreen> {
                       if (currentIndex ==
                           HelperData.onboardingData.length - 1)
                         CustomButton(
-                          width: 160.w,
+                          width: 170.w,
                           height: 60.h,
                           radius: 100.r,
                           onPressed: () =>
@@ -191,6 +195,7 @@ class _OnBoardScreenState extends State<OnBoardScreen> {
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
+                                  SizedBox(width: 10,),
                                   Text(
                                     'Get Started',
                                     style: TextStyle(

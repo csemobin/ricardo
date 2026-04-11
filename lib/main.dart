@@ -1,6 +1,6 @@
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:ricardo/app.dart';
 import 'package:ricardo/app/helpers/device_utils.dart';
 import 'package:ricardo/firebase_options.dart';
@@ -26,7 +26,7 @@ void main() async {
   final String token =
       await PrefsHelper.getString(AppConstants.bearerToken);
   final String fcmToken = await PrefsHelper.getString(AppConstants.fcmToken);
-  if (token.isNotEmpty) {
+  if ( token.isNotEmpty && fcmToken.isNotEmpty ) {
     SocketServices.socket
         ?.emit('user-connected', {"accessToken": token, "fcmToken": fcmToken});
   }

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:ricardo/app/utils/app_colors.dart';
 import 'package:ricardo/app/utils/app_custom_design.dart';
@@ -123,7 +124,7 @@ class _WithdrawRequestScreenState extends State<WithdrawRequestScreen> {
                           ),
                           child: Row(
                             children: [
-                              Image.asset(Assets.images.visa.path),
+                              SvgPicture.asset(Assets.images.visaIcon),
                               SizedBox(width: 13.w),
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -178,7 +179,7 @@ class _WithdrawRequestScreenState extends State<WithdrawRequestScreen> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Image.asset(Assets.images.paymentMethodIcon.path),
+                        SvgPicture.asset(Assets.images.paymentInfoIcon),
                         SizedBox(width: 20.w),
                         Text(
                           'Add Payment Info',
@@ -460,8 +461,8 @@ class _WithdrawRequestScreenState extends State<WithdrawRequestScreen> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       SizedBox(height: 32.h),
-                      Image.asset(
-                        Assets.images.glassmorphismLogo.path,
+                      SvgPicture.asset(
+                        Assets.images.glassmorphismLogo,
                         height: 80.h,
                       ),
                       SizedBox(height: 30.h),

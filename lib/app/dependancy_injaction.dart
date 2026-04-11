@@ -45,7 +45,7 @@ class DependencyInjection implements Bindings {
     Get.put(ResetPasswordController());
     Get.put(UserController());
     Get.put(CarRegistrationController());
-    Get.put(MapOPTController());
+    Get.lazyPut(()=>MapOPTController());
     Get.lazyPut(() => DriverProfileController());
     Get.lazyPut(() => ChangePasswordController());
     Get.lazyPut(() => ProfileUpdateController(),fenix: true);
@@ -54,9 +54,10 @@ class DependencyInjection implements Bindings {
     Get.lazyPut(() => PaymentMethodController());
     Get.lazyPut(() => AddMoneyController());
     Get.lazyPut(() => WithdrawRequestController());
-    Get.lazyPut(() => HistoryController());
+    Get.lazyPut(() => HistoryController(),        fenix: true);
+    Get.lazyPut(() => RecentHistoryController(),  fenix: true);
     Get.lazyPut(() => ReviewsRatingsController());
-    Get.lazyPut(() => RecentHistoryController());
+
     Get.lazyPut(() => AddCardController());
     Get.lazyPut(() => GoogleSearchLocationController());
     Get.lazyPut(() => RideController());

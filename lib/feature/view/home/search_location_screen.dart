@@ -3,10 +3,12 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:ricardo/app/utils/app_colors.dart';
 import 'package:ricardo/feature/controllers/home/google_search_location_controller.dart';
 import 'package:ricardo/feature/models/home/place_suggestion.dart';
+import 'package:ricardo/feature/view/home/link_export_file.dart';
 import 'package:ricardo/gen/assets.gen.dart';
 import 'package:ricardo/services/location_permission_service.dart';
 import 'package:ricardo/widgets/custom_loader.dart';
@@ -14,12 +16,16 @@ import 'package:ricardo/widgets/custom_primary_button.dart';
 import 'package:ricardo/widgets/custom_scaffold.dart';
 import 'package:ricardo/widgets/custom_text_field.dart';
 
+// ✅ Define FontFamily class (or replace with string literal 'Poppins')
+class FontFamily {
+  static const String poppins = 'Poppins';
+}
+
 class SearchLocationScreen extends StatelessWidget {
   SearchLocationScreen({super.key});
 
   final controller = Get.put(GoogleSearchLocationController());
-  final googleSearchLocationController =
-      Get.find<GoogleSearchLocationController>();
+  final googleSearchLocationController = Get.find<GoogleSearchLocationController>();
 
   final pickupFocus = FocusNode();
   final dropFocus = FocusNode();
@@ -35,14 +41,15 @@ class SearchLocationScreen extends StatelessWidget {
               Navigator.pop(context);
             }
           },
-          icon: Icon(Icons.arrow_back),
+          icon: const Icon(Icons.arrow_back),
         ),
         title: Text(
           "Let's Go...",
           style: TextStyle(
             color: AppColors.blackColor,
-            fontSize: 16.sp,
-            fontWeight: FontWeight.w700,
+            fontSize: 18.sp,
+            fontWeight: FontWeight.w600,
+            fontFamily: FontFamily.poppins, // ✅ Now defined
           ),
         ),
         forceMaterialTransparency: true,
@@ -72,66 +79,66 @@ class SearchLocationScreen extends StatelessWidget {
 
   Widget _buildPickupField() {
     return Obx(() => CustomTextField(
-          focusNode: pickupFocus,
-          controller: controller.pickupController,
-          labelText: 'Pick-up Location',
-          hintText: 'Enter pick-up location',
-          prefixIcon: Image.asset(
-            Assets.images.greenPin.path,
-            width: 20.w,
-            height: 20.h,
-          ),
-          suffixIcon: controller.showClearPickup.value
-              ? IconButton(
-                  onPressed: () {
-                    controller.clearPickup();
-                    pickupFocus.unfocus();
-                  },
-                  icon: Icon(
-                    Icons.close,
-                    color: Colors.grey[700],
-                    size: 20.w,
-                  ),
-                  padding: EdgeInsets.zero,
-                  constraints: BoxConstraints(
-                    minWidth: 40.w,
-                    minHeight: 40.h,
-                  ),
-                )
-              : SizedBox(width: 40.w), // Keep space for alignment
-        ));
+      focusNode: pickupFocus,
+      controller: controller.pickupController,
+      labelText: 'Pick-up Location',
+      hintText: 'Enter pick-up location',
+      prefixIcon: SvgPicture.asset(
+        Assets.images.greenPin,
+        width: 20.w,
+        height: 20.h,
+      ),
+      suffixIcon: controller.showClearPickup.value
+          ? IconButton(
+        onPressed: () {
+          controller.clearPickup();
+          pickupFocus.unfocus();
+        },
+        icon: Icon(
+          Icons.close,
+          color: Colors.grey[700],
+          size: 20.w,
+        ),
+        padding: EdgeInsets.zero,
+        constraints: BoxConstraints(
+          minWidth: 40.w,
+          minHeight: 40.h,
+        ),
+      )
+          : SizedBox(width: 40.w),
+    ));
   }
 
   Widget _buildDropField() {
     return Obx(() => CustomTextField(
-          focusNode: dropFocus,
-          controller: controller.dropController,
-          labelText: 'Drop-off Location',
-          hintText: 'Enter drop-off location',
-          prefixIcon: Image.asset(
-            Assets.images.greyMap.path,
-            width: 20.w,
-            height: 20.h,
-          ),
-          suffixIcon: controller.showClearDrop.value
-              ? IconButton(
-                  onPressed: () {
-                    controller.clearDrop();
-                    dropFocus.unfocus();
-                  },
-                  icon: Icon(
-                    Icons.close,
-                    color: Colors.grey[700],
-                    size: 20.w,
-                  ),
-                  padding: EdgeInsets.zero,
-                  constraints: BoxConstraints(
-                    minWidth: 40.w,
-                    minHeight: 40.h,
-                  ),
-                )
-              : SizedBox(width: 40.w),
-        ));
+      focusNode: dropFocus,
+      controller: controller.dropController,
+      labelText: 'Drop-off Location',
+      hintText: 'Enter drop-off location',
+      prefixIcon: SvgPicture.asset(
+        Assets.images.greyMap,
+        width: 20.w,
+        height: 20.h,
+      ),
+      suffixIcon: controller.showClearDrop.value
+          ? IconButton(
+        onPressed: () {
+          controller.clearDrop();
+          dropFocus.unfocus();
+        },
+        icon: Icon(
+          Icons.close,
+          color: Colors.grey[700],
+          size: 20.w,
+        ),
+        padding: EdgeInsets.zero,
+        constraints: BoxConstraints(
+          minWidth: 40.w,
+          minHeight: 40.h,
+        ),
+      )
+          : SizedBox(width: 40.w),
+    ));
   }
 
   Widget _buildNoteField() {
@@ -157,17 +164,13 @@ class SearchLocationScreen extends StatelessWidget {
           ),
         );
       }
-
-      if (controller.pickupPlaces.isEmpty) {
-        return SizedBox();
-      }
-
+      if (controller.pickupPlaces.isEmpty) return const SizedBox.shrink();
       return _buildPlaceList(
         places: controller.pickupPlaces,
-        onSelect: (place) {
-          controller.selectPickup(place);
+        onSelect: (place) async {
           pickupFocus.unfocus();
-          Future.delayed(Duration(milliseconds: 100), () {
+          await controller.selectPickup(place);
+          Future.delayed(const Duration(milliseconds: 150), () {
             dropFocus.requestFocus();
           });
         },
@@ -190,16 +193,12 @@ class SearchLocationScreen extends StatelessWidget {
           ),
         );
       }
-
-      if (controller.dropPlaces.isEmpty) {
-        return SizedBox();
-      }
-
+      if (controller.dropPlaces.isEmpty) return const SizedBox.shrink();
       return _buildPlaceList(
         places: controller.dropPlaces,
-        onSelect: (place) {
-          controller.selectDrop(place);
+        onSelect: (place) async {
           dropFocus.unfocus();
+          await controller.selectDrop(place);
         },
         title: 'Drop-off Suggestions',
         iconColor: Colors.red,
@@ -217,7 +216,7 @@ class SearchLocationScreen extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: EdgeInsets.only(left: 8.w, bottom: 8.h),
+          padding: EdgeInsets.only(left: 8.w, bottom: 8.h, top: 8.h),
           child: Text(
             title,
             style: TextStyle(
@@ -235,13 +234,13 @@ class SearchLocationScreen extends StatelessWidget {
               BoxShadow(
                 color: Colors.black.withOpacity(0.1),
                 blurRadius: 8,
-                offset: Offset(0, 2),
+                offset: const Offset(0, 2),
               ),
             ],
           ),
           child: ListView.separated(
             shrinkWrap: true,
-            physics: NeverScrollableScrollPhysics(),
+            physics: const NeverScrollableScrollPhysics(),
             itemCount: places.length,
             separatorBuilder: (_, __) => Divider(
               height: 1,
@@ -268,12 +267,12 @@ class SearchLocationScreen extends StatelessWidget {
                 ),
                 subtitle: place.secondaryText.isNotEmpty
                     ? Text(
-                        place.secondaryText,
-                        style: TextStyle(
-                          fontSize: 12.sp,
-                          color: Colors.grey[600],
-                        ),
-                      )
+                  place.secondaryText,
+                  style: TextStyle(
+                    fontSize: 12.sp,
+                    color: Colors.grey[600],
+                  ),
+                )
                     : null,
                 onTap: () => onSelect(place),
                 shape: RoundedRectangleBorder(
@@ -295,20 +294,16 @@ class SearchLocationScreen extends StatelessWidget {
         contentPadding: EdgeInsets.zero,
         insetPadding: EdgeInsets.symmetric(horizontal: 16.w),
         content: Obx(
-          () {
+              () {
             if (!controller.hasFare) return const SizedBox();
             return ClipRRect(
               borderRadius: BorderRadius.circular(12.r),
               child: BackdropFilter(
-                filter: ImageFilter.blur(
-                  sigmaX: 6,
-                  sigmaY: 6,
-                ),
+                filter: ImageFilter.blur(sigmaX: 6, sigmaY: 6),
                 child: Container(
                   width: double.infinity,
                   constraints: BoxConstraints(
-                    maxHeight: MediaQuery.of(context).size.height *
-                        0.9, // Limit height to 90% of screen
+                    maxHeight: MediaQuery.of(context).size.height * 0.9,
                   ),
                   padding: EdgeInsets.all(20.r),
                   decoration: BoxDecoration(
@@ -322,17 +317,14 @@ class SearchLocationScreen extends StatelessWidget {
                         color: Colors.black.withOpacity(0.1),
                         offset: const Offset(0, -4),
                         blurRadius: 6,
-                        spreadRadius: 0,
                       ),
                     ],
                   ),
                   child: SingleChildScrollView(
-                    // Make content scrollable
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        // ... rest of your dialog content remains the same
-                        // Header with close button
+                        // Header
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -345,9 +337,7 @@ class SearchLocationScreen extends StatelessWidget {
                               ),
                             ),
                             IconButton(
-                              onPressed: () {
-                                Navigator.pop(context);
-                              },
+                              onPressed: () => Navigator.pop(context),
                               icon: Icon(
                                 Icons.close,
                                 color: AppColors.blackColor,
@@ -362,11 +352,12 @@ class SearchLocationScreen extends StatelessWidget {
                           ],
                         ),
                         SizedBox(height: 16.h),
-
-                        // Trip distance row
+                        // Trip distance
                         Container(
                           padding: EdgeInsets.symmetric(
-                              horizontal: 8.w, vertical: 8.h),
+                            horizontal: 8.w,
+                            vertical: 8.h,
+                          ),
                           decoration: BoxDecoration(
                             color: AppColors.greenColor.withOpacity(0.1),
                             borderRadius: BorderRadius.circular(8.r),
@@ -395,8 +386,7 @@ class SearchLocationScreen extends StatelessWidget {
                           ),
                         ),
                         SizedBox(height: 16.h),
-
-                        // Location details
+                        // Locations
                         Container(
                           padding: EdgeInsets.all(12.w),
                           decoration: BoxDecoration(
@@ -406,22 +396,16 @@ class SearchLocationScreen extends StatelessWidget {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              // Pickup location row
                               Row(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Icon(
-                                    Icons.circle,
-                                    color: AppColors.greenColor,
-                                    size: 16.w,
-                                  ),
-                                  SizedBox(
-                                    width: 5.w,
-                                  ),
+                                  Icon(Icons.circle,
+                                      color: AppColors.greenColor, size: 16.w),
+                                  SizedBox(width: 5.w),
                                   Expanded(
                                     child: Column(
                                       crossAxisAlignment:
-                                          CrossAxisAlignment.start,
+                                      CrossAxisAlignment.start,
                                       children: [
                                         Text(
                                           'PICKUP',
@@ -434,12 +418,10 @@ class SearchLocationScreen extends StatelessWidget {
                                         SizedBox(height: 2.h),
                                         Text(
                                           controller.pickupController.text
-                                                  .isNotEmpty
+                                              .isNotEmpty
                                               ? controller.pickupController.text
                                               : ' ',
-                                          style: TextStyle(
-                                            fontSize: 13.sp,
-                                          ),
+                                          style: TextStyle(fontSize: 13.sp),
                                           maxLines: 2,
                                           overflow: TextOverflow.ellipsis,
                                         ),
@@ -448,8 +430,6 @@ class SearchLocationScreen extends StatelessWidget {
                                   ),
                                 ],
                               ),
-
-                              // Dotted line
                               Padding(
                                 padding: EdgeInsets.only(left: 6.w),
                                 child: Container(
@@ -458,24 +438,17 @@ class SearchLocationScreen extends StatelessWidget {
                                   color: Colors.grey[400],
                                 ),
                               ),
-                              SizedBox(
-                                height: 5,
-                              ),
-
-                              // Drop location row
+                              SizedBox(height: 5.h),
                               Row(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Icon(
-                                    Icons.location_pin,
-                                    color: Colors.red,
-                                    size: 16.w,
-                                  ),
+                                  Icon(Icons.location_pin,
+                                      color: Colors.red, size: 16.w),
                                   SizedBox(width: 5.w),
                                   Expanded(
                                     child: Column(
                                       crossAxisAlignment:
-                                          CrossAxisAlignment.start,
+                                      CrossAxisAlignment.start,
                                       children: [
                                         Text(
                                           'DROP',
@@ -488,12 +461,10 @@ class SearchLocationScreen extends StatelessWidget {
                                         SizedBox(height: 2.h),
                                         Text(
                                           controller.dropController.text
-                                                  .isNotEmpty
+                                              .isNotEmpty
                                               ? controller.dropController.text
                                               : ' ',
-                                          style: TextStyle(
-                                            fontSize: 13.sp,
-                                          ),
+                                          style: TextStyle(fontSize: 13.sp),
                                           maxLines: 2,
                                           overflow: TextOverflow.ellipsis,
                                         ),
@@ -506,11 +477,12 @@ class SearchLocationScreen extends StatelessWidget {
                           ),
                         ),
                         SizedBox(height: 16.h),
-
-                        // Fare row
+                        // Fare
                         Container(
                           padding: EdgeInsets.symmetric(
-                              horizontal: 12.w, vertical: 8.h),
+                            horizontal: 12.w,
+                            vertical: 8.h,
+                          ),
                           decoration: BoxDecoration(
                             color: Colors.grey[100],
                             borderRadius: BorderRadius.circular(8.r),
@@ -537,8 +509,7 @@ class SearchLocationScreen extends StatelessWidget {
                           ),
                         ),
                         SizedBox(height: 16.h),
-
-                        // Information section
+                        // Info section
                         Container(
                           padding: EdgeInsets.all(12.w),
                           decoration: BoxDecoration(
@@ -564,14 +535,13 @@ class SearchLocationScreen extends StatelessWidget {
                                     color: Colors.grey[700],
                                   ),
                                   children: [
-                                    TextSpan(text: '• If you are late, a '),
+                                    const TextSpan(text: '• If you are late, a '),
                                     TextSpan(
-                                      text:
-                                          '\$${dotenv.env['LATE_FINE_CHARGE']}/min',
-                                      style: TextStyle(
-                                          color: AppColors.errorColor),
+                                      text: '\$${dotenv.env["LATE_FINE_CHARGE"]}/min',
+                                      style: TextStyle(color: AppColors.errorColor),
                                     ),
-                                    TextSpan(text: ' delay fee will apply.'),
+                                    const TextSpan(
+                                        text: ' delay fee will apply.'),
                                   ],
                                 ),
                               ),
@@ -587,7 +557,6 @@ class SearchLocationScreen extends StatelessWidget {
                           ),
                         ),
                         SizedBox(height: 16.h),
-
                         Text(
                           'Do you want to continue?',
                           style: TextStyle(
@@ -596,15 +565,12 @@ class SearchLocationScreen extends StatelessWidget {
                           ),
                         ),
                         SizedBox(height: 16.h),
-
                         // Action buttons
                         Row(
                           children: [
                             Expanded(
                               child: ElevatedButton(
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                },
+                                onPressed: () => Navigator.pop(context),
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: Colors.grey[200],
                                   foregroundColor: Colors.grey[800],
@@ -624,55 +590,40 @@ class SearchLocationScreen extends StatelessWidget {
                             ),
                             SizedBox(width: 12.w),
                             Expanded(
-                              child: Obx(
-                                () {
-                                  return controller.isBookRideState.value ==
-                                          true
-                                      ? CustomLoader()
-                                      : ElevatedButton(
-                                          onPressed: () {
-                                            controller.bookRideHandler();
-                                            googleSearchLocationController
-                                                .isModalOn.value = true;
-                                            Navigator.pop(context);
-                                            Navigator.pop(context);
-                                            // Navigator.pop(context);
-                                            // // Add your confirm action here
-                                            // Get.snackbar(
-                                            //   'Success',
-                                            //   'Ride confirmed successfully!',
-                                            //   backgroundColor: AppColors.greenColor,
-                                            //   colorText: Colors.white,
-                                            //   snackPosition: SnackPosition.TOP,
-                                            // );
-                                            // controller.showPopUpStatus
-                                          },
-                                          style: ElevatedButton.styleFrom(
-                                            backgroundColor:
-                                                AppColors.greenColor,
-                                            foregroundColor: Colors.white,
-                                            padding: EdgeInsets.symmetric(
-                                                vertical: 14.h),
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(8.r),
-                                            ),
-                                          ),
-                                          child: Text(
-                                            'Yes, Send',
-                                            style: TextStyle(
-                                              fontSize: 14.sp,
-                                              fontWeight: FontWeight.w600,
-                                            ),
-                                          ),
-                                        );
-                                },
-                              ),
+                              child: Obx(() {
+                                return controller.isBookRideState.value
+                                    ? const CustomLoader()
+                                    : ElevatedButton(
+                                  onPressed: () {
+                                    controller.bookRideHandler();
+                                    googleSearchLocationController
+                                        .isModalOn.value = true;
+                                    Navigator.pop(context);
+                                    Navigator.pop(context);
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: AppColors.greenColor,
+                                    foregroundColor: Colors.white,
+                                    padding: EdgeInsets.symmetric(
+                                        vertical: 14.h),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius:
+                                      BorderRadius.circular(8.r),
+                                    ),
+                                  ),
+                                  child: Text(
+                                    'Yes, Send',
+                                    style: TextStyle(
+                                      fontSize: 14.sp,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                );
+                              }),
                             ),
                           ],
                         ),
-
-                        // Note section if exists
+                        // Note section
                         if (controller.noteController.text.isNotEmpty) ...[
                           SizedBox(height: 16.h),
                           Container(
@@ -683,18 +634,13 @@ class SearchLocationScreen extends StatelessWidget {
                             ),
                             child: Row(
                               children: [
-                                Icon(
-                                  Icons.note,
-                                  color: Colors.orange,
-                                  size: 18.w,
-                                ),
+                                Icon(Icons.note,
+                                    color: Colors.orange, size: 18.w),
                                 SizedBox(width: 8.w),
                                 Expanded(
                                   child: Text(
                                     controller.noteController.text,
-                                    style: TextStyle(
-                                      fontSize: 12.sp,
-                                    ),
+                                    style: TextStyle(fontSize: 12.sp),
                                     maxLines: 2,
                                     overflow: TextOverflow.ellipsis,
                                   ),
@@ -703,11 +649,9 @@ class SearchLocationScreen extends StatelessWidget {
                             ),
                           ),
                         ],
-
                         SizedBox(height: 12.h),
                         Divider(color: Colors.grey[300]),
                         SizedBox(height: 12.h),
-
                         // Estimated fare
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -729,7 +673,7 @@ class SearchLocationScreen extends StatelessWidget {
                             ),
                           ],
                         ),
-                        SizedBox(height: 8.h), // Add bottom padding
+                        SizedBox(height: 8.h),
                       ],
                     ),
                   ),
@@ -741,45 +685,6 @@ class SearchLocationScreen extends StatelessWidget {
       ),
     );
   }
-
-  // Widget _buildFareRow(String label, String value, IconData icon,
-  //     {Color color = Colors.grey}) {
-  //   return Row(
-  //     crossAxisAlignment: CrossAxisAlignment.start,
-  //     children: [
-  //       Icon(
-  //         icon,
-  //         size: 18.w,
-  //         color: color,
-  //       ),
-  //       SizedBox(width: 10.w),
-  //       Expanded(
-  //         child: Column(
-  //           crossAxisAlignment: CrossAxisAlignment.start,
-  //           children: [
-  //             Text(
-  //               label,
-  //               style: TextStyle(
-  //                 fontSize: 12.sp,
-  //                 color: Colors.grey[600],
-  //               ),
-  //             ),
-  //             SizedBox(height: 2.h),
-  //             Text(
-  //               value,
-  //               style: TextStyle(
-  //                 fontSize: 14.sp,
-  //                 fontWeight: FontWeight.w600,
-  //               ),
-  //               maxLines: 2,
-  //               overflow: TextOverflow.ellipsis,
-  //             ),
-  //           ],
-  //         ),
-  //       ),
-  //     ],
-  //   );
-  // }
 
   Widget _buildActionButton() {
     return Obx(() {
@@ -797,10 +702,6 @@ class SearchLocationScreen extends StatelessWidget {
             SizedBox(height: 12.h),
             TextButton(
               onPressed: () {
-                // Clear fare and recalculate
-                // controller.distance.value = '';
-                // controller.duration.value = '';
-                // controller.fare.value = 0.0;
                 pickupFocus.unfocus();
                 dropFocus.unfocus();
                 _buildFareCard(Get.context!);
@@ -819,21 +720,20 @@ class SearchLocationScreen extends StatelessWidget {
       } else {
         return CustomPrimaryButton(
           onHandler: () async {
-            // Check location permission
             final status =
-                await LocationPermissionService.checkAndRequestLocation();
+            await LocationPermissionService.checkAndRequestLocation();
 
             if (status != LocationStatus.granted) {
               showDialog(
                 context: Get.context!,
                 builder: (context) => AlertDialog(
-                  title: Text('Location Permission Required'),
-                  content: Text(
+                  title: const Text('Location Permission Required'),
+                  content: const Text(
                       'Please enable location permissions to calculate fare.'),
                   actions: [
                     TextButton(
                       onPressed: () => Get.back(),
-                      child: Text('OK'),
+                      child: const Text('OK'),
                     ),
                   ],
                 ),
@@ -847,28 +747,20 @@ class SearchLocationScreen extends StatelessWidget {
                 'Please select both pick-up and drop-off locations',
                 backgroundColor: Colors.orange,
                 colorText: Colors.white,
-                duration: Duration(seconds: 2),
+                duration: const Duration(seconds: 2),
               );
               return;
             }
 
-            // Calculate fare
             await controller.calculateFare();
 
-            // ✅ ADDED: Automatically open popup after fare calculation
             if (controller.hasFare) {
               _buildFareCard(Get.context!);
             }
           },
-          title:
-              controller.isLoadingFare.value ? 'Calculating...' : 'Find Ride',
+          title: controller.isLoadingFare.value ? 'Calculating...' : 'Find Ride',
         );
       }
     });
-  }
-
-  void dispose() {
-    pickupFocus.dispose();
-    dropFocus.dispose();
   }
 }

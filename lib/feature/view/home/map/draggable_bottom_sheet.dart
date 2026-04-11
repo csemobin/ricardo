@@ -1,17 +1,15 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:ricardo/app/utils/app_colors.dart';
-import 'package:ricardo/feature/models/socket/accept_ride_model.dart';
+import 'package:ricardo/feature/models/home/ride_status_model.dart';
 import 'package:ricardo/feature/view/home/link_export_file.dart';
-import 'package:ricardo/gen/assets.gen.dart';
-import 'package:ricardo/gen/fonts.gen.dart';
-import 'package:ricardo/widgets/glass_background_widget.dart';
+import 'package:ricardo/widgets/custom_text_field.dart';
 
 class DraggableBottomSheet extends StatefulWidget {
-  final AcceptRideModel? acceptRideModel;
+  final RideStatusModel? rideStatus;
+  final MapOPTController? controller;
 
-  const DraggableBottomSheet({super.key, this.acceptRideModel});
+  const DraggableBottomSheet(
+      {super.key, this.rideStatus, this.controller});
 
   @override
   State<DraggableBottomSheet> createState() => _DraggableBottomSheetState();
@@ -28,10 +26,10 @@ class _DraggableBottomSheetState extends State<DraggableBottomSheet> {
       // ✅ FIX 1: Required when used inside showModalBottomSheet
       builder: (context, scrollController) {
         return GlassBackgroundWidget(
+          blurNumber: 25,
           padding: EdgeInsets.zero,
           child: SingleChildScrollView(
-            controller: scrollController, // ✅ FIX 3: Attach controller here
-            // physics: const ClampingScrollPhysics(),
+            controller: scrollController,
             physics: AlwaysScrollableScrollPhysics(),
             child: Column(
               children: [
@@ -84,11 +82,11 @@ class _DraggableBottomSheetState extends State<DraggableBottomSheet> {
                               ),
                               SizedBox(width: 5.w),
                               Text(
-                                'Rider is on the way to pickup',
+                                 'Rider is on the way to pickup',
                                 style: TextStyle(
                                   fontSize: 14.sp,
-                                  fontWeight: FontWeight.w500,
-                                  color: AppColors.blackColor,
+                                  fontWeight: FontWeight.w600,
+                                  color: AppColors.darkColor,
                                   fontFamily: FontFamily.poppins,
                                 ),
                               ),
@@ -101,7 +99,7 @@ class _DraggableBottomSheetState extends State<DraggableBottomSheet> {
                               borderRadius: BorderRadius.circular(3),
                             ),
                             child: Text(
-                              '1 min',
+                              '100 min',
                               style: TextStyle(
                                 fontWeight: FontWeight.w500,
                                 fontSize: 12.sp,
@@ -136,14 +134,13 @@ class _DraggableBottomSheetState extends State<DraggableBottomSheet> {
                               ClipRRect(
                                 borderRadius: BorderRadius.circular(50),
                                 child: Image.network(
-                                  '${ApiUrls.imageBaseUrl}${widget.acceptRideModel?.driver?.driverImage}',
+                                  '${ApiUrls.imageBaseUrl}${widget.rideStatus?.driver?.image?.filename}',
                                   height: 62.h,
                                   width: 62.w,
                                   fit: BoxFit.cover,
                                   errorBuilder: (context, error, stackTrace) {
                                     return Image.asset(
-                                      'assets/images/default_driver.png',
-                                      // fallback image
+                                      Assets.images.defaultImage.path,
                                       height: 62.h,
                                       width: 62.w,
                                       fit: BoxFit.cover,
@@ -153,66 +150,84 @@ class _DraggableBottomSheetState extends State<DraggableBottomSheet> {
                               ),
                               SizedBox(width: 12.w),
 
-                              // Driver name, rating, trips, phone
+                              // ── Driver name, rating, trips, phone
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    '${widget.acceptRideModel?.driver?.driverName}',
+                                    '${widget.rideStatus?.driver?.name}',
                                     style: TextStyle(
                                       fontFamily: FontFamily.poppins,
-                                      fontSize: 14.sp,
+                                      fontSize: 16.sp,
                                       fontWeight: FontWeight.w600,
                                       color: AppColors.successColor,
                                     ),
                                   ),
-                                  Row(
-                                    children: [
-                                      Icon(
-                                        Icons.star,
-                                        color: AppColors.orangeColor,
-                                        size: 16,
-                                      ),
-                                      const SizedBox(width: 4),
-                                      Text(
-                                        '${widget.acceptRideModel?.driver?.totalRatings ?? 0} ( ${widget.acceptRideModel?.driver?.ratingAverage ?? 0.0} )',
-                                        style: TextStyle(
-                                          fontFamily: FontFamily.poppins,
-                                          fontSize: 12.sp,
-                                          fontWeight: FontWeight.w500,
-                                          color: AppColors.blackBText,
-                                        ),
-                                      ),
-                                      SizedBox(width: 8.w),
-                                      Container(
-                                        width: 2.w,
-                                        height: 15.h,
-                                        decoration: BoxDecoration(
-                                          color: Colors.black.withOpacity(0.30),
-                                        ),
-                                      ),
-                                      SizedBox(width: 8.w),
-                                      Text(
-                                        '${widget.acceptRideModel?.driver?.totalCompletedRides ?? 0} Trips',
-                                        style: TextStyle(
-                                          fontFamily: FontFamily.poppins,
-                                          fontSize: 12.sp,
-                                          fontWeight: FontWeight.w500,
-                                          color: AppColors.blackBText,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
+
+                                  // ✅ Extract variables once instead of repeating null checks
+                                  Builder(builder: (context) {
+                                    final totalRatings = widget.rideStatus
+                                            ?.driver?.totalRatings ??
+                                        0;
+                                    final ratingAverage = widget.rideStatus
+                                            ?.driver?.averageRating ??
+                                        0.0;
+                                    final totalRides = widget.rideStatus
+                                            ?.driver?.totalCompletedRides ??
+                                        0;
+
+                                    return Row(
+                                      children: [
+                                        if (totalRatings > 0) ...[
+                                          Icon(Icons.star,
+                                              color: AppColors.orangeColor,
+                                              size: 16),
+                                          const SizedBox(width: 4),
+                                          Text(
+                                            '$totalRatings ( $ratingAverage )',
+                                            style: TextStyle(
+                                              fontFamily: FontFamily.poppins,
+                                              fontSize: 14.sp,
+                                              fontWeight: FontWeight.w600,
+                                              color: AppColors.blackBText,
+                                            ),
+                                          ),
+                                        ],
+                                        if (totalRides > 0) ...[
+                                          SizedBox(width: 8.w),
+                                          Container(
+                                            width: 2.w,
+                                            height: 15.h,
+                                            decoration: BoxDecoration(
+                                              color: Colors.black
+                                                  .withOpacity(0.30),
+                                            ),
+                                          ),
+                                          SizedBox(width: 8.w),
+                                          Text(
+                                            '$totalRides Trips',
+                                            style: TextStyle(
+                                              fontFamily: FontFamily.poppins,
+                                              fontSize: 14.sp,
+                                              fontWeight: FontWeight.w500,
+                                              color: AppColors.blackBText,
+                                            ),
+                                          ),
+                                        ],
+                                      ],
+                                    );
+                                  }),
+
                                   Row(
                                     children: [
                                       Icon(Icons.call,
                                           color: AppColors.greenColor),
                                       const SizedBox(width: 4),
                                       Text(
-                                        '${widget.acceptRideModel?.driver?.driverPhone}',
+                                        '${widget.rideStatus?.driver?.phone}',
                                         style: TextStyle(
                                           fontFamily: FontFamily.poppins,
-                                          fontSize: 12.sp,
+                                          fontSize: 14.sp,
                                           fontWeight: FontWeight.w500,
                                           color: AppColors.blackBText,
                                         ),
@@ -226,22 +241,29 @@ class _DraggableBottomSheetState extends State<DraggableBottomSheet> {
 
                           // Phone call button (SVG icon)
                           GestureDetector(
-                            onTap: () {},
-                            child: Container(
-                              decoration: BoxDecoration(
-                                color: AppColors.whiteColor,
-                                borderRadius: BorderRadius.circular(50),
-                                border: Border.all(color: Colors.grey.shade200),
+                            onTap: () {
+                              launchUrl(Uri.parse(
+                                  "tel:${widget.rideStatus?.driver?.phone}"));
+                            },
+                            child: RepaintBoundary(
+                              // ✅ isolates rendering
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: AppColors.whiteColor,
+                                  borderRadius: BorderRadius.circular(50),
+                                  border:
+                                      Border.all(color: Colors.grey.shade200),
+                                ),
+                                child: SvgPicture.asset(
+                                  Assets.icons.driverCardPhone,
+                                ),
                               ),
-                              child: SvgPicture.asset(
-                                  Assets.icons.driverCardPhone),
                             ),
                           ),
                         ],
                       ),
 
-                      SizedBox(height: 10.h),
-                      SizedBox(height: 8.h),
+                      SizedBox(height: 20.h),
 
                       // ── Car info row ──
                       Row(
@@ -251,7 +273,7 @@ class _DraggableBottomSheetState extends State<DraggableBottomSheet> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                '${widget.acceptRideModel?.driverCar?.carName}',
+                                '${widget.rideStatus?.driverCar?.carName}',
                                 style: TextStyle(
                                   fontWeight: FontWeight.w500,
                                   fontFamily: FontFamily.poppins,
@@ -260,7 +282,7 @@ class _DraggableBottomSheetState extends State<DraggableBottomSheet> {
                                 ),
                               ),
                               Text(
-                                '${widget.acceptRideModel?.driverCar?.numberOfSeat} Seat',
+                                '${widget.rideStatus?.driverCar?.numberOfSeat} Seat',
                                 style: TextStyle(
                                   fontWeight: FontWeight.w500,
                                   fontFamily: FontFamily.poppins,
@@ -269,7 +291,7 @@ class _DraggableBottomSheetState extends State<DraggableBottomSheet> {
                                 ),
                               ),
                               Text(
-                                '${widget.acceptRideModel?.driverCar?.carPlateNumber}',
+                                '${widget.rideStatus?.driverCar?.carPlateNumber}',
                                 style: TextStyle(
                                   fontWeight: FontWeight.w500,
                                   fontFamily: FontFamily.poppins,
@@ -277,14 +299,28 @@ class _DraggableBottomSheetState extends State<DraggableBottomSheet> {
                                   color: AppColors.favoriteRitesCarText,
                                 ),
                               ),
-                              Text(
-                                '5 km away from you.',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.w500,
-                                  fontFamily: FontFamily.poppins,
-                                  fontSize: 14.sp,
-                                  color: AppColors.successColor,
+                              FutureBuilder<String>(
+                                future: DirectionsService.calculateDistance(
+                                  widget.rideStatus?.driver?.location
+                                      ?.coordinates?[0],
+                                  widget.rideStatus?.driver?.location
+                                      ?.coordinates?[1],
                                 ),
+                                builder: (context, snapshot) {
+                                  final distanceText =
+                                      snapshot.data ?? 'Calculating...';
+                                  return Text(
+                                    '$distanceText away from you.',
+                                    overflow: TextOverflow.ellipsis,
+                                    // ✅ safety for long text
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w500,
+                                      fontFamily: FontFamily.poppins,
+                                      fontSize: 16.sp,
+                                      color: AppColors.dottedBorderColor,
+                                    ),
+                                  );
+                                },
                               ),
                             ],
                           ),
@@ -299,54 +335,177 @@ class _DraggableBottomSheetState extends State<DraggableBottomSheet> {
                           ),
                         ],
                       ),
-                      SizedBox(height: 36.h),
-                      Column(
-                        children: [
-                          // ── Waiting time badge ──
-                          Container(
-                            height: 35,
-                            width: 156,
-                            padding: EdgeInsets.symmetric(
-                                vertical: 10.w, horizontal: 12.h),
-                            decoration: BoxDecoration(
-                              color: const Color(0xff1BB600).withOpacity(0.2),
-                              borderRadius: BorderRadius.circular(9.r),
+                      SizedBox(height: 32.h),
+                      CustomPrimaryButton(
+                          title: 'Provide a review',
+                          onHandler: () {
+                            Get.toNamed(
+                              AppRoutes.rateReviewDriver,
+                              arguments: {
+                                'name':
+                                    widget.rideStatus?.driver?.name,
+                                'driverId' : widget.rideStatus?.driverCar?.driverId,
+                                'rideId' : widget.rideStatus?.ride?.id
+                              },
+                            );
+                          }),
+                      SizedBox(
+                        height: 14.h,
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          showDialog(
+                            useSafeArea: false,
+                            barrierDismissible: false,
+                            barrierColor: Colors.white.withOpacity(0.1),
+                            context: context,
+                            builder: (context) => Dialog(
+                              backgroundColor: Colors.transparent,
+                              insetPadding: EdgeInsets.symmetric(
+                                horizontal: 24.w,
+                              ), // ✅ side padding only
+                              child: GlassBackgroundWidget(
+                                borderLeftRightRadius: 24,
+                                padding: EdgeInsets.all(20.r),
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  // ✅ wrap content height
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: [
+                                        InkWell(
+                                          child: Icon(
+                                            Icons.close,
+                                            color: AppColors.secondaryTextColor,
+                                            size: 22,
+                                          ),
+                                          onTap: () {
+                                            Navigator.pop(context);
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                    Text(
+                                      'Tips',
+                                      style: TextStyle(
+                                        fontSize: 22.sp,
+                                        fontWeight: FontWeight.w700,
+                                        fontFamily: FontFamily.poppins,
+                                        color: AppColors.primaryColor,
+                                      ),
+                                    ),
+                                    Text(
+                                      'Enjoyed your ride?',
+                                      style: TextStyle(
+                                          fontSize: 14.sp,
+                                          fontWeight: FontWeight.w400,
+                                          fontFamily: FontFamily.poppins,
+                                          color: AppColors.secondaryTextColor),
+                                    ),
+                                    SizedBox(
+                                      height: 34.h,
+                                    ),
+                                    CustomTextField(
+                                      labelText: 'Enter Amount',
+                                      hintText: 'Enter Amount',
+                                      filColor: AppColors.whiteColor,
+                                      controller:
+                                          widget.controller!.provideTips,
+                                    ),
+                                    Text(
+                                      'Tips will go completely to driver',
+                                      style: TextStyle(
+                                        fontFamily: FontFamily.poppins,
+                                        fontSize: 14.sp,
+                                        fontWeight: FontWeight.w400,
+                                        color: AppColors.secondaryTextColor,
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      height: 26.h,
+                                    ),
+                                    Obx(
+                                      () {
+                                        if (widget
+                                            .controller!.isLoading.value) {
+                                          return CircularProgressIndicator();
+                                        }
+                                        return CustomPrimaryButton(
+                                          title: 'Submit',
+                                          onHandler: () async {
+                                            String? rideId = widget
+                                                .rideStatus?.ride?.id;
+
+                                            if (rideId == null ||
+                                                rideId.isEmpty) {
+                                              final dataString =
+                                                  PrefsHelper.getString(
+                                                      'ride-accepted-data');
+
+                                              if (dataString != null) {
+                                                final Map<String, dynamic>
+                                                    dataMap = jsonDecode(
+                                                        await dataString);
+                                                rideId =
+                                                    dataMap['ride']?['_id'];
+                                              }
+                                            }
+
+                                            if (rideId == null ||
+                                                rideId.isEmpty) {
+                                              debugPrint(
+                                                  "Ride ID still null ❌");
+                                              Get.snackbar(
+                                                  "Error", "Ride ID not found");
+                                              return;
+                                            }
+
+                                            final success = await widget
+                                                .controller!
+                                                .provideTipsHandler(rideId);
+
+                                            if (success) {
+                                              Navigator.pop(context);
+                                              Get.snackbar("Success",
+                                                  "Tip sent successfully");
+                                            } else {
+                                              Get.snackbar("Error",
+                                                  "Failed to send tip");
+                                            }
+                                          },
+                                        );
+                                      },
+                                    ),
+                                  ],
+                                ),
+                              ),
                             ),
-                            child: Row(
-                              children: [
-                                Text(
-                                  'Waiting Time ',
-                                  style: TextStyle(fontSize: 12.sp),
-                                ),
-                                Text(
-                                  '(min)',
-                                  style: TextStyle(fontSize: 8.sp),
-                                ),
-                                Text(
-                                  ': 00:07',
-                                  style: TextStyle(
-                                    fontSize: 12.sp,
-                                    color: AppColors.greenColor,
-                                  ),
-                                ),
-                              ],
+                          );
+                        },
+                        child: AnimatedContainer(
+                          duration: Duration(milliseconds: 200),
+                          alignment: Alignment.center,
+                          width: double.maxFinite,
+                          height: 56.h,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(50.r),
+                            border: Border.all(
+                              color: Colors.green,
+                              width: 1,
                             ),
                           ),
-
-                          SizedBox(height: 17.h),
-
-                          // ── Bottom instruction text ──
-                          Text(
-                            'If you have entered the car, please confirm with your\n driver to start the ride in the app.',
+                          child: Text(
+                            'Provide a Tip',
                             textAlign: TextAlign.center,
                             style: TextStyle(
-                              fontSize: 12.sp,
-                              color: AppColors.greenColor,
+                              color: AppColors.primaryColor,
+                              fontSize: 16.sp,
                               fontWeight: FontWeight.w400,
                             ),
                           ),
-                        ],
-                      )
+                        ),
+                      ),
                     ],
                   ),
                 ),
