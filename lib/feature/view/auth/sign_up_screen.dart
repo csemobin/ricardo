@@ -77,7 +77,6 @@ class SignUpScreen extends StatelessWidget {
                   if (val == null || val.isEmpty) {
                     return 'Please confirm your password';
                   }
-                  // ✅ Fixed: Compare .text instead of .value
                   if (controller.passwordTEController.text != val) {
                     return 'Passwords do not match';
                   }
@@ -114,7 +113,6 @@ class SignUpScreen extends StatelessWidget {
                         ),
                         GestureDetector(
                           onTap: () {
-                            // Get.toNamed(AppRoutes.termsAndConditionScreen);
                             Get.toNamed( AppRoutes.legalPolicyScreen, arguments: {'title': 'Terms & Conditions', 'route' : 'terms'});
                           },
                           child: Text(
@@ -134,7 +132,6 @@ class SignUpScreen extends StatelessWidget {
                                 fontSize: 12.sp, color: AppColors.greenColor),
                           ),
                           onTap: () {
-                            // Get.toNamed(AppRoutes.privacyPolicyScreen);
                             Get.toNamed( AppRoutes.legalPolicyScreen, arguments: {'title': 'Privacy Policy', 'route' : 'privacy'});
                           },
                         ),
@@ -202,7 +199,7 @@ class SignUpScreen extends StatelessWidget {
     }
 
     if (!controller.isSelected.value) {
-      showToast('Please accept Terms and Privacy Policy');
+      showToast('Please Terms and Privacy Policy');
       return;
     }
 

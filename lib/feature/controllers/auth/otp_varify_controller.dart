@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:ricardo/routes/app_routes.dart';
 import 'package:ricardo/services/api_client.dart';
 import 'package:ricardo/services/api_urls.dart';
+import 'package:ricardo/app/helpers/snackbar_helper.dart';
 
 class OtpVerifyController extends GetxController {
   Timer? _timer;
@@ -27,9 +28,6 @@ class OtpVerifyController extends GetxController {
       otpText.value = pinTEController.text;
     });
   }
-  // void startTimerSafely() {
-  //   Future.microtask(() => startTimer());
-  // }
   void startTimer() {
     _isTimerActive.value = true;
     _secondsRemaining.value = 180;
@@ -57,7 +55,7 @@ class OtpVerifyController extends GetxController {
 
   Future<void> varifyOtp(String route, String reqEmail) async {
     if (pinTEController.text.length != 6) {
-      Get.snackbar('Error', 'Please enter 6 digit OTP');
+      showSnackbar('Error', 'Please enter 6 digit OTP');
       return;
     }
 
@@ -73,11 +71,11 @@ class OtpVerifyController extends GetxController {
       if (response.statusCode == 200 || response.statusCode == 201) {
         pinTEController.clear();
         Get.offAllNamed(AppRoutes.signInScreen);
-      }else{
-        Get.snackbar('Error', response.body['data']['message']);
+      } else {
+        showSnackbar('Error', response.body['data']['message']);
       }
     } catch (e) {
-      Get.snackbar('Error', 'Verification failed: ${e.toString()}');
+      debugPrint('Verification failed :${e.toString()}');
     } finally {
       isVarifyEmail.value = false;
     }
@@ -87,19 +85,17 @@ class OtpVerifyController extends GetxController {
     try {
       stopTimer();
       pinTEController.clear();
-
-      // final reqEmail = {"email": email};
       final response = await ApiClient.postData(
           ApiUrls.otpSendVerification, {"email": email});
 
       if (response.statusCode == 200) {
-        Get.snackbar('Success', 'OTP sent successfully!');
+        showSnackbar('Success', 'OTP sent successfully!');
       } else {
-        Get.snackbar('Error', response.body['data']['message']);
+        showSnackbar('Error', response.body['data']['message']);
       }
       startTimer();
     } catch (e) {
-      Get.snackbar('Error', 'Failed to resend OTP');
+      showSnackbar('Error', 'Failed to resend OTP');
     }
   }
 

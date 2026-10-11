@@ -41,7 +41,7 @@ class NoInternetMessageMap extends StatelessWidget {
                     fontFamily: FontFamily.poppins),
               ),
               Text(
-                'Go online to start accepting jobs. ',
+                'Go online to start accepting rides. ',
                 style: TextStyle(
                     fontSize: 12.sp,
                     fontWeight: FontWeight.w400,

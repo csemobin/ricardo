@@ -1,12 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:get/get.dart';
 import 'package:ricardo/app/helpers/helper_data.dart';
-import 'package:ricardo/app/utils/app_colors.dart';
 import 'package:ricardo/feature/view/home/link_export_file.dart';
-import 'package:ricardo/gen/assets.gen.dart';
-import 'package:ricardo/routes/app_routes.dart';
 import 'package:ricardo/widgets/custom_button.dart';
 import 'package:ricardo/widgets/custom_container.dart';
 import 'package:ricardo/widgets/custom_scaffold.dart';
@@ -83,7 +77,7 @@ class _OnBoardScreenState extends State<OnBoardScreen> {
                                 fontWeight: FontWeight.w700,
                                 color: AppColors.primaryColor,
                                 letterSpacing: 1,
-                                fontName: FontFamily.inter,
+                                fontName: FontFamily.poppins,
                               ),
                               CustomText(
                                 right: 30.w,
@@ -93,7 +87,7 @@ class _OnBoardScreenState extends State<OnBoardScreen> {
                                 fontSize: 14.sp,
                                 textHeight: 1.5,
                                 color: AppColors.secondaryTextColor,
-                                fontName: FontFamily.inter,
+                                fontName: FontFamily.poppins,
                                 fontWeight: FontWeight.w500,
                               ),
                               SizedBox(height: constraints.maxHeight * 0.15),
@@ -123,11 +117,8 @@ class _OnBoardScreenState extends State<OnBoardScreen> {
                     ),
                     GestureDetector(
                       onTap: () {
-                        _pageController.animateToPage(
-                          HelperData.onboardingData.length - 1,
-                          duration: const Duration(milliseconds: 100),
-                          curve: Curves.easeInOut,
-                        );
+                        PrefsHelper.setBool(AppConstants.onBoardKey, true);
+                        Get.offAllNamed(AppRoutes.authInitialScreen);
                       },
                       child: Text(
                         'Skip',
@@ -173,19 +164,20 @@ class _OnBoardScreenState extends State<OnBoardScreen> {
                           shape: BoxShape.circle,
                           child: SvgPicture.asset(Assets.icons.button),
                         ),
-                      if (currentIndex ==
-                          HelperData.onboardingData.length - 1)
+                      if (currentIndex == HelperData.onboardingData.length - 1)
                         CustomButton(
                           width: 170.w,
                           height: 60.h,
                           radius: 100.r,
-                          onPressed: () =>
-                              Get.offAllNamed(AppRoutes.authInitialScreen),
+                          onPressed: () {
+                            PrefsHelper.setBool(AppConstants.onBoardKey, true);
+                            Get.offAllNamed(AppRoutes.authInitialScreen);
+                          },
                           child: Ink(
                             decoration: BoxDecoration(
                               color: Colors.red,
                               borderRadius:
-                              BorderRadius.all(Radius.circular(100.r)),
+                                  BorderRadius.all(Radius.circular(100.r)),
                             ),
                             child: Container(
                               alignment: Alignment.center,
@@ -195,7 +187,9 @@ class _OnBoardScreenState extends State<OnBoardScreen> {
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  SizedBox(width: 10,),
+                                  SizedBox(
+                                    width: 10,
+                                  ),
                                   Text(
                                     'Get Started',
                                     style: TextStyle(

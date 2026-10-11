@@ -5,6 +5,7 @@ import 'package:ricardo/app/utils/app_country_list.dart';
 import 'package:ricardo/feature/controllers/wallet/payment_method_controller.dart';
 import 'package:ricardo/services/api_client.dart';
 import 'package:ricardo/services/api_urls.dart';
+import 'package:ricardo/app/helpers/snackbar_helper.dart';
 
 class AddCardController extends GetxController{
 
@@ -47,7 +48,7 @@ class AddCardController extends GetxController{
       cnt.fetchPaymentCardInfo();
       Get.back();
     }else{
-      Get.snackbar('Error', response.body['message'],snackPosition: SnackPosition.BOTTOM,backgroundColor: AppColors.errorColor);
+      showSnackbar('Error', response.body['message'],snackPosition: SnackPosition.BOTTOM,backgroundColor: AppColors.errorColor);
     }
     }catch(e){
       debugPrint(e.toString());

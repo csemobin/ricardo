@@ -7,6 +7,7 @@ import 'package:intl/intl.dart';
 import 'package:ricardo/feature/controllers/user_controller.dart';
 import 'package:ricardo/services/api_client.dart';
 import 'package:ricardo/services/api_urls.dart';
+import 'package:ricardo/app/helpers/snackbar_helper.dart';
 
 class ProfileUpdateController extends GetxController {
   final userController = Get.find<UserController>();
@@ -137,7 +138,7 @@ class ProfileUpdateController extends GetxController {
       if (response.statusCode == 200 || response.statusCode == 201) {
         await userController.fetchUser();
         Get.back();
-        Get.snackbar('Success', 'Profile updated successfully',
+        showSnackbar('Success', 'Profile updated successfully',
             snackPosition: SnackPosition.BOTTOM,
             backgroundColor: Colors.green,
             colorText: Colors.white);
@@ -146,14 +147,14 @@ class ProfileUpdateController extends GetxController {
         if (response.body?['data'] != null) {
           errorMessage = response.body['data']['message'] ?? errorMessage;
         }
-        Get.snackbar('Error', errorMessage,
+        showSnackbar('Error', errorMessage,
             snackPosition: SnackPosition.BOTTOM,
             backgroundColor: Colors.red,
             colorText: Colors.white);
       }
     } catch (e) {
       debugPrint('Error updating profile: $e');
-      Get.snackbar('Error', 'An error occurred: ${e.toString()}',
+      showSnackbar('Error', 'An error occurred: ${e.toString()}',
           snackPosition: SnackPosition.BOTTOM,
           backgroundColor: Colors.red,
           colorText: Colors.white);

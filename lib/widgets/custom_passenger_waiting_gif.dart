@@ -12,7 +12,7 @@ class CustomPassengerWaitingGif extends StatelessWidget {
       children: [
         Lottie.asset(Assets.lotties.timer, fit: BoxFit.cover),
         Text(
-          'Waiting for Passenger request...',
+          'Looking for rides ...',
           style: TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.w500,

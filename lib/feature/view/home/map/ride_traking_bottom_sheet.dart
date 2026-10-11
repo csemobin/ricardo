@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:ricardo/app/utils/app_colors.dart';
 import 'package:ricardo/feature/view/home/link_export_file.dart';
-import 'package:ricardo/gen/fonts.gen.dart';
 
 // ===== RIDE STATUS ENUM =====
 enum RideStatus { driverOnWay, driverArrived, riderArrive, provideReview }

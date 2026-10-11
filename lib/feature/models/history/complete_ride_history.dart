@@ -32,6 +32,7 @@ class Rides {
   String? cancellationReason;
   num? cancellationFine;
   String? reviewId;
+  String? driverName;
   double? totalPayAmount;
   String? acceptedAt;
   String? completeAt;
@@ -62,6 +63,7 @@ class Rides {
         this.cancellationReason,
         this.cancellationFine,
         this.reviewId,
+        this.driverName,
         this.totalPayAmount,
         this.acceptedAt,
         this.completeAt,
@@ -78,7 +80,13 @@ class Rides {
   Rides.fromJson(Map<String, dynamic> json) {
     sId = json['_id'];
     passenger = json['passenger'];
-    driver = json['driver'];
+    if (json['driver'] is String) {
+      driver = json['driver'];
+    } else if (json['driver'] is Map) {
+      final driverData = json['driver'] as Map<String, dynamic>;
+      driver = driverData['_id']?.toString() ?? driverData['id']?.toString();
+      driverName = driverData['name']?.toString();
+    }
     pickupAddress = json['pickupAddress'];
     destinationAddress = json['destinationAddress'];
     pickupLocation = json['pickupLocation'] != null
@@ -96,6 +104,7 @@ class Rides {
     cancellationReason = json['cancellationReason'];
     cancellationFine = json['cancellationFine'];
     reviewId = json['reviewId'];
+    driverName ??= json['driverName']?.toString();
     totalPayAmount = (json['totalPayAmount'] as num?)?.toDouble();
     acceptedAt = json['acceptedAt'];
     completeAt = json['completeAt'];

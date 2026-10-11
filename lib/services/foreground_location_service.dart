@@ -4,7 +4,6 @@ import 'package:geolocator/geolocator.dart';
 
 class ForegroundLocationService {
 
-  // ✅ Initialize - FIXED (removed 'id')
   static void initForegroundTask() {
     FlutterForegroundTask.init(
       androidNotificationOptions: AndroidNotificationOptions(
@@ -29,16 +28,13 @@ class ForegroundLocationService {
     );
   }
 
-  // ✅ Start - FIXED (returns bool, not ServiceRequestResult.error)
   static Future<bool> startLocationTracking() async {
-    // Check permission first
     LocationPermission permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied ||
         permission == LocationPermission.deniedForever) {
       return false;
     }
 
-    // ✅ FIXED - use startService with serviceId parameter
     final result = await FlutterForegroundTask.startService(
       serviceId: 100,
       notificationTitle: 'Faster pickups, safer rides',
@@ -52,13 +48,11 @@ class ForegroundLocationService {
     return true;
   }
 
-  // ✅ Stop - FIXED
   static Future<bool> stopLocationTracking() async {
     final result = await FlutterForegroundTask.stopService();
     return true;
   }
 
-  // ✅ Check if running
   static Future<bool> isRunningService() async {
     return await FlutterForegroundTask.isRunningService;
   }
@@ -88,7 +82,6 @@ class LocationTaskHandler extends TaskHandler {
     ).listen((Position position) {
       print('Location: ${position.latitude}, ${position.longitude}');
 
-      // Send to UI
       FlutterForegroundTask.sendDataToMain({
         'latitude': position.latitude,
         'longitude': position.longitude,

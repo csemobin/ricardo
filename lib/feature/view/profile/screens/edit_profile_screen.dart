@@ -1,14 +1,8 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get.dart';
-import 'package:ricardo/app/utils/app_colors.dart';
 import 'package:ricardo/feature/controllers/profile/profile_update_controller.dart';
 import 'package:ricardo/feature/view/home/link_export_file.dart';
-import 'package:ricardo/gen/assets.gen.dart';
-import 'package:ricardo/services/api_urls.dart';
-import 'package:ricardo/widgets/custom_primary_button.dart';
 import 'package:ricardo/widgets/custom_scaffold.dart';
 import 'package:ricardo/widgets/custom_text.dart';
 import 'package:ricardo/widgets/custom_text_field.dart';

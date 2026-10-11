@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:ricardo/routes/app_routes.dart';
 import 'package:ricardo/services/api_client.dart';
 import 'package:ricardo/services/api_urls.dart';
+import 'package:ricardo/app/helpers/snackbar_helper.dart';
 
 class ForgetPasswordController extends GetxController{
   final TextEditingController forgetPasswordTEController = TextEditingController();
@@ -19,7 +20,7 @@ class ForgetPasswordController extends GetxController{
       Get.offAllNamed(AppRoutes.forgetPasswordOtpVerifyScreen, arguments: {'email': forgetPasswordTEController.text.trim(),'route': 'forget_pass'});
       forgetPasswordTEController.clear();
     }else{
-      Get.snackbar('Error', response.body['message']);
+      showSnackbar('Error', response.body['message']);
     }
 
     isForgetPasswordStatus.value = false;

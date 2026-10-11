@@ -2,6 +2,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
+import 'package:ricardo/app/helpers/custom_location_helper.dart';
+import 'package:ricardo/feature/controllers/app_settings_controller.dart';
 import 'package:ricardo/feature/controllers/home/map/ride_controller.dart';
 import 'package:ricardo/feature/controllers/user_controller.dart';
 import 'package:ricardo/feature/models/home/place_suggestion.dart';
@@ -9,6 +11,7 @@ import 'package:ricardo/routes/app_routes.dart';
 import 'package:ricardo/services/api_client.dart';
 import 'package:ricardo/services/api_urls.dart';
 import 'package:ricardo/services/map_service.dart';
+import 'package:ricardo/app/helpers/snackbar_helper.dart';
 
 class GoogleSearchLocationController extends GetxController {
   // Text controllers
@@ -20,7 +23,7 @@ class GoogleSearchLocationController extends GetxController {
   final pickupPlaces = <PlaceSuggestion>[].obs;
   final dropPlaces = <PlaceSuggestion>[].obs;
 
-  // ✅ Explicit visibility flags
+  // Explicit visibility flags — the ONLY gate the UI should check
   RxBool showPickupSuggestions = false.obs;
   RxBool showDropSuggestions = false.obs;
 
@@ -37,6 +40,11 @@ class GoogleSearchLocationController extends GetxController {
   final selectedPickup = Rxn<PlaceDetails>();
   final selectedDrop = Rxn<PlaceDetails>();
 
+  // User's current location for search biasing
+  // This ensures location search results are restricted to the user's city area (50km radius)
+  double? userLatitude;
+  double? userLongitude;
+
   // Fare calculation results
   final distance = ''.obs;
   final duration = ''.obs;
@@ -48,39 +56,68 @@ class GoogleSearchLocationController extends GetxController {
   RxBool showPopUpStatus = false.obs;
   RxBool isBookRideState = false.obs;
 
-  // Timers for search delay
+  // Timers for search debounce
   Timer? _pickupTimer;
   Timer? _dropTimer;
 
-  bool _isSelectingPickup = false;
-  bool _isSelectingDrop = false;
+  // Generation counters — incremented on every selection/clear so any
+  // in-flight network result that arrives late is discarded.
+  int _pickupGen = 0;
+  int _dropGen = 0;
+
+  // When true, the field has a confirmed selection and typing hasn't started
+  // yet, so listener changes must NOT trigger a search.
+  bool _pickupLocked = false;
+  bool _dropLocked = false;
+
+  // The confirmed text at the time of selection. If the listener fires and
+  // the text still equals this, it was NOT a real user keystroke.
+  String _confirmedPickupText = '';
+  String _confirmedDropText = '';
 
   @override
   void onInit() {
     super.onInit();
-    _setupListeners();
+    _getUserCurrentLocation();
+    pickupController.addListener(_pickupListener);
+    dropController.addListener(_dropListener);
   }
 
-  // ✅ Named listeners so they can be removed/added
-  void _pickupListener() {
-    final hasText = pickupController.text.isNotEmpty;
-    if (showClearPickup.value != hasText) showClearPickup.value = hasText;
-    if (!_isSelectingPickup) {
-      _startPickupSearch();
+  Future<void> _getUserCurrentLocation() async {
+    try {
+      final position = await CustomLocationHelper.getCurrentLocation();
+      userLatitude = position.latitude;
+      userLongitude = position.longitude;
+      debugPrint('User location for search: $userLatitude, $userLongitude');
+    } catch (e) {
+      debugPrint('Failed to get user location for search: $e');
+      // Continue without location bias if location fetch fails
     }
+  }
+
+  void _pickupListener() {
+    final text = pickupController.text;
+    showClearPickup.value = text.isNotEmpty;
+
+    // If locked and the text hasn't changed from the confirmed selection,
+    // this is a spurious listener call — ignore it.
+    if (_pickupLocked && text == _confirmedPickupText) return;
+
+    // User started typing something different — unlock and search.
+    _pickupLocked = false;
+    _confirmedPickupText = '';
+    _startPickupSearch();
   }
 
   void _dropListener() {
-    final hasText = dropController.text.isNotEmpty;
-    if (showClearDrop.value != hasText) showClearDrop.value = hasText;
-    if (!_isSelectingDrop) {
-      _startDropSearch();
-    }
-  }
+    final text = dropController.text;
+    showClearDrop.value = text.isNotEmpty;
 
-  void _setupListeners() {
-    pickupController.addListener(_pickupListener);
-    dropController.addListener(_dropListener);
+    if (_dropLocked && text == _confirmedDropText) return;
+
+    _dropLocked = false;
+    _confirmedDropText = '';
+    _startDropSearch();
   }
 
   void _startPickupSearch() {
@@ -98,99 +135,131 @@ class GoogleSearchLocationController extends GetxController {
   }
 
   Future<void> _searchPickup(String query) async {
+    final gen = ++_pickupGen;
+
     if (query.isEmpty) {
       pickupPlaces.clear();
-      showPickupSuggestions.value = false; // ✅
+      showPickupSuggestions.value = false;
       isLoadingPickup.value = false;
       return;
     }
 
     isLoadingPickup.value = true;
     try {
-      final results = await PlacesService.getPlaceSuggestions(query);
+      final results = await PlacesService.getPlaceSuggestions(
+        query,
+        latitude: userLatitude,
+        longitude: userLongitude,
+        radiusInMeters: 50000, // 50km radius
+      );
+      if (gen != _pickupGen) return; // stale result, discard
       pickupPlaces.value = results;
-      showPickupSuggestions.value = results.isNotEmpty; // ✅
+      showPickupSuggestions.value = results.isNotEmpty;
     } finally {
-      isLoadingPickup.value = false;
+      if (gen == _pickupGen) isLoadingPickup.value = false;
     }
   }
 
   Future<void> _searchDrop(String query) async {
+    final gen = ++_dropGen;
+
     if (query.isEmpty) {
       dropPlaces.clear();
-      showDropSuggestions.value = false; // ✅
+      showDropSuggestions.value = false;
       isLoadingDrop.value = false;
       return;
     }
 
     isLoadingDrop.value = true;
     try {
-      final results = await PlacesService.getPlaceSuggestions(query);
+      final results = await PlacesService.getPlaceSuggestions(
+        query,
+        latitude: userLatitude,
+        longitude: userLongitude,
+        radiusInMeters: 50000, // 50km radius
+      );
+      if (gen != _dropGen) return; // stale result, discard
       dropPlaces.value = results;
-      showDropSuggestions.value = results.isNotEmpty; // ✅
+      showDropSuggestions.value = results.isNotEmpty;
     } finally {
-      isLoadingDrop.value = false;
+      if (gen == _dropGen) isLoadingDrop.value = false;
     }
   }
 
   Future<void> selectPickup(PlaceSuggestion place) async {
-    _isSelectingPickup = true;
+    // 1. Cancel any pending debounce timer.
     _pickupTimer?.cancel();
 
-    // ✅ Hide suggestions immediately
-    pickupPlaces.clear();
+    // 2. Invalidate any in-flight network request.
+    ++_pickupGen;
+
+    // 3. Hide suggestions and spinner immediately — synchronous, instant.
     showPickupSuggestions.value = false;
+    isLoadingPickup.value = false;
+    pickupPlaces.clear();
 
-    // ✅ Remove listener before setting text
-    pickupController.removeListener(_pickupListener);
+    // 4. Set text without triggering a search by locking first.
+    _pickupLocked = true;
+    _confirmedPickupText = place.description;
     pickupController.text = place.description;
-    pickupController.addListener(_pickupListener);
-
     showClearPickup.value = true;
-    _isSelectingPickup = false;
 
-    final details = await PlacesService.getPlaceDetails(place.placeId);
-    selectedPickup.value = details;
+    // 5. Fetch place details in the background.
+    try {
+      final details = await PlacesService.getPlaceDetails(place.placeId);
+      selectedPickup.value = details;
+    } catch (_) {
+      // Keep the text even if details fetch fails
+    }
   }
 
   Future<void> selectDrop(PlaceSuggestion place) async {
-    _isSelectingDrop = true;
     _dropTimer?.cancel();
+    ++_dropGen;
 
-    // ✅ Hide suggestions immediately
-    dropPlaces.clear();
     showDropSuggestions.value = false;
+    isLoadingDrop.value = false;
+    dropPlaces.clear();
 
-    // ✅ Remove listener before setting text
-    dropController.removeListener(_dropListener);
+    _dropLocked = true;
+    _confirmedDropText = place.description;
     dropController.text = place.description;
-    dropController.addListener(_dropListener);
-
     showClearDrop.value = true;
-    _isSelectingDrop = false;
 
-    final details = await PlacesService.getPlaceDetails(place.placeId);
-    selectedDrop.value = details;
+    try {
+      final details = await PlacesService.getPlaceDetails(place.placeId);
+      selectedDrop.value = details;
+    } catch (_) {
+      // Keep the text even if details fetch fails
+    }
   }
 
   void clearPickup() {
-    pickupController.removeListener(_pickupListener);
-    pickupController.clear();
-    pickupController.addListener(_pickupListener);
+    ++_pickupGen;
+    _pickupTimer?.cancel();
+    _pickupLocked = false;
+    _confirmedPickupText = '';
+
+    pickupController.text = '';
     showClearPickup.value = false;
     pickupPlaces.clear();
-    showPickupSuggestions.value = false; // ✅
+    showPickupSuggestions.value = false;
+    isLoadingPickup.value = false;
     selectedPickup.value = null;
     _clearFare();
   }
 
   void clearDrop() {
-    dropController.removeListener(_dropListener);
-    dropController.clear();
-    dropController.addListener(_dropListener);
+    ++_dropGen;
+    _dropTimer?.cancel();
+    _dropLocked = false;
+    _confirmedDropText = '';
+
+    dropController.text = '';
     showClearDrop.value = false;
     dropPlaces.clear();
-    showDropSuggestions.value = false; // ✅
+    showDropSuggestions.value = false;
+    isLoadingDrop.value = false;
     selectedDrop.value = null;
     _clearFare();
   }
@@ -215,13 +284,18 @@ class GoogleSearchLocationController extends GetxController {
 
   Future<void> calculateFare() async {
     if (!canCalculateFare) {
-      Get.snackbar('Error', 'Please select both locations');
+      showSnackbar('Error', 'Please select both locations');
       return;
     }
 
     isLoadingFare.value = true;
 
     try {
+      final appSettings = Get.find<AppSettingsController>();
+      if (appSettings.settings.value == null) {
+        await appSettings.fetchSettings();
+      }
+
       final pickup = selectedPickup.value!;
       final drop = selectedDrop.value!;
 
@@ -231,10 +305,8 @@ class GoogleSearchLocationController extends GetxController {
         dropLat: drop.lat,
         dropLng: drop.lng,
       );
-
-      if (apiResponse != null) {
+      if (apiResponse != null && _updateFareFromResponse(apiResponse)) {
         showPopUpStatus.value = true;
-        _updateFareFromResponse(apiResponse);
       }
     } finally {
       isLoadingFare.value = false;
@@ -269,25 +341,49 @@ class GoogleSearchLocationController extends GetxController {
     return null;
   }
 
-  void _updateFareFromResponse(Map<String, dynamic> response) {
+  bool _updateFareFromResponse(Map<String, dynamic> response) {
     try {
-      final data = response['rows']?[0]?['elements']?[0];
+      final apiStatus = response['status'];
+      if (apiStatus != 'OK') {
+        final errorMsg = response['error_message'] ?? 'no error_message field';
+        debugPrint(
+            'Distance Matrix API error: status=$apiStatus, message=$errorMsg');
+        _clearFare();
+        return false;
+      }
 
-      if (data == null || data['status'] != 'OK') {
-        debugPrint('No valid distance data');
-        return;
+      final rows = response['rows'];
+      if (rows is! List || rows.isEmpty) {
+        _clearFare();
+        return false;
+      }
+
+      final firstRow = rows.first;
+      if (firstRow is! Map<String, dynamic>) {
+        _clearFare();
+        return false;
+      }
+
+      final elements = firstRow['elements'];
+      if (elements is! List || elements.isEmpty) {
+        _clearFare();
+        return false;
+      }
+
+      final data = elements.first;
+      if (data is! Map<String, dynamic> || data['status'] != 'OK') {
+        _clearFare();
+        return false;
       }
 
       distance.value = data['distance']?['text'] ?? '';
       duration.value = data['duration']?['text'] ?? '';
 
       final distanceInMeters = (data['distance']?['value'] ?? 0).toDouble();
-
       sendingMetersValue.value = distanceInMeters;
 
       final distanceInMiles = distanceInMeters / 1609.34;
-      final milesRateStr = dotenv.env['MILES_FARE'];
-      final milesRate = double.tryParse(milesRateStr ?? '') ?? 1;
+      final milesRate = Get.find<AppSettingsController>().perMilePrice;
 
       fare.value = double.parse(
         (distanceInMiles * milesRate).toStringAsFixed(2),
@@ -296,9 +392,11 @@ class GoogleSearchLocationController extends GetxController {
       debugPrint('Distance: ${distance.value}');
       debugPrint('Duration: ${duration.value}');
       debugPrint('Fare: \$${fare.value}');
+      return true;
     } catch (e) {
       debugPrint('Error updating fare: $e');
-      fare.value = 0.0;
+      _clearFare();
+      return false;
     }
   }
 
@@ -339,7 +437,7 @@ class GoogleSearchLocationController extends GetxController {
         cntTwo.rideId.value = id;
         cntTwo.fetchRiderData(id);
       } else {
-        Get.snackbar('Error', response.body['message']);
+        showSnackbar('Error', response.body['message']);
       }
     } catch (e) {
       debugPrint(e.toString());
@@ -349,22 +447,25 @@ class GoogleSearchLocationController extends GetxController {
   }
 
   void cleanField() {
-    pickupController.removeListener(_pickupListener);
-    dropController.removeListener(_dropListener);
+    _pickupTimer?.cancel();
+    _dropTimer?.cancel();
+    _pickupLocked = false;
+    _dropLocked = false;
+    _confirmedPickupText = '';
+    _confirmedDropText = '';
 
-    pickupController.clear();
-    dropController.clear();
+    pickupController.text = '';
+    dropController.text = '';
     noteController.clear();
     pickupPlaces.clear();
     dropPlaces.clear();
     showPickupSuggestions.value = false;
     showDropSuggestions.value = false;
+    showClearPickup.value = false;
+    showClearDrop.value = false;
     selectedPickup.value = null;
     selectedDrop.value = null;
     _clearFare();
-
-    pickupController.addListener(_pickupListener);
-    dropController.addListener(_dropListener);
   }
 
   @override

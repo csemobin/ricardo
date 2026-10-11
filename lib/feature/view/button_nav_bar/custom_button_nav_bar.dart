@@ -35,57 +35,46 @@ class CustomButtonNavBar extends GetView<CustomBottomNavBarController> {
   @override
   Widget build(BuildContext context) {
     return Obx(() {
-      // Get controllers
       final googleSLController = Get.find<GoogleSearchLocationController>();
       final userCnt = Get.find<UserController>();
       final mapOPTController = Get.find<MapOPTController>();
       final rideCnt = Get.find<RideController>();
 
-      final isRideAccepted = userCnt.userModel.value?.userProfile?.role ==
-          AppConstants.passenger &&
-          (rideCnt.acceptRideModel.value?.isRideAccepted == true ||
-              mapOPTController.rideStatusData.value?.acceptRide == true ||
-              mapOPTController.rideStatusData.value?.ongoingRide == true ||
-              mapOPTController.rideStatusData.value?.arrivingRide == true ||
-              mapOPTController.rideStatusData.value?.driverCancel == true ||
-              mapOPTController.rideStatusData.value?.passengerCancel ==
-                  true ||
-              mapOPTController.rideStatusData.value?.completeRide == true);
+      final role = userCnt.userModel.value?.userProfile?.role;
+      final isPassenger = role == AppConstants.passenger;
 
-
-      final isRideAcceptedRideCnt = rideCnt.isRideAccepted.value;
-
-      // Determine if navigation bar should be visible
+      // ── only apply passenger hide logic for passenger role ────────────
       bool showNavBar = true;
 
-      // Hide navigation bar when:
-      // 1. Modal is on AND
-      // 2. View in map is true AND
-      // 3. View in map return is false
-      if (googleSLController.isModalOn.value == true &&
-          rideCnt.viewInMap.value == true &&
-          rideCnt.viewInMapReturn.value == false) {
-        showNavBar = false;
-      }
+      if (isPassenger) {
+        final rideStatus = mapOPTController.rideStatusData.value;
+        final isModalShowing = googleSLController.isModalOn.value;
+        final inMapFullscreen = rideCnt.viewInMap.value == false;
+        // completeRide keeps the bar hidden behind the completion card; the
+        // card's "Back to Home" button is what returns the passenger to it.
+        final rideInProgress =
+            rideCnt.isRideAccepted.value == true ||
+            rideStatus?.acceptRide == true ||
+            rideStatus?.ongoingRide == true ||
+            rideStatus?.arrivingRide == true ||
+            rideStatus?.startRide == true ||
+            rideStatus?.completeRide == true;
 
-      // Also hide when viewInMap is false (map fullscreen mode)
-      if (rideCnt.viewInMap.value == false) {
-        showNavBar = false;
-      }
-
-      if (isRideAcceptedRideCnt || isRideAccepted) {
-        showNavBar = false;
+        if (isModalShowing || inMapFullscreen || rideInProgress) {
+          showNavBar = false;
+        }
       }
 
       return Scaffold(
         extendBodyBehindAppBar: true,
         extendBody: true,
         backgroundColor: Colors.transparent,
-        body: _screenList[controller.selectedIndex.value],
-        floatingActionButtonLocation:
-        FloatingActionButtonLocation.centerFloat,
-        floatingActionButtonAnimator:
-        FloatingActionButtonAnimator.noAnimation,
+        body: IndexedStack(
+          index: controller.selectedIndex.value,
+          children: _screenList,
+        ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+        floatingActionButtonAnimator: FloatingActionButtonAnimator.noAnimation,
         floatingActionButton: Visibility(
           visible: showNavBar,
           child: Container(
@@ -118,7 +107,7 @@ class CustomButtonNavBar extends GetView<CustomBottomNavBarController> {
                     duration: const Duration(milliseconds: 400),
                     curve: Curves.easeIn,
                     padding:
-                    EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+                        EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
                     decoration: BoxDecoration(
                       color: isSelected ? Colors.white : Colors.transparent,
                       borderRadius: BorderRadius.circular(20.r),

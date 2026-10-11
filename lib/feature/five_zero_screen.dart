@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:ricardo/feature/controllers/auth/sign_in_controller.dart';
 import 'package:ricardo/services/api_client.dart';
-import 'package:ricardo/services/api_urls.dart';
+import 'package:ricardo/feature/view/home/link_export_file.dart';
 
 class FiveZeroScreen extends StatefulWidget {
   const FiveZeroScreen({super.key});
-
 
   @override
   State<FiveZeroScreen> createState() => _FiveZeroScreenState();
@@ -12,60 +12,81 @@ class FiveZeroScreen extends StatefulWidget {
 
 class _FiveZeroScreenState extends State<FiveZeroScreen> {
   bool _isRetrying = false;
+  Timer? _autoRetryTimer;
+
+  @override
+  void initState() {
+    super.initState();
+
+    // 🔁 Auto retry every 5 seconds
+    _autoRetryTimer = Timer.periodic(const Duration(seconds: 5), (timer) {
+      if (!_isRetrying) {
+        _retryConnection();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _autoRetryTimer?.cancel();
+    super.dispose();
+  }
 
   Future<void> _retryConnection() async {
     if (_isRetrying) return;
 
-    setState(() {
-      _isRetrying = true;
-    });
+    setState(() => _isRetrying = true);
 
     try {
-      final response = await ApiClient.getData(ApiUrls.imageBaseUrl);
+      final response = await ApiClient
+          .getDataWithoutVersion(ApiUrls.serverHealth)
+          .timeout(const Duration(seconds: 5));
 
       if (response.statusCode == 200) {
         _onServerOnline();
         return;
-      }
-
-      if (mounted) {
-        setState(() {
-          _isRetrying = false;
-        });
+      } else {
         _showMessage('Server is still down. Please try again.');
       }
+    } on TimeoutException {
+      _showMessage('Server not responding (timeout).');
     } catch (e) {
+      _showMessage('No internet or connection failed.');
+    } finally {
       if (mounted) {
-        setState(() {
-          _isRetrying = false;
-        });
-        _showMessage('Connection failed. Please try again.');
+        setState(() => _isRetrying = false);
       }
     }
   }
 
   void _onServerOnline() {
+    _autoRetryTimer?.cancel();
+
     _showMessage('Server is back online! Redirecting...', isSuccess: true);
-    Future.delayed(const Duration(milliseconds: 1500), () {
+
+    Future.delayed(const Duration(milliseconds: 1200), () {
       if (mounted) {
-        // PrefsHelper.remove(AppConstants.bearerToken);
-        // PrefsHelper.clearAllDatas();
-        // Get.offAllNamed(AppRoutes.loginScreen);
+        final cnt = Get.find<SignInController>();
+        cnt.logOut();
+        Get.offAllNamed(AppRoutes.signInScreen); // go back to app
       }
     });
   }
 
   void _showMessage(String message, {bool isSuccess = false}) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: isSuccess ? Colors.green : Colors.grey.shade800,
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(
+        SnackBar(
+          content: Text(message),
+          backgroundColor: isSuccess ? Colors.green : Colors.grey.shade800,
+          behavior: SnackBarBehavior.floating,
+          duration: const Duration(seconds: 2),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8),
+          ),
         ),
-      ),
-    );
+      );
   }
 
   @override
@@ -79,7 +100,7 @@ class _FiveZeroScreenState extends State<FiveZeroScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                // Server icon
+                // 🔌 Icon
                 Container(
                   padding: const EdgeInsets.all(24),
                   decoration: BoxDecoration(
@@ -95,7 +116,7 @@ class _FiveZeroScreenState extends State<FiveZeroScreen> {
 
                 const SizedBox(height: 40),
 
-                // Error code
+                // 🔢 Code
                 Text(
                   '502',
                   style: TextStyle(
@@ -108,7 +129,7 @@ class _FiveZeroScreenState extends State<FiveZeroScreen> {
 
                 const SizedBox(height: 8),
 
-                // Error message
+                // 📛 Title
                 Text(
                   'Server Unavailable',
                   style: TextStyle(
@@ -120,9 +141,9 @@ class _FiveZeroScreenState extends State<FiveZeroScreen> {
 
                 const SizedBox(height: 16),
 
-                // Description
+                // 📄 Description
                 Text(
-                  'We\'re experiencing technical difficulties.\nPlease try again in a moment.',
+                  'We\'re experiencing technical difficulties.\nPlease wait while we reconnect automatically.',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 15,
@@ -133,23 +154,18 @@ class _FiveZeroScreenState extends State<FiveZeroScreen> {
 
                 const SizedBox(height: 48),
 
-                // Retry button or loading
+                // 🔄 Loading or Button
                 if (_isRetrying)
                   Column(
                     children: [
-                      SizedBox(
+                      const SizedBox(
                         width: 24,
                         height: 24,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2.5,
-                          valueColor: AlwaysStoppedAnimation<Color>(
-                            Colors.grey.shade700,
-                          ),
-                        ),
+                        child: CircularProgressIndicator(strokeWidth: 2.5),
                       ),
                       const SizedBox(height: 16),
                       Text(
-                        'Checking server status...',
+                        'Checking server...',
                         style: TextStyle(
                           color: Colors.grey.shade500,
                           fontSize: 13,
@@ -202,8 +218,6 @@ class _FiveZeroScreenState extends State<FiveZeroScreen> {
                   height: 1,
                   color: Colors.grey.shade300,
                 ),
-
-                const SizedBox(height: 24),
               ],
             ),
           ),

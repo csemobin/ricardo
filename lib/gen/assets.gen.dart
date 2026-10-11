@@ -54,9 +54,6 @@ class $AssetsIconsGen {
 class $AssetsImagesGen {
   const $AssetsImagesGen();
 
-  /// File path: assets/images/Location.svg
-  String get location => 'assets/images/Location.svg';
-
   /// File path: assets/images/Vector.png
   AssetGenImage get vector => const AssetGenImage('assets/images/Vector.png');
 
@@ -180,6 +177,9 @@ class $AssetsImagesGen {
   AssetGenImage get liveArea =>
       const AssetGenImage('assets/images/live_area.png');
 
+  /// File path: assets/images/location.svg
+  String get location => 'assets/images/location.svg';
+
   /// File path: assets/images/location_black_marker.png
   AssetGenImage get locationBlackMarker =>
       const AssetGenImage('assets/images/location_black_marker.png');
@@ -294,9 +294,9 @@ class $AssetsImagesGen {
   String get settingsProfileScreen =>
       'assets/images/settings-profile-screen.svg';
 
-  /// File path: assets/images/splash_background.jpg
+
   AssetGenImage get splashBackground =>
-      const AssetGenImage('assets/images/splash_background.jpg');
+      const AssetGenImage('assets/images/splash_background.png');
 
   /// File path: assets/images/support-car-image.png
   AssetGenImage get supportCarImage =>
@@ -356,7 +356,6 @@ class $AssetsImagesGen {
 
   /// List of all assets
   List<dynamic> get values => [
-    location,
     vector,
     activeHistory,
     activeHome,
@@ -392,6 +391,7 @@ class $AssetsImagesGen {
     historyIcon,
     homeIcon,
     liveArea,
+    location,
     locationBlackMarker,
     locationMarker,
     locatioonRedMarker,

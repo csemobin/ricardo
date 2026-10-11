@@ -1,8 +1,6 @@
 import 'dart:io';
-
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
@@ -52,18 +50,10 @@ class UploadDrivingLicenseScreen extends StatelessWidget {
                   controller: controller.licenseNoTEController,
                   labelText: 'Driving License No',
                   hintText: 'Enter your driving license number',
-                  keyboardType: TextInputType.number,
-                  inputFormatter: <TextInputFormatter>[
-                    FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
-                    FilteringTextInputFormatter.digitsOnly,
-                    LengthLimitingTextInputFormatter(16),
-                  ],
+                  keyboardType: TextInputType.text,
                   validator: (val) {
                     if (val == null || val.isEmpty) {
                       return "Please enter driving license number";
-                    }
-                    if (val.length != 16) {
-                      return "Driving License No must be exactly 16 digits";
                     }
                     return null;
                   },
@@ -88,12 +78,13 @@ class UploadDrivingLicenseScreen extends StatelessWidget {
                 ),
 
                 SizedBox(height: 50.h),
+                _buildSubmitButton(),
+                SizedBox(height: 20.h,)
               ],
             ),
           ),
         ),
       ),
-      bottomNavigationBar: _buildSubmitButton(),
     );
   }
 
@@ -186,21 +177,17 @@ class UploadDrivingLicenseScreen extends StatelessWidget {
     );
   }
 
-  // Build submit button
   Widget _buildSubmitButton() {
     return SafeArea(
-      child: Padding(
-        padding: EdgeInsets.symmetric(vertical: 20.h, horizontal: 24.w),
-        child: Obx(() {
-          final bool isLoading = controller.isUploadDrivingLicenseController.value;
-          final bool isValid = controller.isFormValid.value;
+      child: Obx(() {
+        final bool isLoading = controller.isUploadDrivingLicenseController.value;
+        final bool isValid = controller.isFormValid.value;
 
-          return CustomPrimaryButton(
-            title: isLoading ? 'Uploading...' : 'Submit',
-            onHandler: isValid && !isLoading ? _onSubmit : null,
-          );
-        }),
-      ),
+        return CustomPrimaryButton(
+          title: isLoading ? 'Uploading...' : 'Submit',
+          onHandler: isValid && !isLoading ? _onSubmit : null,
+        );
+      }),
     );
   }
 

@@ -18,7 +18,6 @@ class FirebaseNotificationService {
 
   /// **Initialize Firebase Notifications and Socket**
   static Future<void> initialize() async {
-    // Request notification permission
     final settings = await _firebaseMessaging.requestPermission(
       alert: true,
       sound: true,
@@ -30,7 +29,6 @@ class FirebaseNotificationService {
       return;
     }
 
-    // Initialize local notifications
     const androidInit = AndroidInitializationSettings('@mipmap/ic_launcher');
 
     const iosInit = DarwinInitializationSettings(
@@ -43,7 +41,6 @@ class FirebaseNotificationService {
         InitializationSettings(android: androidInit, iOS: iosInit);
     await _localNotifications.initialize(settings: initSettings);
 
-    // Handle FCM messages
     FirebaseMessaging.onMessage
         .listen((message) => _handleForegroundMessage(message));
     FirebaseMessaging.onMessageOpenedApp.listen((message) =>
@@ -75,58 +72,56 @@ class FirebaseNotificationService {
       ),
     );
   }
-  // static Future<void> _handleForegroundMessage(RemoteMessage message) async {
-  //   debugPrint(
-  //       "📩 Received foreground notification: ${message.notification?.title}");
-  //
-  //   final notification = message.notification;
-  //   final android = notification?.android;
-  //
-  //   if (notification != null &&
-  //       (android != null || defaultTargetPlatform == TargetPlatform.iOS)) {
-  //     _localNotifications.show(
-  //       id: DateTime.now().microsecond,
-  //       body: notification.body,
-  //       title: notification.title,
-  //       notificationDetails: NotificationDetails(
-  //         android: AndroidNotificationDetails(
-  //           'reservation_channel',
-  //           'Gestion App',
-  //           importance: Importance.max,
-  //           priority: Priority.high,
-  //           playSound: true,
-  //           icon: 'notification_icon',
-  //           styleInformation: BigTextStyleInformation(notification.body ?? '',
-  //               contentTitle: notification.title ?? ''),
-  //         ),
-  //         iOS: DarwinNotificationDetails(),
-  //       ),
-  //     );
-  //   }
-  // }
+
+  /*static Future<void> _handleForegroundMessage(RemoteMessage message) async {
+    debugPrint(
+        "📩 Received foreground notification: ${message.notification?.title}");
+
+    final notification = message.notification;
+    final android = notification?.android;
+
+    if (notification != null &&
+        (android != null || defaultTargetPlatform == TargetPlatform.iOS)) {
+      _localNotifications.show(
+        id: DateTime.now().microsecond,
+        body: notification.body,
+        title: notification.title,
+        notificationDetails: NotificationDetails(
+          android: AndroidNotificationDetails(
+            'reservation_channel',
+            'Gestion App',
+            importance: Importance.max,
+            priority: Priority.high,
+            playSound: true,
+            icon: 'notification_icon',
+            styleInformation: BigTextStyleInformation(notification.body ?? '',
+                contentTitle: notification.title ?? ''),
+          ),
+          iOS: DarwinNotificationDetails(),
+        ),
+      );
+    }
+  }*/
 
   /// **Retrieve FCM Token**
   static Future<String?> getFCMToken() async {
-    // Request notification permissions first
-    final settings = await _firebaseMessaging.getNotificationSettings();
+    NotificationSettings settings =
+        await _firebaseMessaging.getNotificationSettings();
 
     if (settings.authorizationStatus == AuthorizationStatus.notDetermined) {
-      await _firebaseMessaging.requestPermission(
+      settings = await _firebaseMessaging.requestPermission(
           alert: true, badge: true, sound: true);
     }
 
     if (settings.authorizationStatus == AuthorizationStatus.authorized ||
         settings.authorizationStatus == AuthorizationStatus.provisional) {
-      // For iOS, try to get the APNs token first
       if (defaultTargetPlatform == TargetPlatform.iOS) {
         String? apnsToken;
         int attempts = 0;
-
-        // Retry fetching APNs token for up to 5 seconds
         while (apnsToken == null && attempts < 10) {
           apnsToken = await _firebaseMessaging.getAPNSToken();
           await Future.delayed(
-              const Duration(milliseconds: 500)); // Delay before retrying
+              const Duration(milliseconds: 500));
           attempts++;
         }
 
@@ -137,11 +132,14 @@ class FirebaseNotificationService {
 
         debugPrint("✅ APNs token: $apnsToken");
       }
-
-      // Now that APNs token is available, get the FCM token
-      final fcmToken = await _firebaseMessaging.getToken();
-      debugPrint("✅ FCM token: $fcmToken");
-      return fcmToken;
+      try {
+        final fcmToken = await _firebaseMessaging.getToken();
+        debugPrint("✅ FCM token: $fcmToken");
+        return fcmToken;
+      } catch (e) {
+        debugPrint("❌ Failed to get FCM token: $e");
+        return null;
+      }
     }
 
     debugPrint("❌ User denied notification permission");

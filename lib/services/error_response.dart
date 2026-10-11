@@ -10,15 +10,12 @@ class ErrorResponse {
   });
 
   factory ErrorResponse.fromJson(Map<String, dynamic> json) {
-    // Parse `status` field
     String? parsedStatus;
     if (json["status"] is String) {
       parsedStatus = json["status"];
     } else if (json["status"] is List) {
       parsedStatus = (json["status"] as List).join(", ");
     }
-
-    // Parse `message` field
     String? parsedMessage;
     if (json["message"] is String) {
       parsedMessage = json["message"];

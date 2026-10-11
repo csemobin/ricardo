@@ -1,7 +1,6 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -16,6 +15,7 @@ import 'package:ricardo/routes/app_routes.dart';
 import 'package:ricardo/widgets/custom_primary_button.dart';
 import 'package:ricardo/widgets/custom_scaffold.dart';
 import 'package:ricardo/widgets/custom_text_field.dart';
+import 'package:ricardo/app/helpers/snackbar_helper.dart';
 
 class WithdrawRequestScreen extends StatefulWidget {
   const WithdrawRequestScreen({super.key});
@@ -70,16 +70,94 @@ class _WithdrawRequestScreenState extends State<WithdrawRequestScreen> {
                   keyboardType: TextInputType.number,
                 ),
               ),
-              SizedBox(height: 18.h),
+              Obx(() {
+                if (withdrawController.isMinimumAmountValid.value == false) {
+                  return Center(
+                    child: Container(
+                      padding: EdgeInsets.all(10),
+                      margin: EdgeInsets.symmetric(vertical: 10),
+                      decoration: BoxDecoration(
+                        color: AppColors.errorColor.withOpacity(0.2),
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                      ),
+                      child: Text(
+                        'Minimum withdraw amount is \$${withdrawController.minimumWithdrawAmount.toStringAsFixed(0)}',
+                        style: TextStyle(color: AppColors.errorColor, fontSize: 12),
+                      ),
+                    ),
+                  );
+                }
+                if (withdrawController.isFormValidAmount.value == false) {
+                  return Container(
+                    padding: EdgeInsets.all(10),
+                    margin: EdgeInsets.symmetric(
+                      vertical: 10
+                    ),
+                    decoration: BoxDecoration(
+                        color: AppColors.errorColor.withOpacity(0.2),
+                        borderRadius: BorderRadius.all(Radius.circular(10))
+                    ),
+                    child: Text('Your amount is not sufficient',style: TextStyle(
+                      color: AppColors.errorColor
+                    ),),
+                  );
+                }
+                return SizedBox.shrink();
+              }),
+              SizedBox(
+                height: 25.h,
+              ),
+              Obx(() {
+                if (withdrawController.isWithdrawDisabled) {
+                  return Container(
+                    padding: EdgeInsets.symmetric(horizontal: 12.h, vertical: 18.w),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(15.r),
+                      color: AppColors.errorColor.withOpacity(0.1),
+                    ),
+                    child: Text(
+                      'Withdraw is currently disabled. Please contact support.',
+                      style: TextStyle(
+                        fontSize: 10.sp,
+                        color: AppColors.errorColor,
+                        fontWeight: FontWeight.w400,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  );
+                }
 
-              // Select Card Section
+                final freeDays = withdrawController.formattedFreeWithdrawDays;
+                final fee = withdrawController.platformFeePercentage.toStringAsFixed(0);
+                final isFreeDay = withdrawController.isTodayFreeWithdrawDay;
+
+                return Container(
+                  padding: EdgeInsets.symmetric(horizontal: 12.h, vertical: 18.w),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(15.r),
+                    color: Color(0x0D01AF44),
+                  ),
+                  child: Text(
+                    freeDays.isEmpty
+                        ? 'Withdrawals are currently unavailable.'
+                        : isFreeDay
+                            ? 'Today is a free withdraw day ($freeDays). No service fee will be applied.'
+                            : 'Free withdraw days are $freeDays. Outside those days, Emergency Withdrawal applies a $fee% service fee for faster processing.',
+                    style: TextStyle(
+                      fontSize: 10.sp,
+                      color: AppColors.errorColor.withOpacity(0.8),
+                      fontWeight: FontWeight.w400,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                );
+              }),
+              SizedBox(height: 18.h),
               Text(
                 'Select Card',
                 style: AppCustomDesign.walletScreenTextStyle,
               ),
               SizedBox(height: 15.h),
-
-              // Card List
               Obx(() {
                 if (paymentController.paymentCardInfoStatus.value == true) {
                   return PaymentMethodSkeletonList();
@@ -153,15 +231,13 @@ class _WithdrawRequestScreenState extends State<WithdrawRequestScreen> {
               }),
 
               SizedBox(height: 25.h),
-
-              // Add Payment Button
               Obx(() {
                 return GestureDetector(
                   onTap: () {
                     if (paymentController.paymentCardInfo.length < 3) {
                       Get.toNamed(AppRoutes.addCardScreen);
                     } else {
-                      Get.snackbar(
+                      showSnackbar(
                         'Limit Reached',
                         'You can only add up to 3 cards',
                         snackPosition: SnackPosition.BOTTOM,
@@ -197,32 +273,12 @@ class _WithdrawRequestScreenState extends State<WithdrawRequestScreen> {
               Obx(() {
                 return CustomPrimaryButton(
                   title: 'Withdraw',
-                  // isDisable: !withdrawController.isFormValid.value,
-                  onHandler: withdrawController.isFormValid.value == true
-                      ? () {
-                          confirmRequestPopupModal(context);
-                        }
+                  onHandler: withdrawController.isFormValid.value
+                      ? () => confirmRequestPopupModal(context)
                       : null,
                 );
               }),
               SizedBox(height: 40.h),
-
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 12.h, vertical: 18.w),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(15.r),
-                  color: Color(0x0D01AF44),
-                ),
-                child: Text(
-                  'Our payment cycle runs every Friday. If you need your payment earlier, our support team is here to help—just reach out!',
-                  style: TextStyle(
-                    fontSize: 10.sp,
-                    color: Color(0xff787878),
-                    fontWeight: FontWeight.w400,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-              ),
               SizedBox(height: 10.h),
             ],
           ),
@@ -231,20 +287,12 @@ class _WithdrawRequestScreenState extends State<WithdrawRequestScreen> {
     );
   }
 
-  // Confirm Withdraw Request Pop up Modal
+
   void confirmRequestPopupModal(BuildContext context) {
-    // Amount Related work
     final amountString = withdrawController.amountTEController.text;
     final amount = double.tryParse(amountString) ?? 0.0;
-
-    // Tax Related work
-    final taxString = dotenv.env['APP_TAX'] ?? '0';
-    final taxPercentage = double.tryParse(taxString) ?? 0.0;
-
-    // Calculate platform fee
+    final taxPercentage = withdrawController.platformFeePercentage;
     final platformFee = amount * (taxPercentage / 100);
-
-    // Calculate net amount
     final netAmount = amount - platformFee;
 
     showDialog(
@@ -318,38 +366,63 @@ class _WithdrawRequestScreenState extends State<WithdrawRequestScreen> {
                             ],
                           ),
                           SizedBox(height: 4.h),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              Text(
-                                'Platform Fee (${dotenv.env['APP_TAX']}) %)',
-                                style: testStyle(),
-                              ),
-                              Text(
-                                '\$${platformFee.toStringAsFixed(2)}',
-                                style: testStyle(
-                                  color: AppColors.errorColor,
-                                ),
-                              )
-                            ],
-                          ),
+                          Obx(() {
+                            if (!withdrawController.isTodayFreeWithdrawDay) {
+                              return Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                children: [
+                                  Text(
+                                    'Platform Fee (${withdrawController.platformFeePercentage.toStringAsFixed(0)}%)',
+                                    style: testStyle(),
+                                  ),
+                                  Text(
+                                    '\$${platformFee.toStringAsFixed(2)}',
+                                    style: testStyle(
+                                      color: AppColors.errorColor,
+                                    ),
+                                  )
+                                ],
+                              );
+                            }
+                            return const SizedBox.shrink();
+                          }),
                           SizedBox(height: 4.h),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              Text(
-                                'You Will Receive',
-                                style: testStyle(),
-                              ),
-                              Text(
-                                '\$${netAmount.toStringAsFixed(2)}',
-                                style: testStyle(
-                                  color: AppColors.primaryColor,
-                                  fontWeight: FontWeight.w600,
+                          Obx(() {
+                            if (!withdrawController.isTodayFreeWithdrawDay) {
+                              return Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                children: [
+                                  Text(
+                                    'You Will Receive',
+                                    style: testStyle(),
+                                  ),
+                                  Text(
+                                    '\$${netAmount.toStringAsFixed(2)}',
+                                    style: testStyle(
+                                      color: AppColors.primaryColor,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  )
+                                ],
+                              );
+                            }
+                            return Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                Text(
+                                  'You Will Receive',
+                                  style: testStyle(),
                                 ),
-                              )
-                            ],
-                          ),
+                                Text(
+                                  '\$$amountString',
+                                  style: testStyle(
+                                    color: AppColors.primaryColor,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                )
+                              ],
+                            );
+                          }),
                         ],
                       ),
                       SizedBox(height: 18.h),

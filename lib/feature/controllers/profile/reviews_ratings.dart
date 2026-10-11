@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:ricardo/feature/models/profile/driver_get_ratings.dart';
 import 'package:ricardo/services/api_client.dart';
 import 'package:ricardo/services/api_urls.dart';
+import 'package:ricardo/app/helpers/snackbar_helper.dart';
 
 class ReviewsRatingsController extends GetxController {
   RxBool isReviewsStatus = false.obs;
@@ -23,7 +24,7 @@ class ReviewsRatingsController extends GetxController {
         ratingAverage?.value = rating;
         totalRatings?.value = total;
       } else {
-        Get.snackbar('Error', response.body['data']['message']);
+        showSnackbar('Error', response.body['data']['message']);
       }
     } catch (e) {
       debugPrint(e.toString());

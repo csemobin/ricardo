@@ -19,7 +19,7 @@ class AcceptRideButton extends StatelessWidget {
 
       return GestureDetector(
         onTap: isExpired
-            ? () {
+            ? () async{
           mapOPTController.isPassengerRequest.value = false;
           mapOPTController.cancelRideRequestTimer();
           userController.userModel.value?.driverProfile?.isOnline = true;

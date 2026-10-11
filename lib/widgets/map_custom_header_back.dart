@@ -35,7 +35,7 @@ class _MapCustomHeaderBackState extends State<MapCustomHeaderBack> {
           child: BackdropFilter(
             filter: ui.ImageFilter.blur(sigmaX: 16, sigmaY: 16),
             child: Container(
-              height: MediaQuery.of(context).size.height * 0.14,
+              height: MediaQuery.of(context).size.height * 0.16,
               decoration: BoxDecoration(
                 color: Color(0x80FFFFFF),
                 borderRadius: BorderRadius.only(
@@ -52,7 +52,7 @@ class _MapCustomHeaderBackState extends State<MapCustomHeaderBack> {
                         onPressed: () {
                           // Custom Marker Show related work are here
                           final mOTPCnt= Get.find<MapOPTController>();
-                          mOTPCnt.isCurrentMarkerShow.value = true;
+                          mOTPCnt.isCurrentMarkerShowOrNot.value = true;
 
                           // Get all controllers
                           final rideController = Get.find<RideController>();

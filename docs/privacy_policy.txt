@@ -1,0 +1,486 @@
+================================================================================
+                           PRIVACY POLICY
+================================================================================
+
+Lyfuber, Inc.
+Effective Date: July 18, 2026
+Last Updated: July 18, 2026
+
+Contact Information:
+Email: support@gogodriver.us
+Website: https://gogodriver.us
+Tutorial: https://www.youtube.com/watch?v=7aZo_K3nI84
+
+================================================================================
+
+INTRODUCTION
+
+Lyfuber, Inc. ("Lyfuber," "we," "us," or "our") values your privacy and is 
+committed to transparency in how we collect, use, and protect your personal 
+information. This Privacy Policy describes our practices concerning the data we 
+collect through the Lyfuber mobile application (the "App") and related services 
+(the "Platform").
+
+This policy applies to all users: Riders who request transportation services 
+and Drivers who provide them. By using our Platform, you acknowledge that you 
+have read and understood this Privacy Policy.
+
+If you have questions about how we handle your data, please contact us at 
+support@gogodriver.us.
+
+New to Lyfuber? Watch our complete tutorial at:
+https://www.youtube.com/watch?v=7aZo_K3nI84
+
+================================================================================
+
+1. INFORMATION WE COLLECT
+
+We collect information necessary to connect Riders with Drivers, facilitate 
+safe and reliable transportation, process payments, and improve our services.
+
+1.1 INFORMATION YOU PROVIDE TO US
+
+When you create an account, we collect:
+  • Your full name
+  • Email address
+  • Phone number
+  • Password (encrypted and never stored in plain text)
+  • Date of birth
+  • Gender
+  • Home or default address
+  • Profile photograph
+
+For Drivers, we additionally collect:
+  • Government-issued driver's license (images and details)
+  • Vehicle registration and insurance documentation
+  • Vehicle photographs and specifications
+  • Bank account information for earnings withdrawals
+
+1.2 INFORMATION WE COLLECT AUTOMATICALLY
+
+Location Information:
+  • Precise GPS coordinates during active ride sessions
+  • Pickup and drop-off locations for each trip
+  • Real-time Driver location while online or during rides
+
+Device and Technical Information:
+  • Device identifier and operating system
+  • IP address
+  • App version and performance data
+  • Push notification device token
+  • Crash reports and diagnostic information
+
+Ride and Transaction Data:
+  • Complete ride history and routes
+  • Fare amounts and payment methods
+  • Ratings, reviews, and feedback
+  • Cancellation history
+  • Tips sent and received
+  • Wallet balance and transaction history
+
+================================================================================
+
+2. HOW WE USE YOUR INFORMATION
+
+We use the information we collect for the following purposes:
+
+2.1 PROVIDING OUR SERVICES
+  • Creating and managing your account
+  • Matching Riders with nearby Drivers
+  • Processing ride requests and facilitating transportation
+  • Calculating fares and processing payments
+  • Providing customer support
+  • Sending service notifications and updates
+
+2.2 SAFETY AND SECURITY
+  • Verifying Driver credentials and vehicle documentation
+  • Preventing fraud and unauthorized account access
+  • Investigating safety incidents and user reports
+  • Maintaining records for dispute resolution
+  • Ensuring compliance with legal obligations
+
+2.3 IMPROVING OUR PLATFORM
+  • Analyzing usage patterns to enhance features
+  • Monitoring and improving app performance
+  • Developing new services and functionality
+  • Conducting research and analytics
+
+2.4 COMMUNICATION
+  • Sending ride status notifications
+  • Delivering payment confirmations
+  • Providing account security alerts
+  • Responding to your inquiries
+  • Sharing important policy updates
+
+================================================================================
+
+3. LOCATION DATA COLLECTION AND USE
+
+Location data is essential to the Lyfuber service. We are committed to 
+collecting only what is necessary and being fully transparent about our 
+practices.
+
+3.1 WHY WE NEED YOUR LOCATION
+
+Precise GPS location enables us to:
+  • Show your current position on the map
+  • Match you with nearby Drivers
+  • Display real-time Driver location during rides
+  • Calculate accurate trip distances and fares
+  • Provide turn-by-turn navigation
+  • Verify ride completion at the correct destination
+
+3.2 WHEN WE COLLECT LOCATION DATA
+
+For Riders:
+  • During active ride sessions only
+  • We do not track your location when you are not using the app for a ride
+
+For Drivers:
+  • When you are online and available to accept rides
+  • During active ride sessions
+  • We do not track your location when you are offline
+
+3.3 HOW WE COLLECT LOCATION
+
+On Android:
+  • We use a foreground location service during active rides
+  • A persistent notification is displayed whenever location tracking is active
+  • This notification clearly states that your location is being collected
+  • The service stops automatically when your ride ends
+
+On iOS:
+  • Riders: We request "When In Use" location permission
+  • Drivers: We may request "Always Allow" to receive ride requests while the 
+    app is in the background
+
+3.4 LOCATION DATA SECURITY
+
+All location data is transmitted using industry-standard encryption. Location 
+information is shared only between matched Riders and Drivers during active 
+rides, and is not retained beyond the ride session except as necessary for 
+fare calculation and safety purposes.
+
+You may revoke location permissions at any time through your device settings, 
+though this will prevent the app from functioning properly.
+
+================================================================================
+
+4. HOW WE SHARE YOUR INFORMATION
+
+We do not sell your personal information to third parties. We share information 
+only as described below:
+
+4.1 BETWEEN RIDERS AND DRIVERS
+
+To facilitate your ride, we share limited information between matched users:
+  • Rider sees: Driver's name, photo, vehicle details, rating, and real-time 
+    location during the ride
+  • Driver sees: Rider's name, photo, rating, and pickup/destination locations
+
+Phone numbers and email addresses are never directly shared between users.
+
+4.2 WITH SERVICE PROVIDERS
+
+We work with trusted companies that help us operate the Platform:
+  • Google Maps: Provides mapping, routing, and navigation services
+  • Push Notification Services: Delivers ride and account alerts
+  • Payment Processors: Handles wallet top-ups and card transactions under 
+    PCI-DSS compliance standards
+  • Cloud Infrastructure: Hosts our data securely
+  • Analytics Tools: Helps us improve app performance
+
+These providers are contractually obligated to protect your information and 
+use it only for the specific services they provide to us.
+
+4.3 FOR LEGAL REASONS
+
+We may disclose information when required by law or to:
+  • Comply with legal process or government requests
+  • Enforce our Terms and Conditions
+  • Protect the safety of our users or the public
+  • Prevent fraud or security threats
+  • Respond to claims or legal proceedings
+
+4.4 BUSINESS TRANSFERS
+
+If Lyfuber is involved in a merger, acquisition, or sale of assets, your 
+information may be transferred. We will notify you before your information 
+becomes subject to a different privacy policy.
+
+================================================================================
+
+5. YOUR PRIVACY RIGHTS AND CHOICES
+
+You have rights regarding your personal information. The specific rights 
+available to you may depend on where you live.
+
+5.1 ACCESS AND CORRECTION
+You can view and update most of your information directly in the app. For a 
+complete copy of your data, contact us at support@gogodriver.us.
+
+5.2 ACCOUNT DELETION
+You may permanently delete your account at any time:
+  • In the app: Settings → Delete Account
+  • By email: Send a request to support@gogodriver.us with subject "Account 
+    Deletion Request"
+
+When you delete your account:
+  • Your profile and personal information will be removed within 90 days
+  • Certain data may be retained as required by law (see Section 7)
+  • Your authentication sessions are terminated immediately
+  • Deleted accounts cannot be recovered
+
+Before deleting, please withdraw any remaining wallet balance, as it may be 
+forfeited upon deletion.
+
+5.3 DATA PORTABILITY
+You may request a copy of your personal data in a machine-readable format by 
+contacting us at support@gogodriver.us.
+
+5.4 RESTRICT PROCESSING
+You may request that we limit how we process your data in certain circumstances, 
+such as while investigating a complaint.
+
+5.5 WITHDRAW CONSENT
+You may withdraw consent for location tracking or push notifications at any 
+time through your device settings. Note that this may limit app functionality.
+
+5.6 OPT-OUT OF MARKETING
+We do not use your information for third-party marketing. You may opt out of 
+our own promotional communications by adjusting your notification preferences.
+
+To exercise any of these rights, contact us at support@gogodriver.us. We will 
+respond within 30 days of receiving a verified request.
+
+================================================================================
+
+6. SENSITIVE PERMISSIONS
+
+6.1 CAMERA AND PHOTO ACCESS
+We request camera and photo library access only when you choose to:
+  • Upload a profile photo
+  • Submit Driver verification documents (license, registration, vehicle photos)
+
+We access only the specific photo you select. We do not scan or access your 
+entire photo library, and we never use your camera without your explicit action.
+
+6.2 PUSH NOTIFICATIONS
+We send notifications for ride updates, payment confirmations, and account 
+security alerts. You can manage notification preferences in your device settings.
+
+6.3 AUDIO
+The app plays notification sounds (such as incoming ride alerts for Drivers). 
+We do not access or record audio through your microphone.
+
+================================================================================
+
+7. DATA RETENTION
+
+We retain your information only as long as necessary to provide our services 
+and comply with legal obligations:
+
+  • Account data: Duration of active account plus 90 days after deletion
+  • Ride history: Up to 3 years
+  • Payment records: Up to 7 years (required by financial regulations)
+  • Driver verification documents: Active period plus 1 year
+  • Location data: Not retained beyond the associated ride session
+  • Safety reports: Up to 5 years
+  • Support communications: Up to 3 years
+  • Diagnostic data: Up to 12 months
+
+After these periods, data is securely deleted or anonymized. Retained data is 
+never used for marketing or profiling.
+
+================================================================================
+
+8. DATA SECURITY
+
+We take data security seriously and implement multiple layers of protection:
+
+  • Encryption: All data transmitted between the app and our servers is 
+    encrypted using industry-standard protocols
+  • Password Security: Passwords are hashed using strong one-way algorithms and 
+    never stored in plain text
+  • Secure Authentication: Account access requires verification through secure 
+    tokens and one-time password codes
+  • Payment Security: Card information is processed by PCI-DSS compliant 
+    payment processors. We never store complete card numbers or security codes
+  • Access Controls: Access to user data is restricted to authorized personnel 
+    with legitimate business needs
+  • Regular Security Audits: We continuously monitor and improve our security 
+    measures
+
+While we implement strong safeguards, no system is completely immune to 
+security risks. If we become aware of a data breach, we will notify affected 
+users and relevant authorities as required by law.
+
+================================================================================
+
+9. CHILDREN'S PRIVACY
+
+Lyfuber is intended exclusively for users age 18 and older. We do not 
+knowingly collect information from anyone under 18.
+
+If we discover that we have inadvertently collected information from a minor, 
+we will promptly delete it. If you believe your child has provided information 
+to us, please contact us immediately at support@gogodriver.us.
+
+================================================================================
+
+10. INTERNATIONAL DATA TRANSFERS
+
+Your information may be processed and stored on servers located outside your 
+country of residence, including countries that may have different data 
+protection standards.
+
+We ensure that appropriate safeguards are in place for international transfers, 
+such as standard contractual clauses, to protect your information in accordance 
+with applicable laws.
+
+By using Lyfuber, you consent to the international transfer of your information 
+as described in this policy.
+
+================================================================================
+
+11. THIRD-PARTY SERVICES
+
+The Lyfuber app integrates with third-party services to provide core 
+functionality:
+
+  • Google Maps Platform: Provides mapping, routing, and navigation. Governed 
+    by Google's Terms of Service.
+  • Firebase Services: Enables push notifications and app diagnostics. Subject 
+    to Google's Privacy Policy.
+  • Payment Processors: Handle financial transactions under PCI-DSS standards.
+
+We are not responsible for the privacy practices of these third parties. We 
+encourage you to review their privacy policies.
+
+================================================================================
+
+12. STATE-SPECIFIC PRIVACY RIGHTS
+
+12.1 CALIFORNIA RESIDENTS (CCPA/CPRA)
+
+If you are a California resident, you have additional rights under the 
+California Consumer Privacy Act:
+
+Right to Know: You may request information about the personal data we collect, 
+use, disclose, and retain.
+
+Right to Delete: You may request deletion of your personal information (see 
+Section 5.2).
+
+Right to Correct: You may request correction of inaccurate information.
+
+Right to Opt-Out: We do not sell your personal information. We do not share 
+it for cross-context behavioral advertising.
+
+Right to Limit Use of Sensitive Data: We use precise location data only to 
+provide transportation services, not for advertising or profiling.
+
+We recognize and honor Global Privacy Control (GPC) signals as required by 
+California law.
+
+Categories of Personal Information Collected (Last 12 Months):
+  • Identifiers (name, email, phone, device ID)
+  • Precise geolocation (GPS coordinates during rides)
+  • Financial information (wallet balance, transaction history)
+  • Visual information (profile photos, Driver documents)
+  • Inferences (ratings, completion rates)
+
+To exercise your California privacy rights, contact support@gogodriver.us.
+
+12.2 EUROPEAN RESIDENTS (GDPR)
+
+If you are located in the European Economic Area, United Kingdom, or 
+Switzerland, the General Data Protection Regulation (GDPR) grants you 
+specific rights:
+
+Lyfuber acts as the Data Controller for your personal data.
+
+Legal Bases for Processing:
+  • Contract Performance: Account creation, ride matching, payments
+  • Legitimate Interests: Safety, fraud prevention, platform improvement
+  • Legal Obligation: Financial record-keeping, regulatory compliance
+  • Consent: Push notifications, certain location tracking
+
+Your GDPR Rights:
+  • Right to access your personal data
+  • Right to rectification of inaccurate data
+  • Right to erasure ("right to be forgotten")
+  • Right to restrict processing
+  • Right to data portability
+  • Right to object to processing
+  • Right to lodge a complaint with your supervisory authority
+
+To exercise your GDPR rights, contact support@gogodriver.us.
+
+================================================================================
+
+13. APP STORE DISCLOSURES
+
+13.1 GOOGLE PLAY DATA SAFETY
+
+The data disclosed in Google Play's Data Safety section is consistent with 
+this Privacy Policy. We collect location, personal information, financial data, 
+and photos solely for app functionality—not for tracking across other companies' 
+apps or websites. We do not sell user data.
+
+13.2 APPLE APP STORE PRIVACY LABELS
+
+The data disclosed in the App Store Privacy Nutrition Label is consistent with 
+this Privacy Policy. Data linked to you includes location, contact information, 
+financial info, and user content. We do not use data to track you across other 
+companies' apps or websites.
+
+================================================================================
+
+14. CHANGES TO THIS PRIVACY POLICY
+
+We may update this Privacy Policy to reflect changes in our practices, 
+technology, or legal requirements. When we make material changes, we will:
+  • Display a prominent notice in the app
+  • Send you an email or push notification
+  • Update the "Last Updated" date at the top of this policy
+
+Your continued use of Lyfuber after changes take effect constitutes acceptance 
+of the updated policy. If you do not agree with the changes, please stop using 
+the app and delete your account.
+
+================================================================================
+
+15. CONTACT US
+
+If you have questions, concerns, or requests regarding this Privacy Policy or 
+our data practices, please contact us:
+
+Lyfuber Privacy Team
+Email: support@gogodriver.us
+Website: https://gogodriver.us
+
+For specific requests, please use these subject lines:
+  • Account Deletion: "Account Deletion Request"
+  • Data Access: "Data Access Request"
+  • Data Correction: "Data Correction Request"
+  • GDPR Complaint: "GDPR Privacy Request"
+  • CCPA Request: "California Privacy Request"
+  • Minor Account Report: "Minor Account Report"
+
+We respond to all verified privacy requests within 30 days.
+
+For safety emergencies, always contact local emergency services (911 or your 
+local equivalent) before contacting Lyfuber support.
+
+================================================================================
+
+© 2026 Lyfuber, Inc. All rights reserved.
+
+This Privacy Policy was last updated on July 18, 2026.
+
+By using the Lyfuber app, you confirm that you have read and understood this 
+Privacy Policy and consent to the collection, use, and disclosure of your 
+information as described herein.
+
+================================================================================

@@ -12,6 +12,7 @@ import 'package:ricardo/gen/assets.gen.dart';
 import 'package:ricardo/gen/fonts.gen.dart';
 import 'package:ricardo/routes/app_routes.dart';
 import 'package:ricardo/widgets/glass_background_multiple_children_widget.dart';
+import 'package:ricardo/app/helpers/snackbar_helper.dart';
 
 class RequestRideHandler extends StatefulWidget {
   const RequestRideHandler({
@@ -30,60 +31,52 @@ class RequestRideHandler extends StatefulWidget {
 class _RequestRideHandlerState extends State<RequestRideHandler> {
   Worker? _rideAcceptedWorker;
   bool _isWaitingDialogOpen = false;
-
-  // ✅ Timer for auto-cancel after 2 minutes
   Timer? _autoCancelTimer;
 
   @override
   void initState() {
     super.initState();
 
-    _rideAcceptedWorker = ever(widget.cnt.isRideAccepted, (bool accepted) {
-      if (accepted && _isWaitingDialogOpen && mounted) {
-        // ✅ Ride accepted — cancel the auto-cancel timer immediately
-        _cancelAutoTimer();
-
-        _isWaitingDialogOpen = false;
-        widget.cnt.isRideAccepted.value = false;
-        Navigator.of(context).pop(); // close waiting dialog
-        _showAcceptedDialog(widget.cnt.acceptedRideDriverName.value);
-      }
+    // Use addPostFrameCallback to avoid building during frame build
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _rideAcceptedWorker = ever(widget.cnt.isRideAccepted, (bool accepted) {
+        if (accepted && _isWaitingDialogOpen && mounted) {
+          _cancelAutoTimer();
+          _isWaitingDialogOpen = false;
+          widget.cnt.isRideAccepted.value = false;
+          if (Navigator.of(context, rootNavigator: true).canPop()) {
+            Navigator.of(context, rootNavigator: true).pop(); // close waiting dialog
+          }
+          _showAcceptedDialog(widget.cnt.acceptedRideDriverName.value);
+        }
+      });
     });
   }
 
   @override
   void dispose() {
     _rideAcceptedWorker?.dispose();
-    _cancelAutoTimer(); // ✅ Always clean up timer on dispose
+    _cancelAutoTimer();
     super.dispose();
   }
 
-  // ── Cancel & clear the timer safely ─────────────────────────────────────────
   void _cancelAutoTimer() {
     _autoCancelTimer?.cancel();
     _autoCancelTimer = null;
   }
 
-  // ── Start 2-minute auto-cancel timer ────────────────────────────────────────
   void _startAutoCancelTimer(String rideId, String driverId, RideController cnt) {
-    _cancelAutoTimer(); // cancel any existing timer first
+    _cancelAutoTimer();
     final timeoutMinutes = int.tryParse(dotenv.env['RIDE_MODAL_EXPIRE_TIME'] ?? '') ?? 2;
-    _autoCancelTimer = Timer(Duration(minutes:  timeoutMinutes ), () {
-      // Only fire if the dialog is still open (not yet accepted/cancelled)
-      if (_isWaitingDialogOpen && mounted) {
-        print('====== AUTO CANCEL FIRED AFTER 2 MIN ======');
-
-        cnt.cancelRequest(rideId, driverId); // ✅ hits cancelRequest once
-
+    _autoCancelTimer = Timer(Duration(minutes: timeoutMinutes), () {
+      if (_isWaitingDialogOpen && mounted && context.mounted) {
+        debugPrint('Auto-cancelling ride request after $timeoutMinutes minute(s)');
+        cnt.cancelRequest(rideId, driverId);
         _isWaitingDialogOpen = false;
-
-        // Close the waiting dialog if still showing
-        if (Navigator.of(context).canPop()) {
-          Navigator.of(context).pop();
+        if (Navigator.of(context, rootNavigator: true).canPop()) {
+          Navigator.of(context, rootNavigator: true).pop();
         }
-
-        // ✅ Show a snackbar so driver knows it was auto-cancelled
-        Get.snackbar(
+        showSnackbar(
           'Request Expired',
           'No driver accepted your request. Please try again.',
           backgroundColor: Colors.redAccent,
@@ -94,11 +87,15 @@ class _RequestRideHandlerState extends State<RequestRideHandler> {
     });
   }
 
-  void _showWaitingDialog(String rideId, String cardDetails, RideController cnt) {
-    _isWaitingDialogOpen = true;
+  void _showWaitingDialog(String rideId, String driverId, RideController cnt) {
+    // Guard against null driverId (should never happen, but safety first)
+    if (driverId.isEmpty) {
+      showSnackbar('Error', 'Driver information missing. Cannot request ride.');
+      return;
+    }
 
-    // ✅ Start the 2-minute auto-cancel timer when dialog opens
-    _startAutoCancelTimer(rideId, cardDetails, cnt);
+    _isWaitingDialogOpen = true;
+    _startAutoCancelTimer(rideId, driverId, cnt);
 
     showDialog(
       context: context,
@@ -114,11 +111,8 @@ class _RequestRideHandlerState extends State<RequestRideHandler> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Image.asset(
-                Assets.images.waiting.path,
-                fit: BoxFit.contain,
-                height: 150.h,
-              ),
+              // Safe image – if asset missing, show fallback
+              _buildSafeImage(Assets.images.waiting.path, height: 150.h),
               SizedBox(height: 12.h),
               Text(
                 'Sending your ride request…',
@@ -143,11 +137,12 @@ class _RequestRideHandlerState extends State<RequestRideHandler> {
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: () {
-                    // ✅ Manual cancel — stop the auto-cancel timer too
                     _cancelAutoTimer();
-                    cnt.cancelRequest(rideId, cardDetails);
+                    cnt.cancelRequest(rideId, driverId);
                     _isWaitingDialogOpen = false;
-                    Navigator.of(dialogContext).pop();
+                    if (Navigator.of(dialogContext).canPop()) {
+                      Navigator.of(dialogContext).pop();
+                    }
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.redAccent,
@@ -164,7 +159,6 @@ class _RequestRideHandlerState extends State<RequestRideHandler> {
         );
       },
     ).then((_) {
-      // ✅ Dialog closed by any means — cancel timer and reset flag
       _isWaitingDialogOpen = false;
       _cancelAutoTimer();
     });
@@ -185,11 +179,7 @@ class _RequestRideHandlerState extends State<RequestRideHandler> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Image.asset(
-                Assets.images.congratulations.path,
-                fit: BoxFit.contain,
-                height: 150.h,
-              ),
+              _buildSafeImage(Assets.images.congratulations.path, height: 150.h),
               SizedBox(height: 12.h),
               Text(
                 'Congratulations!',
@@ -222,15 +212,16 @@ class _RequestRideHandlerState extends State<RequestRideHandler> {
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: () {
-                    Navigator.of(dialogContext).pop();
-
+                    if (Navigator.of(dialogContext).canPop()) {
+                      Navigator.of(dialogContext).pop();
+                    }
                     final cnt = Get.find<CustomBottomNavBarController>();
                     final riderController = Get.find<RideController>();
                     final googleSearchLocationController =
                     Get.find<GoogleSearchLocationController>();
 
                     cnt.selectedIndex.value = 0;
-                    Get.offAllNamed(AppRoutes.homeScreen);
+                    Get.offAllNamed(AppRoutes.customBottomNavBar);
                     googleSearchLocationController.isModalOn.value = false;
                     riderController.isSwippedButtonShow.value = true;
                   },
@@ -251,16 +242,46 @@ class _RequestRideHandlerState extends State<RequestRideHandler> {
     );
   }
 
+  /// Safely loads an asset image; if missing, shows a coloured box (or you can return SizedBox.shrink())
+  Widget _buildSafeImage(String assetPath, {double? height, double? width, BoxFit fit = BoxFit.contain}) {
+    return Image.asset(
+      assetPath,
+      height: height,
+      width: width,
+      fit: fit,
+      errorBuilder: (context, error, stackTrace) {
+        // Fallback: a simple container with a placeholder icon
+        return Container(
+          height: height ?? 50,
+          width: width ?? 50,
+          color: Colors.grey.shade300,
+          child: const Icon(Icons.image_not_supported, color: Colors.grey),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    // Guard against null driver ID before building the button
+    final driverId = widget.cardDetails.sId;
+    if (driverId == null || driverId.isEmpty) {
+      return const SizedBox.shrink(); // or show an error widget
+    }
+
     return SizedBox(
       width: 150,
       child: ElevatedButton(
         onPressed: () {
-          widget.cnt.fetchSendPickUpRequest(
-              widget.cnt.rideId.value, widget.cardDetails.sId!);
-          _showWaitingDialog(
-              widget.cnt.rideId.value, widget.cardDetails.sId!, widget.cnt);
+          // Ensure rideId is not empty
+          final rideId = widget.cnt.rideId.value;
+          if (rideId.isEmpty) {
+            showSnackbar('Error', 'Ride ID missing. Please try again.');
+            return;
+          }
+
+          widget.cnt.fetchSendPickUpRequest(rideId, driverId);
+          _showWaitingDialog(rideId, driverId, widget.cnt);
         },
         style: ElevatedButton.styleFrom(
           backgroundColor: const Color(0xFF34A853),

@@ -6,6 +6,7 @@ import 'package:ricardo/app/utils/app_colors.dart';
 import 'package:ricardo/feature/controllers/profile/legal_controller.dart';
 import 'package:ricardo/feature/simmer/legal_content_simmer.dart';
 import 'package:ricardo/widgets/custom_scaffold.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class LegalPolicyScreen extends StatefulWidget {
   const LegalPolicyScreen({super.key});
@@ -60,6 +61,11 @@ class _LegalPolicyScreenState extends State<LegalPolicyScreen> {
             () {
               return controller.isLoading.value == true ? LegalContentSimmer()  : Html(
                 data: controller.legalContent.value,
+                onLinkTap: (url, attributes, element) {
+                  if (url != null) {
+                    launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
+                  }
+                },
               );
             },
           ),

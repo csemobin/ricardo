@@ -108,19 +108,33 @@ class HistoryScreenShimmer extends StatelessWidget {
               ),
             ),
 
-            // ── Dropoff Row ──────────────────────────────────────
-            // Real: Row[
-            //   Image.asset(location),
-            //   SizedBox(width:8),
-            //   Expanded → Column(
-            //     Text('DROP OFF', fontSize:12, w500)
-            //     Text(address,    fontSize:14, w600, maxLines:2)
-            //   )
-            // ]
-            _buildLocationRowShimmer(),
+            // ── Dropoff Row + Review Button (same row) ───────────
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _box(width: 20.w, height: 20.w, radius: 3.r),
+                SizedBox(width: 8.w),
+                Expanded(child: _buildLocationTextsShimmer()),
+                SizedBox(width: 12.w),
+                _box(width: 100.w, height: 40.h, radius: 50.r),
+              ],
+            ),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildLocationTextsShimmer() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _box(width: 55.w, height: 12.h),
+        SizedBox(height: 5.h),
+        _box(width: double.infinity, height: 14.h),
+        SizedBox(height: 4.h),
+        _box(width: double.infinity, height: 14.h),
+      ],
     );
   }
 

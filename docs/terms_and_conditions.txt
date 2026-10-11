@@ -1,0 +1,651 @@
+================================================================================
+                        TERMS AND CONDITIONS
+================================================================================
+
+Lyfuber, Inc.
+Effective Date: July 18, 2026
+Last Updated: July 18, 2026
+
+Contact Information:
+Email: support@gogodriver.us
+Website: https://gogodriver.us
+Tutorial: https://www.youtube.com/watch?v=7aZo_K3nI84
+
+================================================================================
+
+AGREEMENT TO TERMS
+
+Welcome to Lyfuber. These Terms and Conditions ("Terms") govern your access 
+to and use of the Lyfuber mobile application (the "App") and related services 
+(the "Platform"). By creating an account or using Lyfuber in any way, you 
+enter into a binding legal agreement with Lyfuber, Inc. ("Lyfuber," "we," 
+"us," or "our").
+
+IF YOU DO NOT AGREE TO THESE TERMS, DO NOT USE THE APP.
+
+These Terms apply to all users, including Riders (passengers who request 
+transportation) and Drivers (independent service providers who offer 
+transportation).
+
+New to Lyfuber? Watch our step-by-step tutorial at:
+https://www.youtube.com/watch?v=7aZo_K3nI84
+
+================================================================================
+
+1. ELIGIBILITY
+
+To use Lyfuber, you must meet the following requirements:
+
+1.1 GENERAL REQUIREMENTS
+  • You must be at least 18 years of age, or the age of majority in your 
+    jurisdiction, whichever is greater
+  • You must have the legal capacity to enter into a binding contract
+  • You must provide accurate and truthful information
+  • You must not be prohibited from using transportation network services 
+    under any applicable law
+  • You must not have a previously suspended or terminated Lyfuber account
+
+1.2 DRIVER-SPECIFIC REQUIREMENTS
+
+In addition to the general requirements, Drivers must:
+  • Hold a valid, government-issued driver's license
+  • Maintain current vehicle registration
+  • Carry all legally required vehicle insurance
+  • Comply with all applicable licensing and regulatory requirements for 
+    operating a for-hire transportation service
+  • Successfully complete Lyfuber's document verification and approval process
+
+By using Lyfuber, you represent and warrant that you meet all applicable 
+eligibility requirements. We reserve the right to verify eligibility at any 
+time and to refuse service to anyone who does not qualify.
+
+================================================================================
+
+2. DESCRIPTION OF SERVICE
+
+2.1 TECHNOLOGY PLATFORM
+
+Lyfuber is a technology platform that connects Riders with Drivers. We provide 
+the software, infrastructure, payment processing, and communication tools that 
+enable on-demand transportation services.
+
+IMPORTANT: Lyfuber is not a transportation company or taxi service. We do not 
+own, operate, or control any vehicles. All transportation services are provided 
+by independent Drivers who are not employees or agents of Lyfuber.
+
+2.2 PLATFORM FEATURES
+
+For Riders:
+  • Request rides with real-time Driver matching
+  • View Driver information, vehicle details, and live GPS location
+  • Track rides with turn-by-turn navigation visualization
+  • View fare estimates before booking
+  • Pay securely through in-app wallet or saved payment methods
+  • Rate and review Drivers after each ride
+  • Report safety concerns or issues
+  • Access complete ride and payment history
+  • Save favorite Drivers for future rides
+  • Send optional tips to Drivers
+
+For Drivers:
+  • Apply to become a Driver by submitting required documentation
+  • Control availability by toggling online/offline status
+  • Receive ride requests from nearby Riders
+  • Navigate using integrated mapping and routing
+  • View earnings, ride history, and ratings
+  • Request withdrawals to registered bank accounts
+  • Manage profile and vehicle information
+
+For All Users:
+  • Secure email verification and authentication
+  • Password management and account recovery
+  • In-app account deletion
+  • Push and in-app notifications
+  • Access to Terms, Privacy Policy, and support
+
+2.3 HOW TO USE THE APP
+
+Watch our comprehensive tutorial covering registration, ride booking, Driver 
+features, payments, and more: https://www.youtube.com/watch?v=7aZo_K3nI84
+
+================================================================================
+
+3. ACCOUNT REGISTRATION AND SECURITY
+
+3.1 CREATING AN ACCOUNT
+
+To use Lyfuber, you must create an account by providing:
+  • Your full legal name
+  • A valid email address
+  • A phone number
+  • A secure password
+
+After registration, you must verify your email address through a one-time 
+password (OTP) before your account becomes active.
+
+You agree to:
+  • Provide only accurate, current, and complete information
+  • Maintain the accuracy of your account information
+  • Not use false identity or impersonate others
+  • Not create multiple accounts without authorization
+  • Not register on behalf of others without their permission
+
+3.2 ACCOUNT SECURITY
+
+You are solely responsible for maintaining the confidentiality of your login 
+credentials. You must:
+  • Keep your password secure and confidential
+  • Notify us immediately if you suspect unauthorized access
+  • Accept responsibility for all activity under your account
+
+Lyfuber will never ask for your password via email, text message, or phone. 
+Any such request is fraudulent and should be reported immediately.
+
+3.3 IDENTITY VERIFICATION
+
+All users undergo email verification at registration. Drivers undergo 
+additional document review and approval before accepting rides. We reserve 
+the right to conduct identity checks, background verification, or credential 
+validation at any time. Failure to cooperate may result in account suspension 
+or termination.
+
+================================================================================
+
+4. USER ROLES AND RESPONSIBILITIES
+
+4.1 RIDER RESPONSIBILITIES
+
+As a Rider, you agree to:
+  • Use the Platform only for lawful transportation purposes
+  • Arrive at your pickup location on time and be ready when your Driver arrives
+  • Treat all Drivers with respect, courtesy, and professionalism
+  • Follow reasonable instructions from your Driver during rides
+  • Not engage in threatening, abusive, violent, or discriminatory behavior
+  • Not request rides for transporting illegal items or controlled substances
+  • Not damage or misuse any Driver's vehicle
+  • Accept that Lyfuber is not responsible for items left in vehicles
+
+4.2 DRIVER RESPONSIBILITIES
+
+As a Driver, you agree to:
+  • Maintain all required licenses, permits, registration, and insurance
+  • Operate only safe, roadworthy, and properly insured vehicles
+  • Provide transportation services professionally and courteously
+  • Comply with all applicable traffic laws and regulations
+  • Never operate a vehicle while impaired by any substance
+  • Maintain your vehicle in clean and presentable condition
+  • Not discriminate against any Rider based on any protected characteristic
+  • Never solicit payment outside the Platform
+  • Keep all profile and vehicle information current and accurate
+
+4.3 PROHIBITED CONDUCT
+
+All users must not:
+  • Violate any applicable law or regulation
+  • Provide false or misleading information
+  • Engage in fraudulent activity or Platform abuse
+  • Harass, threaten, or discriminate against other users
+  • Share account credentials with third parties
+  • Create fake accounts or fraudulent ride requests
+  • Use automated tools or bots to access the Platform
+  • Attempt to reverse engineer or extract source code
+  • Interfere with Platform servers or security systems
+
+Violations may result in immediate account suspension, permanent termination, 
+and referral to law enforcement.
+
+================================================================================
+
+5. DRIVER ONBOARDING AND APPROVAL
+
+5.1 REQUIRED DOCUMENTATION
+
+To become an approved Driver, you must submit:
+  • Valid government-issued driver's license (front and back)
+  • Current vehicle registration
+  • Valid vehicle insurance documentation
+  • Vehicle photographs (exterior and interior)
+  • Vehicle specifications (make, model, year, plate number, seat capacity)
+
+5.2 APPROVAL PROCESS
+
+All submissions undergo review by our team. We reserve the right to approve 
+or deny any application at our sole discretion without providing a reason. 
+Applications may be marked as Pending, Approved, or Rejected.
+
+5.3 ONGOING COMPLIANCE
+
+Approval is not permanent. Drivers must continuously maintain compliance with 
+all requirements. We may suspend or terminate Driver accounts for:
+  • Failure to maintain valid documentation
+  • Receiving complaints or consistently poor ratings
+  • Violating these Terms or Platform policies
+  • Any conduct deemed harmful to users or the Platform
+
+5.4 INDEPENDENT CONTRACTOR STATUS
+
+IMPORTANT: Drivers are independent contractors, not employees, partners, or 
+agents of Lyfuber. As an independent contractor:
+  • You are responsible for all taxes, fees, and business expenses
+  • You set your own schedule and decide which rides to accept
+  • Nothing in these Terms creates an employment relationship
+  • Lyfuber does not direct or control how you perform transportation services
+
+================================================================================
+
+6. RIDE SERVICES
+
+6.1 REQUESTING RIDES
+
+Riders request rides through the app. The Platform uses GPS to identify nearby 
+available Drivers and sends them ride requests via push notification. Lyfuber 
+does not guarantee Driver availability at all times or in all locations.
+
+6.2 MATCHING AND CONFIRMATION
+
+Riders and Drivers are matched algorithmically based on proximity, 
+availability, and other factors. Once a Driver accepts, both parties receive 
+confirmation and can view relevant information about each other.
+
+6.3 DURING THE RIDE
+
+GPS location is tracked during active rides for navigation, safety, and fare 
+calculation. All location data usage is described in our Privacy Policy.
+
+6.4 RIDE COMPLETION
+
+Rides are marked complete when the Driver confirms arrival at the destination. 
+Fares are immediately charged to the Rider's selected payment method. Riders 
+are prompted to rate the Driver and may optionally leave a tip.
+
+6.5 SAFETY
+
+Either party may report safety concerns through the app. All reports are 
+reviewed by our support team.
+
+EMERGENCY: In any safety emergency, always contact local emergency services 
+(911 or your local equivalent) BEFORE contacting Lyfuber support.
+
+================================================================================
+
+7. PRICING AND PAYMENTS
+
+7.1 FARES
+
+Fares are calculated per mile based on Driver rates, subject to Platform 
+minimums and applicable taxes. Fare estimates are shown before booking but 
+may differ from final charges due to traffic, route changes, or wait time.
+
+7.2 IN-APP WALLET
+
+Lyfuber provides an in-app wallet for payments:
+  • Riders add funds using accepted payment methods through our secure payment 
+    gateway
+  • Drivers receive earnings into their wallet and may request withdrawals
+  • Wallet balances are maintained server-side and associated with your account
+
+7.3 PAYMENT CARDS
+
+Riders may save payment cards for convenience. Card data is processed by our 
+PCI-DSS compliant payment processor. We do not store complete card numbers 
+or security codes on our servers.
+
+7.4 TIPS
+
+Riders may voluntarily send tips to Drivers after rides. Tips are credited 
+in full to the Driver.
+
+7.5 DRIVER EARNINGS AND WITHDRAWALS
+
+Drivers earn per-mile rates for completed rides. Earnings may be withdrawn 
+to registered bank accounts subject to minimum amounts and processing times 
+defined in the app.
+
+7.6 TAXES
+
+You are solely responsible for determining and paying all taxes applicable to 
+your Platform transactions. Lyfuber does not withhold or remit taxes unless 
+required by law.
+
+7.7 PAYMENT DISPUTES
+
+If you believe a charge is incorrect, contact us at support@gogodriver.us 
+within 30 days. Initiating a chargeback with your bank before contacting us 
+may result in temporary account suspension during investigation.
+
+================================================================================
+
+8. CANCELLATIONS AND REFUNDS
+
+8.1 RIDER CANCELLATIONS
+
+Riders may cancel before Driver acceptance at no charge. Cancellations after 
+acceptance while the Driver is en route may incur a cancellation fee displayed 
+before confirmation.
+
+8.2 DRIVER CANCELLATIONS
+
+Drivers should only cancel in genuine exceptional circumstances. Repeated or 
+unjustified cancellations may result in penalties or suspension.
+
+8.3 REFUNDS
+
+Refunds are evaluated case-by-case. We may issue full or partial refunds for 
+verified service failures, route errors, or Platform malfunctions. Refunds 
+are credited to the Rider's wallet or original payment method.
+
+================================================================================
+
+9. RATINGS, REVIEWS, AND REPORTS
+
+9.1 RATING SYSTEM
+
+Riders rate Drivers on a 1-5 star scale after each ride. Drivers view their 
+average rating and total count in the app. Maintaining satisfactory ratings 
+is required for continued Platform access.
+
+9.2 REVIEW STANDARDS
+
+All reviews must be honest, relevant, and non-defamatory. We reserve the right 
+to remove reviews that violate these standards without notice.
+
+9.3 INCIDENT REPORTS
+
+Users may report ride incidents or safety concerns through the app. Our support 
+team reviews all reports and takes appropriate action, which may include 
+warnings, restrictions, suspension, termination, or law enforcement referral.
+
+================================================================================
+
+10. ACCOUNT DELETION
+
+10.1 YOUR RIGHT TO DELETE
+
+You may permanently delete your account at any time:
+
+IN-APP METHOD (Recommended):
+  Settings → Delete Account → Confirm
+
+EMAIL METHOD:
+  Send to: support@gogodriver.us
+  Subject: Account Deletion Request
+  Include: Your registered email address
+  Processing time: Within 5 business days
+
+10.2 BEFORE DELETING
+
+  • Withdraw any remaining wallet balance (may be forfeited upon deletion)
+  • Complete or cancel any active rides
+
+10.3 WHAT HAPPENS AFTER DELETION
+
+  • Account profile and personal data deleted within 90 days
+  • Authentication sessions terminated immediately
+  • Push notification registration removed immediately
+  • Deleted accounts cannot be recovered or reactivated
+
+10.4 DATA RETENTION AFTER DELETION
+
+Certain records are retained as required by law:
+  • Ride records: Up to 7 years (financial/legal compliance)
+  • Payment records: Up to 7 years (financial regulations)
+  • Safety reports: Up to 5 years (legal/regulatory)
+  • Driver documents: 1 year after deactivation (transport regulations)
+  • Support correspondence: Up to 3 years (dispute resolution)
+
+Retained data is never used for marketing or profiling.
+
+10.5 PERMANENT AND IRREVERSIBLE
+
+Account deletion is permanent. To use Lyfuber again, you must create a new 
+account.
+
+================================================================================
+
+11. DEVICE PERMISSIONS
+
+11.1 LOCATION SERVICES
+
+Lyfuber requires precise GPS access for core functionality including Driver 
+matching, navigation, and fare calculation.
+
+On Android, a foreground location service runs during active rides with a 
+persistent notification clearly stating that location is being collected. 
+The service stops automatically when rides end.
+
+We do not track your location outside of active ride sessions.
+
+You may revoke location permissions in device settings, but this will prevent 
+core features from functioning.
+
+11.2 CAMERA AND PHOTOS
+
+We request camera and photo access only when you choose to upload a profile 
+photo or submit Driver verification documents. We access only the specific 
+photo you select and never scan your entire library.
+
+11.3 PUSH NOTIFICATIONS
+
+By creating an account, you consent to receiving push notifications for:
+  • Ride updates and status changes
+  • Payment and wallet notifications
+  • Account security alerts
+  • Platform announcements
+
+Manage notification preferences in your device settings. Essential account 
+communications (OTP codes, security alerts) may still be sent via email 
+regardless of notification settings.
+
+11.4 OTHER PERMISSIONS
+
+  • Audio: Used only for notification alert sounds. We do not access or record 
+    through your microphone
+  • Device Storage: Used to cache map data and images for performance
+
+================================================================================
+
+12. INTELLECTUAL PROPERTY
+
+12.1 LYFUBER'S RIGHTS
+
+All Platform content, design, features, source code, trademarks, logos, and 
+materials are owned by or licensed to Lyfuber and protected by intellectual 
+property laws. These Terms do not grant you any ownership rights.
+
+12.2 YOUR LICENSE
+
+We grant you a limited, personal, non-exclusive, non-transferable, revocable 
+license to install and use the app on your device solely for accessing 
+Platform services as intended.
+
+12.3 RESTRICTIONS
+
+You may not:
+  • Reproduce, modify, or distribute any part of the app
+  • Decompile, reverse engineer, or extract source code
+  • Create derivative works or publicly display Platform content
+  • Use the Platform for any unauthorized purpose
+
+12.4 YOUR CONTENT
+
+By submitting content (profile photos, reviews, reports), you grant Lyfuber 
+a non-exclusive, worldwide, royalty-free license to use, store, display, and 
+reproduce that content solely to operate and improve the Platform.
+
+================================================================================
+
+13. THIRD-PARTY SERVICES
+
+The Platform integrates essential third-party services:
+
+  • Google Maps Platform: Provides mapping, routing, navigation, and 
+    geocoding. Governed by Google's Terms of Service.
+
+  • Firebase Services: Enables push notifications and app diagnostics.
+
+  • Payment Processors: Handle transactions under PCI-DSS standards.
+
+  • Real-Time Communication Services: Facilitate live location sharing and 
+    ride event notifications.
+
+Lyfuber is not responsible for the availability, accuracy, or privacy 
+practices of third-party services. Your use is governed by their respective 
+terms and policies.
+
+================================================================================
+
+14. DISCLAIMERS AND LIMITATIONS OF LIABILITY
+
+14.1 SERVICE PROVIDED "AS IS"
+
+THE PLATFORM IS PROVIDED "AS IS" AND "AS AVAILABLE" WITHOUT WARRANTIES OF 
+ANY KIND, EXPRESS OR IMPLIED, INCLUDING MERCHANTABILITY, FITNESS FOR A 
+PARTICULAR PURPOSE, OR NON-INFRINGEMENT.
+
+Lyfuber does not warrant that:
+  • The app will be uninterrupted, error-free, or secure
+  • Defects will be corrected
+  • Driver availability or ride quality will meet any standard
+  • Transportation services will be safe or suitable
+
+Use of the Platform and any transportation services is entirely at your 
+own risk.
+
+14.2 LIMITATION OF LIABILITY
+
+TO THE MAXIMUM EXTENT PERMITTED BY LAW, LYFUBER AND ITS AFFILIATES, OFFICERS, 
+DIRECTORS, EMPLOYEES, AND AGENTS SHALL NOT BE LIABLE FOR:
+
+  • Indirect, incidental, special, consequential, or punitive damages
+  • Loss of profits, revenue, data, or goodwill
+  • Personal injury, death, or property damage arising from Platform use or 
+    transportation services
+  • Unauthorized access to or alteration of your data
+  • Events beyond our reasonable control
+
+WHERE LIABILITY CANNOT BE FULLY EXCLUDED, OUR TOTAL LIABILITY SHALL NOT 
+EXCEED THE GREATER OF: (A) AMOUNTS YOU PAID TO LYFUBER IN THE THREE MONTHS 
+PRECEDING THE CLAIM, OR (B) ONE HUNDRED US DOLLARS ($100).
+
+14.3 INDEMNIFICATION
+
+You agree to indemnify and hold harmless Lyfuber and its affiliates from all 
+claims, damages, losses, and expenses (including legal fees) arising from:
+  • Your use of the Platform
+  • Your violation of these Terms
+  • Your infringement of third-party rights
+  • Transportation services you provide or receive
+  • Content you submit
+  • Fraudulent or unlawful activity under your account
+
+================================================================================
+
+15. TERMINATION
+
+15.1 BY YOU
+
+You may delete your account at any time through Settings → Delete Account or 
+by emailing support@gogodriver.us (see Section 10).
+
+15.2 BY LYFUBER
+
+We may suspend or terminate your account at any time, with or without notice, 
+for:
+  • Violating these Terms
+  • Engaging in fraudulent, illegal, or harmful activity
+  • Repeated cancellations or consistently poor ratings
+  • Failure to maintain required documentation (Drivers)
+  • Any conduct deemed harmful to users or the Platform
+
+15.3 EFFECT OF TERMINATION
+
+Upon termination, your license to use the app ends immediately. Provisions 
+that by nature should survive (Sections 10, 12, 14, 15, and 16) remain in 
+effect.
+
+================================================================================
+
+16. GOVERNING LAW AND DISPUTES
+
+16.1 GOVERNING LAW
+
+These Terms are governed by applicable law without regard to conflict of law 
+principles.
+
+16.2 INFORMAL RESOLUTION
+
+Before initiating legal action, contact us at support@gogodriver.us to resolve 
+the matter informally. Allow us 30 days to address your concern. Most issues 
+can be resolved quickly through direct communication.
+
+16.3 FORMAL DISPUTES
+
+If informal resolution fails, disputes may be brought before a court of 
+competent jurisdiction in accordance with applicable law. You retain the right 
+to pursue claims in small claims court where your claim qualifies.
+
+16.4 INDIVIDUAL BASIS ONLY
+
+To the extent permitted by law, you agree to resolve disputes on an individual 
+basis and not as part of any class, collective, or representative action.
+
+================================================================================
+
+17. CHANGES TO THESE TERMS
+
+We may update these Terms at any time. When we make material changes, we will:
+  • Display a prominent notice in the app
+  • Send a push notification or email
+  • Update the "Last Updated" date at the top
+
+Your continued use after changes take effect constitutes acceptance. If you 
+do not agree with updated Terms, stop using the app and delete your account.
+
+================================================================================
+
+18. GENERAL PROVISIONS
+
+18.1 ENTIRE AGREEMENT
+These Terms, together with our Privacy Policy, constitute the entire agreement 
+between you and Lyfuber regarding the Platform.
+
+18.2 SEVERABILITY
+If any provision of these Terms is found invalid or unenforceable, the 
+remaining provisions remain in full effect.
+
+18.3 WAIVER
+Failure to enforce any provision does not constitute a waiver of that or any 
+other provision.
+
+18.4 ASSIGNMENT
+You may not assign or transfer these Terms. Lyfuber may assign these Terms 
+in connection with a merger, acquisition, or sale of assets.
+
+18.5 LANGUAGE
+These Terms are written in English. Translations may be provided for 
+convenience, but the English version controls in case of conflict.
+
+================================================================================
+
+19. CONTACT US
+
+For questions, concerns, or support regarding these Terms or the Platform:
+
+Lyfuber Support Team
+Email: support@gogodriver.us
+Website: https://gogodriver.us
+Tutorial: https://www.youtube.com/watch?v=7aZo_K3nI84
+
+For safety emergencies, always contact local emergency services (911 or your 
+local equivalent) before contacting Lyfuber.
+
+================================================================================
+
+© 2026 Lyfuber, Inc. All rights reserved.
+
+These Terms and Conditions were last updated on July 18, 2026.
+
+By using the Lyfuber app, you confirm that you have read, understood, and 
+agree to be bound by these Terms and Conditions.
+
+================================================================================

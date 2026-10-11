@@ -25,7 +25,7 @@ class CarRegistrationScreen extends StatelessWidget {
         forceMaterialTransparency: true,
         centerTitle: true,
         title: Text(
-          'Car Registration',
+          'Vehicle Registration',
           style: AppCustomDesign.headingTextStyle.copyWith(
             fontSize: 20.sp,
           ),
@@ -62,28 +62,32 @@ class CarRegistrationScreen extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Car Name Field
         _buildTextFieldWithError(
-          controller: controller.carNameController,
-          label: 'Car Name',
-          hint: 'Enter car name',
-          error: controller.carNameError,
+          controller: controller.vehicleNameController,
+          label: 'Vehicle Make',
+          hint: 'e.g. Honda',
+          error: controller.vehicleNameError,
         ),
         SizedBox(height: 16.h),
 
-        // Car Plate Number Field
         _buildTextFieldWithError(
-          controller: controller.carPlateNoController,
-          label: 'Car Plate Number',
+          controller: controller.vehicleModelController,
+          label: 'Vehicle Model',
+          hint: 'e.g. Civic',
+          error: controller.vehicleModelError,
+        ),
+        SizedBox(height: 16.h),
+        _buildTextFieldWithError(
+          controller: controller.vehiclePlateNoController,
+          label: 'Vehicle Plate Number',
           hint: 'Enter plate number',
           error: controller.carPlateError,
         ),
         SizedBox(height: 16.h),
 
-        // Registration Date Field
         _buildTextFieldWithError(
           controller: controller.carRegistrationDateController,
-          label: 'Registration Date',
+          label: 'Registration Expire Date',
           hint: 'DD-MM-YYYY',
           error: controller.dateError,
           onTap: () => _showDatePicker(),
@@ -141,8 +145,8 @@ class CarRegistrationScreen extends StatelessWidget {
       children: [
         // Car Picture
         _buildImageSection(
-          title: 'Car Picture',
-          description: 'Upload a clear picture of your car',
+          title: 'Vehicle Picture',
+          description: 'Upload a clear picture of your Vehicle',
           imageType: 'carPicture',
           imageObservable: controller.carPicture,
           errorObservable: controller.carPictureError,
@@ -446,10 +450,13 @@ class CarRegistrationScreen extends StatelessWidget {
     final DateTime? pickedDate = await showDatePicker(
       context: Get.context!,
       initialDate: DateTime.now(),
-      firstDate: DateTime(2000),
-      lastDate: DateTime.now(),
+      firstDate: DateTime.now(),
+      lastDate: DateTime(
+        DateTime.now().year + 5,
+        DateTime.now().month,
+        DateTime.now().day,
+      ),
     );
-
     if (pickedDate != null) {
       final formattedDate = '${pickedDate.year}-'
           '${pickedDate.month.toString().padLeft(2, '0')}-'

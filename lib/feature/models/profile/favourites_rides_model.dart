@@ -5,8 +5,8 @@ class FavouritesRiderModel{
   String? driverPhone;
   DriverProfileImage? driverProfileImage;
   DriverLocation? driverLocation;
-  int? driverRating;
-  int? driverTotalRating;
+  double? driverRating;
+  double? driverTotalRating;
   int? totalCompletedRides;
   String? vehicleName;
   String? vehiclePlateNumber;
@@ -39,8 +39,8 @@ class FavouritesRiderModel{
     driverLocation = json['driverLocation'] != null
         ? new DriverLocation.fromJson(json['driverLocation'])
         : null;
-    driverRating = json['driverRating'];
-    driverTotalRating = json['driverTotalRating'];
+    driverRating = (json['driverRating'] as num?)?.toDouble();
+    driverTotalRating = (json['driverTotalRating'] as num?)?.toDouble();
     totalCompletedRides = json['totalCompletedRides'];
     vehicleName = json['vehicleName'];
     vehiclePlateNumber = json['vehiclePlateNumber'];

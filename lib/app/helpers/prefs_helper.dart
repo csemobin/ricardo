@@ -15,8 +15,9 @@ class PrefsHelper {
   }
 
   static Future setString(String key, value) async {
+    if (value == null) return;
     SharedPreferences preferences = await SharedPreferences.getInstance();
-    await preferences.setString(key, value);
+    await preferences.setString(key, value.toString());
   }
 
   static Future setBool(String key, bool value) async {

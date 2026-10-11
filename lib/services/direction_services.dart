@@ -1,43 +1,79 @@
 import 'dart:convert';
-
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
-import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
-import 'package:ricardo/app/helpers/custom_location_helper.dart';
 import 'package:ricardo/feature/controllers/home/google_search_location_controller.dart';
-import 'package:ricardo/feature/controllers/home/map/map_opt_controller.dart';
+import 'package:ricardo/feature/view/home/map/helpers/location_bootstrap_helper.dart';
 
 class DirectionsService {
-
-  // Make sure to enable these APIs in Google Cloud Console:
-  // - Maps SDK for Android
-  // - Directions API
-  // static final String apiKey = dotenv.env['API_KEY'] ?? '';
   static final String _apiKey = dotenv.env['MAP_API_KEY'] ?? '';
 
+  /// Driving-only Directions URL. Never use walking/transit — those draw
+  /// footpaths and cut corners the car must not follow.
+  static Uri _directionsUri(LatLng from, LatLng to) {
+    return Uri.parse(
+      'https://maps.googleapis.com/maps/api/directions/json'
+      '?origin=${from.latitude},${from.longitude}'
+      '&destination=${to.latitude},${to.longitude}'
+      '&mode=driving'
+      '&overview=full'
+      '&units=metric'
+      '&key=$_apiKey',
+    );
+  }
 
-  static Future<List<LatLng>> getPolyline(LatLng from, LatLng to) async {
+  static Future<({int distanceMeters, int durationSeconds})?> getRouteMetrics(
+    LatLng from,
+    LatLng to,
+  ) async {
     try {
-      final res = await http.get(Uri.parse(
-        'https://maps.googleapis.com/maps/api/directions/json'
-            '?origin=${from.latitude},${from.longitude}'
-            '&destination=${to.latitude},${to.longitude}'
-            '&key=$_apiKey',
-      ));
+      final res = await http.get(_directionsUri(from, to));
 
       final data = jsonDecode(res.body);
 
       if (data['status'] != 'OK') {
-        print('Directions API Error: ${data['status']} - ${data['error_message']}');
+        return null;
+      }
+
+      final leg = data['routes'][0]['legs'][0];
+      return (
+        distanceMeters: (leg['distance']['value'] as num).round(),
+        durationSeconds: (leg['duration']['value'] as num).round(),
+      );
+    } catch (e) {
+      print('Error fetching route metrics: $e');
+      return null;
+    }
+  }
+
+  static Future<List<LatLng>> getPolyline(LatLng from, LatLng to) async {
+    try {
+      final res = await http.get(_directionsUri(from, to));
+
+      final data = jsonDecode(res.body);
+
+      if (data['status'] != 'OK') {
+        print(
+            'Directions API Error: ${data['status']} - ${data['error_message']}');
         return [];
       }
 
+      final routes = data['routes'] as List?;
+      if (routes == null || routes.isEmpty) return [];
+
+      // Prefer detailed DRIVING step geometry (follows curves on the roadway)
+      // over simplified overview_polyline, which cuts corners onto footpaths.
+      final detailed = _decodeDetailedStepPolyline(routes[0]);
+      if (detailed.length >= 2) return detailed;
+
+      final overview = routes[0]['overview_polyline']?['points'];
+      if (overview is! String || overview.isEmpty) return [];
+
       return PolylinePoints()
-          .decodePolyline(data['routes'][0]['overview_polyline']['points'])
+          .decodePolyline(overview)
           .map((p) => LatLng(p.latitude, p.longitude))
           .toList();
     } catch (e) {
@@ -46,58 +82,100 @@ class DirectionsService {
     }
   }
 
+  /// Build a high-resolution route from each DRIVING step's encoded polyline.
+  /// Walking / access-path steps are skipped so the car never follows a footpath.
+  static List<LatLng> _decodeDetailedStepPolyline(dynamic route) {
+    try {
+      final legs = route['legs'];
+      if (legs is! List || legs.isEmpty) return const [];
+
+      final decoder = PolylinePoints();
+      final points = <LatLng>[];
+
+      for (final leg in legs) {
+        final steps = leg['steps'];
+        if (steps is! List) continue;
+        for (final step in steps) {
+          final travelMode = (step['travel_mode'] as String?)?.toUpperCase();
+          // Strict roadway only — skip pedestrian / transit access legs.
+          if (travelMode != null &&
+              travelMode != 'DRIVING' &&
+              travelMode != 'DRIVE') {
+            continue;
+          }
+          final encoded = step['polyline']?['points'];
+          if (encoded is! String || encoded.isEmpty) continue;
+          final decoded = decoder.decodePolyline(encoded);
+          for (final p in decoded) {
+            final ll = LatLng(p.latitude, p.longitude);
+            if (points.isEmpty ||
+                points.last.latitude != ll.latitude ||
+                points.last.longitude != ll.longitude) {
+              points.add(ll);
+            }
+          }
+        }
+      }
+      return points;
+    } catch (_) {
+      return const [];
+    }
+  }
+
   Future<String> getCurrentAddress() async {
-    // Get current position
-    Position position = await Geolocator.getCurrentPosition(
-      desiredAccuracy: LocationAccuracy.high,
-    );
+    try {
+      final position = await resolveInitialPosition();
+      if (position == null) return kLocationLoadingAddress;
 
-    // Convert position to address
-    List<Placemark> placemarks = await placemarkFromCoordinates(
-      position.latitude,
-      position.longitude,
-    );
-
-    Placemark place = placemarks[0];
-
-    return '${place.street}, ${place.subLocality}, ${place.locality}, ${place.country}';
+      final parts = await reverseGeocodeAddressParts(
+        position.latitude,
+        position.longitude,
+      );
+      return parts?.full ?? kLocationLoadingAddress;
+    } catch (e) {
+      return kLocationLoadingAddress;
+    }
   }
 
   Future<Map<String, String>> getCurrentAddressParts() async {
-    Position position = await Geolocator.getCurrentPosition(
-      desiredAccuracy: LocationAccuracy.high,
-    );
+    try {
+      final position = await resolveInitialPosition();
+      if (position == null) {
+        return {
+          'firstLine': kLocationLoadingAddress,
+          'secondLine': '',
+        };
+      }
 
-    List<Placemark> placemarks = await placemarkFromCoordinates(
-      position.latitude,
-      position.longitude,
-    );
-
-    Placemark place = placemarks[0];
-
-    String firstLine = [
-      place.street,
-      place.subLocality,
-    ].where((e) => e != null && e.trim().isNotEmpty).join(', ');
-
-    String secondLine = [
-      place.locality,
-      place.country,
-    ].where((e) => e != null && e.trim().isNotEmpty).join(', ');
-
-    return {
-      'firstLine': firstLine,
-      'secondLine': secondLine,
-    };
+      final parts = await reverseGeocodeAddressParts(
+        position.latitude,
+        position.longitude,
+      );
+      if (parts == null) {
+        return {
+          'firstLine': kLocationLoadingAddress,
+          'secondLine': '',
+        };
+      }
+      return {
+        'firstLine': parts.firstLine,
+        'secondLine': parts.secondLine,
+      };
+    } catch (e) {
+      return {
+        'firstLine': kLocationLoadingAddress,
+        'secondLine': '',
+      };
+    }
   }
 
   static Future<String> calculateDistance(double? lng, double? lat) async {
     if (lat == null || lng == null) return 'N/A';
 
-    final googleController = Get.find<GoogleSearchLocationController>(); // ✅ gets existing instance
+    final googleController = Get.find<GoogleSearchLocationController>();
 
     final pickup = googleController.selectedPickup.value;
-    if (pickup == null) return 'N/A'; // ✅ null safety
+    if (pickup == null) return 'N/A';
 
     double distanceInMeters = Geolocator.distanceBetween(
       pickup.lat,
@@ -112,5 +190,4 @@ class DirectionsService {
       return '${(distanceInMeters / 1000).toStringAsFixed(1)} Kilometer';
     }
   }
-
 }

@@ -91,99 +91,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       barrierDismissible: true,
       context: context,
       builder: (BuildContext context) {
-        return Dialog(
-          backgroundColor: Colors.white.withOpacity(0.2),
-          insetPadding: EdgeInsets.symmetric(horizontal: 24.w),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(20.r),
-            child: BackdropFilter(
-              filter: ImageFilter.blur(
-                sigmaX: 15,
-                sigmaY: 15,
-              ),
-              child: Container(
-                padding: EdgeInsets.all(20.r),
-                decoration: BoxDecoration(
-                  color: AppColors.whiteColor.withOpacity(0.15),
-                  border: Border.all(color: Colors.white.withOpacity(0.8)),
-                ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Padding(padding: EdgeInsets.only(top: 32.h)),
-                    Image.asset(
-                      Assets.images.logout.path,
-                      height: 50,
-                    ),
-                    SizedBox(height: 30.h),
-                    Text(
-                      'Log Out',
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w600,
-                        color: AppColors.whiteColor,
-                      ),
-                    ),
-                    SizedBox(height: 15.h),
-                    Text(
-                      textAlign: TextAlign.center,
-                      'Do you want to log out your account?',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 12.sp,
-                        fontWeight: FontWeight.w400,
-                      ),
-                    ),
-                    SizedBox(height: 30.h),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: GestureDetector(
-                            onTap: () {
-                              Navigator.pop(context);
-                            },
-                            child: AnimatedContainer(
-                              duration: const Duration(milliseconds: 200),
-                              alignment: Alignment.center,
-                              width: double.maxFinite,
-                              height: 56.h,
-                              decoration: BoxDecoration(
-                                color: AppColors.greyColor500,
-                                borderRadius: BorderRadius.circular(50.r),
-                                border: Border.all(
-                                  color: AppColors.whiteColor,
-                                  width: 1,
-                                ),
-                              ),
-                              child: Text(
-                                'Cancel',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  color: AppColors.whiteColor,
-                                  fontSize: 16.sp,
-                                  fontWeight: FontWeight.w400,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                        SizedBox(width: 5.w),
-                        Expanded(
-                          child: CustomPrimaryButton(
-                            title: 'Log Out',
-                            onHandler: () {
-                              SignInController().logOut();
-                            },
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        );
+        return const _LogoutConfirmationDialog();
       },
     );
   }
@@ -430,6 +338,134 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ],
             );
           },
+        ),
+      ),
+    );
+  }
+}
+
+class _LogoutConfirmationDialog extends StatefulWidget {
+  const _LogoutConfirmationDialog();
+
+  @override
+  State<_LogoutConfirmationDialog> createState() =>
+      _LogoutConfirmationDialogState();
+}
+
+class _LogoutConfirmationDialogState extends State<_LogoutConfirmationDialog> {
+  bool _isLoggingOut = false;
+
+  Future<void> _logOut() async {
+    if (_isLoggingOut) return;
+    setState(() => _isLoggingOut = true);
+    try {
+      final loggedOut = await Get.find<SignInController>().logOut();
+      if (!loggedOut && mounted) {
+        setState(() => _isLoggingOut = false);
+      }
+    } catch (_) {
+      if (mounted) {
+        setState(() => _isLoggingOut = false);
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return PopScope(
+      canPop: !_isLoggingOut,
+      child: Dialog(
+        backgroundColor: Colors.white.withOpacity(0.2),
+        insetPadding: EdgeInsets.symmetric(horizontal: 24.w),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(20.r),
+          child: BackdropFilter(
+            filter: ImageFilter.blur(
+              sigmaX: 15,
+              sigmaY: 15,
+            ),
+            child: Container(
+              padding: EdgeInsets.all(20.r),
+              decoration: BoxDecoration(
+                color: AppColors.whiteColor.withOpacity(0.15),
+                border: Border.all(color: Colors.white.withOpacity(0.8)),
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Padding(padding: EdgeInsets.only(top: 32.h)),
+                  Image.asset(
+                    Assets.images.logout.path,
+                    height: 50,
+                  ),
+                  SizedBox(height: 30.h),
+                  Text(
+                    'Log Out',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.whiteColor,
+                    ),
+                  ),
+                  SizedBox(height: 15.h),
+                  Text(
+                    textAlign: TextAlign.center,
+                    'Do you want to log out your account?',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 12.sp,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                  SizedBox(height: 30.h),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: GestureDetector(
+                          onTap: _isLoggingOut
+                              ? null
+                              : () {
+                                  Navigator.pop(context);
+                                },
+                          child: AnimatedContainer(
+                            duration: const Duration(milliseconds: 200),
+                            alignment: Alignment.center,
+                            width: double.maxFinite,
+                            height: 56.h,
+                            decoration: BoxDecoration(
+                              color: AppColors.greyColor500,
+                              borderRadius: BorderRadius.circular(50.r),
+                              border: Border.all(
+                                color: AppColors.whiteColor,
+                                width: 1,
+                              ),
+                            ),
+                            child: Text(
+                              'Cancel',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color: AppColors.whiteColor,
+                                fontSize: 16.sp,
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      SizedBox(width: 5.w),
+                      Expanded(
+                        child: CustomPrimaryButton(
+                          title: 'Log Out',
+                          isLoading: _isLoggingOut,
+                          onHandler: _logOut,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
         ),
       ),
     );

@@ -4,6 +4,7 @@ import 'package:ricardo/feature/controllers/auth/sign_in_controller.dart';
 import 'package:ricardo/routes/app_routes.dart';
 import 'package:ricardo/services/api_client.dart';
 import 'package:ricardo/services/api_urls.dart';
+import 'package:ricardo/app/helpers/snackbar_helper.dart';
 
 class ChangePasswordController extends GetxController {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
@@ -137,7 +138,7 @@ class ChangePasswordController extends GetxController {
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         // Show success message
-        Get.snackbar(
+        showSnackbar(
           'Success',
           'Password changed successfully',
           snackPosition: SnackPosition.BOTTOM,
@@ -150,13 +151,13 @@ class ChangePasswordController extends GetxController {
         Get.offAllNamed(AppRoutes.signInScreen);
 
       } else {
-        Get.snackbar('Error', response.body['message'],snackPosition:SnackPosition.BOTTOM);
+        showSnackbar('Error', response.body['message'],snackPosition:SnackPosition.BOTTOM);
         // String errorMsg = 'Failed to change password';
         // if (response.body != null && response.body['data'] != null) {
         //   errorMsg = response.body['data']['message'] ?? errorMsg;
         // }
         // errorMessage.value = errorMsg;
-        // Get.snackbar(
+        // showSnackbar(
         //   'Error',
         //   errorMsg,
         //   snackPosition: SnackPosition.BOTTOM,
@@ -167,7 +168,7 @@ class ChangePasswordController extends GetxController {
     } catch (e) {
       debugPrint('Change password error: $e');
       errorMessage.value = 'An error occurred. Please try again.';
-      Get.snackbar(
+      showSnackbar(
         'Error',
         'An error occurred. Please try again.',
         snackPosition: SnackPosition.BOTTOM,

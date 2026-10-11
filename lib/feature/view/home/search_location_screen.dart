@@ -1,22 +1,13 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:get/get.dart';
-import 'package:ricardo/app/utils/app_colors.dart';
-import 'package:ricardo/feature/controllers/home/google_search_location_controller.dart';
+import 'package:ricardo/feature/controllers/app_settings_controller.dart';
 import 'package:ricardo/feature/models/home/place_suggestion.dart';
 import 'package:ricardo/feature/view/home/link_export_file.dart';
-import 'package:ricardo/gen/assets.gen.dart';
-import 'package:ricardo/services/location_permission_service.dart';
 import 'package:ricardo/widgets/custom_loader.dart';
-import 'package:ricardo/widgets/custom_primary_button.dart';
 import 'package:ricardo/widgets/custom_scaffold.dart';
 import 'package:ricardo/widgets/custom_text_field.dart';
-
-// ✅ Define FontFamily class (or replace with string literal 'Poppins')
+import 'package:ricardo/app/helpers/snackbar_helper.dart';
 class FontFamily {
   static const String poppins = 'Poppins';
 }
@@ -26,6 +17,7 @@ class SearchLocationScreen extends StatelessWidget {
 
   final controller = Get.put(GoogleSearchLocationController());
   final googleSearchLocationController = Get.find<GoogleSearchLocationController>();
+  final appSettings = Get.find<AppSettingsController>();
 
   final pickupFocus = FocusNode();
   final dropFocus = FocusNode();
@@ -49,7 +41,7 @@ class SearchLocationScreen extends StatelessWidget {
             color: AppColors.blackColor,
             fontSize: 18.sp,
             fontWeight: FontWeight.w600,
-            fontFamily: FontFamily.poppins, // ✅ Now defined
+            fontFamily: FontFamily.poppins,
           ),
         ),
         forceMaterialTransparency: true,
@@ -79,6 +71,7 @@ class SearchLocationScreen extends StatelessWidget {
 
   Widget _buildPickupField() {
     return Obx(() => CustomTextField(
+      borderColor: Colors.transparent,
       focusNode: pickupFocus,
       controller: controller.pickupController,
       labelText: 'Pick-up Location',
@@ -111,6 +104,7 @@ class SearchLocationScreen extends StatelessWidget {
 
   Widget _buildDropField() {
     return Obx(() => CustomTextField(
+      borderColor: Colors.transparent,
       focusNode: dropFocus,
       controller: controller.dropController,
       labelText: 'Drop-off Location',
@@ -143,6 +137,7 @@ class SearchLocationScreen extends StatelessWidget {
 
   Widget _buildNoteField() {
     return CustomTextField(
+      borderColor: Colors.transparent,
       controller: controller.noteController,
       labelText: 'Note for Driver (Optional)',
       hintText: 'Any special instructions for driver?',
@@ -164,7 +159,8 @@ class SearchLocationScreen extends StatelessWidget {
           ),
         );
       }
-      if (controller.pickupPlaces.isEmpty) return const SizedBox.shrink();
+      if (!controller.showPickupSuggestions.value ||
+          controller.pickupPlaces.isEmpty) return const SizedBox.shrink();
       return _buildPlaceList(
         places: controller.pickupPlaces,
         onSelect: (place) async {
@@ -193,7 +189,8 @@ class SearchLocationScreen extends StatelessWidget {
           ),
         );
       }
-      if (controller.dropPlaces.isEmpty) return const SizedBox.shrink();
+      if (!controller.showDropSuggestions.value ||
+          controller.dropPlaces.isEmpty) return const SizedBox.shrink();
       return _buildPlaceList(
         places: controller.dropPlaces,
         onSelect: (place) async {
@@ -510,7 +507,13 @@ class SearchLocationScreen extends StatelessWidget {
                         ),
                         SizedBox(height: 16.h),
                         // Info section
-                        Container(
+                        Obx(() {
+                          final waitingCharge =
+                              appSettings.waitingTimeCharge.toStringAsFixed(2);
+                          final cancellationFee =
+                              appSettings.cancellationFeePerMile.toStringAsFixed(2);
+
+                          return Container(
                           padding: EdgeInsets.all(12.w),
                           decoration: BoxDecoration(
                             color: Colors.blue.withOpacity(0.1),
@@ -537,7 +540,7 @@ class SearchLocationScreen extends StatelessWidget {
                                   children: [
                                     const TextSpan(text: '• If you are late, a '),
                                     TextSpan(
-                                      text: '\$${dotenv.env["LATE_FINE_CHARGE"]}/min',
+                                      text: '\$$waitingCharge/min',
                                       style: TextStyle(color: AppColors.errorColor),
                                     ),
                                     const TextSpan(
@@ -547,7 +550,7 @@ class SearchLocationScreen extends StatelessWidget {
                               ),
                               SizedBox(height: 4.h),
                               Text(
-                                '• If you cancel after a driver is on the way, a cancellation fee will be charged.',
+                                '• If you cancel after a driver is on the way, a \$$cancellationFee/mile cancellation fee will apply.',
                                 style: TextStyle(
                                   fontSize: 11.sp,
                                   color: Colors.grey[700],
@@ -555,7 +558,8 @@ class SearchLocationScreen extends StatelessWidget {
                               ),
                             ],
                           ),
-                        ),
+                        );
+                        }),
                         SizedBox(height: 16.h),
                         Text(
                           'Do you want to continue?',
@@ -688,6 +692,8 @@ class SearchLocationScreen extends StatelessWidget {
 
   Widget _buildActionButton() {
     return Obx(() {
+      final cnt = Get.find<UserController>();
+
       if (controller.hasFare) {
         return Column(
           children: [
@@ -718,48 +724,67 @@ class SearchLocationScreen extends StatelessWidget {
           ],
         );
       } else {
-        return CustomPrimaryButton(
-          onHandler: () async {
-            final status =
-            await LocationPermissionService.checkAndRequestLocation();
+        if ((cnt.userModel.value?.userProfile?.wallet ?? 0) > 0) {
+          final bothReady = controller.canCalculateFare;
+          if (bothReady) {
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              final messengerContext = Get.context;
+              if (messengerContext == null) return;
+              ScaffoldMessenger.of(messengerContext).hideCurrentSnackBar();
+            });
+          }
 
-            if (status != LocationStatus.granted) {
-              showDialog(
-                context: Get.context!,
-                builder: (context) => AlertDialog(
-                  title: const Text('Location Permission Required'),
-                  content: const Text(
-                      'Please enable location permissions to calculate fare.'),
-                  actions: [
-                    TextButton(
-                      onPressed: () => Get.back(),
-                      child: const Text('OK'),
-                    ),
-                  ],
-                ),
-              );
-              return;
-            }
+          return GestureDetector(
+            onTap: bothReady
+                ? null
+                : () {
+                    showSnackbar(
+                      'Missing Information',
+                      'Please select both pick-up and drop-off locations',
+                      backgroundColor: Colors.orange,
+                      colorText: Colors.white,
+                      duration: const Duration(seconds: 2),
+                    );
+                  },
+            child: CustomPrimaryButton(
+              onHandler: bothReady
+                  ? () async {
+                      final status = await LocationPermissionService
+                          .checkAndRequestLocation();
 
-            if (!controller.canCalculateFare) {
-              Get.snackbar(
-                'Missing Information',
-                'Please select both pick-up and drop-off locations',
-                backgroundColor: Colors.orange,
-                colorText: Colors.white,
-                duration: const Duration(seconds: 2),
-              );
-              return;
-            }
+                      if (status != LocationStatus.granted) {
+                        showDialog(
+                          context: Get.context!,
+                          builder: (context) => AlertDialog(
+                            title: const Text('Location Permission Required'),
+                            content: const Text(
+                                'Please enable location permissions to calculate fare.'),
+                            actions: [
+                              TextButton(
+                                onPressed: () => Get.back(),
+                                child: const Text('OK'),
+                              ),
+                            ],
+                          ),
+                        );
+                        return;
+                      }
 
-            await controller.calculateFare();
+                      await controller.calculateFare();
 
-            if (controller.hasFare) {
-              _buildFareCard(Get.context!);
-            }
-          },
-          title: controller.isLoadingFare.value ? 'Calculating...' : 'Find Ride',
-        );
+                      if (controller.hasFare) {
+                        _buildFareCard(Get.context!);
+                      }
+                    }
+                  : null,
+              title: controller.isLoadingFare.value
+                  ? 'Calculating...'
+                  : 'Find Ride',
+            ),
+          );
+        } else {
+          return Text('First Added amount in you wallet');
+        }
       }
     });
   }

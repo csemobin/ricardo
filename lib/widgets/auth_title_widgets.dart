@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:ricardo/gen/fonts.gen.dart';
 import '../app/utils/app_colors.dart';
 import '../widgets/widgets.dart';
 
@@ -40,7 +41,7 @@ class AuthTitleWidgets extends StatelessWidget {
             fontSize:subTitleFontSize?? 15.sp,
             color: subTitleColor ?? AppColors.secondaryColor,
             textOverflow: TextOverflow.fade,
-            fontName: 'Inter',
+            fontName: FontFamily.poppins,
           ),
         ],
       ],

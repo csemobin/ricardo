@@ -28,9 +28,6 @@ class _WalletScreenState extends State<WalletScreen> {
   void initState() {
     super.initState();
     controller.fetchIfNeeded();
-
-    // ── Infinite scroll listener ───────────────────────────────
-    // Triggers loadMore() when user scrolls within 200px of the bottom
     _scrollController.addListener(() {
       final position   = _scrollController.position;
       final threshold  = position.maxScrollExtent - 200.h;
@@ -70,7 +67,7 @@ class _WalletScreenState extends State<WalletScreen> {
           }
 
           return SingleChildScrollView(
-            controller: _scrollController, // ← attach scroll controller
+            controller: _scrollController,
             physics: const AlwaysScrollableScrollPhysics(),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
@@ -113,10 +110,8 @@ class _WalletScreenState extends State<WalletScreen> {
                     style: AppCustomDesign.walletScreenTextStyle),
                 SizedBox(height: 8.h),
 
-                // ── History List ─────────────────────────────────
                 _buildHistoryList(),
 
-                // ── Load More Indicator ──────────────────────────
                 Obx(() {
                   if (controller.isLoadingMore.value) {
                     return Padding(
@@ -359,7 +354,7 @@ class _WalletScreenState extends State<WalletScreen> {
 
   TransactionDisplay getTransactionDisplay(RecentHistory data) {
     final type   = data.type   ?? '';
-    final amount = data.amount?.toStringAsFixed(0) ?? '0';
+    final amount = data.amount?.toString() ?? '0';
     switch (type) {
       case 'add_money':
       case 'ride_earning':

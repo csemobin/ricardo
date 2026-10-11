@@ -4,10 +4,13 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:ricardo/app/utils/app_colors.dart';
+import 'package:ricardo/app/utils/app_constants.dart';
 import 'package:ricardo/feature/controllers/history/history_controller.dart';
+import 'package:ricardo/feature/controllers/user_controller.dart';
 import 'package:ricardo/feature/models/history/complete_ride_history.dart';
 import 'package:ricardo/gen/assets.gen.dart';
 import 'package:ricardo/gen/fonts.gen.dart';
+import 'package:ricardo/routes/app_routes.dart';
 import 'package:ricardo/widgets/custom_scaffold.dart';
 
 class HistoryScreen extends StatefulWidget {
@@ -19,11 +22,16 @@ class HistoryScreen extends StatefulWidget {
 
 class _HistoryScreenState extends State<HistoryScreen> {
   final controller = Get.put(HistoryController());
+  final userController = Get.find<UserController>();
+
+  bool get _isPassenger =>
+      userController.userModel.value?.userProfile?.role ==
+      AppConstants.passenger;
 
   @override
   void initState() {
     super.initState();
-    if( controller.historyDatas.isEmpty ){
+    if (controller.historyDatas.isEmpty) {
       controller.fetchHistoryData();
     }
   }
@@ -207,11 +215,11 @@ class _HistoryScreenState extends State<HistoryScreen> {
       if (ride.createdAt != null && ride.createdAt!.isNotEmpty) {
         // Parse from UTC string and convert to local time
         final utcTime = DateTime.parse(ride.createdAt!);
-        completedAt = utcTime.toLocal();  // Convert UTC to local time
+        completedAt = utcTime.toLocal(); // Convert UTC to local time
       } else if (ride.createdAt != null && ride.createdAt!.isNotEmpty) {
         // Parse from UTC string and convert to local time
         final utcTime = DateTime.parse(ride.createdAt!);
-        completedAt = utcTime.toLocal();  // Convert UTC to local time
+        completedAt = utcTime.toLocal(); // Convert UTC to local time
       } else {
         completedAt = DateTime.now();
       }
@@ -298,6 +306,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
               ),
             ),
             Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SvgPicture.asset(Assets.images.location),
                 SizedBox(
@@ -324,7 +333,29 @@ class _HistoryScreenState extends State<HistoryScreen> {
                       )
                     ],
                   ),
-                )
+                ),
+                if (_isPassenger && ride.reviewId == null) ...[
+                  SizedBox(width: 12.w),
+                  FilledButton(
+                    style: FilledButton.styleFrom(
+                      backgroundColor: Colors.grey,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                    ),
+                    onPressed: () {
+                      Get.toNamed(
+                        AppRoutes.rateReviewDriver,
+                        arguments: {
+                          'name': ride.driverName,
+                          'driverId': ride.driver,
+                          'rideId': ride.sId,
+                        },
+                      );
+                    },
+                    child: const Text('Review'),
+                  ),
+                ],
               ],
             ),
           ],

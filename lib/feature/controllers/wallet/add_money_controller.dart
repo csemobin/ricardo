@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:ricardo/feature/view/wallet/payment_web_view_screen.dart';
 import 'package:ricardo/services/api_client.dart';
 import 'package:ricardo/services/api_urls.dart';
+import 'package:ricardo/app/helpers/snackbar_helper.dart';
 
 class AddMoneyController extends GetxController{
   final TextEditingController addMoneyTEController = TextEditingController();
@@ -51,11 +52,11 @@ class AddMoneyController extends GetxController{
         if (paymentUrl != null && paymentUrl.isNotEmpty) {
           await Get.to(() => PaymentWebViewScreen(paymentUrl: paymentUrl));
         }else{
-          Get.snackbar('Error', 'Something went wrong. Please try again!!',
+          showSnackbar('Success', 'Something went wrong. Please try again!!',
               snackPosition: SnackPosition.BOTTOM);
         }
       }else{
-        Get.snackbar('Error', response.body['message'],snackPosition: SnackPosition.BOTTOM);
+        showSnackbar('Error', response.body['message'],snackPosition: SnackPosition.BOTTOM);
       }
     }catch(e){
       debugPrint(e.toString());

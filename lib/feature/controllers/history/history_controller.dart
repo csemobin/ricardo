@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:ricardo/feature/models/history/complete_ride_history.dart';
 import 'package:ricardo/services/api_client.dart';
 import 'package:ricardo/services/api_urls.dart';
+import 'package:ricardo/app/helpers/snackbar_helper.dart';
 
 class HistoryController extends GetxController{
 
@@ -17,12 +18,29 @@ class HistoryController extends GetxController{
         final List datas = response.body['data'];
         historyDatas.value = datas.map((e)=> CompleteRideHistoryModel.fromJson(e)).toList();
       }else{
-        Get.snackbar('Error', response.body['data']['message']);
+        showSnackbar('Error', response.body['data']['message']);
       }
     }catch(e){
       debugPrint(e.toString());
     }finally{
       isHistoryFetchStatus.value = false;
+    }
+  }
+
+  void markRideAsReviewed(String rideId, {String? reviewId}) {
+    if (rideId.isEmpty) return;
+
+    for (final dateGroup in historyDatas) {
+      final rides = dateGroup?.rides;
+      if (rides == null) continue;
+
+      for (final ride in rides) {
+        if (ride.sId == rideId) {
+          ride.reviewId = reviewId ?? ride.sId ?? 'reviewed';
+          historyDatas.refresh();
+          return;
+        }
+      }
     }
   }
 }

@@ -11,6 +11,7 @@ import 'package:ricardo/feature/simmer/payment_method_skeleton_list.dart';
 import 'package:ricardo/gen/assets.gen.dart';
 import 'package:ricardo/routes/app_routes.dart';
 import 'package:ricardo/widgets/custom_scaffold.dart';
+import 'package:ricardo/app/helpers/snackbar_helper.dart';
 
 class PaymentMethodsSelectionScreen extends StatefulWidget {
   const PaymentMethodsSelectionScreen({super.key});
@@ -51,7 +52,7 @@ class _PaymentMethodsSelectionScreenState
                 if (controller.paymentCardInfo.length < 3) {
                   Get.toNamed(AppRoutes.addCardScreen);
                 } else {
-                  Get.snackbar(
+                  showSnackbar(
                     'Limit Reached',
                     'You can only add up to 3 cards',
                     snackPosition: SnackPosition.BOTTOM,
@@ -89,7 +90,6 @@ class _PaymentMethodsSelectionScreenState
             height: 38.h,
           ),
 
-          // Bank Info and there Bottom Section work are here
           Text(
             'Bank Info',
             style: AppCustomDesign.walletScreenTextStyle,
@@ -204,7 +204,8 @@ class _PaymentMethodsSelectionScreenState
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Padding(padding: EdgeInsets.only(top: 32.h)),
-                    SvgPicture.asset(Assets.images.glassmorphismLogo),
+                    // SvgPicture.asset(Assets.images.settingDeleteIcon,width: 300,height: 200,),
+                    Icon(Icons.delete, color: AppColors.errorColor,size: 120,fontWeight: FontWeight.w700,weight: 700,),
                     SizedBox(
                       height: 30.h,
                     ),
@@ -243,7 +244,9 @@ class _PaymentMethodsSelectionScreenState
                           width: 5.w,
                         ),
                         Obx(() {
-                          return Expanded(
+                          return controller.isCardDelete.value ? CircularProgressIndicator(
+                            color: AppColors.errorColor,
+                          ) : Expanded(
                             child: ElevatedButton(
                               onPressed: controller.isCardDelete.value
                                   ? null // Disable button while loading
@@ -264,7 +267,7 @@ class _PaymentMethodsSelectionScreenState
                                   color: AppColors.errorColor,
                                 ),
                               ),
-                              child: Text(controller.isCardDelete.value ? 'Deleting...' : 'Delete')
+                              child: Text('Delete')
                             ),
                           );
                         }),

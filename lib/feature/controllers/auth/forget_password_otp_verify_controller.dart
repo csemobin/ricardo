@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:ricardo/routes/app_routes.dart';
 import 'package:ricardo/services/api_client.dart';
 import 'package:ricardo/services/api_urls.dart';
+import 'package:ricardo/app/helpers/snackbar_helper.dart';
 
 class ForgetPasswordOtpVerifyController extends GetxController {
   Timer? _timer;
@@ -57,7 +58,7 @@ class ForgetPasswordOtpVerifyController extends GetxController {
 
   Future<void> varifyOtp(String route, String reqEmail) async {
     if (pinTEController.text.length != 6) {
-      Get.snackbar('Error', 'Please enter 6 digit OTP');
+      showSnackbar('Error', 'Please enter 6 digit OTP');
       return;
     }
 
@@ -76,7 +77,7 @@ class ForgetPasswordOtpVerifyController extends GetxController {
 
       }
     } catch (e) {
-      Get.snackbar('Error', 'Verification failed: ${e.toString()}');
+      showSnackbar('Error', 'Verification failed: ${e.toString()}');
     } finally {
       isVarifyEmail.value = false;
     }
@@ -92,13 +93,13 @@ class ForgetPasswordOtpVerifyController extends GetxController {
           ApiUrls.otpSendForgotPassword, {"email": reqEmail});
 
       if (response.statusCode == 200) {
-        Get.snackbar('Success', 'OTP sent successfully!');
+        showSnackbar('Success', 'OTP sent successfully!');
       } else {
-        Get.snackbar('Error', response.body['data']['message']);
+        showSnackbar('Error', response.body['data']['message']);
       }
       startTimer();
     } catch (e) {
-      Get.snackbar('Error', 'Failed to resend OTP');
+      showSnackbar('Error', 'Failed to resend OTP');
     }
   }
 

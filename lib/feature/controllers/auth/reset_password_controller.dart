@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:ricardo/services/api_client.dart';
 import 'package:ricardo/services/api_urls.dart';
+import 'package:ricardo/app/helpers/snackbar_helper.dart';
 
 class ResetPasswordController extends GetxController{
 
@@ -22,11 +23,11 @@ class ResetPasswordController extends GetxController{
       if (response.statusCode == 200 || response.statusCode == 201) {
         return true;
       } else {
-        Get.snackbar('Error', response.body['data']['message']);
+        showSnackbar('Error', response.body['data']['message']);
         return false;
       }
     } catch (e) {
-      Get.snackbar('Error', 'Failed to reset password: ${e.toString()}');
+      showSnackbar('Error', 'Failed to reset password: ${e.toString()}');
       return false;
     }finally {
       isResetPasswordStatus.value = false;

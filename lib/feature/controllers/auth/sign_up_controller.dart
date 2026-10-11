@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:ricardo/routes/app_routes.dart';
 import 'package:ricardo/services/api_client.dart';
 import 'package:ricardo/services/api_urls.dart';
+import 'package:ricardo/app/helpers/snackbar_helper.dart';
 
 class SignUpController extends GetxController {
   final TextEditingController nameTEController = TextEditingController();
@@ -62,10 +63,10 @@ class SignUpController extends GetxController {
            inputFiledHandlerClear();
          }
       } else {
-        Get.snackbar('Error Massage', response.body['message']);
+        showSnackbar('Error Massage', response.body['message']);
       }
     } catch (e) {
-      Get.snackbar('Error Massage', e.toString());
+      showSnackbar('Error Massage', e.toString());
     } finally {
       isRegistrationStatus.value = false;
     }

@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:ricardo/feature/models/profile/support_model.dart';
 import 'package:ricardo/services/api_client.dart';
 import 'package:ricardo/services/api_urls.dart';
+import 'package:ricardo/app/helpers/snackbar_helper.dart';
 
 class SupportController extends GetxController {
   final isLoading = false.obs;
@@ -17,7 +18,7 @@ class SupportController extends GetxController {
         final data = response.body['data'];
         supportModel.value = SupportModel.fromJson(data);
       } else {
-        Get.snackbar('Error', response.body['message']);
+        showSnackbar('Error', response.body['message']);
       }
     } catch (e) {
       debugPrint('Error: ${e.toString()}');

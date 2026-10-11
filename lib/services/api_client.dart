@@ -5,7 +5,9 @@ import 'package:get/get_connect/http/src/request/request.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 import 'package:mime_type/mime_type.dart';
+import 'package:ricardo/feature/controllers/user_controller.dart';
 import 'package:ricardo/routes/app_routes.dart';
+import 'package:ricardo/services/socket_services.dart';
 
 import '../app/helpers/prefs_helper.dart';
 import '../app/utils/app_constants.dart';
@@ -16,11 +18,12 @@ import 'logger.dart';
 
 final log = logger(ApiClient);
 
-class ApiClient extends GetxService {
+class ApiClient extends GetxService  {
   static var client = http.Client();
   static const String noInternetMessage = "Can't connect to the internet!";
   static const int timeoutInSeconds = 60;
   static String bearerToken = "";
+  static bool _isHandlingExpiredToken = false;
 
   // <==========================================> Get Data <======================================>
   static Future<Response> getData(String uri, {Map<String, String>? headers}) async {
@@ -37,6 +40,31 @@ class ApiClient extends GetxService {
 
       http.Response response = await client.get(
         Uri.parse(ApiUrls.baseUrl + uri),
+        headers: headers ?? mainHeaders,
+      ).timeout(const Duration(seconds: timeoutInSeconds));
+
+      return handleResponse(response, uri);
+    } catch (e, s) {
+      log.e('🐞🐞🐞 Error in getData: ${e.toString()}');
+      log.e('Stacktrace: ${s.toString()}');
+      return const Response(statusCode: 1, statusText: noInternetMessage);
+    }
+  }
+
+  static Future<Response> getDataWithoutVersion(String uri, {Map<String, String>? headers}) async {
+    bearerToken = await PrefsHelper.getString(AppConstants.bearerToken);
+
+    var mainHeaders = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $bearerToken'
+    };
+    try {
+      log.i(
+          '|📍📍📍|-----------------[[ GET ]] method details start -----------------|📍📍📍|');
+      log.i('URL: $uri \n Headers: ${headers ?? mainHeaders}');
+
+      http.Response response = await client.get(
+        Uri.parse(uri),
         headers: headers ?? mainHeaders,
       ).timeout(const Duration(seconds: timeoutInSeconds));
 
@@ -286,11 +314,19 @@ class ApiClient extends GetxService {
       log.i('====> API Response: [${response.statusCode}] $uri');
       log.i(content);
 
-      return Response(
+      dynamic decodedBody;
+      try {
+        decodedBody = json.decode(content);
+      } catch (_) {
+        decodedBody = content;
+      }
+      final multipartResponse = Response(
         statusCode: response.statusCode,
         statusText: response.statusCode == 200 ? 'Success' : noInternetMessage,
-        body: json.decode(content),
+        body: decodedBody,
       );
+      _maybeForceLogoutOnExpiredToken(multipartResponse);
+      return multipartResponse;
     } catch (e, s) {
       log.e("==================================== Error in putMultipartData: ${e.toString()}");
       log.e("Stacktrace: ${s.toString()}");
@@ -341,10 +377,18 @@ class ApiClient extends GetxService {
       log.i('====> API Response: [${response.statusCode}] $uri');
       log.i(content);
 
-      return Response(
+      dynamic decodedBody;
+      try {
+        decodedBody = json.decode(content);
+      } catch (_) {
+        decodedBody = content;
+      }
+      final multipartResponse = Response(
           statusCode: response.statusCode,
           statusText: noInternetMessage,
-          body: json.decode(content));
+          body: decodedBody);
+      _maybeForceLogoutOnExpiredToken(multipartResponse);
+      return multipartResponse;
     } catch (e) {
       log.e("==================================== Error in patchMultipartData: ${e.toString()}");
       return const Response(statusCode: 1, statusText: noInternetMessage);
@@ -397,12 +441,6 @@ class ApiClient extends GetxService {
       statusText: response.reasonPhrase,
     );
 
-    if (response0.statusCode != null &&
-        response0.statusCode! >= 500 &&
-        response0.statusCode! < 600) {
-      Get.offAndToNamed(AppRoutes.fiveZeroScreen);
-    }
-
     if (response0.statusCode != 200 &&
         response0.body != null &&
         response0.body is! String) {
@@ -415,9 +453,99 @@ class ApiClient extends GetxService {
       response0 = const Response(statusCode: 0, statusText: noInternetMessage);
     }
 
+    _maybeForceLogoutOnExpiredToken(response0);
+
+    if (!_isHandlingExpiredToken &&
+        response0.statusCode != null &&
+        response0.statusCode! >= 500 &&
+        response0.statusCode! < 600) {
+      Get.offAndToNamed(AppRoutes.fiveZeroScreen);
+    }
+
     log.i(
         '====> API Response: [${response0.statusCode}] $uri\n${response0.body}');
     return response0;
+  }
+
+  static void _maybeForceLogoutOnExpiredToken(Response response) {
+    if (!_isExpiredTokenResponse(
+        response.statusCode, response.body, response.statusText)) {
+      return;
+    }
+    if (_isHandlingExpiredToken) return;
+    final route = Get.currentRoute;
+    if (route == AppRoutes.signInScreen ||
+        route.endsWith(AppRoutes.signInScreen) ||
+        route.contains('sign_in')) {
+      return;
+    }
+    _isHandlingExpiredToken = true;
+    Future.microtask(_forceLogoutToSignIn);
+  }
+
+  static bool _isExpiredTokenResponse(
+      int? statusCode, dynamic body, String? statusText) {
+    if (statusCode == null || statusCode == 200 || statusCode == 201) {
+      return false;
+    }
+    final haystack = _extractErrorMessage(body, statusText).toLowerCase();
+    if (haystack.isEmpty) return false;
+    final hasExpire = haystack.contains('expir');
+    final hasToken = haystack.contains('token') || haystack.contains('jwt');
+    return hasExpire && hasToken;
+  }
+
+  static String _extractErrorMessage(dynamic body, String? statusText) {
+    final parts = <String>[];
+    if (statusText != null && statusText.isNotEmpty) {
+      parts.add(statusText);
+    }
+    void collect(dynamic value, [int depth = 0]) {
+      if (value == null || depth > 3) return;
+      if (value is String && value.isNotEmpty) {
+        parts.add(value);
+        return;
+      }
+      if (value is List) {
+        for (final item in value) {
+          collect(item, depth + 1);
+        }
+        return;
+      }
+      if (value is Map) {
+        collect(value['message'], depth + 1);
+        collect(value['error'], depth + 1);
+        collect(value['errorMessage'], depth + 1);
+        collect(value['errorCode'], depth + 1);
+        collect(value['code'], depth + 1);
+        collect(value['status'], depth + 1);
+        collect(value['data'], depth + 1);
+      }
+    }
+
+    collect(body);
+    return parts.join(' ');
+  }
+
+  static Future<void> _forceLogoutToSignIn() async {
+    try {
+      bearerToken = "";
+      await PrefsHelper.remove(AppConstants.bearerToken);
+      await PrefsHelper.remove(AppConstants.fcmToken);
+      await PrefsHelper.remove(AppConstants.deviceId);
+      await PrefsHelper.remove(AppConstants.userModelCache);
+      SocketServices.socket?.disconnect();
+      SocketServices.socket?.dispose();
+      SocketServices.socket = null;
+      if (Get.isRegistered<UserController>()) {
+        await Get.find<UserController>().clearCachedUser();
+      }
+    } catch (e) {
+      log.e('Expired-token logout failed: $e');
+    } finally {
+      Get.offAllNamed(AppRoutes.signInScreen);
+      _isHandlingExpiredToken = false;
+    }
   }
 }
 

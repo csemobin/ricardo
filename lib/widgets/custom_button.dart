@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:ricardo/gen/fonts.gen.dart';
 import '../app/utils/app_colors.dart';
 import '../widgets/widgets.dart';
 
@@ -83,7 +84,7 @@ class CustomButton extends StatelessWidget {
               child: CustomText(
                 text: label ?? '',
                 color: foregroundColor ?? Colors.white,
-                fontName: fontName ?? 'Inter',
+                fontName: fontName ?? FontFamily.poppins,
                 fontWeight: fontWeight ?? FontWeight.w500,
                 fontSize: fontSize ?? 16.sp,
               ),

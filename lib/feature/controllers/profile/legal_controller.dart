@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:ricardo/services/api_client.dart';
 import 'package:ricardo/services/api_urls.dart';
+import 'package:ricardo/app/helpers/snackbar_helper.dart';
 
 class LegalController extends GetxController {
   final RxBool isLoading = false.obs;
@@ -18,7 +19,7 @@ class LegalController extends GetxController {
         final data = response.body['data']['value'];
         legalContent.value = data;
       } else {
-        Get.snackbar('Error', response.body['data']['message']);
+        showSnackbar('Error', response.body['data']['message']);
       }
     } catch (e) {
       debugPrint(e.toString());

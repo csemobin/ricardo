@@ -17,7 +17,9 @@ class ReportScreen extends StatefulWidget {
 }
 
 class _ReportScreenState extends State<ReportScreen> {
-  final TextEditingController txController = TextEditingController();
+  // final TextEditingController txController = TextEditingController();
+  final rideId = Get.arguments['rideId'];
+
   final controller = Get.put(ReportController());
 
   @override
@@ -39,7 +41,7 @@ class _ReportScreenState extends State<ReportScreen> {
         child: Column(
           children: [
             SizedBox(
-              height: 24.h,
+              height: 18.h,
             ),
             Center(
               child: CustomHeadingText(
@@ -62,18 +64,17 @@ class _ReportScreenState extends State<ReportScreen> {
               ),
             ),
             SizedBox(
-              height: 42.h,
+              height: 28.h,
             ),
             _buildRadioOption(1, 'Safety Issues'),
             _buildRadioOption(2, 'Behavior Issues'),
             _buildRadioOption(3, 'Trip Issues'),
             _buildRadioOption(4, 'Vehicle Issues'),
             _buildRadioOption(5, 'Other'),
-
             Obx(() {
               if (controller.radioBtnValue.value == 5) {
                 return CustomTextField(
-                  controller: txController,
+                  controller: controller.txController,
                   labelText: 'Write Your Issue',
                   hintText: 'Add Note',
                   minLines: 5,
@@ -81,11 +82,19 @@ class _ReportScreenState extends State<ReportScreen> {
               }
               return const SizedBox.shrink();
             }),
-
             SizedBox(
-              height: 110.h,
+              height: 36.h,
             ),
-            CustomPrimaryButton(title: 'Submit Report', onHandler: () {}),
+            Obx(() {
+              final loading = controller.isReportStatus.value;
+              return CustomPrimaryButton(
+                title: 'Submit Report',
+                isLoading: loading,
+                onHandler: loading
+                    ? null
+                    : () => _reportButtonHandler(rideId),
+              );
+            }),
           ],
         ),
       ),
@@ -99,17 +108,33 @@ class _ReportScreenState extends State<ReportScreen> {
       },
       child: Row(
         children: [
-          Obx(() => Radio(
-            value: value,
-            groupValue: controller.radioBtnValue.value,
-            onChanged: (value) {
-              controller.radioBtnValue.value = value!;
-            },
-          )),
-          SizedBox(width: 10.0),
-          Text(label)
+          Obx(() => Radio<int>(
+                value: value,
+                groupValue: controller.radioBtnValue.value,
+                activeColor: const Color(0xff007635),
+                onChanged: (value) {
+                  controller.radioBtnValue.value = value!;
+                },
+              )),
+          SizedBox(width: 4.w),
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 15.sp,
+              fontWeight: FontWeight.w500,
+              color: AppColors.blackColor,
+            ),
+          )
         ],
       ),
     );
+  }
+
+  // reportButtonHandler already surfaces the specific failure reason.
+  void _reportButtonHandler(String rideId) async {
+    final value = await controller.reportButtonHandler(rideId);
+    if (value == true) {
+      Get.back();
+    }
   }
 }

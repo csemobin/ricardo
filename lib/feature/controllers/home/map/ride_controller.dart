@@ -1,13 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:logger/logger.dart';
 import 'package:ricardo/feature/controllers/home/google_search_location_controller.dart';
 import 'package:ricardo/feature/models/home/nearest_driver_model.dart';
 import 'package:ricardo/feature/models/socket/accept_ride_model.dart';
 import 'package:ricardo/services/api_client.dart';
 import 'package:ricardo/services/api_urls.dart';
-import 'package:ricardo/services/socket_services.dart';
+import 'package:ricardo/app/helpers/snackbar_helper.dart';
 
 class RideController extends GetxController {
   final val = Get.find<GoogleSearchLocationController>();
@@ -62,7 +60,7 @@ class RideController extends GetxController {
       final response = await ApiClient.getData(ApiUrls.requestAreaRider(id));
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        // Get.snackbar('Success', response.body['message'],
+        // showSnackbar('Success', response.body['message'],
         //     snackPosition: SnackPosition.BOTTOM);
 
         final List driversList = response.body['data']['drivers'];
@@ -86,7 +84,7 @@ class RideController extends GetxController {
         searchRadiusIndex.value = searchRadiusIndexValue;
         rideCancel.value = rideCancelValue;
       } else {
-        Get.snackbar('Error', response.body['message']);
+        showSnackbar('Error', response.body['message']);
       }
     } catch (e) {
       debugPrint(e.toString());
@@ -105,7 +103,7 @@ class RideController extends GetxController {
       isRequestBookRide.value = true;
       await ApiClient.getData(ApiUrls.sendPickUpRequest(riderId, driverId));
     } catch (e) {
-      Get.snackbar('Error', e.toString());
+      showSnackbar('Error', e.toString());
       debugPrint(e.toString());
     } finally {
       isRequestBookRide.value = false;
@@ -117,7 +115,7 @@ class RideController extends GetxController {
     final response =
         await ApiClient.getData(ApiUrls.cancelRequest(riderId, driverId));
     if (response.statusCode != 200 || response.statusCode != 201) {
-      Get.snackbar('Error', response.body['message']);
+      showSnackbar('Error', response.body['message']);
     }
   }
 }

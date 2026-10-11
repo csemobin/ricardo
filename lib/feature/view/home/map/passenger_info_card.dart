@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:ricardo/feature/view/home/link_export_file.dart';
+
 class PassengerInfoCard extends StatelessWidget {
   const PassengerInfoCard({
     super.key,
@@ -20,20 +21,17 @@ class PassengerInfoCard extends StatelessWidget {
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(12),
                 child: Image.network(
-                  (mapOPTController
-                      .rideStatusData
-                      .value
-                      ?.passenger?.image?.filename !=
-                      null &&
-                      mapOPTController
-                          .rideStatusData.value!.passenger!.image!.filename!.isNotEmpty )
+                  (mapOPTController.rideStatusData.value?.passenger?.image
+                                  ?.filename !=
+                              null &&
+                          mapOPTController.rideStatusData.value!.passenger!
+                              .image!.filename!.isNotEmpty)
                       ? '${ApiUrls.imageBaseUrl}${mapOPTController.rideStatusData.value?.passenger?.image?.filename}'
                       : '',
                   height: 50,
                   width: 50,
                   fit: BoxFit.cover,
-                  errorBuilder:
-                      (context, error, stackTrace) {
+                  errorBuilder: (context, error, stackTrace) {
                     return Image.asset(
                       'assets/images/default_image.jpg',
                       height: 50,
@@ -46,13 +44,10 @@ class PassengerInfoCard extends StatelessWidget {
             ),
             const SizedBox(width: 10),
             Column(
-              crossAxisAlignment:
-              CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  mapOPTController.rideStatusData.value
-                      ?.passenger?.name ??
-                      '',
+                  mapOPTController.rideStatusData.value?.passenger?.name ?? '',
                   style: TextStyle(
                     color: const Color(0xff171717),
                     fontSize: 14,
@@ -70,7 +65,7 @@ class PassengerInfoCard extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      '(${((mapOPTController.rideStatusData.value?.ride?.destinationMeters ?? 0) * 0.000621371).toStringAsFixed(2)} KM)',
+                      '(${((mapOPTController.rideStatusData.value?.ride?.destinationMeters ?? 0) * 0.000621371).toStringAsFixed(2)} KM) vzkxlj',
                     ),
                   ],
                 ),
@@ -89,11 +84,12 @@ class PassengerInfoCard extends StatelessWidget {
                 color: AppColors.whiteColor,
                 borderRadius: BorderRadius.circular(50),
                 border: Border.all(
-                    color: AppColors.greyColor200,
+                  color: AppColors.greyColor200,
                 ),
               ),
               child: SvgPicture.asset(
-                  Assets.icons.driverCardPhone),
+                Assets.icons.driverCardPhone,
+              ),
             ),
           ),
         ),

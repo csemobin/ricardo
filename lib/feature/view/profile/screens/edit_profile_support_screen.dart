@@ -1,12 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:get/get.dart';
-import 'package:ricardo/app/utils/app_colors.dart';
 import 'package:ricardo/feature/controllers/profile/support_controller.dart';
 import 'package:ricardo/feature/simmer/edit_profile_simmer.dart';
-import 'package:ricardo/gen/assets.gen.dart';
-import 'package:ricardo/gen/fonts.gen.dart';
+import 'package:ricardo/feature/view/home/link_export_file.dart';
 import 'package:ricardo/widgets/custom_scaffold.dart';
 import 'package:ricardo/widgets/logo_widget.dart';
 
@@ -43,8 +38,8 @@ class EditProfileSupportScreen extends GetView<SupportController> {
               child: Column(children: [
                 Center(
                   child: LogoWidget(
-                    width: 150.w,
-                    height: 150.h,
+                    width: 80.w,
+                    height: 80.h,
                   ),
                 ),
                 SizedBox(height: 73.h),
@@ -56,43 +51,48 @@ class EditProfileSupportScreen extends GetView<SupportController> {
                   if (controller.isLoading.value) {
                     return ShimmerContainer();
                   }
-                  return Container(
-                    padding: EdgeInsets.symmetric(horizontal: 58.w, vertical: 16.h),
-                    decoration: BoxDecoration(
-                      color: Colors.transparent,
-                      border: Border.all(color: AppColors.whiteColor),
-                      borderRadius: BorderRadius.circular(8.r),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Image.asset(Assets.images.supportEmailImage.path),
-                            SizedBox(width: 16.w),
-                            Text(
-                              'Email',
-                              style: TextStyle(
-                                fontSize: 14.sp,
-                                fontWeight: FontWeight.w500,
-                                color: AppColors.blackButton,
-                                fontFamily: FontFamily.poppins,
-                              ),
-                            )
-                          ],
-                        ),
-                        SizedBox(height: 8.h),
-                        Text(
-                          controller.supportModel.value?.value?.email ?? 'No email',
-                          style: TextStyle(
-                            fontSize: 16.sp,
-                            fontWeight: FontWeight.w600,
-                            color: AppColors.primaryColor,
-                            fontFamily: FontFamily.poppins,
+                  return GestureDetector(
+                    onTap: () {
+                      launchUrl(Uri.parse("mailto:${controller.supportModel.value?.value?.email}"));
+                    },
+                    child: Container(
+                      padding: EdgeInsets.symmetric(horizontal: 58.w, vertical: 16.h),
+                      decoration: BoxDecoration(
+                        color: Colors.transparent,
+                        border: Border.all(color: AppColors.whiteColor),
+                        borderRadius: BorderRadius.circular(8.r),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Image.asset(Assets.images.supportEmailImage.path,),
+                              SizedBox(width: 16.w),
+                              Text(
+                                'Email',
+                                style: TextStyle(
+                                  fontSize: 14.sp,
+                                  fontWeight: FontWeight.w500,
+                                  color: AppColors.blackButton,
+                                  fontFamily: FontFamily.poppins,
+                                ),
+                              )
+                            ],
                           ),
-                        )
-                      ],
+                          SizedBox(height: 8.h),
+                          Text(
+                            controller.supportModel.value?.value?.email ?? 'No email',
+                            style: TextStyle(
+                              fontSize: 16.sp,
+                              fontWeight: FontWeight.w600,
+                              color: AppColors.primaryColor,
+                              fontFamily: FontFamily.poppins,
+                            ),
+                          )
+                        ],
+                      ),
                     ),
                   );
                 }),
@@ -104,51 +104,58 @@ class EditProfileSupportScreen extends GetView<SupportController> {
                   if (controller.isLoading.value) {
                     return ShimmerContainer();
                   }
-                  return Container(
-                    padding: EdgeInsets.symmetric(horizontal: 58.w, vertical: 16.h),
-                    decoration: BoxDecoration(
-                      color: Colors.transparent,
-                      border: Border.all(color: AppColors.whiteColor),
-                      boxShadow: [
-                        BoxShadow(
-                          color: AppColors.whiteColor.withOpacity(0.09),
-                          blurRadius: 0,
-                          offset: Offset(0, -4),
-                          spreadRadius: 1,
-                        ),
-                      ],
-                      borderRadius: BorderRadius.circular(8.r),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
+                  return GestureDetector(
+                    onTap: (){
+                      launchUrl(Uri.parse("tel:${controller.supportModel.value?.value?.phone}"));
+                    },
+                    child: Container(
+                      padding: EdgeInsets.symmetric(horizontal: 58.w, vertical: 16.h),
+                      decoration: BoxDecoration(
+                        color: Colors.transparent,
+                        border: Border.all(color: AppColors.whiteColor),
+                        boxShadow: [
+                          BoxShadow(
+                            color: AppColors.whiteColor.withOpacity(0.09),
+                            blurRadius: 0,
+                            offset: Offset(0, -4),
+                            spreadRadius: 1,
+                          ),
+                        ],
+                        borderRadius: BorderRadius.circular(8.r),
+                      ),
+                      child: RepaintBoundary(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Image.asset(Assets.images.supportPhoneImage.path),
-                            SizedBox(width: 16.w),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Image.asset(Assets.images.supportPhoneImage.path),
+                                SizedBox(width: 16.w),
+                                Text(
+                                  'Phone',
+                                  style: TextStyle(
+                                    fontSize: 14.sp,
+                                    fontWeight: FontWeight.w500,
+                                    color: AppColors.blackButton,
+                                    fontFamily: FontFamily.poppins,
+                                  ),
+                                )
+                              ],
+                            ),
+                            SizedBox(height: 8.h),
                             Text(
-                              'Phone',
+                              controller.supportModel.value?.value?.phone ?? 'No Number',
                               style: TextStyle(
-                                fontSize: 14.sp,
-                                fontWeight: FontWeight.w500,
-                                color: AppColors.blackButton,
+                                fontSize: 16.sp,
+                                fontWeight: FontWeight.w600,
+                                color: AppColors.primaryColor,
                                 fontFamily: FontFamily.poppins,
                               ),
-                            )
+                            ),
                           ],
                         ),
-                        SizedBox(height: 8.h),
-                        Text(
-                          controller.supportModel.value?.value?.phone ?? 'No Number',
-                          style: TextStyle(
-                            fontSize: 16.sp,
-                            fontWeight: FontWeight.w600,
-                            color: AppColors.primaryColor,
-                            fontFamily: FontFamily.poppins,
-                          ),
-                        ),
-                      ],
+                      ),
                     ),
                   );
                 }),

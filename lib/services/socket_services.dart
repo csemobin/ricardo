@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:ricardo/app/helpers/device_helper.dart';
 import 'package:ricardo/app/helpers/prefs_helper.dart';
 import 'package:ricardo/app/utils/app_constants.dart';
 import 'package:ricardo/services/api_urls.dart';
@@ -10,6 +11,7 @@ import 'package:socket_io_client/socket_io_client.dart';
 class SocketServices {
   static String token = '';
   static IO.Socket? socket;
+  static void Function()? onReconnected;
 
   // Singleton pattern
   static final SocketServices _instance = SocketServices._internal();
@@ -47,7 +49,25 @@ class SocketServices {
     print("Socket initialized with token: $token  \n time${DateTime.now()}");
 
     // Setup event listeners
-    socket?.onConnect((_) =>  SocketServices.socket?.on('connect', (_) async{}));
+    // Re-emit user-connected on every (re)connect so the server can route
+    // ride-request / ride-status events to this socket. This covers:
+    //   - cold-start while offline → first connect when network returns
+    //   - mid-session network drop and reconnect
+    socket?.onConnect((_) async {
+      print('✅ Socket connected — emitting user-connected');
+      final t = await PrefsHelper.getString(AppConstants.bearerToken);
+      final fcm = await PrefsHelper.getString(AppConstants.fcmToken);
+      final deviceId = await DeviceHelper.getDeviceId();
+
+      if (t.isNotEmpty && fcm.isNotEmpty) {
+        socket?.emit('user-connected', {
+          "accessToken": t,
+          "fcmToken": fcm,
+          "deviceId": deviceId,
+        });
+      }
+      onReconnected?.call();
+    });
     socket?.onConnectError((err) => print('❌ Socket connection error: $err'));
     socket?.onError((err) => print('❌ Socket error: $err'));
     socket?.onDisconnect(

@@ -1,11 +1,8 @@
-import 'package:get/get.dart';
+import 'package:ricardo/feature/controllers/app_settings_controller.dart';
 import 'package:ricardo/feature/controllers/auth/car_registration_controller.dart';
-import 'package:ricardo/feature/controllers/home/google_search_location_controller.dart';
-import 'package:ricardo/feature/controllers/home/map/map_opt_controller.dart';
 import 'package:ricardo/feature/controllers/home/map/notification_controller.dart';
 import 'package:ricardo/feature/controllers/home/map/rate_review_controller.dart';
 import 'package:ricardo/feature/controllers/home/map/report_controller.dart';
-import 'package:ricardo/feature/controllers/home/map/ride_controller.dart';
 import 'package:ricardo/feature/controllers/profile/change_password_controller.dart';
 import 'package:ricardo/feature/controllers/auth/forget_password_controller.dart';
 import 'package:ricardo/feature/controllers/auth/forget_password_otp_verify_controller.dart';
@@ -16,23 +13,24 @@ import 'package:ricardo/feature/controllers/auth/sign_in_controller.dart';
 import 'package:ricardo/feature/controllers/auth/sign_up_controller.dart';
 import 'package:ricardo/feature/controllers/profile/reviews_ratings.dart';
 import 'package:ricardo/feature/controllers/profile/support_controller.dart';
-import 'package:ricardo/feature/controllers/custom_bottom_nav_bar_controller.dart';
 import 'package:ricardo/feature/controllers/auth/driver_profile_controller.dart';
 import 'package:ricardo/feature/controllers/auth/driving_license_controller.dart';
 import 'package:ricardo/feature/controllers/profile/favourite_rides_controller.dart';
 import 'package:ricardo/feature/controllers/history/history_controller.dart';
 import 'package:ricardo/feature/controllers/profile/legal_controller.dart';
-import 'package:ricardo/feature/controllers/user_controller.dart';
 import 'package:ricardo/feature/controllers/wallet/add_card_controller.dart';
 import 'package:ricardo/feature/controllers/wallet/add_money_controller.dart';
 import 'package:ricardo/feature/controllers/wallet/payment_method_controller.dart';
 import 'package:ricardo/feature/controllers/wallet/recent_history.dart';
 import 'package:ricardo/feature/controllers/wallet/withdraw_request_controller.dart';
 import 'package:ricardo/feature/view/home/link_export_file.dart';
+import 'package:ricardo/services/connectivity_service.dart';
 
 class DependencyInjection implements Bindings {
   @override
   void dependencies() {
+    Get.put(ConnectivityService(), permanent: true);
+    Get.put(AppSettingsController(), permanent: true);
     Get.put(SocketServices());
     Get.put(LegalController());
     Get.put(CustomBottomNavBarController());
@@ -57,7 +55,6 @@ class DependencyInjection implements Bindings {
     Get.lazyPut(() => HistoryController(),        fenix: true);
     Get.lazyPut(() => RecentHistoryController(),  fenix: true);
     Get.lazyPut(() => ReviewsRatingsController());
-
     Get.lazyPut(() => AddCardController());
     Get.lazyPut(() => GoogleSearchLocationController());
     Get.lazyPut(() => RideController());

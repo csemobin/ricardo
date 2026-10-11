@@ -17,7 +17,10 @@ import 'package:flutter/foundation.dart'
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
-      return web;
+      throw UnsupportedError(
+        'DefaultFirebaseOptions have not been configured for web - '
+        'this project targets Android and iOS only.',
+      );
     }
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
@@ -25,13 +28,11 @@ class DefaultFirebaseOptions {
       case TargetPlatform.iOS:
         return ios;
       case TargetPlatform.macOS:
-        return macos;
       case TargetPlatform.windows:
-        return windows;
       case TargetPlatform.linux:
         throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for linux - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
+          'DefaultFirebaseOptions have not been configured for desktop - '
+          'this project targets Android and iOS only.',
         );
       default:
         throw UnsupportedError(
@@ -39,15 +40,6 @@ class DefaultFirebaseOptions {
         );
     }
   }
-
-  static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyCFKQMOLOxnWSozqzPhbxqODBQidSxOMFg',
-    appId: '1:21095599679:web:3a0bde537704bc4101b28a',
-    messagingSenderId: '21095599679',
-    projectId: 'ricardo-7f01b',
-    authDomain: 'ricardo-7f01b.firebaseapp.com',
-    storageBucket: 'ricardo-7f01b.firebasestorage.app',
-  );
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyCy5L5h4VlSvv0cj70XtUguGo83IM1A49s',
@@ -64,23 +56,5 @@ class DefaultFirebaseOptions {
     projectId: 'ricardo-7f01b',
     storageBucket: 'ricardo-7f01b.firebasestorage.app',
     iosBundleId: 'com.example.ricardo',
-  );
-
-  static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyDa1ODQZgjP9J7S7eqQPJzGVsrz91Hgptg',
-    appId: '1:21095599679:ios:4a4d68f2d096f25901b28a',
-    messagingSenderId: '21095599679',
-    projectId: 'ricardo-7f01b',
-    storageBucket: 'ricardo-7f01b.firebasestorage.app',
-    iosBundleId: 'com.example.ricardo',
-  );
-
-  static const FirebaseOptions windows = FirebaseOptions(
-    apiKey: 'AIzaSyCFKQMOLOxnWSozqzPhbxqODBQidSxOMFg',
-    appId: '1:21095599679:web:515a2c641eca4a5001b28a',
-    messagingSenderId: '21095599679',
-    projectId: 'ricardo-7f01b',
-    authDomain: 'ricardo-7f01b.firebaseapp.com',
-    storageBucket: 'ricardo-7f01b.firebasestorage.app',
   );
 }

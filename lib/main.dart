@@ -1,6 +1,7 @@
-
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_foreground_task/flutter_foreground_task.dart';
 import 'package:ricardo/app.dart';
 import 'package:ricardo/app/helpers/device_utils.dart';
 import 'package:ricardo/firebase_options.dart';
@@ -12,14 +13,22 @@ import 'app/helpers/prefs_helper.dart';
 import 'app/utils/app_constants.dart';
 
 void main() async {
+  FlutterForegroundTask.initCommunicationPort();
+
   await dotenv.load(fileName: '.env');
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
   DeviceUtils.lockDevicePortrait();
-  await FirebaseNotificationService.printFCMToken();
-  await FirebaseNotificationService.initialize();
+  DeviceUtils.statusBarColor();
+  DeviceUtils.systemNavigationBarColor();
+  try {
+    await FirebaseNotificationService.printFCMToken();
+    await FirebaseNotificationService.initialize();
+  } catch (e) {
+    debugPrint("⚠️ Firebase notification setup failed: $e");
+  }
   // await SocketServices.init();
   // await Get.putAsync(() => SocketServices.init(),permanent: true);
   await SocketServices.init();
